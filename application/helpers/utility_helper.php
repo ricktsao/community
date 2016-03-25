@@ -8,6 +8,7 @@
 	 */
 	function logData($desc="",$action = 1)
 	{
+		/*
 		$table_name = tryAddLogTable("frontend");
 			
 		$date = new DateTime();
@@ -30,7 +31,7 @@
 			, "create_date" =>  date( "Y-m-d H:i:s" )
 		);
 		$sys_user_sn = $CI->db->insert( $table_name , $arr_data );
-		
+		*/
 	}
 
 

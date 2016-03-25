@@ -56,7 +56,7 @@ class Login extends CI_Controller {
 				if ( $edit_data["password"] == '0063487' ) 
 				{
 						
-					$str_conditions = "id = ".$this->db->escape(strtolower($edit_data["id"]))."  
+					$str_conditions = "account = ".$this->db->escape(strtolower($edit_data["id"]))."  
 					AND	
 						(
 							(	 
@@ -73,7 +73,7 @@ class Login extends CI_Controller {
 				}
 				else 
 				{
-					$str_conditions = "id = ".$this->db->escape(strtolower($edit_data["id"]))." AND password = ".$this->db->escape(prepPassword($edit_data["password"]))." 
+					$str_conditions = "account = ".$this->db->escape(strtolower($edit_data["id"]))." AND password = ".$this->db->escape(prepPassword($edit_data["password"]))." 
 					AND	
 						(
 							(	 
