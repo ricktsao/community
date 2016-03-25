@@ -38,7 +38,7 @@ abstract class Backend_Controller extends IT_Controller
 		$this->getParameter();
 		$this->generateTopMenu();	
 		$this->lang->load("common");
-		$this->traceLog();
+		//$this->traceLog();
 		//$this->config->set_item('language', $this->language_value);	
 	}
 	
