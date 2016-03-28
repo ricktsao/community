@@ -43,12 +43,10 @@
 							<table id="sample-table-1" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>										
-										<th>序號</th>
-										<th>公司單位</th>
+										<th>序號</th>										
 										<th style='text-align: center'>帳號</th>
 										<th>姓名</th>
-										<th>職稱</th>
-										<th>職務類別</th>
+										<th>職稱</th>										
 										<th>行動電話</th>
 										<th style='text-align: center'>是否變更密碼？</th>
 										<th><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
@@ -61,8 +59,7 @@
 								<tbody>
 									<?php for($i=0;$i<sizeof($list);$i++){ ?>
 									<tr>
-										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td><?php echo $list[$i]["unit_name"]?></td>
+										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>									
 										<td style='text-align: center'><?php echo $list[$i]["id"]?></td>
 										<td>
 										<?php echo $list[$i]["name"]?>
@@ -72,8 +69,7 @@
 										//}
 										?>
 										</td>
-										<td><?php echo $list[$i]["job_title"]?></td>
-										<td><?php echo $list[$i]["job_type"]?></td>
+										<td><?php echo $list[$i]["job_title"]?></td>										
 										<td><?php echo $list[$i]["phone"]?></td>
 										<td style='text-align: center'>
 										<?php
