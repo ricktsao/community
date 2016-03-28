@@ -14,11 +14,10 @@
 								<span class="lbl"></span>
 							</label>
 						</th>
-						<th>公司單位</th>
+						
 						<th>帳號</th>
 						<th>姓名</th>
-						<th>職稱</th>
-						<th>職務類別</th>
+						<th>職稱</th>						
 						<th>行動電話</th>
 						<th><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 						
@@ -33,11 +32,10 @@
 								<span class="lbl"></span>
 							</label>
 						</td>
-						<td><?php echo $user_list[$i]["unit_name"]?></td>
+						
 						<td><?php echo $user_list[$i]["id"]?></td>
 						<td><?php echo $user_list[$i]["name"]?></td>
-						<td><?php echo $user_list[$i]["job_title"]?></td>
-						<td><?php echo $user_list[$i]["job_type"]?></td>
+						<td><?php echo $user_list[$i]["job_title"]?></td>					
 						<td><?php echo $user_list[$i]["phone"]?></td>
 						<td><?php echo showEffectiveDate($user_list[$i]["start_date"], $user_list[$i]["end_date"], $user_list[$i]["forever"]) ?></td>
 					</tr>
@@ -71,30 +69,14 @@
 						<input id="checkboxAll" type="checkbox" class="ace" />
 						<span class="lbl"></span>
 					</label>
-				</th>
-	            <th>公司單位</th>
+				</th>	           
 	            <th>帳號</th>
 	            <th>姓名</th>
-	            <th>職稱</th>
-	            <th>職務類別</th>
+	            <th>職稱</th>	           
 	            <th>行動電話</th>
 	            <th>有效日期</th>
 	          </tr>
-	        </thead>
-	        <tfoot>
-	            <tr>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	              <th>&nbsp;</th>
-	            </tr>
-	        </tfoot>
-	        <tbody></tbody>
-	
+	        </thead>	
 	      </table>
 	    </div>
 	</div>	
@@ -118,12 +100,10 @@
 		<div class="table-responsive">
 		  <table id="form3" class="table table-striped table-bordered table-hover">
 	        <tr>
-	            <th>編號</th>
-	            <th>公司單位</th>
+	            <th>編號</th>	          
 	            <th>帳號</th>
 	            <th>姓名</th>
-	            <th>職稱</th>
-	            <th>職務類別</th>
+	            <th>職稱</th>	            
 	            <th>行動電話</th>
 	            <th>有效日期</th>
 	          </tr>
@@ -191,12 +171,10 @@ $(function(){
             "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                 $(nTd).html('<label class="pos-rel"><input type="checkbox" class="ace" name="user_sn[]" value="' + sData + '" /><span class="lbl"></span></label>');
             }
-        },
-        { "data": "unit_name", "width": "20%" },
+        },      
         { "data": "id" },
         { "data": "name" },
-        { "data": "job_title" },
-        { "data": "job_type" },
+        { "data": "job_title" },        
         { "data": "phone" },
         { "data": "eff_date" }
       ],

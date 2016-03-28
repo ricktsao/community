@@ -23,11 +23,10 @@ class Auth extends Backend_Controller
 		}
 		$data["unit_sn"] = $unit_sn;	
 		
-		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
-					.'   FROM sys_user s LEFT JOIN unit u ON s.unit_sn = u.sn '
-					.'  WHERE ( unit_sn IS NOT NULL ) '
+		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS * '
+					.'FROM sys_user '					
 					;
-		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE , array("field(`unit_name`, '雄獅開發','資訊室','會計部','管理部','總管理處','董事長室','董事長')"=>"desc", "u.level"=>"asc", "u.sn"=>"asc") );
+		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE ,array("create_date"=>"desc") );
 		$data["unit_list"] = $unit_list["data"];
 
 		// 指定客戶姓名
@@ -44,11 +43,10 @@ class Auth extends Backend_Controller
 						;
 		}
 
-		$query = "select SQL_CALC_FOUND_ROWS s.*, u.unit_name "
-						."    from sys_user s left join unit u on s.unit_sn = u.sn "
-						//."   where s.launch=1 and s.job_type like '業務%' and s.job_title != '董事長' "
+		$query = "select SQL_CALC_FOUND_ROWS * "
+						."    from sys_user "						
 						."   where 1 ".$condition
-						."   order by field(`job_title`, '代書', '組長', '襄理', '經理', '副總經理', '特助', '總經理', '董事長') desc, u.parent_sn, u.sn asc, s.sn asc, launch "
+						."   order by sn asc, launch "
 						;
 
 		$admin_list = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
