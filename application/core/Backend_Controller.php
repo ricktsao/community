@@ -763,6 +763,7 @@ abstract class Backend_Controller extends IT_Controller
 		$arr_data = array
 		(				
 		     "sn" => tryGetData("sn",$edit_data,NULL)	
+			, "comm_id" => $this->getCommId()	
 			, "parent_sn" => tryGetData("parent_sn",$edit_data,NULL)	
 			, "title" => tryGetData("title",$edit_data)	
 			, "brief" => tryGetData("brief",$edit_data)
@@ -894,182 +895,16 @@ abstract class Backend_Controller extends IT_Controller
 
 
 
-	public function landLog($desc = "",$memo = "",$type = "1")
-	{
-		$arr_data = array
-    	(	
-    		  "desc" =>  $desc     
-    		, "memo" =>  $memo
-			, "type" =>  $type
-			, "updated" => date( "Y-m-d H:i:s" )
-		);        	
-			
-		$page_sn = $this->it_model->addData( "land_log" , $arr_data );
-			
-		
-        
-	}
-
-
-
-	//取得地區代碼 Plus
-	public function getSectionPlusMap()
-    {
-    	
-		$query = "		
-		SELECT SQL_CALC_FOUND_ROWS section.* ,location.city_code,location.city_name,location.town_name
-		FROM section 
-		LEFT JOIN location on location.sn = section.location_sn
-		WHERE section.status = 1 AND location.status = 1	
-		";
-
-		$list = $this->it_model->runSql( $query );
-		
-		$section_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$section_map[$item["sn"]] = $item;
-		}
-			
-		return $section_map;		 
-    }
 	
-	
-	//取得地區代碼 Plus
-	public function getSectionPlusMapByName()
-    {
-    	
-		$query = "		
-		SELECT SQL_CALC_FOUND_ROWS section.* ,location.city_code,location.city_name,location.town_name,location.town_code
-		FROM section 
-		LEFT JOIN location on location.sn = section.location_sn
-		WHERE section.status = 1 AND location.status = 1	
-		";
-
-		$list = $this->it_model->runSql( $query );
-		
-		$section_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$section_map[$item["town_name"].$item["section_name"]] = $item;
-		}
-			
-		return $section_map;		 
-    }
 	
 	/**
-	 * 取得所有單位階層列表
+	 * 取得社區id
 	 */
-	public function getAllUintList()
+	function getCommId()
 	{
-		$unit_1_list = $this->it_model->listData("unit","level=1 ");
-		$unit_1_list = $unit_1_list["data"];
-		foreach ($unit_1_list as $key => $item1) 
-		{
-			$unit_2_list = $this->it_model->listData("unit","level=2");
-			$unit_2_list = $unit_2_list["data"];
-			foreach ($unit_2_list as $key => $item2)
-			{					
-				$unit_3_list = $this->it_model->listData("unit","level=3");
-				$unit_3_list = $unit_3_list["data"];
-				foreach ($unit_3_list as $key => $item3)
-				{	
-					$unit_4_list = $this->it_model->listData("unit","level=4");
-					$unit_3_list[$key]["sub_list"] = $unit_4_list; 
-				}
-					
-					
-				$unit_2_list[$key]["sub_list"] = $unit_3_list;					
-			}
-			
-			$unit_1_list[$key]["sub_list"] = $unit_2_list;			
-			
-		}
-		return $unit_1_list;
+		$comm_id = $this->session->userdata("comm_id");
+		return $comm_id;
 	}
-	
-	//ajax 取得縣市
-    public function ajaxGetCityList()
-    {		
-		$list = $this->it_model->listData( "land_city" , "status =1" , NULL , NULL , array("id"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-	
-	
-	//ajax 取得計畫區
-    public function ajaxGetPlanListByCity()
-    {
-    	$city_code = $this->input->get('city_code');		
-		$list = $this->it_model->listData( "planing_region" , "status = 1 and city_code=".$this->db->escape($city_code)."" , NULL , NULL , array("region_name"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-	
-	
-	//取得地目代碼
-	public function getLandKindMap()
-    {
-    	$list = $this->it_model->listData( "land_kind" , "" , NULL , NULL , array("id"=>"asc") );			
-		
-		$kind_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$kind_map[$item["id"]] = $item["title"];
-		}
-			
-		return $kind_map;		 
-    }
-
-	//ajax 取得計畫區
-    public function ajaxGetPlanList()
-    {		
-		$list = $this->it_model->listData( "planing_region" , "status = 1" , NULL , NULL , array("region_name"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-	
-	public function ajaxGetLocationByCity()
-    {
-    	$city_code = $this->input->get('city_code');
-				
-		$list = $this->it_model->listData( "location" , "city_code = ".$this->db->escape($city_code)." and status =1" , NULL , NULL , array("town_name"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-
-	public function ajaxGetLocationByPlan()
-    {
-    	$plan_sn = $this->input->get('plan_sn');
-		
-		$list = $this->land_model->getLocationByPlan($plan_sn, "planing_region_sn = ".$this->db->escape($plan_sn) , NULL , NULL , array("town_name"=>"asc"));	
-		
-		//dprint($list);
-		
-		echo json_encode($list["data"]); 
-    }
-	
-	
-	public function ajaxGetSection()
-    {
-    	$location_sn = $this->input->get('location_sn');
-		$drop_type = $this->input->get('drop_type');
-		$pc = $this->input->get('pc');
-		
-		//針對新竹市處理
-		if($location_sn == 43 || $location_sn == 44)
-		{
-			$location_sn = 42;
-		}
-		
-		
-		if($drop_type == 1)
-		{
-			$list = $this->it_model->listData( "planing_region_section_view" , "planing_region_sn = ".$this->db->escape($pc)."  and status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}
-		else
-		{
-			$list = $this->it_model->listData( "section" , "status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}		
-		
-		echo json_encode($list["data"]); 
-    }
 	
 	
 }

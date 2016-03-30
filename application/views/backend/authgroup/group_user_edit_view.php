@@ -171,7 +171,7 @@ $(function(){
             "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
                 $(nTd).html('<label class="pos-rel"><input type="checkbox" class="ace" name="user_sn[]" value="' + sData + '" /><span class="lbl"></span></label>');
             }
-        },      
+        }, 
         { "data": "id" },
         { "data": "name" },
         { "data": "job_title" },        
