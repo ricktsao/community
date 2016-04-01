@@ -8,11 +8,9 @@
 	<link rel="shortcut icon" href="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/favicon.ico">
 	<link href="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/css/login.css" rel="stylesheet" type="text/css" />
 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script>
-	    window.jQuery || document.write('\x3Cscript src="http://code.jquery.com/jquery-1.9.1.min.js">\x3C/script>')
-	</script>
-	<script>window.jQuery || document.write('<script src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/js/jquery-1.9.1.min.js"><\/script>')</script>
+	<script src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/js/jquery-1.9.1.min.js"></script>
+
+	
 	<script src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/js/jquery.easing.1.3.js"></script>
 	<script language="javascript">
 
