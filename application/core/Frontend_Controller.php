@@ -42,7 +42,8 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		parent::__construct();
 		
-		//檢查是否登入
+		/*
+		//檢查是否登入		
 		if(!checkUserLogin())
 		{
 			redirect(frontendUrl("login"));
@@ -53,146 +54,18 @@ abstract class Frontend_Controller extends IT_Controller
 		{
 			redirect(frontendUrl("login"));
 		}
+		*/
 		
 		$this->initNavi();
 		$this->initFrontend();
 		$this->getParameter();
 		
-	}
+	}	
 	
-	/* 搜尋建商功能(行程管理) 2016.02.19 vincent */
-	public function ajaxGetSearch()
-	{
-		$keyword = $this->input->get('keyword', true);
-		$radio_item = $this->input->get('radio_item', true);
-		if(!empty($keyword)) {
-			if($radio_item == 1) {
-				$result = array(
-					array('search_sn'=>'1','search_name'=>'小新','search_addr'=>'桃園巿'),
-					array('search_sn'=>'2','search_name'=>'小白','search_addr'=>'台北巿'),
-					array('search_sn'=>'3','search_name'=>'小黑','search_addr'=>'新北巿')
-				);
-			} else {
-				$result = array(
-					array('search_sn'=>'1','search_name'=>'遠雄建設','search_addr'=>'桃園巿'),
-					array('search_sn'=>'2','search_name'=>'擎業建設','search_addr'=>'台北巿'),
-					array('search_sn'=>'3','search_name'=>'泛亞工程','search_addr'=>'新北巿')
-				);
-			}
-			
-			if(!empty($result)) {
-				echo '<ul id="search_list">';
-				foreach($result as $search) {
-					echo '<li onclick="selectSearch('.'\''.$search["search_sn"].'\''.','.'\''.$search["search_name"].'\''.','.'\''.$search["search_addr"].'\''.')">'.$search["search_name"].'</li>';
-				}	
-				echo '</ul>';
-			} else {
-				echo '<ul id="search_list">';
-				echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認客戶名稱是否正確 .....</li>';
-				echo '</ul>';
-			}	
-		}	
-		/*
-		$keyword = $this->input->get('keyword', true);
-		$case_city_code = $this->input->get('ccd', true);
-		$case_location_sn = $this->input->get('lsn', true);
-
-		if (mb_strlen($keyword) > 1) {
-
-			$keyword = big5_for_utf8($keyword);
-
-			// 搜尋客戶序號
-			//$query = 'SELECT c.sn, c.name, c.uni_id, c.addr '
-			//		.'  FROM customer c LEFT JOIN customer_land_detail cld ON c.sn = cld.customer_sn '
-			//		.' WHERE c.name like "'.$keyword.'%"  '
-			//		;
-			
-			## 搜尋客戶在指定行政區是否有土地
-			// 先查詢客戶的資產
-			$query = 'SELECT c.sn, c.name, c.uni_id, c.addr , GROUP_CONCAT(cld.land_sn) as land_list '
-					.'  FROM customer c LEFT JOIN customer_land_detail cld ON c.sn = cld.customer_sn   '
-					.' WHERE c.name like "%'.$keyword.'%" '
-					.'   AND LOWER(cld.city_code) = "'.strtolower($case_city_code).'" '
-					.' GROUP BY customer_sn '
-					;
-			
-			$result = $this->it_model->runSql($query, null, null, array('sn'=>'asc'));
-
-			echo '<ul id="names_list">';
-			$cust = array();
-
-			if ( $result['count'] > 0 ) {
-				$i = 0;
-				foreach ( $result['data'] as $item) {
-
-					$flag = false;
-
-					$land_list = tryGetData('land_list', $item);
-					if (substr($land_list,-1) == ',') {
-						$land_list = substr($land_list,0,-1);
-					}
-					$land_array = explode(',' , $land_list);
-
-					// 檢查客戶的資產是否在指定行政區？
-					foreach ($land_array as $land_sn) {
-						
-						$condi = 'sn='.$land_sn . ' AND location_sn='.$case_location_sn;
-						$result = $this->it_model->listData('b'.$case_city_code.'_land_view', $condi, null, null);
-
-						if ($result['count'] > 0) {
-							$flag = true;
-							break;
-						} else {
-						
-					//	dprint($result['count']);
-						}
-					}				
-
-					$sn = tryGetData('sn', $item);
-					$name = tryGetData('name', $item, NULL);
-					$uni_id = tryGetData('uni_id', $item, NULL);
-					$addr = tryGetData('addr', $item, '未知');
-
-					if ($flag == false) {
-						continue;
-					}
-
-					$layout = $name.'';
-					//if (isNotNull(tryGetData('uni_id', $item, NULL)) ) {
-						$layout .= '（身分證號：'.tryGetData('uni_id', $item, '未知').'）';
-					//}
-					
-					$layout .= '　地址：'.$addr;
-
-					echo '<li onclick="selectCountry(\''.$sn .'\',\''. $name .'\',\''. $uni_id .'\',\''. $addr.'\');">'. $layout . "</li>";
-					$i++;
-				}
-				if ( $i == 0 ) {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 ...</li>';
-				}
-			} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 ....</li>';
-			}
-		} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 .....</li>';
-		}
-		// echo json_encode($return);
-		echo '</ul>';
-		*/
-	}
-
 	function initFrontend()
-	{
-		if($_SERVER['HTTP_HOST'] == 'web.chupei.com.tw' || $_SERVER['HTTP_HOST'] == '118.163.146.74')
-		{
-			$this->web_access = 1;
-		}
-		
-		
+	{		
 		$this->menu_info = $this->getMenuInfo();	
-		$this->_getFrontendMenu();	
-		
-		
+		$this->_getFrontendMenu();
 	}		
 	
 	
@@ -677,7 +550,7 @@ abstract class Frontend_Controller extends IT_Controller
 		$data['show_footer'] = $this->show_footer;
 		
 		$data['header'] = $this->load->view('frontend/template_header_view', $data, TRUE);
-		$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
+		//$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
 		
 		$data['content_js'] = '';
 		if(file_exists(APPPATH.'views/'.$view.'_js.php'))
