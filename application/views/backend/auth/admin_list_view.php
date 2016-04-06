@@ -1,8 +1,18 @@
+
+<style type="text/css">
+	th, td {text-align:center}
+</style>
+
 <form  role="search" action="<?php echo bUrl('admin');?>">
 <article class="well">              
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editAdmin",FALSE);?>">
-			<i class="icon-edit bigger-120"></i>新增
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editAdmin/?role=I");?>">
+			<i class="icon-edit bigger-120"></i>新增住戶
+		</a>
+    </div>
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-info" href="<?php echo bUrl("editAdmin/?role=M");?>">
+			<i class="icon-edit bigger-120"></i>新增物業人員
 		</a>
     </div>
 	
@@ -44,63 +54,63 @@
 								<thead>
 									<tr>										
 										<th>序號</th>
-										<th>公司單位</th>
+										<th>角色</th>
+										<th>職稱</th>
+										<th>戶別</th>
+										<th>識別ID</th>
 										<th style='text-align: center'>帳號</th>
 										<th>姓名</th>
-										<th>職稱</th>
-										<th>職務類別</th>
-										<th>行動電話</th>
-										<th style='text-align: center'>是否變更密碼？</th>
-										<th><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
-
-										<th style="width:150px">編輯</th>
+										<th>性別</th>
+										<th style="width:150px">操作</th>
 										<th>啟用/停用</th>
 										
 									</tr>
 								</thead>
 								<tbody>
-									<?php for($i=0;$i<sizeof($list);$i++){ ?>
+									<?php
+									//for($i=0;$i<sizeof($list);$i++) {
+									$i = 0;
+									foreach ( $list as $item) {
+									?>
 									<tr>
-										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td><?php echo $list[$i]["unit_name"]?></td>
-										<td style='text-align: center'><?php echo $list[$i]["id"]?></td>
+										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
+										<td style='text-align: center'>
+										<?php echo tryGetData($item['role'], config_item('role_array'), '-'); ?>
+										</td>
+										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
+										<td style='text-align: center'><?php echo tryGetData('building_id', $item, '-');?></td>
+										<td style='text-align: center'><?php echo tryGetData('id', $item, '-');?></td>
+										<td style='text-align: center'><?php echo tryGetData('account', $item, '-');?></td>
 										<td>
-										<?php echo $list[$i]["name"]?>
+										<?php echo tryGetData('name', $item);?>
 										<?php
-										//if ($list[$i]["launch"] == 2) {
+										//if (tryGetData('launch"] == 2) {
 										//	echo '（離職）';
 										//}
 										?>
 										</td>
-										<td><?php echo $list[$i]["job_title"]?></td>
-										<td><?php echo $list[$i]["job_type"]?></td>
-										<td><?php echo $list[$i]["phone"]?></td>
 										<td style='text-align: center'>
-										<?php
-										if ($list[$i]["is_chang_pwd"] == 1) {
-											echo '是';
-										} else {
-											echo '<span style="color: #f00">否</span>';
-										}
-										?>
+										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
 										</td>
-										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editAdmin",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>edit
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editAdmin",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>編輯
 											</a>
 										</td>
 										<td>					
 											<div class="col-xs-3">
 												<label>
-													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo $list[$i]["launch"]==1?"checked":"" ?> value="<?php echo $list[$i]["sn"] ?>" onClick='javascript:launch(this);' />
+													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo tryGetData('launch', $item)==1?"checked":"" ?> value="<?php echo tryGetData('sn', $item) ?>" onClick='javascript:launch(this);' />
 													<span class="lbl"></span>
 												</label>
 											</div>
 										</td>
 										
 									</tr>
-									<?php } ?>
+									<?php
+										$i++;
+									}
+									?>
 										
 									
 								</tbody>

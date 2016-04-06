@@ -510,14 +510,14 @@ function pickDateOption($edit_data = array())
 	$html = 
 	'
 	<div class="form-group '.$error_sdate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟用日期</label>
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟始日期</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="text" id="start_date" name="start_date"  class="width-100" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline">'.form_error('start_date').'</div>
 	</div>	
 	<div class="form-group '.$error_edate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">停用日期</label>
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">截止日期</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="text" id="end_date" name="end_date"  class="width-70" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
 			<span class="width-30">
