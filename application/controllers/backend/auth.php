@@ -32,6 +32,7 @@ class Auth extends Backend_Controller
 
 		$data["unit_list"] = array(); 
 
+
 		// 指定客戶姓名
 		$keyword = $this->input->get('keyword', NULL);
 		$data['given_keyword'] = '';

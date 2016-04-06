@@ -52,7 +52,7 @@
 							
 							<table id="sample-table-1" class="table table-striped table-bordered table-hover">
 								<thead>
-									<tr>										
+									<tr>
 										<th>序號</th>
 										<th>角色</th>
 										<th>職稱</th>

@@ -317,7 +317,7 @@ function textOption($field_title = '',$option_name = '',$edit_data = array(),$op
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-200" value="'.tryGetData( $option_name,$edit_data).'"  />					
+			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-100" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		'.$option_attr.'</div>
 		'.$hint.'
 		'.$error_msg.'		
@@ -512,14 +512,14 @@ function pickDateOption($edit_data = array())
 	<div class="form-group '.$error_sdate_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟始日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="start_date" name="start_date"  class="width-100" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
+			<input type="text" id="start_date" name="start_date"  class="width-30" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline">'.form_error('start_date').'</div>
 	</div>	
 	<div class="form-group '.$error_edate_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">截止日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="end_date" name="end_date"  class="width-70" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
+			<input type="text" id="end_date" name="end_date"  class="width-30" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
 			<span class="width-30">
 				<label class="middle">
 					<input class="ace" name="forever" id="forever" value="1" type="checkbox"  '.(tryGetData('forever',$edit_data)=='1'?"checked":"").'  />

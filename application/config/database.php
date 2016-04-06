@@ -52,7 +52,6 @@ $db['default']['hostname'] = '27.147.4.239';
 $db['default']['port'] = 3306;
 $db['default']['username'] = 'root';
 $db['default']['password'] = 'admin';
-//$db['default']['password'] = '';
 $db['default']['database'] = 'community';
 
 

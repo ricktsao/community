@@ -3,10 +3,14 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	<?php echo textOption("單元名稱","title",$edit_data); ?>
+	<?php echo textOption("發起人姓名","title",$edit_data); ?>
 	
 	<?php
-	  echo textAreaOption("內容","content",$edit_data);
+	  echo textOption("資料來源","brief",$edit_data);
+	?>
+	
+	<?php
+	  echo textAreaOption("資料內容","content",$edit_data);
 	?>	
 	
 	<?php 
@@ -30,7 +34,7 @@
 	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
 	
 	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
-	<input type="hidden" name="content_type" value="news" />
+	<input type="hidden" name="content_type" value="<? echo tryGetData('content_type', $edit_data)?>" />
 		
 
 	

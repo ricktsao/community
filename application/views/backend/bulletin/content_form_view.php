@@ -30,7 +30,7 @@
 	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
 	
 	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
-	<input type="hidden" name="content_type" value="news" />
+	<input type="hidden" name="content_type" value="<? echo tryGetData('content_type', $edit_data)?>" />
 		
 
 	

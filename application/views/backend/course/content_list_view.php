@@ -30,10 +30,9 @@
 								<thead>
 									<tr>										
 										<th style="width:100px">序號</th>
-										<th>標題</th>
-									
-																			
-										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
+										<th>課程主旨</th>									
+										<th>收費標示</th>									
+										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>課程日期</th>
 
 										<th style="width:120px">編輯</th>
 										<th style="width:120px">啟用/停用</th>										
@@ -60,7 +59,7 @@
 											 
 											 ?>
 										</td>
-										
+										<td><?php echo $list[$i]["brief"] ?></td>
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
@@ -86,7 +85,7 @@
 									<?php } ?>
 									
 									<tr>
-										<td colspan="5">
+										<td colspan="6">
 											
 										</td>	
 										<td class="center">

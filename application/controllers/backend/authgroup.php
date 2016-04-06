@@ -546,11 +546,11 @@ class Authgroup extends Backend_Controller
 		
 		if(count($user_sn_ary)>0)
 		{
-			$condition = "AND s.sn in (".implode(",", $user_sn_ary).")";
-			$query = "select SQL_CALC_FOUND_ROWS s.*, u.unit_name "
-						."    from sys_user s left join unit u on s.unit_sn = u.sn "						
+			$condition = "AND sn in (".implode(",", $user_sn_ary).")";
+			$query = "select SQL_CALC_FOUND_ROWS * "
+						."    from sys_user"						
 						."   where 1 ".$condition
-						."   order by field(`job_title`, '代書', '組長', '襄理', '經理', '副總經理', '特助', '總經理', '董事長') desc, u.parent_sn, u.sn asc, s.sn asc, launch "
+						."   order by sn asc, launch "
 						;
 	
 			$user_list = $this->it_model->runSql( $query);
@@ -597,15 +597,14 @@ class Authgroup extends Backend_Controller
 		$condition = "";
 		if(count($user_sn_ary)>0)
 		{
-			$condition = "AND s.sn not in (".implode(",", $user_sn_ary).") AND launch=1";
-			//$condition = "AND s.sn not in (".implode(",", $user_sn_ary).") AND launch=1";
+			$condition = "AND sn not in (".implode(",", $user_sn_ary).") AND launch=1";			
 		}
 		
 		
-		$query = "select SQL_CALC_FOUND_ROWS s.*, u.unit_name "
-						."    from sys_user s left join unit u on s.unit_sn = u.sn "					
+		$query = "select SQL_CALC_FOUND_ROWS * "
+						."    from sys_user "					
 						."   where 1 ".$condition
-						."   order by field(`job_title`, '代書', '組長', '襄理', '經理', '副總經理', '特助', '總經理', '董事長') desc, u.parent_sn, u.sn asc, s.sn asc, launch "
+						."   order by sn asc, launch "
 						;
 
 		$user_list = $this->it_model->runSql( $query);
@@ -618,12 +617,10 @@ class Authgroup extends Backend_Controller
 			
 			$tmp_data = array
 			(
-				"sn" => $item["sn"],				
-				"unit_name"=> $item["unit_name"],
+				"sn" => $item["sn"],
 				"id" => $item["id"],
 				"name" => $item["name"],
 				"job_title" => $item["job_title"],
-				"job_type" => $item["job_type"],
 				"phone" => $item["phone"],
 				"email" => $item["email"],
             	"eff_date" => showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"])            	
