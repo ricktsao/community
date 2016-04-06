@@ -55,6 +55,9 @@ $db['default']['password'] = '12120808';
 //$db['default']['password'] = '';
 $db['default']['database'] = 'community';
 
+
+
+
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

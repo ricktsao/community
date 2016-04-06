@@ -1,7 +1,8 @@
-
+/application/config/database.php
 /upload/land_books/*.xlsx
 *.png
 /upload/website/wallpaper/*.png
 /upload/website/iforum/*.png
 /upload/website/bulletin/*.png
 /upload/visit_project/*.xlsx
+*.gitignore

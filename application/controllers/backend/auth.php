@@ -22,12 +22,16 @@ class Auth extends Backend_Controller
 			$condition .= " AND unit_sn = ".$unit_sn ;
 		}
 		$data["unit_sn"] = $unit_sn;	
-		
-		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS * '
-					.'FROM sys_user '					
+		/*
+		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
+					.'   FROM sys_user s LEFT JOIN unit u ON s.unit_sn = u.sn '
+					.'  WHERE ( unit_sn IS NOT NULL ) '
 					;
-		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE ,array("create_date"=>"desc") );
-		$data["unit_list"] = $unit_list["data"];
+		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE , array("field(`unit_name`, '雄獅開發','資訊室','會計部','管理部','總管理處','董事長室','董事長')"=>"desc", "u.level"=>"asc", "u.sn"=>"asc") );
+		*/
+
+		$data["unit_list"] = array(); 
+
 
 		// 指定客戶姓名
 		$keyword = $this->input->get('keyword', NULL);
@@ -36,17 +40,15 @@ class Auth extends Backend_Controller
 			$data['given_keyword'] = $keyword;
 			$condition .= " AND ( `id` like '%".$keyword."%' "
 						."      OR `name` like '%".$keyword."%' "
-						."      OR `email` like '%".$keyword."%' "
-						."      OR `phone` like '%".$keyword."%' "
-						."      OR `job_type` like '%".$keyword."%' "
-						."      OR `job_title` like '%".$keyword."%'  ) "
+						."      OR `building_id` like '%".$keyword."%' "
+						."      OR `account` like '%".$keyword."%'  ) "
 						;
 		}
 
-		$query = "select SQL_CALC_FOUND_ROWS * "
-						."    from sys_user "						
+		$query = "select SQL_CALC_FOUND_ROWS s.* "
+						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
 						."   where 1 ".$condition
-						."   order by sn asc, launch "
+						."   order by field(`role`, 'I', 'S', 'M', 'G') ASC, s.building_id, s.id, s.name "
 						;
 
 		$admin_list = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
@@ -66,12 +68,19 @@ class Auth extends Backend_Controller
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");		
 		
-		$admin_sn = $this->input->get("sn",TRUE);
-		
+		$admin_sn = $this->input->get("sn", TRUE);
+		$role = $this->input->get("role", TRUE);
 		//權組list
-		//---------------------------------------------------------------------------------------------------------------		
-		$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1" , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
-		$data["group_list"] = count($group_list["data"])>0?$group_list["data"]:array();
+		//---------------------------------------------------------------------------------------------------------------
+		if ( $role == 'I') {
+			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
+		} else {
+			$condi = ' AND title NOT IN ("住戶", "管委會") AND title != "富網通" ';
+		}
+
+		$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1 ".$condi , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));
+
+		$data["group_list"] = count($group_list["data"]) > 0 ? $group_list["data"] : array();
 		//---------------------------------------------------------------------------------------------------------------
 		$sys_user_group = array();		
 						
@@ -84,7 +93,8 @@ class Auth extends Backend_Controller
 				'launch' =>1
 			);
 			
-			$data["sys_user_group"] = $sys_user_group;		
+			$data["sys_user_group"] = $sys_user_group;
+			$data['role'] = $role;
 			$this->display("admin_edit_view",$data);
 		}
 		else 
@@ -106,7 +116,8 @@ class Auth extends Backend_Controller
 				}
 				
 				//dprint($sys_user_group);
-				$data["sys_user_group"] = $sys_user_group;				
+				$data["sys_user_group"] = $sys_user_group;
+				$data['role'] = $role;				
 				$this->display("admin_edit_view",$data);
 			}
 			else
@@ -182,7 +193,7 @@ class Auth extends Backend_Controller
 			{
 				$arr_data["id"] = $edit_data["id"];				
 				$arr_data["password"] = prepPassword($edit_data["password"]);
-				$arr_data["create_date"] = date( "Y-m-d H:i:s" ); 	
+				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
 				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");

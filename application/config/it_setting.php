@@ -63,7 +63,7 @@ $config['mail']['template'] =
 <html lang='en'>
 	<head>
 	<meta charset='UTF-8'>
-	<title>竹北置地信函</title>
+	<title>信函</title>
 	<style type='text/css'>
 		* {font-family: '微軟正黑體', Verdana; font-size:16px; line-height:180%%}
 		#main {min-height: 260px }
@@ -104,7 +104,14 @@ $config['web_access_enable'] = 0;
 
 // 性別
 $config['gender_array'] = array(  '1' => '男'
-								, '0' => '女'
+								, '2' => '女'
+								);
+// 角色
+$config['role_array'] = array(  'I' => '住戶'
+								, 'M' => '物業人員'
+								//, 'G' => '警衛'
+								//, 'S' => '秘書'
+								, 'F' => '富網通'
 								);
 
 // 全資產等級
