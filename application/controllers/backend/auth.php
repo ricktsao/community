@@ -101,8 +101,7 @@ class Auth extends Backend_Controller
 		{
 			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$admin_sn);
 			
-			if(count($admin_info["data"])>0)
-			{				
+			if (count($admin_info["data"]) > 0) {			
 				$data["edit_data"] =$admin_info["data"][0];
 				
 				$data["edit_data"]["start_date"] = $data["edit_data"]["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $data["edit_data"]["start_date"] ) );
@@ -163,13 +162,20 @@ class Auth extends Backend_Controller
         		//"email" =>$edit_data["email"]
 				  "name"		=>	tryGetData("name", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
-				, "job_title"		=>	tryGetData("job_title", $edit_data)
-				, "job_type"		=>	tryGetData("job_type", $edit_data)
+
+				, "gender"		=>	tryGetData("gender", $edit_data)
+				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
+				, "voting_right"		=>	tryGetData("voting_right", $edit_data)
+				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
+				, "is_manager"		=>	tryGetData("is_manager", $edit_data)
+				, "manager_title"		=>	tryGetData("manager_title", $edit_data)
+				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
+				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
 				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
 				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
-				, "update_date" =>  date( "Y-m-d H:i:s" ) 				
+				, "updated" =>  date( "Y-m-d H:i:s" ) 				
 			);        	
 			
 			if($edit_data["sn"] != FALSE)

@@ -125,6 +125,25 @@ function sign_dropdown ($name="sign", $selection=NULL)
 }
 
 
+
+function yes_no_radio ($name="yes", $checked_value=NULL)
+{
+	$checked_value = 1;
+	// You may want to pull this from an array within the helper
+	$yea_no_array = config_item('yea_no_array');
+
+	$html = '';
+	
+	foreach($yea_no_array as $key => $value)
+	{
+		$check_str = ($key === $checked_value) ? 'checked' : '';
+
+		$html .= '<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;&nbsp;';
+	}
+
+	return $html;
+}
+
 function gender_radio ($name="gender", $checked_value=NULL)
 {
 	// You may want to pull this from an array within the helper
