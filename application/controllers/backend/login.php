@@ -193,18 +193,13 @@ class Login extends CI_Controller {
 					$this->session->set_userdata('user_group', $sys_user_groups);
 					$this->session->set_userdata('comm_id', $comm_id);
 					
+					//dprint($user_info);
+					//dprint($sys_admin_auth);
 					
+					//exit;
 					
-					if($user_info["is_chang_pwd"]==0)
-					{	
-						redirect(backendUrl("authEdit","index"));
-					}
-					else 
-					{
 
-						redirect(backendUrl());
-					}
-					//redirect(backendUrl());
+					redirect(backendUrl());
 					
 					
 					
