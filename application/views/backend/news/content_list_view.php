@@ -8,10 +8,8 @@
     
     
    
-    <div class="btn-group" style="display:none">
-        
-          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
-        
+    <div class="btn-group" style="display:none">        
+          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>        
     </div>                
 </article>	
 <span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>		

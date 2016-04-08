@@ -8,26 +8,18 @@
 
 <div class="row">
 	<div class="col-xs-12">
-		<form  role="search" action="<?php echo bUrl('editContent');?>">
-		<article class="well"> 		
-			<div class="btn-group">				
-				  <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>新增</button>			
-			</div>			
-		</article>	
-		</form>
 
 		<form method="post" action="<?php echo bUrl('updateMailbox');?>">
 		<div class="col-xs-12">
 			<div class="table-responsive">
 				<table id="entry" class="table table-striped table-bordered table-hover">
 					<thead>
-						<tr>
-							<th style="width:40px">領取</th>		
+						<tr>							
 							<th style="width:100px"><i class="icon-time bigger-110 hidden-480"></i>登錄時間</th>
 							<th style="width:100px">代收編號</th>							
 							<th style="width:80px">郵件類型</th>
 							<th style="width:200px">郵件敘述說明</th>
-							<th style="width:120px">收件人</th>
+							<th style="width:200px">收件人</th>
 							<th style="width:120px">領收人</th>												
 						</tr>
 					</thead>
@@ -42,25 +34,15 @@
 						echo 
 						'
 						<tr>
-							<td align="center">
-								<label>
-									<input type="checkbox" value="'.$mail_item["sn"].'" name="is_receive[]" class="ace">
-									<span class="lbl"></span>
-								</label>
-							</td>	
 							<td>'.showDateFormat($mailbox_list[$i]["booked"],"Y-m-d").'</td>
 							<td>'.$mail_item["no"].'</td>						
 							<td>'.tryGetData($mail_item["type"], $this->config->item("mail_box_type")).'</td>	
 							<td>'.$mail_item["desc"].'</td>										
 							<td>'.tryGetData($mail_item["user_sn"], $user_map).'</td>										
-							<td>
-								<input type="text" name="receiver[]" />
-								<input type="hidden" value="'.$mail_item["sn"].'"  name="mailbox_sn[]">
-							</td>											
+							<td>'.$mail_item["receiver"].'</td>									
 						</tr>
 						';						
-					}
-					
+					}					
 					?>
 					</tbody>
 				</table>
@@ -68,34 +50,7 @@
 		</div>
 	</div>
 	
-	<?php
-	if ( sizeof($mailbox_list) > 0 ) {
-	?>
-	
 
-	
-	
-	<div class="col-xs-12">
-		
-		<div class="clearfix form-actions">
-			
-			<div class="col-md-offset-5 col-md-5" style="color: red">				
-				※請填寫領收人並勾選領取,再確定儲存
-			</div>
-			
-			<div class="col-md-offset-1 col-md-1">				
-				<button class="btn btn-info" type="submit">
-					<i class="icon-ok bigger-110"></i>
-					確定儲存
-				</button>
-			</div>
-		</div>
-		
-	</div>	
-	
-	<?php
-	}
-	?>
 	</div>
 	</form>
 

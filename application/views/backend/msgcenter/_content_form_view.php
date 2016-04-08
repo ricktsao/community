@@ -3,30 +3,10 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<? echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	<?php echo textOption("代收編號","no",$edit_data); ?>
-	
-	<div class="form-group ">
-		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">郵件類型 </label>
-		<div class="col-xs-12 col-sm-4">
-			<div class="btn-group">
-              <select class="form-control" name="parent_sn">
-              	<?php 
-              	foreach ($this->config->item("mail_box_type") as $key => $value) 
-              	{
-					echo '<option value="'.$key.'">'.$value.'</option>';
-				}
-              	?>	
-              	
-                 
-              </select>
-            </div>			
-		</div>
-		
-	</div>
-	
+	<?php echo textOption("代收編號","title",$edit_data); ?>
 	
 	<?php
-	  echo textAreaOption("郵件敘述說明","desc",$edit_data);
+	  echo textAreaOption("內容","content",$edit_data);
 	?>	
 	
 	<?php 
@@ -34,7 +14,8 @@
 		//showOutputBox("tools/pickup_img_view", array('elements'=>$elements)); 
 	?>
 	
-		
+	<?php echo dropdownOption("分類","parent_sn",$edit_data,$cat_list); ?>
+	
 	<?php 
 		//echo urlOption("開啟方式","url",$edit_data); 
 	?>
