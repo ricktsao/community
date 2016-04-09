@@ -33,7 +33,7 @@
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　號：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('building_id',$user_data); ?></span></div>
 			</div>
 			<div class="form-group">
@@ -43,6 +43,10 @@
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('name',$user_data); ?></span></div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">行動電話：</label>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('phone',$user_data); ?></span></div>
 			</div>
 
 

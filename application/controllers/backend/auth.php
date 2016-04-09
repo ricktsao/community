@@ -70,41 +70,29 @@ class Auth extends Backend_Controller
 		$user_sn = $this->input->get("sn", TRUE);
 		$user_id = $this->input->get("id", TRUE);
 
-		//權組list
+		//既有車位list
 		//---------------------------------------------------------------------------------------------------------------
-		/*if ( $role == 'I') {
-			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
-		} else {
-			$condi = ' AND title NOT IN ("住戶", "管委會") AND title != "富網通" ';
-		}*/
-
 		$exist_parking_list = $this->it_model->listData( "parking p left join user_parking up on p.sn = up.parking_sn" 
 												, "user_sn = ".$user_sn , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
-//dprint($exist_parking_list);
+
 		$data["exist_parking_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
 		//---------------------------------------------------------------------------------------------------------------
 
 		$sys_user_group = array();		
 		
-			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn." and role='I' ");
+		$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn." and role='I' ");
+		
+		if (count($admin_info["data"]) > 0) {
+			$edit_data =$admin_info["data"][0];
 			
-			if (count($admin_info["data"]) > 0) {			
-				$edit_data =$admin_info["data"][0];
-				
-				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
-				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
-				
-				
-				//dprint($sys_user_group);
-				$data['user_data'] = $edit_data;
-				
-				$this->display("parking_setting_view",$data);
-			}
-			else
-			{
-				redirect(bUrl("admin"));	
-			}
-	//	}
+			$data['user_data'] = $edit_data;
+			
+			$this->display("parking_setting_view",$data);
+		}
+		else
+		{
+			redirect(bUrl("admin"));	
+		}
 	}
 
 
