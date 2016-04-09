@@ -8,6 +8,7 @@ class Mailbox extends Backend_Controller {
 		
 	}
 	
+	
 
 	/**
 	 * list page
@@ -72,8 +73,12 @@ class Mailbox extends Backend_Controller {
 	
 	public function updateContent()
 	{	
-		$edit_data = $this->dealPost();
-						
+				
+		foreach( $_POST as $key => $value )
+		{
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
 		if ( ! $this->_validateContent())
 		{
 			$data["edit_data"] = $edit_data;		
@@ -81,33 +86,26 @@ class Mailbox extends Backend_Controller {
 		}
         else 
         {
-			
-			deal_img($edit_data ,"img_filename",$this->router->fetch_class());			
-			
-			
-			if(isNotNull($edit_data["sn"]))
-			{
-
+				$update_data = array(
+				"type" => tryGetData("type",$edit_data),
+				"desc" => tryGetData("desc",$edit_data),
+				"booked" => date( "Y-m-d H:i:s" ),
+				"booker" => $this->session->userdata("user_sn"),
+				"booker_id" => $this->session->userdata("user_sn"),
+				"user_name" => tryGetData("user_name",$edit_data),
+				"updated" => date( "Y-m-d H:i:s" )
+				);
 				
-				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
-				{					
-					$this->showSuccessMessage();					
-				}
-				else 
-				{
-					$this->showFailMessage();
-				}
-				
-			}
-			else 
-			{
-									
-				$edit_data["create_date"] =   date( "Y-m-d H:i:s" );
-				
-				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
+				$content_sn = $this->it_model->addData( "mailbox" , $update_data );
 				if($content_sn > 0)
 				{				
-					$edit_data["sn"] = $content_sn;
+					//設定　代收編號　日期＋流水後號３碼
+					//--------------------------------------------------
+					$mail_no = str_pad($content_sn,10,'0',STR_PAD_LEFT);
+					$mail_no = date("Ymd").substr($mail_no,7,3);
+					$this->it_model->updateData( "mailbox" , array("no"=>$mail_no,"updated" => date( "Y-m-d H:i:s" )),"sn = ".$content_sn );					
+					//--------------------------------------------------
+					
 					$this->showSuccessMessage();							
 				}
 				else 
@@ -115,7 +113,7 @@ class Mailbox extends Backend_Controller {
 					$this->showFailMessage();					
 				}
 	
-			}
+			
 			
 			redirect(bUrl("contentList"));	
         }
@@ -129,8 +127,8 @@ class Mailbox extends Backend_Controller {
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
+		$this->form_validation->set_rules( 'user_name', '收件人', 'required' );	
+	
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
@@ -138,15 +136,7 @@ class Mailbox extends Backend_Controller {
 
 
 	public function updateMailbox()
-	{	
-		$edit_data = $this->dealPost();
-				
-		foreach( $_POST as $key => $value )
-		{
-			$edit_data[$key] = $this->input->post($key,TRUE);			
-		}
-		
-		
+	{			
 		$receive_sn_ary = $this->input->post('is_receive',TRUE);
 		$receiver_ary =$this->input->post('receiver',TRUE);
 		$mailbox_sn_ary = $this->input->post('mailbox_sn',TRUE);	

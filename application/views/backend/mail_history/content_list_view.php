@@ -38,7 +38,7 @@
 							<td>'.$mail_item["no"].'</td>						
 							<td>'.tryGetData($mail_item["type"], $this->config->item("mail_box_type")).'</td>	
 							<td>'.$mail_item["desc"].'</td>										
-							<td>'.tryGetData($mail_item["user_sn"], $user_map).'</td>										
+							<td>'.tryGetData("user_name", $mail_item).'</td>										
 							<td>'.$mail_item["receiver"].'</td>									
 						</tr>
 						';						

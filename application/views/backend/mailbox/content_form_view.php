@@ -3,13 +3,13 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<? echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	<?php echo textOption("代收編號","no",$edit_data); ?>
+	<?php echo textOption("<span class='require'>*</span>收件人","user_name",$edit_data); ?>
 	
 	<div class="form-group ">
 		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">郵件類型 </label>
 		<div class="col-xs-12 col-sm-4">
 			<div class="btn-group">
-              <select class="form-control" name="parent_sn">
+              <select class="form-control" name="type">
               	<?php 
               	foreach ($this->config->item("mail_box_type") as $key => $value) 
               	{
@@ -29,18 +29,8 @@
 	  echo textAreaOption("郵件敘述說明","desc",$edit_data);
 	?>	
 	
-	<?php 
-		//$elements = array("title"=>"代表圖", "id"=>"img_filename","name"=>"img_filename","img_value"=>tryGetData('img_filename', $edit_data),"orig_value"=>tryGetData('orig_img_filename', $edit_data));
-		//showOutputBox("tools/pickup_img_view", array('elements'=>$elements)); 
-	?>
 	
-		
-	<?php 
-		//echo urlOption("開啟方式","url",$edit_data); 
-	?>
-	
-	
-	<div class="form-group" >
+	<div class="form-group" style="display:none" >
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 收件人：</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type='text' name='name' size="50" id="name">
@@ -49,25 +39,14 @@
 			</button>
 			<div id="suggesstion-box"></div>
 		</div>
-	</div>
-	
-	
-	
-	
-	<?php echo pickDateOption($edit_data);?>
-	<?php echo textOption("排序","sort",$edit_data); ?>
-	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
-	
-	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
-	<input type="hidden" name="content_type" value="<? echo tryGetData('content_type', $edit_data)?>" />
+	</div>	
 		
-
 	
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				Back
+				回上一頁
 			</a>		
 		
 
@@ -75,7 +54,7 @@
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				送交
 			</button>
 			
 		</div>
