@@ -22,7 +22,7 @@
 								<thead>
 									<tr>										
 										<th style="width:50px">序號</th>
-										<th>標題</th>
+										<th>名稱</th>
 										<th style="width:120px">編輯</th>
 										<th style="width:120px">人員設定</th>
 										<th style="width:120px">權限設定</th>

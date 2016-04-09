@@ -106,6 +106,11 @@ $config['web_access_enable'] = 0;
 $config['gender_array'] = array(  '1' => '男'
 								, '2' => '女'
 								);
+
+// 性別
+$config['yea_no_array'] = array( '0'=>'否', '1'=>'是');
+
+
 // 角色
 $config['role_array'] = array(  'I' => '住戶'
 								, 'M' => '物業人員'

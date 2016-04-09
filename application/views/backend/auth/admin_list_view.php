@@ -57,10 +57,11 @@
 										<th>角色</th>
 										<th>職稱</th>
 										<th>戶別</th>
-										<th>識別ID</th>
-										<th style='text-align: center'>帳號</th>
-										<th>姓名</th>
+										<th style='text-align: center'>姓名<br>ID / 帳號</th>
 										<th>性別</th>
+										<th>所有權人</th>
+										<th>緊急聯絡人</th>
+										<th>管委</th>
 										<th style="width:150px">操作</th>
 										<th>啟用/停用</th>
 										
@@ -79,18 +80,40 @@
 										</td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td style='text-align: center'><?php echo tryGetData('building_id', $item, '-');?></td>
-										<td style='text-align: center'><?php echo tryGetData('id', $item, '-');?></td>
-										<td style='text-align: center'><?php echo tryGetData('account', $item, '-');?></td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
+										<br>
 										<?php
-										//if (tryGetData('launch"] == 2) {
-										//	echo '（離職）';
-										//}
+										if ( isNotNull(tryGetData('id', $item, NULL)) ) {
+											echo '<span style="color:#069">'.tryGetData('id', $item).'</span>';
+										} else {
+											echo '<span style="color:#f00">'.tryGetData('account', $item).'</span>';
+											}
 										?>
 										</td>
 										<td style='text-align: center'>
 										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
+										</td>
+										<td>
+										<?php
+										if (tryGetData("is_owner", $item) == 1) {
+											echo '是';
+										} else echo '否';
+										?>
+										</td>
+										<td>
+										<?php
+										if (tryGetData("is_contact", $item) == 1) {
+											echo '是';
+										} else echo '否';
+										?>
+										</td>
+										<td>
+										<?php
+										if (tryGetData("is_manager", $item) == 1) {
+											echo tryGetData("manager_title", $item);
+										} else echo '否';
+										?>
 										</td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editAdmin",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
