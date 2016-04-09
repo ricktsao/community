@@ -17,19 +17,10 @@
     </div>
 	
     <div class="btn-group">
-      <select name="unit_sn" class="form-control">
+      <select name="role" class="form-control">
       		<option value=""> -不拘- </option>
-			<?php 	
-			foreach ($unit_list as $key => $item){
-				if ($unit_sn == $item['sn']) 
-					$chk ='selected';
-				else 
-					$chk='';
-			?>
-			<option value="<?php echo $item['sn'] ?>" <?php echo $chk?>><?php echo $item['unit_name'] ?></option>
-			<?php 	
-			}
-			?> 
+      		<option value="I" <?php echo ($role=='I') ? 'selected': ''?>> 住戶 </option>
+      		<option value="M" <?php echo ($role=='M') ? 'selected': ''?>> 物業人員 </option>
       </select>
     </div>
     <div class="btn-group">
@@ -118,6 +109,9 @@
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editAdmin",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
+											</a>
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>車位設定
 											</a>
 										</td>
 										<td>					

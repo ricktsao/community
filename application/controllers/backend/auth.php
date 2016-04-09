@@ -12,16 +12,13 @@ class Auth extends Backend_Controller
 
 	public function admin()
 	{
+		$condition = "";
 
-		$condition = ""; 
-		
-
-		$unit_sn = $this->input->get('unit_sn');			
-		if(isNotNull($unit_sn))
+		$role = $this->input->get('role');			
+		if(isNotNull($role))
 		{
-			$condition .= " AND unit_sn = ".$unit_sn ;
+			$condition .= ' AND role = "'.$role.'"' ;
 		}
-		$data["unit_sn"] = $unit_sn;	
 		/*
 		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
 					.'   FROM sys_user s LEFT JOIN unit u ON s.unit_sn = u.sn '
@@ -30,11 +27,12 @@ class Auth extends Backend_Controller
 		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE , array("field(`unit_name`, '雄獅開發','資訊室','會計部','管理部','總管理處','董事長室','董事長')"=>"desc", "u.level"=>"asc", "u.sn"=>"asc") );
 		*/
 
-		$data["unit_list"] = array(); 
+		$data["role"] = $role; 
 
 
 		// 指定客戶姓名
-		$keyword = $this->input->get('keyword', NULL);
+		$keyword = $this->input->get('keyword', true);
+
 		$data['given_keyword'] = '';
 		if(isNotNull($keyword)) {
 			$data['given_keyword'] = $keyword;
@@ -48,19 +46,103 @@ class Auth extends Backend_Controller
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
 						."   where 1 ".$condition
-						."   order by field(`role`, 'I', 'S', 'M', 'G') ASC, s.building_id, s.id, s.name "
+						."   order by field(`role`, 'I', 'M') ASC, s.building_id, s.name "
 						;
 
 		$admin_list = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
 
 		$data["list"] = $admin_list["data"];
 		
-		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
 
 		$this->display("admin_list_view",$data);
 	}
+
+
+
+
+	public function setParking()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		
+		$user_sn = $this->input->get("sn", TRUE);
+		$user_id = $this->input->get("id", TRUE);
+
+		//權組list
+		//---------------------------------------------------------------------------------------------------------------
+		/*if ( $role == 'I') {
+			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
+		} else {
+			$condi = ' AND title NOT IN ("住戶", "管委會") AND title != "富網通" ';
+		}*/
+
+		$exist_parking_list = $this->it_model->listData( "parking p left join user_parking up on p.sn = up.parking_sn" 
+												, "user_sn = ".$user_sn , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
+//dprint($exist_parking_list);
+		$data["exist_parking_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
+		//---------------------------------------------------------------------------------------------------------------
+
+		$sys_user_group = array();		
+		
+			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn." and role='I' ");
+			
+			if (count($admin_info["data"]) > 0) {			
+				$edit_data =$admin_info["data"][0];
+				
+				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
+				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
+				
+				
+				//dprint($sys_user_group);
+				$data['user_data'] = $edit_data;
+				
+				$this->display("parking_setting_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("admin"));	
+			}
+	//	}
+	}
+
+
+
+	public function ajaxGetParking()
+	{
+		$keyword = $this->input->get('keyword', true);
+
+		if (mb_strlen($keyword) > 1) {
+
+
+			$parking_result = $this->it_model->listData( "parking" , 'parking_id ="'.$keyword.'"');
+			
+			if (count($parking_result["data"]) > 0) {
+
+				$i = 0;
+				echo '<ul id="parking_list">';
+				$cust = array();
+				foreach ($parking_result["data"] as $parking) {
+					$parking_sn = $parking['sn'];
+					$parking_id = $parking['parking_id'];
+					$location = $parking['location'];
+					echo '<li onclick="selectCountry(\''.$parking_sn .'\',\''. $parking_id .'\',\''. $location .'\');">'. $parking_id.' '.$location . "</li>";
+					$i++;
+				}
+			} else {
+					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無車位資料，請確認 .....</li>';
+			}
+		} else {
+					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無車位資料，請確認 .....</li>';
+		}
+		// echo json_encode($return);
+		echo '</ul>';
+	}
+
+
+
+
 
 
 	public function editAdmin()
@@ -102,13 +184,13 @@ class Auth extends Backend_Controller
 			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$admin_sn);
 			
 			if (count($admin_info["data"]) > 0) {			
-				$data["edit_data"] =$admin_info["data"][0];
+				$edit_data =$admin_info["data"][0];
 				
-				$data["edit_data"]["start_date"] = $data["edit_data"]["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $data["edit_data"]["start_date"] ) );
-				$data["edit_data"]["end_date"] = $data["edit_data"]["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $data["edit_data"]["end_date"] ) );
+				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
+				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
 				
 						
-				$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group","sys_user_sn = ".$data["edit_data"]["sn"]." and launch = 1" );				
+				$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group","sys_user_sn = ".$edit_data["sn"]." and launch = 1" );				
 				foreach($sys_user_belong_group["data"] as $item)
 				{
 					array_push($sys_user_group,$item["sys_user_group_sn"]);	
@@ -116,7 +198,8 @@ class Auth extends Backend_Controller
 				
 				//dprint($sys_user_group);
 				$data["sys_user_group"] = $sys_user_group;
-				$data['role'] = $role;				
+				$data['edit_data'] = $edit_data;
+				$data['role'] = tryGetData('role', $edit_data, $role);
 				$this->display("admin_edit_view",$data);
 			}
 			else
@@ -126,6 +209,7 @@ class Auth extends Backend_Controller
 		}
 	}
 	
+
 	public function updateAdmin()
 	{
 		$this->load->library('encrypt');
@@ -147,13 +231,15 @@ class Auth extends Backend_Controller
 			$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1" , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
 			$data["group_list"] = count($group_list["data"])>0?$group_list["data"]:array();
 			//---------------------------------------------------------------------------------------------------------------
-					
-						
-			$data["edit_data"] = $edit_data;			
+			
+			$role = $this->input->get("role", TRUE);
+
+			$data["edit_data"] = $edit_data;
+			$data['role'] = tryGetData('role', $edit_data, $role);
 			
 			$data["sys_user_group"] = array();
 			
-			
+			dprint($edit_data);
 			$this->display("admin_edit_view",$data);
 		}
         else 
@@ -180,8 +266,9 @@ class Auth extends Backend_Controller
 			
 			if($edit_data["sn"] != FALSE)
 			{
-				$arr_return=$this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
-				
+				dprint($arr_data);
+				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
+				dprint($this->db->last_query());
 				if($arr_return['success'])			
 				{					
 					$this->_updateWebAdminGroup($edit_data);
@@ -193,12 +280,18 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("admin",TRUE,array("sn")));		
+				//redirect(bUrl("admin",TRUE,array("sn")));		
 			}
 			else 
 			{
-				$arr_data["id"] = $edit_data["id"];				
-				$arr_data["password"] = prepPassword($edit_data["password"]);
+				if ( $edit_data["id"] == 'I') {			//住戶用 key code
+					$arr_data["id"] = $edit_data["id"];
+
+				} elseif ( in_array($edit_data["id"], array('G','M','S')) ) {
+					$arr_data["account"] = $edit_data["account"];
+					$arr_data["password"] = prepPassword($edit_data["password"]);	
+				}
+
 				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
 				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
@@ -214,7 +307,7 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();					
 				}
 				
-				redirect(bUrl("admin",TRUE,array("sn")));		
+				//redirect(bUrl("admin",TRUE,array("sn")));		
 			}
         }	
 	}	
@@ -237,9 +330,8 @@ class Auth extends Backend_Controller
 				"update_date" => date( "Y-m-d H:i:s" )
 			);			
 			
-			
 			//與原先的群組相同-->不動做
-			if(in_array($key_string, $relationship_old_ary))
+			if(in_array($group_sn, $old_group_sn_ary))
 			{
 				
 				//$result = $this->it_model->updateData( "sys_user_belong_group" , array('launch'=>1,'update_date'=>date( "Y-m-d H:i:s" ) ),"sys_user_sn ='".$sys_user_sn."' and sys_user_group_sn ='".$group_sn."'" );				
@@ -252,7 +344,6 @@ class Auth extends Backend_Controller
 				$arr_data["sys_user_sn"] = $edit_data["sn"];	
 				$result_sn = $this->it_model->addData( "sys_user_belong_group" , $arr_data );
 			}
-			
 		}
 		
 					
@@ -284,27 +375,39 @@ class Auth extends Backend_Controller
 		
 	function _validateAdmin()
 	{
-		$forever = tryGetValue($this->input->post('forever',TRUE),0);
-		$sn = tryGetValue($this->input->post('sn',TRUE),0);		
+		$sn = tryGetValue($this->input->post('sn',TRUE),0);
 		
-		
+		$role = tryGetValue($this->input->post('role',TRUE), 'M');
+		$this->form_validation->set_message('checkAdminAccountExist', 'Error Message');
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');	
 		
 		if($sn==0)
 		{
-			$this->form_validation->set_rules('id', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );			
-			$this->form_validation->set_rules('password', $this->lang->line("field_password"), 'trim|required|min_length[4]|max_length[10]' );
-		}		
-		if($forever!=1)
-		{
-			$this->form_validation->set_rules( 'end_date', $this->lang->line("field_end_date"), 'required' );	
+			if ($role == 'I') {
+				$this->form_validation->set_rules('id', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );
+			} else {
+				$this->form_validation->set_rules('account', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );
+				$this->form_validation->set_rules('password', $this->lang->line("field_password"), 'trim|required|min_length[4]|max_length[10]' );
+			}
 		}
+		
+		/*	
+		if ($role == 'I') {
+		$forever = tryGetValue($this->input->post('forever',TRUE),0);
+			if($forever!=1)
+			{
+				$this->form_validation->set_rules( 'end_date', $this->lang->line("field_end_date"), 'required' );	
+			}
+			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
+		}
+		*/
+		$this->form_validation->set_rules( 'name', $this->lang->line("field_name"), 'required|max_length[30]' );
+		$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
+		$this->form_validation->set_rules( 'phone', $this->lang->line("field_phone"), 'required|max_length[20]' );
 
 		//$this->form_validation->set_rules('email', $this->lang->line("field_email"), 'trim|required|valid_email|checkAdminEmailExist' );
 		//$this->form_validation->set_rules( 'sys_user_group', $this->lang->line("field_admin_belong_group"), 'required' );
-		$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );		
-
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 

@@ -35,7 +35,7 @@
 						
 						<td><?php echo $user_list[$i]["id"]?></td>
 						<td><?php echo $user_list[$i]["name"]?></td>
-						<td><?php echo $user_list[$i]["job_title"]?></td>					
+						<td><?php echo $user_list[$i]["title"]?></td>					
 						<td><?php echo $user_list[$i]["phone"]?></td>
 						<td><?php echo showEffectiveDate($user_list[$i]["start_date"], $user_list[$i]["end_date"], $user_list[$i]["forever"]) ?></td>
 					</tr>
@@ -100,10 +100,10 @@
 		<div class="table-responsive">
 		  <table id="form3" class="table table-striped table-bordered table-hover">
 	        <tr>
-	            <th>編號</th>	          
+	            <th>編號</th>
 	            <th>帳號</th>
 	            <th>姓名</th>
-	            <th>職稱</th>	            
+	            <th>職稱</th>
 	            <th>行動電話</th>
 	            <th>有效日期</th>
 	          </tr>
@@ -174,7 +174,7 @@ $(function(){
         }, 
         { "data": "id" },
         { "data": "name" },
-        { "data": "job_title" },        
+        { "data": "title" },        
         { "data": "phone" },
         { "data": "eff_date" }
       ],

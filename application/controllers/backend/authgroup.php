@@ -620,7 +620,7 @@ class Authgroup extends Backend_Controller
 				"sn" => $item["sn"],
 				"id" => $item["id"],
 				"name" => $item["name"],
-				"job_title" => $item["job_title"],
+				"title" => $item["title"],
 				"phone" => $item["phone"],
 				"email" => $item["email"],
             	"eff_date" => showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"])            	
