@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Uni_msg extends Backend_Controller {
+class Can_msg extends Backend_Controller {
 	
 	function __construct() 
 	{
@@ -9,26 +9,13 @@ class Uni_msg extends Backend_Controller {
 	}
 	
 
-
 	/**
-	 * uni_msg list page
+	 * news list page
 	 */
 	public function contentList()
 	{				
 		
-		$cat_sn = $this->input->get('cat_sn');		
-		
-		$cat_list = $this->c_model->GetList( "uni_msg_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
-		
-		
-		$condition = "";
-		if(isNotNull($cat_sn))
-		{
-			$condition = "web_menu_content.parent_sn = '".$cat_sn."'";
-		}
-		
-		$list = $this->c_model->GetList2( "uni_msg" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$list = $this->c_model->GetList( "can_msg" , "" ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
 		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
@@ -36,7 +23,7 @@ class Uni_msg extends Backend_Controller {
 		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
-		$data["cat_sn"] = $cat_sn;
+		
 		//dprint($data["pager"]);
 		
 		
@@ -52,8 +39,7 @@ class Uni_msg extends Backend_Controller {
 		
 		$content_sn = $this->input->get('sn');
 			
-		$cat_list = $this->c_model->GetList( "uni_msg_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
+		$this->sub_title = "news edit";
 				
 		if($content_sn == "")
 		{
@@ -61,7 +47,7 @@ class Uni_msg extends Backend_Controller {
 			(
 				'sort' =>500,
 				'start_date' => date( "Y-m-d" ),
-				'content_type' => "uni_msg",
+				'content_type' => "can_msg",
 				'target' => 0,
 				'forever' => 1,
 				'launch' =>1
@@ -70,13 +56,13 @@ class Uni_msg extends Backend_Controller {
 		}
 		else 
 		{		
-			$uni_msg_info = $this->c_model->GetList( "daily_good" , "sn =".$content_sn);
+			$item_info = $this->c_model->GetList( "can_msg" , "sn =".$content_sn);
 			
-			if(count($daily_good_info["data"])>0)
+			if(count($item_info["data"])>0)
 			{
-				img_show_list($daily_good_info["data"],'img_filename',$this->router->fetch_class());			
+				img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());			
 				
-				$data["edit_data"] = $daily_good_info["data"][0];			
+				$data["edit_data"] = $item_info["data"][0];			
 
 				$this->display("content_form_view",$data);
 			}
@@ -105,8 +91,6 @@ class Uni_msg extends Backend_Controller {
 			
 			if(isNotNull($edit_data["sn"]))
 			{
-
-				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
 					$this->showSuccessMessage();					
@@ -140,16 +124,12 @@ class Uni_msg extends Backend_Controller {
 	}
 	
 	/**
-	 * 驗證daily_goodedit 欄位是否正確
+	 * 驗證newsedit 欄位是否正確
 	 */
 	function _validateContent()
-	{
-		
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
-		
-		$this->form_validation->set_rules( 'title', '課程主旨', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
-		
+	{		
+		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');				
+		$this->form_validation->set_rules( 'content', '訊息內容', 'required' );				
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 
@@ -177,9 +157,7 @@ class Uni_msg extends Backend_Controller {
 
 	
 	public function GenerateTopMenu()
-	{
-		//addTopMenu 參數1:子項目名稱 ,參數2:相關action  
-
+	{		
 		$this->addTopMenu(array("contentList","editContent","updateContent"));
 	}
 	

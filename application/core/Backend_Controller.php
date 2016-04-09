@@ -30,7 +30,7 @@ abstract class Backend_Controller extends IT_Controller
 		
 		if(!checkUserLogin())
 		{
-			redirect(backendUrl("login"));
+			redirect(backendUrl("login","index/?check_user_error"));
 		}		
 		
 		$this->initNavi();

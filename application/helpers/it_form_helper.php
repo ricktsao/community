@@ -147,7 +147,7 @@ function yes_no_radio ($name="yes", $checked_value=NULL)
 function gender_radio ($name="gender", $checked_value=NULL)
 {
 	// You may want to pull this from an array within the helper
-	$gender_list = config_item('gender_list');
+	$gender_list = config_item('gender_array');
 
 	$html = '';
 	
@@ -155,7 +155,7 @@ function gender_radio ($name="gender", $checked_value=NULL)
 	{
 		$check_str = $key === $checked_value? 'checked':'';
 
-		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>';
+		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;';
 	}
 
 	return $html;
