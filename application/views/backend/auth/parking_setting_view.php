@@ -6,17 +6,21 @@
 	.require, .error {color: #d16e6c;}
 	.note {color: #993300; font-size:12px; padding: 5px;}
 	.dataTable td {font-size:13px; font-family:verdana;}
-	#parking_list li:hover {
-    background: #fff0f0;
-    cursor: pointer;
-	}
+	#add_form {background: #f7f7f7; border-top: #d1d1d1 1px dashed; padding:10px 5px 10px 5px}
+
+	#parking_list ul {margin: 0px;}
 	#parking_list li {
 		list-style-type: none;
-		padding: 10px;
-		background: #FAFAFA;
-		font-weight: bold;
-		border-bottom: #F0F0F0 1px solid;
-		width: 320px;
+		padding: 3px;
+		background: #ffffff;
+		font-size:14px;
+		color: #369;
+		border: #d1d1d1 1px solid;
+	}
+	#parking_list li:hover {
+		background: #f7f7f7;
+		color: #c00;
+		cursor: pointer;
 	}
 </style>
 
@@ -89,7 +93,7 @@
 											//if ( sizeof($exist_lands_array) < 1 && sizeof($exists_custs_array) > 0) {
 											?>
 											<label>
-												<input type="checkbox" class="ace" name="del[]" value="<?php echo $parking["parking_sn"].'!@'.$parking["parking_id"];?>" />
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $parking["parking_sn"].'!@'.$parking["user_sn"].'!@'.$parking["user_id"];?>" />
 												<span class="lbl"></span>
 											</label>
 											<?php
@@ -102,34 +106,26 @@
 										<td><?php echo tryGetData('location', $parking, '-');?></td>
 										<td><?php echo '<span style="font-size:16px">'.tryGetData('car_number', $parking, '-').'</span>';?></td>
 										
-										<td><?php echo tryGetData('created', $parking, '-');?></td>
-										<td><?php echo tryGetData('created_by', $parking, '-');?></td>
+										<td><?php echo tryGetData('updated', $parking, '-');?></td>
+										<td><?php echo tryGetData('updated_by', $parking, '-');?></td>
 									</tr>
 									<?php
 									}
-									?>					
+									?>
 								</tbody>
 								<?php
 								}
-								if ( sizeof($exist_parking_array) < 1 && sizeof($exist_parking_array) > 0) {
-									?>	
-										<tr>
-											<td class="center">
-												<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteCaseCust');?>');">
-													<i class="icon-trash bigger-120"></i>刪除委託人
-												</a>
-											</td>
-											<td colspan="7">
-											<?php
-											if ( $note_flag == true ) {
-												echo '<span class="note">　△ 表示資料庫查該名客戶資料，亦即此名委託人雖然設定為"地主"身份，系統將無法撈出此人的土地資料</span>';
-											}
-											?>
-											</td>
-										</tr>
-								<?php
-								}
-							?>	
+								?>
+								<tfoot>
+									<tr>
+										<td class="center">
+											<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteUserParking');?>');">
+												<i class="icon-trash bigger-120"></i>刪除
+											</a>
+										</td>
+										<td colspan="7"></td>
+									</tr>
+								</tfoot>
 						</table>
 						</form>
 					</div>
@@ -139,16 +135,19 @@
 
 
 			<div class="table-responsive" id="add_cust">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id"></label>
+				<!-- <div class="col-xs-12 col-sm-10"> -->
 
-				<form action="<?php echo bUrl("addParking")?>" method="post"  id="update_formX" role="form">
-				<input type='hidden' name='cases_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
-				<input type='hidden' name='cust_sn' id='cust_sn'>
+				<form action="<?php echo bUrl("addUserParking")?>" method="post"  id="add_form" role="form">
+				<input type='text' name='parking_sn' id='parking_sn' >
+				<input type='text' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
+				<input type='text' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
 				
 				<div class="form-group" >
 					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 車位ID：</label>
 					<div class="col-xs-12 col-sm-4">
-						<input type='text' name='parking_id' size="50" id="parking_id">
-						<button type="button" class="btn btn-purple" id="search-box">
+						<input type='text' name='parking_id' size="15" id="parking_id">
+						<button type="button" class="btn btn-minier btn-purple" id="search-box">
 							<i class="ace-icon fa fa-key"></i> 搜尋
 						</button>
 						<div id="suggesstion-box"></div>
@@ -166,30 +165,29 @@
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"></label>
 					<div class="col-xs-12 col-sm-4">
-					<button class="btn" type="button" id="search-reset" >
+					<button class="btn btn-minier" type="button" id="search-reset" >
 							<i class="icon-warning bigger-110"></i>
 							清除重設
 					</button>
-					<button class="btn btn-success" type="Submit">
+					<button class="btn btn-minier btn-success" type="Submit">
 							<i class="icon-ok bigger-110"></i>
 							確定新增
 					</button>
 				</div>
 				</div>
 				</form>
+				<!-- </div> -->
 			</div>
 
-			<div class="hr hr-16 hr-dotted"></div>
 
 
 
 <script type="text/javascript"> 
 
 //To select country name
-function selectCountry(sn, parking_id, xlocation) {
+function selectParking(parking_sn, parking_id, xlocation) {
+	$("#parking_sn").val(parking_sn);
 	$("#parking_id").val(parking_id);
-	/* $("#uni_id").val(id).attr("readonly","readonly");  Emma 說身分證號要讓user編修 */
-	/*$("#addr").val(addr).attr("readonly",true);*/
 	$("#location").val(xlocation).attr("readonly",true);
 	$("#suggesstion-box").hide();
 }
@@ -249,9 +247,6 @@ $(function(){
 
 	$('#add_cust').hide();
 
-	$('#add_cust').css('background-color', '#F3F3F3');
-	$('.form-actions').css('background-color', '#F3F3F3');
-	
 	$('#click_add_cust').click(function() {
 
 		$('#add_cust').toggle();

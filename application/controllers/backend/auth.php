@@ -62,6 +62,9 @@ class Auth extends Backend_Controller
 
 
 
+	/**
+	 * 設定住戶車位
+	 */
 	public function setParking()
 	{
 		$this->addCss("css/chosen.css");
@@ -96,39 +99,115 @@ class Auth extends Backend_Controller
 	}
 
 
-
+	/**
+	 * 搜尋還沒有住戶登錄的車位
+	 */
 	public function ajaxGetParking()
 	{
 		$keyword = $this->input->get('keyword', true);
 
-		if (mb_strlen($keyword) > 1) {
+		if (mb_strlen($keyword) == 0) {
+		
+		} else {
+		
+			echo '<ul id="parking_list" style="margin:0px">';
+			if (mb_strlen($keyword) > 1) {
+				$parking_result = $this->it_model->listData( "parking" , 'parking_id like "'.$keyword.'%" and sn not in (select distinct parking_sn from user_parking) ');
+				//dprint($parking_result);
+				if (count($parking_result["data"]) > 0) {
 
-
-			$parking_result = $this->it_model->listData( "parking" , 'parking_id ="'.$keyword.'"');
-			
-			if (count($parking_result["data"]) > 0) {
-
-				$i = 0;
-				echo '<ul id="parking_list">';
-				$cust = array();
-				foreach ($parking_result["data"] as $parking) {
-					$parking_sn = $parking['sn'];
-					$parking_id = $parking['parking_id'];
-					$location = $parking['location'];
-					echo '<li onclick="selectCountry(\''.$parking_sn .'\',\''. $parking_id .'\',\''. $location .'\');">'. $parking_id.' '.$location . "</li>";
-					$i++;
+					$i = 0;
+					$cust = array();
+					foreach ($parking_result["data"] as $parking) {
+						$parking_sn = $parking['sn'];
+						$parking_id = $parking['parking_id'];
+						$location = $parking['location'];
+						echo '<li onclick="selectParking(\''.$parking_sn .'\',\''. $parking_id .'\',\''. $location .'\');">'
+							.$parking_id.'　位置：'.$location
+							."</li>";
+						$i++;
+					}
+				} else {
+						echo '<li style="font-weight:normal; color: #c8c8c8">查無車位資料，請確認車位ID輸入無誤</li>';
 				}
 			} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無車位資料，請確認 .....</li>';
+				echo '<li style="font-weight:normal; color: #c8c8c8">查無車位資料，請確認車位ID輸入無誤</li>';
 			}
-		} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無車位資料，請確認 .....</li>';
+			// echo json_encode($return);
+			echo '</ul>';
 		}
-		// echo json_encode($return);
-		echo '</ul>';
 	}
 
 
+	/**
+	 * 設定住戶車位
+	 */
+	public function addUserParking()
+	{
+		$edit_data = array();
+		foreach( $_POST as $key => $value ) {
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
+		if ( isNotNull(tryGetData('parking_sn', $edit_data, NULL)) 
+			&& isNotNull(tryGetData('user_sn', $edit_data, NULL)) 
+			&& isNotNull(tryGetData('user_id', $edit_data, NULL)) ) {
+
+			$arr_data = array('parking_sn'	=>	tryGetData('parking_sn', $edit_data)
+							, 'user_sn'	=>	tryGetData('user_sn', $edit_data)
+							, 'person_sn'	=>	0
+							, 'user_id'	=>	tryGetData('user_id', $edit_data)
+							, 'car_number'	=>	tryGetData('car_number', $edit_data)
+							, 'updated'	=>	date('Y-m-d H:i:s')
+							, 'updated_by'	=>	$this->session->userdata('user_name')
+							, 
+							);
+			
+			$query = 'INSERT INTO `user_parking` '
+					.'       (`parking_sn`, `user_sn`, `person_sn` '
+					.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+					.'VALUES (?, ?, ? '
+					.'        , ?, ?, ?, ? ) '
+					.'    ON DUPLICATE KEY UPDATE  '
+					.'       `car_number` = VALUES(`car_number`) '
+					.'       , `updated` = VALUES(`updated`) '
+					.'       , `updated_by` = VALUES(`updated_by`) '
+					;
+
+
+			$this->db->query($query, $arr_data);
+			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
+				$this->showSuccessMessage('車位設定成功');
+			} else {
+				$this->showFailMessage('車位設定失敗');
+			}
+		} else {
+			$this->showFailMessage('車位設定失敗，請確認資料確實輸入');
+		}
+
+		redirect(bUrl("setParking"));
+	}
+
+	/**
+	 * 刪除住戶車位
+	 */
+	function deleteUserParking()
+	{
+		$del_array = $this->input->post("del",TRUE);
+		
+		foreach( $del_array as $item ) {
+			$tmp = explode('!@', $item);
+			$parking_sn = $tmp[0];
+			$user_sn = $tmp[1];
+			$user_id = $tmp[2];
+
+			$this->it_model->deleteData('user_parking',  array('parking_sn' => $parking_sn, 'user_sn' => $user_sn, 'user_id' => $user_id));
+		}
+
+		$this->showSuccessMessage('住戶車位刪除成功');
+
+		redirect(bUrl("setParking"));
+	}
 
 
 
@@ -206,11 +285,6 @@ class Auth extends Backend_Controller
 		{
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		
-		
-		//dprint($edit_data);
-		//exit;
-				
 		
 		if ( ! $this->_validateAdmin())
 		{
@@ -295,7 +369,7 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();					
 				}
 				
-				//redirect(bUrl("admin",TRUE,array("sn")));		
+				redirect(bUrl("admin",TRUE,array("sn")));		
 			}
         }	
 	}	
@@ -364,8 +438,12 @@ class Auth extends Backend_Controller
 	function _validateAdmin()
 	{
 		$sn = tryGetValue($this->input->post('sn',TRUE),0);
-		
 		$role = tryGetValue($this->input->post('role',TRUE), 'M');
+		$is_manager = tryGetValue($this->input->post('is_manager',TRUE), 0);
+		$end_date = tryGetValue($this->input->post('end_date',TRUE), 0);
+		$forever = tryGetValue($this->input->post('forever',TRUE), 0);
+
+
 		$this->form_validation->set_message('checkAdminAccountExist', 'Error Message');
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');	
@@ -391,15 +469,24 @@ class Auth extends Backend_Controller
 		}
 		*/
 		$this->form_validation->set_rules( 'name', $this->lang->line("field_name"), 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
 		$this->form_validation->set_rules( 'phone', $this->lang->line("field_phone"), 'required|max_length[20]' );
+		if ($role != 'I') {
+			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
+		}
+
+		if ($is_manager == 1) {
+			$this->form_validation->set_rules( 'manager_title', $this->lang->line("field_manager_title"), 'required|max_length[30]' );
+			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required');
+			
+			if ($forever != 1) {
+				$this->form_validation->set_rules( 'end_date', $this->lang->line("field_end_date"), 'required' );
+			}
+		}
 
 		//$this->form_validation->set_rules('email', $this->lang->line("field_email"), 'trim|required|valid_email|checkAdminEmailExist' );
 		//$this->form_validation->set_rules( 'sys_user_group', $this->lang->line("field_admin_belong_group"), 'required' );
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
-
-
 
 
 

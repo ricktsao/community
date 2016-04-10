@@ -6,7 +6,6 @@ class Userimport extends Backend_Controller {
 	{
 		parent::__construct();		
 		
-		$this->load->model('deal_model');
 	}
 	
 
@@ -636,7 +635,7 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 	/**
 	 * category edit page
 	 */
-	public function importContent()
+	public function index()
 	{
 		$content_sn = $this->input->get('sn');
 
@@ -652,7 +651,7 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 
 		$edit_data = array();
 		
-		$config['upload_path'] = getcwd().'./upload/deal/main/';
+		$config['upload_path'] = getcwd().'./upload/user/';
 		$config['allowed_types'] = 'xlsx';
         $config['max_size'] = '100000';
 
@@ -728,9 +727,10 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 			$unit_sales = array();
 			$deal_data = array();
 			$errorr_msg  = '';
+			$count  = 0;
 
 			mb_internal_encoding("UTF-8");
-
+			$now = date('Y-m-d H:i:s');
 			foreach ($xls_data['values'] as $key => $item) 
 			{
 				if ($i < 1 ) {
@@ -739,191 +739,178 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 				}
 				$i++;
 
-				if (sizeof($item) < 8 || $i==sizeof($xls_data['values'] )) {
-					break;
+				if (sizeof($item) < 5 || $i>sizeof($xls_data['values'] )) {
+					$errorr_msg .= '第'.$i.'列　請確認必填欄位都有確實填寫';
+					continue;
 				}
 				$handle = true;
 
-				$contract_no = tryGetData('A', $item, null);
-				$unit_name = tryGetData('B', $item, null);
-				// 檢查若沒有［契約書編號］，必須要有［成交編號］ (for 桃園公司)
-				if (isNull($contract_no)) {
-					$unit_deal_no = tryGetData('K', $item, null);
-					if ( isNull($unit_deal_no) ) {
-						$errorr_msg .= '查無［契約書編號］及［成交編號］'.$i.' : '.$contract_no.' &'.$unit_deal_no;
-						$error_contracts[$contract_no][] = $errorr_msg;
-						$errorr_msg  = '';
-						//var_dump($unit_deal_no);
-						//dprint('查無［契約書編號］及［成交編號］'.$i.' : '.$contract_no.' &'.$unit_deal_no);dprint($item);
+
+				$building_id_1 = tryGetData('A', $item, null);
+				$building_id_2 = tryGetData('B', $item, null);
+				$building_id_3 = tryGetData('C', $item, null);
+				$name = tryGetData('D', $item, null);
+				$gender = tryGetData('E', $item, null);
+				$tel = tryGetData('F', $item, null);
+				$phone = tryGetData('G', $item, null);
+				$is_contact = tryGetData('H', $item, null);
+				$is_owner = tryGetData('I', $item, null);
+				$owner_addr = tryGetData('J', $item, null);
+				$gas_right = tryGetData('K', $item, null);
+				$voting_right = tryGetData('L', $item, null);
+				$parking_id = tryGetData('M', $item, null);
+				$car_number = tryGetData('N', $item, null);
+
+				if (isNull($building_id_1) || isNull($building_id_2) || isNull($building_id_3)
+					|| isNull($name) || isNull($gender) ) {
+					
+					$errorr_msg .= '第'.$i.'列　請確認必填欄位都有確實填寫'."\n";
 					continue;
-					} else {
-						$contract_no = 'Z'.$unit_deal_no;
-					}
-				}
-
-				$target_text = tryGetData('L', $item, null);
-				$planing_region = tryGetData('M', $item, null);
-				$city_town = tryGetData('N', $item, null);
-				$section = tryGetData('O', $item, null);
-				$section_sub = tryGetData('P', $item, null);
-				$land_no_text = tryGetData('Q', $item, null);
-				$belong_no_text = tryGetData('R', $item, null);
-				$total_area_ping = tryGetData('S', $item, null);
-
-				$deal_date = tryGetData('W', $item, null);
-				$total_deal_amount = (int) tryGetData('V', $item, null);
-
-//				$fake_commission = tryGetData('X', $item, null);
-				if (isNotNull($total_deal_amount) ) {
-					$fake_commission = $total_deal_amount * 0.06;
 				} else {
-					$fake_commission = null;
-				}
 
-				$seller_commission = tryGetData('Y', $item, null);
-				$buyer_commission = tryGetData('Z', $item, null);
+					// 緊急聯絡人標註
+					if ( isNotNull($is_contact) ) {
+						if ( strtoupper($is_contact) != 'Y' ) {
+							$errorr_msg .= '第'.$i.'列　緊急聯絡人請務必填寫 "Y" 或保留空白 #'.$is_contact."\n";
+							continue;
+						}
+					}
 
-				$seller_commission_date = tryGetData('AA', $item, null);
-				$buyer_commission_date = tryGetData('AB', $item, null);
+					// 所有權人標註
+					if ( isNotNull($is_owner) ) {
+						if ( strtoupper($is_owner) != 'Y' ) {
+							$errorr_msg .= '第'.$i.'列　所有權人請務必填寫 "Y" 或保留空白 #'.$is_owner."\n";
+							continue;
+						}
+					}				
 
-				$m_commission_01 = tryGetData('AC', $item, null);
-				$m_commission_02 = tryGetData('AD', $item, null);
-				$m_commission_03 = tryGetData('AE', $item, null);
-				$m_commission_04 = tryGetData('AF', $item, null);
-				$m_commission_05 = tryGetData('AG', $item, null);
-				$m_commission_06 = tryGetData('AH', $item, null);
+					// 瓦斯表權限
+					if ( isNotNull($gas_right) ) {
+						if ( strtoupper($gas_right) != 'Y' ) {
+							$errorr_msg .= '第'.$i.'列　瓦斯表權限請務必填寫 "Y" 或保留空白 #'.$gas_right."\n";
+							continue;
+						}
+					}
 
-				(int) $chk_total_commission = ($seller_commission + $buyer_commission) - ( $m_commission_01 + $m_commission_02 + $m_commission_03 + $m_commission_04 + $m_commission_05 + $m_commission_06 ) ;
-				
-				// AI 欄的實收傭金是公式，因此不抓取，由程式自動計算就好
-				// (int) $total_commission = tryGetData('AI', $item, null);
-				$total_commission = $chk_total_commission;
+					// 投票權權限
+					if ( isNotNull($voting_right) ) {
+						if ( strtoupper($voting_right) != 'Y' ) {
+							$errorr_msg .= '第'.$i.'列　投票權權限請務必填寫 "Y" 或保留空白 #'.$voting_right."\n";
+							continue;
+						}
+					}
 
-				$target_text = big5_for_utf8($target_text);
-				if (isNotNull($planing_region)) $planing_region = big5_for_utf8($planing_region);
-				if (isNotNull($city_town)) $city_town = big5_for_utf8($city_town);
-				if (isNotNull($section)) $section = big5_for_utf8($section).'段';
-				if (isNotNull($section_sub)) $section_sub = big5_for_utf8($section_sub).'小段';
-				if (isNotNull($land_no_text)) $land_no_text = big5_for_utf8($land_no_text);
-				if (isNotNull($belong_no_text)) $belong_no_text = big5_for_utf8($belong_no_text);
+					// 性別
+					if ( isNotNull($gender) ) {
+						if ( in_array($gender, array('男','女')) === false ) {
+							$errorr_msg .= '第'.$i.'列　 性別請務必填寫 "男" 或 "女"  #'.$gender."\n";
+							continue;
+						}
+					}
 
-				if ( isNotNull($seller_commission_date ) && $seller_commission_date !== false ) {
-					if ( strtotime($seller_commission_date) > strtotime($deal_date.' +5 year') ) {
-						$error_deals[$contract_no][] = '［'.$contract_no.'］賣方最遲佣收日期 ('.$seller_commission_date.') 距成交日期 ('.$deal_date.') 過久，請確認';
-						continue;
+					$building_id_1 = tryGetData('A', $item, null);
+					$building_id_2 = tryGetData('B', $item, null);
+					$building_id_3 = tryGetData('C', $item, null);
+					$name = tryGetData('D', $item, null);
+					$gender = tryGetData('E', $item, null);
+					$tel = tryGetData('F', $item, null);
+					$phone = tryGetData('G', $item, null);
+					$is_contact = tryGetData('H', $item, null);
+					$is_owner = tryGetData('I', $item, null);
+					$owner_addr = tryGetData('J', $item, null);
+					$gas_right = tryGetData('K', $item, null);
+					$voting_right = tryGetData('L', $item, null);
+					$parking_id = tryGetData('M', $item, null);
+					$car_number = tryGetData('N', $item, null);
+
+
+
+					## DB step 1 -> sys_user
+					$add_data = array('building_id'	=> $building_id_1.'_'.$building_id_2.'_'.$building_id_3
+									,  'id'			=> 'none'
+									,  'role'		=> 'I'
+									,  'name'	=> $name
+									,  'gender'		=> $gender=='男' ? 1 : 2
+									,  'tel'		=> $tel
+									,  'phone'		=> $phone
+									,  'is_contact'	=> $is_contact=='Y' ? 1 : 0
+									,  'is_owner'	=> $is_owner=='Y' ? 1 : 0
+									,  'owner_addr'	=> $owner_addr
+									,  'gas_right'	=> $gas_right=='Y' ? 1 : 0
+									,  'voting_right'	=> $voting_right=='Y' ? 1 : 0
+									,  'created'	=> $now
+									,  'created_by'	=> $this->session->userdata('user_name')
+									);
+
+					$query = 'INSERT IGNORE INTO `sys_user` '
+							.'       (`building_id`, `id`, `role`, `name`, `gender` '
+							.'       , `tel`, `phone`, `is_contact`, `is_owner`, `owner_addr` '
+							.'       , `gas_right`, `voting_right`, `created`, `created_by`) '
+							.'VALUES (?, ?, ?, ?, ? '
+							.'       , ?, ?, ?, ?, ? '
+							.'       , ?, ?, ?, ?)'
+							;
+					$this->db->query($query, $add_data);
+					$user_sn = $this->db->insert_id();
+
+					if ($user_sn > 0 ) {
+						$count++;
+
+						if ( isNotNull($parking_id) ) {
+							## DB step 2 -> parking
+							$arr_data = array('parking_id'	=> $parking_id
+											, 'location'	=> '-'
+											, 'status'	=> 1
+											);
+							$query = 'INSERT IGNORE INTO `parking` '
+									.'       (`sn`, `parking_id`, `location`, `status`) '
+									.'VALUES (NULL, ?, ?, ? ) '
+									;
+							$this->db->query($query, $arr_data);
+							$parking_sn = $this->db->insert_id();
+
+							## DB step 3 -> user_parking
+							$arr_data = array('parking_sn'	=> $parking_sn
+											, 'user_sn'	=> $user_sn
+											, 'person_sn'	=> 0
+											, 'user_id'	=> 'none'
+											, 'car_number'	=> $car_number
+											, 'updated'	=> $now
+											, 'updated_by'	=> $this->session->userdata('user_name')
+											);
+
+							$query = 'INSERT INTO `user_parking` '
+									.'       (`parking_sn`, `user_sn`, `person_sn` '
+									.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+									.'VALUES (?, ?, ? '
+									.'        , ?, ?, ?, ? ) '
+									.'    ON DUPLICATE KEY UPDATE  '
+									.'       `car_number` = VALUES(`car_number`) '
+									.'       , `updated` = VALUES(`updated`) '
+									.'       , `updated_by` = VALUES(`updated_by`) '
+									;
+							$this->db->query($query, $arr_data);
+						}
 					}
 				}
-				if ( isNotNull($buyer_commission_date ) && $buyer_commission_date !== false ) {
-					if ( strtotime($buyer_commission_date) > strtotime($deal_date.' +5 year') ) {
-						$error_deals[$contract_no][] = '［'.$contract_no.'］買方最遲佣收日期 ('.$buyer_commission_date.') 距成交日期 ('.$deal_date.') 過久，請確認';
-						continue;
-					}
-				}
-				
-				if ( isNull($total_commission) || $total_commission < 0 ) {
-					$error_deals[$contract_no][] = '［'.$contract_no.'］實收佣金金額 ('.$chk_total_commission.') 有誤，請確認';
-					continue;
-				}
-				
-				/*
-				＊＊＊明明上傳103.10~104.10的資料時表示，有些是合建或違約，成交金額就會為０，因此不檢查 ＊＊＊
-				＊＊＊（但這種狀況會有實收佣金，故執行績效處就可以實收佣金計算績效）           ＊＊＊
-				if ( isNull($total_deal_amount) || $total_deal_amount < 0 ) {  
-					$error_deals[$contract_no][] = '［'.$contract_no.'］成交金額有誤，請確認'.$total_deal_amount;
-					continue;
-				}
-				if ( $total_commission != $chk_total_commission ) {
-					$error_deals[$contract_no][] = '［'.$contract_no.'］佣金核算有誤，請確認'. $total_commission .' != '.$chk_total_commission;
-				}
-				*/
-				/*
-				if ( isNull($total_area_ping) || $total_area_ping < 0 ) {
-					$error_deals[$contract_no][] = '［'.$contract_no.'］成交面積有誤，請確認'.$total_area_ping;
-					continue;
-				}*/
-
-				// 契約書編號　從１＋３碼改為１＋５碼
-				if (mb_strlen($contract_no) <= 5 ) {
-					$prefix = substr($contract_no,0,1);
-					$tail = substr($contract_no,1,3);
-					$tail = str_pad($tail, 5, "0", STR_PAD_LEFT);
-					$contract_no = $prefix.$tail;
-				}
-				
-				$deal_data = array('contract_no'	=> $contract_no
-								,  'source'			=> 1
-								,  'target_type'	=> null
-								,  'deal_type'		=> null
-								,  'deal_date'		=> $deal_date
-								,  'target_text'	=> $target_text
-								,  'planing_region'	=> $planing_region
-								,  'city_town'		=> $city_town
-								,  'section'		=> $section.$section_sub
-								,  'land_no_text'	=> $land_no_text
-								,  'belong_no_text'	=> $belong_no_text
-								,  'total_area_ping'		=> $total_area_ping
-								,  'total_deal_amount'		=> $total_deal_amount
-								,  'fake_commission'		=> $fake_commission
-
-								,  'seller_commission'		=> $seller_commission
-								,  'buyer_commission'		=> $buyer_commission
-								,  'seller_commission_date'	=> $seller_commission_date
-								,  'buyer_commission_date'	=> $buyer_commission_date
-
-								,  'm_commission_01'		=> $m_commission_01
-								,  'm_commission_02'		=> $m_commission_02
-								,  'm_commission_03'		=> $m_commission_03
-								,  'm_commission_04'		=> $m_commission_04
-								,  'm_commission_05'		=> $m_commission_05
-								,  'm_commission_06'		=> $m_commission_06
-								,  'total_commission'		=> $total_commission
-								,  'main_source'			=> $file_info['file_name']
-								,  'main_source_user_id'	=> $this->session->userdata('user_id')
-								);
-				$deals[$contract_no] = $deal_data;
 			}
-
-			/*********** TO DB  ********************************************************/
-
-			if ( sizeof($deals) > 0) {
-
-				## 將成交客資附表存入資料庫  - - - - - - - - - - - - - - - - - - - - - - - 
-				foreach ($deals as $c_no=>$deal) {
-
-					$result = $this->deal_model->insertDealviaUploadDealCustomers($deal);
-					if ($result === false) {
-						$faild_to_db[] = $c_no;
-					} else {
-						$succeed_to_db[] = $c_no;
-					}
-				}
-				## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			}
+ 
 			## 將處理結果匯集起來  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			$message = '成交總表【<span style="color:#c00; font-weight:bold;">'.$file_info['file_name'].'</span>】處理結果如下：';
-			$message .= '<p>成功入庫的契約書編號為：<span style="font-weight:bold; color: #c00">'.implode('、', $succeed_to_db).'</span></p>';
-			
-			if ( sizeof($error_deals) > 0) {
-				$message .= '<hr>無法處理之契約編號及原因如下：';
-				foreach($error_deals as $cont_no=>$reasons){
-					$message .=  '<p><span style="color:#c00; font-weight:bold;">'.$cont_no.'</span><br>';
-					$message .=  '<span style="color:#6a3500; font-size:12px">';
-					$unique_reasons = array_unique($reasons);
-					foreach ($unique_reasons as $reason){
-						$message .=  $reason.'<br>';
-					}
-					$message .=  '</span>';
-				}
+			$message = '<p>住戶資料檔案【<span style="color:#c00; font-weight:bold;">'.$file_info['file_name'].'</span>】';
+			$message .= '成功建立 '.$count.' 位住戶資料</span></p>';
+			if (mb_strlen($errorr_msg) > 0) {
+				$message .= '<p>無法處理的記錄如下：</p>';
+				$message .= nl2br($errorr_msg);
 			}
 
-			
+			/*
 			## 寄送Email通知程式組   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-			$content = '<p>上傳人員：'.$this->session->userdata('unit_name').' '.$this->session->userdata('user_name').'</p>';
+			$content = '<p>上傳人員：'.$this->session->userdata('user_id').' '.$this->session->userdata('user_name').'</p>';
 			$content .= '<p>上傳時間：'.date('Y-m-d H:i:s').'</p>';
 			$content .= '<div>'.$message.'</div>';
-			send_email('claire.huang@chupei.com.tw','【竹北置地】成交總表上傳通知 '.date('Y年m月d日H點i分'), $content);
+			send_email('myinfo.huang@gmail.com','【富網通】ＯＯ社區賀物資料上傳通知 '.date('Y年m月d日H點i分'), $content);
 			## - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+			*/
 		}
 
 		$data['message'] = $message;

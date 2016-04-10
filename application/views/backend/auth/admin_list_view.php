@@ -75,7 +75,7 @@
 										<?php echo tryGetData('name', $item);?>
 										<br>
 										<?php
-										if ( isNotNull(tryGetData('id', $item, NULL)) ) {
+										if ( tryGetData('role', $item, NULL) == 'I' ) {
 											echo '<span style="color:#069">'.tryGetData('id', $item).'</span>';
 										} else {
 											echo '<span style="color:#f00">'.tryGetData('account', $item).'</span>';
@@ -110,9 +110,15 @@
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editAdmin",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+											<?php
+											if ( tryGetData('role', $item, NULL) == 'I' ) {
+											?>
+											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>車位設定
 											</a>
+											<?php
+											}
+											?>
 										</td>
 										<td>					
 											<div class="col-xs-3">

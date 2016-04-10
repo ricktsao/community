@@ -1,20 +1,16 @@
 <div class="page-header">
 	<h1>
-		成交總表檔案上傳
+		住戶資料上傳
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			請務必依據【成交總表】的內容格式；若上傳過程發現任何問題可洽資訊室
+			請務必依據【住戶資料】的內容格式
 		</small>
 	</h1>
 </div>
 
 <link rel="stylesheet" href="http://css-spinners.com/css/spinner/spinner.css" type="text/css">
-<article class="well">
-    <div class="btn-group">
-	<a class="btn  btn-sm btn-gray" href="<?php echo bUrl("listDeal");?>">
-		<i class="icon-edit bigger-120"></i>返回列表
-	</a>	
-    </div>
+<article class="well">住戶資料檔案的格式請確實依照<a  href="<?php echo base_url("./upload/user/example.xlsx");?>">『範例檔案』</a>的格式，否則將無法上傳
+
 </article>	
 <span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>	
 
@@ -22,7 +18,7 @@
 <form action="<?php echo bUrl("updateImport")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
 	<div class="form-group">
-		<label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="margin-top:12px">成交總表檔案上傳：</label>		
+		<label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="margin-top:12px">住戶資料檔案上傳：</label>		
 		<div class="col-sm-8">			
 
 			<div class="widget-main">
@@ -46,7 +42,7 @@
 			
 			<button class="btn btn-info" id="Submit" type="submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				確定上傳
 			</button>
 			
 		</div>
