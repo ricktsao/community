@@ -16,7 +16,7 @@ class Can_msg extends Backend_Controller {
 	{				
 		
 		$list = $this->c_model->GetList( "can_msg" , "" ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+		//img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
 		
