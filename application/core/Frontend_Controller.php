@@ -511,8 +511,7 @@ abstract class Frontend_Controller extends IT_Controller
 		//前台單元權限
 		$data['frontend_auth'] = $this->session->userdata('frontend_auth');
 				
-		//系統未讀訊息
-		$data['sales_sys_msg_list'] = $this->_getSysMessage();
+
 		
 		
 		//dprint($data['frontend_auth']);
@@ -602,20 +601,6 @@ abstract class Frontend_Controller extends IT_Controller
 	}
 	
 
-	
-	/**
-	 * 系統未讀訊息
-	 */
-	private function _getSysMessage()
-	{		
-		$sales_sys_msg_list = $this->it_model->listData("sys_message","to_user_sn = '".$this->session->userdata('user_sn')."' AND is_read = 0",NULL,NULL,array("created"=>"desc"));
-		
-		return $sales_sys_msg_list["data"];		
-	}
-
-
-
-	
 	
 	
 	

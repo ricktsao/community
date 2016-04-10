@@ -1,40 +1,29 @@
-<form  role="search" action="<?php echo bUrl('contentList');?>">
-<article class="well">              
-    <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
-			<i class="icon-edit bigger-120"></i>新增
-		</a>	
-    </div>
-    
-    
-   
-    <div class="btn-group" style="display:none">        
-          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>        
-    </div>                
-</article>	
-<span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>		
-</form>
-
-<form action="" id="update_form" method="post" class="contentForm">   
+  
 	
+	
+		<article class="well">              
+            <div class="btn-group">
+				<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
+					<i class="icon-edit bigger-120"></i>新增
+				</a>	
+            </div>             
+        </article>	
+	
+		<form action="" id="update_form" method="post" class="contentForm"> 
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="table-responsive">
-						
+											
 							<form id="update_form">
 							<table id="sample-table-1" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>										
 										<th style="width:100px">序號</th>
-										<th>標題</th>
-									
-																			
-										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
-
+										<th>訊息內容</th>
 										<th style="width:120px">編輯</th>
-										<th style="width:120px">啟用/停用</th>										
+										<th style="width:120px">啟用/停用</th>
 										<th class="center" style="width:80px">
 											<label>
 												<input type="checkbox" class="ace"  />
@@ -47,19 +36,7 @@
 									<?php for($i=0;$i<sizeof($list);$i++){ ?>
 									<tr>
 										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td>
-											<?php
-												if($list[$i]["hot"]==1)
-												{
-													echo '<span class="label label-sm label-warning">Hot</span>';
-												}
-											
-												echo $list[$i]["title"];
-											 
-											 ?>
-										</td>
-										
-										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
+										<td><?php echo nl2br($list[$i]["content"])?></td>										
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>edit
@@ -73,7 +50,6 @@
 												</label>
 											</div>
 										</td>
-										
 										<td class="center">
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
@@ -84,7 +60,7 @@
 									<?php } ?>
 									
 									<tr>
-										<td colspan="5">
+										<td colspan="4">
 											
 										</td>	
 										<td class="center">

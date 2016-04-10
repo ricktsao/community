@@ -79,12 +79,28 @@ class Msgcenter extends Backend_Controller {
 	{
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");	
+		
+		$this->addCss("css/duallistbox/bootstrap-duallistbox.min.css");
+		$this->addJs("js/duallistbox/jquery.bootstrap-duallistbox.min.js");
+		
+		$this->addCss("css/bootstrap-fonts.css");
 				
+		$data = array();		
+		
+		//罐頭訊息		
+		$can_msg_list = $this->c_model->GetList( "can_msg" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );		
+		$data["can_msg_list"] = $can_msg_list["data"];	
+
+		
+		//住戶
+		$user_list = $this->it_model->listData("sys_user","launch =1 and role = 'I' ",NULL,NULL,array("name"=>"asc"));
+		$data["user_list"] = $user_list["data"];	
+		
 		$user_id = $this->session->userdata("user_id");
 		
-		$data = array();
 		
-		$this->_initUnitData($data);
+		
+		//$this->_initUnitData($data);
 		
 		$data["edit_data"] = array
 		(			

@@ -4,74 +4,53 @@
 	
 	<?php echo textOption("標題","title",$edit_data); ?>
 	
+	
+	<div class="form-group ">
+		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">使用罐頭訊息 </label>
+		<div class="col-xs-12 col-sm-4">
+			<div class="btn-group">
+              <select class="form-control" name="type" id="can_msg" >
+				<option value="">若欲使用罐頭訊息請選擇...</option>
+              	<?php 
+              	foreach ($can_msg_list as $key => $item) 
+              	{
+					echo '<option value="'.$item["content"].'">'.showMoreStringSimple($item["content"]).'</option>';
+				}
+              	?>	                 
+              </select>
+            </div>			
+		</div>
+		
+	</div>
+	
 	<?php
-	  echo textAreaOption("內容","msg_content",$edit_data);
+	  echo textAreaOption("訊息內容","msg_content",$edit_data);
 	?>	
 	
 	
-	<div class="form-group ">
-		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">分類</label>
-		<div class="col-xs-12 col-sm-4">
-			<div class="btn-group">
-              <select class="form-control" id="category_id"  name="category_id">
-              <?php 
-              foreach ($this->config->item("sys_message_category_array") as $key => $value) 
-              {
-                  echo '<option value="'.$key.'">'.$value.'</option>'; 
-              }
-              ?>                 
-              </select>
-            </div>			
-		</div>		
-	</div>
+	
 	
 	
 	<div class="form-group">
 		<label for="url" class="col-xs-12 col-sm-3 control-label no-padding-right">發佈對象</label>
 		
-		<div class="col-xs-12 col-sm-4">
-			<div class="radio">
-				<label>
-					<input type="radio" class="ace" value="1" checked="" name="target">
-					<span class="lbl"> <span style="color:red"><?php echo tryGetData("unit_name", $unit_info); ?></span>所有業務</span>					
-				</label>
-			</div>
-			<br>
-			<div class="radio">
-				<label>
-					<input type="radio" class="ace" value="2" name="target">
-					<span class="lbl"> 依業務 </span>
-				</label>
-				<select multiple="" class="chzn-select" name="to_user_sn[]" id="form-field-select-4" data-placeholder="請選擇(可複選)..." style="width:100%;">
-					<?php
-					foreach ($unit_sales_list as $key => $item) 
-					{
-						if(count($item["sales_list"]) >0 )
-						{							
-							echo '<optgroup label="'.$item["unit_info"]["unit_name"].'">';
-							foreach ($item["sales_list"] as $key => $sales_info) 
-							{
-								echo '<option   value="'.$sales_info["sn"].'" />'.$sales_info["name"];			
-							}
-							echo '</optgroup>';
-						}									
-					}
-					?>					
-					</select>
-			</div>
+		<div class="col-xs-12 col-sm-8">
+			<select multiple="multiple" size="10" name="users[]">
+			<?php 
+              	foreach ($user_list as $key => $item) 
+              	{
+					echo '<option value="'.$item["name"].'">'.$item["name"].'  '.$item["owner_addr"].'</option>';
+				}
+            ?>	    
+
+			</select>
+			
 		</div>
 	</div>
 	
 	
 	
-	<div class="form-group <?php echo isNotNull(form_error("meeting_date")?"has-error":"")?> "   id="meeting_date" style="display:<?php echo tryGetData("category_id", $edit_data,"meeting")=="meeting"?"":"none" ?>">
-		<label for="meeting_date" class="col-xs-12 col-sm-3 control-label no-padding-right">會議日期</label>
-		<div class="col-xs-12 col-sm-4">
-			<input type="text"  onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" value="<?php echo tryGetData("meeting_date", $edit_data) ?>" class="width-100" name="meeting_date" id="meeting_date">					
-		</div>
-		<div class="help-block col-xs-12 col-sm-reset inline"><?php echo form_error("meeting_date");?></div>
-		
-	</div>
+
 	
 
 
@@ -99,7 +78,8 @@
 	</div>
 </form>
 	
-	
+
+
 <script>
 	$(function () {
 
@@ -117,20 +97,33 @@
 		})
 		
 		
-		$('#category_id').change(function()
+		$('#can_msg').change(function()
 	    {
-	    	if($('#category_id').val()=="meeting")
+	    	if($('#can_msg').val()!="")
 	    	{
-	    		$('#meeting_date').show();
+	    		$('#msg_content').text($('#can_msg').val());
 	    	}
 	    	else
 	    	{
-	    		$('#meeting_date').hide();
+	    		$('#msg_content').text('');
 	    	}
 	    });
-	    
-	   
 		
 	});
-</script>
-  
+
+	
+	var demo1 = $('select[name="users[]"]').bootstrapDualListbox({
+		filterPlaceHolder : '關鍵字',
+		filterTextClear : '顯示全部',
+        infoText : '共{0}人',
+        moveAllLabel: 'Selected',
+        infoTextFiltered: '<span class="label label-warning">找到</span> {0} from {1}',
+        //moveOnSelect: false,
+        //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'
+      });
+	$("#update_form").submit(function() {
+      alert('請選擇發布對象');
+      return false;
+    });
+	
+  </script>
