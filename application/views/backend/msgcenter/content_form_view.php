@@ -117,7 +117,7 @@
 		filterTextClear : '顯示全部',
         infoText : '共{0}人',
         moveAllLabel: 'Selected',
-        //preserveSelectionOnMove: 'moved',
+        infoTextFiltered: '<span class="label label-warning">找到</span> {0} from {1}',
         //moveOnSelect: false,
         //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'
       });
