@@ -237,9 +237,16 @@ class Auth extends Backend_Controller
 		{
 			$data["edit_data"] = array
 			(
+				'role' => $role,
+				'gender' => 1,
+				'is_owner' => 1,
+				'is_contact' => 1,
+				'is_manager' => 0,
+				'gas_right' => 0,
+				'voting_right' => 0,
 				'start_date' => date( "Y-m-d" ),
 				'forever' => 1,
-				'launch' =>1
+				'launch' => 1
 			);
 			
 			$data["sys_user_group"] = $sys_user_group;

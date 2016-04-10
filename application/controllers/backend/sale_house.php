@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Parking extends Backend_Controller {
+class Sale_House extends Backend_Controller {
 	
 	function __construct() 
 	{
@@ -25,7 +25,6 @@ class Parking extends Backend_Controller {
 
 			$this->display("index_view",$data);
 	}
-
 
 
 	public function GenerateTopMenu()

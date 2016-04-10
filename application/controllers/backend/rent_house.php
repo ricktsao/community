@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Parking extends Backend_Controller {
+class Rent_House extends Backend_Controller {
 	
 	function __construct() 
 	{
@@ -13,19 +13,18 @@ class Parking extends Backend_Controller {
 	 */
 	public function index()
 	{
-		$query = 'SELECT SQL_CALC_FOUND_ROWS p.*, up.car_number, u.building_id, u.name, u.tel, u.phone
-					FROM parking p left join user_parking up on p.sn = up.parking_sn
-					left join sys_user u on up.user_sn = u.sn
+		$given_keyword = '';
+		$query = 'SELECT SQL_CALC_FOUND_ROWS *
+					FROM rent_house
 					WHERE ( 1 = 1 ) 
 					';
-		$exist_parking_list = $this->it_model->runSql( $query , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
+		$dataset = $this->it_model->runSql( $query , NULL , NULL , array("sn"=>"desc","rent_price"=>"asc"));
 
-		$data["user_parking_list"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
+		$data["dataset"] = count($dataset["data"]) > 0 ? $dataset["data"] : array();
 		//---------------------------------------------------------------------------------------------------------------
-
-			$this->display("index_view",$data);
+		$data['given_keyword'] = $given_keyword;
+		$this->display("index_view",$data);
 	}
-
 
 
 	public function GenerateTopMenu()

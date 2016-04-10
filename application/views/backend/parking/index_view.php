@@ -28,6 +28,8 @@
 										<!-- <th>位置</th> -->
 										<th>戶別</th>
 										<th>住戶姓名</th>
+										<th>電話</th>
+										<th>行動</th>
 										<th>車號</th>
 										<!-- <th>所有權人</th>
 										<th style="width:150px">操作</th> -->
@@ -51,6 +53,12 @@
 										</td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
+										</td>
+										<td>
+										<?php echo tryGetData('tel', $item);?>
+										</td>
+										<td>
+										<?php echo tryGetData('phone', $item);?>
 										</td>
 										<td>
 										<?php echo tryGetData('car_number', $item);?>

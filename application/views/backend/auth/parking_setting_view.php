@@ -139,9 +139,9 @@
 				<!-- <div class="col-xs-12 col-sm-10"> -->
 
 				<form action="<?php echo bUrl("addUserParking")?>" method="post"  id="add_form" role="form">
-				<input type='text' name='parking_sn' id='parking_sn' >
-				<input type='text' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
-				<input type='text' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
+				<input type='hidden' name='parking_sn' id='parking_sn' >
+				<input type='hidden' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
+				<input type='hidden' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
 				
 				<div class="form-group" >
 					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 車位ID：</label>
