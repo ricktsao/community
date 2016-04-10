@@ -1,6 +1,6 @@
 
 
-<form action="<? echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
+<form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
 	<?php echo textOption("標題","title",$edit_data); ?>
 	

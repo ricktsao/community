@@ -18,10 +18,16 @@
 		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("edit");?>">
 			<i class="icon-edit bigger-120"></i>新增
 		</a>
-    </div>
+    </div>　　
     <div class="btn-group">
 		關鍵字：<input type='text' name='keyword' value='<?php echo $given_keyword;?>'>
-    </div>    
+    </div>　
+    <div class="btn-group">
+		格局：
+		<input type='text' size='1' name='room' value='<?php echo $given_room;?>'>房
+		<input type='text' size='1' name='livingroom' value='<?php echo $given_livingroom;?>'>廳
+		<input type='text' size='1' name='bathroom' value='<?php echo $given_bathroom;?>'>衛
+    </div>  
     <div class="btn-group">
 		<button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
     </div>
@@ -42,7 +48,7 @@
 										<th>序號</th>
 										<th>日期</th>
 										<th style="width:180px">租屋標題</th>
-										<th>型態</th>
+										<th>格局</th>
 										<th>月租金</th>
 										<th>坪數</th>
 										<th style="width:150px">地址</th>
