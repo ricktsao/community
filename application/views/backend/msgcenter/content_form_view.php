@@ -19,8 +19,7 @@
               	?>	                 
               </select>
             </div>			
-		</div>
-		
+		</div>		
 	</div>
 	
 	<?php
@@ -30,8 +29,15 @@
 	
 	
 	
+	<?php
+		$error_css= '';
+		if(isNotNull(form_error("users")))
+		{
+			$error_css = 'has-error';			
+		}
+	?>	
 	
-	<div class="form-group">
+	<div class="form-group <?php echo $error_css;?>">
 		<label for="url" class="col-xs-12 col-sm-3 control-label no-padding-right">發佈對象</label>
 		
 		<div class="col-xs-12 col-sm-8">
@@ -39,13 +45,14 @@
 			<?php 
               	foreach ($user_list as $key => $item) 
               	{
-					echo '<option value="'.$item["name"].'">'.$item["name"].'  '.$item["owner_addr"].'</option>';
+					echo '<option value="'.$item["sn"].'">'.$item["name"].'  '.$item["owner_addr"].'</option>';
 				}
             ?>	    
 
 			</select>
-			
+			<div class="help-block col-xs-12 col-sm-reset inline"><p><?php echo form_error("users")?></p></div>
 		</div>
+		
 	</div>
 	
 	
@@ -117,13 +124,14 @@
 		filterTextClear : '顯示全部',
         infoText : '共{0}人',
         moveAllLabel: 'Selected',
-        infoTextFiltered: '<span class="label label-warning">找到</span> {0} from {1}',
-        //moveOnSelect: false,
+        infoTextFiltered: '<span class="label label-warning">找到</span> {0} 筆',
+        infoTextEmpty: '訊息發送列表',
         //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'
       });
+	  /*
 	$("#update_form").submit(function() {
       alert('請選擇發布對象');
       return false;
     });
-	
+	*/
   </script>

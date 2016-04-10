@@ -114,19 +114,36 @@ class Msgcenter extends Backend_Controller {
 	
 	public function updateContent()
 	{			
+		$edit_data = array();
 		foreach( $_POST as $key => $value )
 		{
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
-		$to_user_sn_ary = tryGetData("to_user_sn", $edit_data,array());
+		//dprint($edit_data);exit;
+		
+		//$to_user_sn_ary = tryGetData("users", $edit_data,array());
 						
 		if ( ! $this->_validateContent())
 		{
 			$this->addCss("css/chosen.css");
 			$this->addJs("js/chosen.jquery.min.js");	
-			$data["edit_data"] = $edit_data;
-			$this->_initUnitData($data);					
+			
+			$this->addCss("css/duallistbox/bootstrap-duallistbox.min.css");
+			$this->addJs("js/duallistbox/jquery.bootstrap-duallistbox.min.js");
+			
+			$this->addCss("css/bootstrap-fonts.css");
+			
+			//罐頭訊息		
+			$can_msg_list = $this->c_model->GetList( "can_msg" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );		
+			$data["can_msg_list"] = $can_msg_list["data"];	
+
+		
+			//住戶
+			$user_list = $this->it_model->listData("sys_user","launch =1 and role = 'I' ",NULL,NULL,array("name"=>"asc"));
+			$data["user_list"] = $user_list["data"];	
+			
+			$data["edit_data"] = $edit_data;								
 			$this->display("content_form_view",$data);
 		}
         else 
@@ -344,17 +361,11 @@ class Msgcenter extends Backend_Controller {
 	 */
 	function _validateContent()
 	{
-		$category_id = $this->input->post("category_id",TRUE);
+	
 		
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
-		
-		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
-		$this->form_validation->set_rules( 'msg_content', '內容', 'required' );
-		if($category_id == "meeting")
-		{
-			$this->form_validation->set_rules( 'meeting_date', '會議日期', 'required' );
-		}
-				
+		$this->form_validation->set_rules( 'title', '標題', 'required' );	
+		$this->form_validation->set_rules( 'msg_content', '訊息內容', 'required' );
+		$this->form_validation->set_rules( 'users', '發佈對象', 'required' );				
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
