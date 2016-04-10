@@ -30,9 +30,7 @@ class Login extends CI_Controller {
 
 	function conformAccountPassword()
 	{
-				
-		foreach( $_POST as $key => $value )
-		{
+		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
