@@ -125,10 +125,29 @@ function sign_dropdown ($name="sign", $selection=NULL)
 }
 
 
+
+function yes_no_radio ($name="yes", $checked_value=NULL)
+{
+	$checked_value = 1;
+	// You may want to pull this from an array within the helper
+	$yea_no_array = config_item('yea_no_array');
+
+	$html = '';
+	
+	foreach($yea_no_array as $key => $value)
+	{
+		$check_str = ($key === $checked_value) ? 'checked' : '';
+
+		$html .= '<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;&nbsp;';
+	}
+
+	return $html;
+}
+
 function gender_radio ($name="gender", $checked_value=NULL)
 {
 	// You may want to pull this from an array within the helper
-	$gender_list = config_item('gender_list');
+	$gender_list = config_item('gender_array');
 
 	$html = '';
 	
@@ -136,7 +155,7 @@ function gender_radio ($name="gender", $checked_value=NULL)
 	{
 		$check_str = $key === $checked_value? 'checked':'';
 
-		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>';
+		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;';
 	}
 
 	return $html;
@@ -317,7 +336,7 @@ function textOption($field_title = '',$option_name = '',$edit_data = array(),$op
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-200" value="'.tryGetData( $option_name,$edit_data).'"  />					
+			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-100" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		'.$option_attr.'</div>
 		'.$hint.'
 		'.$error_msg.'		
@@ -510,16 +529,16 @@ function pickDateOption($edit_data = array())
 	$html = 
 	'
 	<div class="form-group '.$error_sdate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟用日期</label>
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟始日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="start_date" name="start_date"  class="width-100" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
+			<input type="text" id="start_date" name="start_date"  class="width-30" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline">'.form_error('start_date').'</div>
 	</div>	
 	<div class="form-group '.$error_edate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">停用日期</label>
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">截止日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="end_date" name="end_date"  class="width-70" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
+			<input type="text" id="end_date" name="end_date"  class="width-30" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
 			<span class="width-30">
 				<label class="middle">
 					<input class="ace" name="forever" id="forever" value="1" type="checkbox"  '.(tryGetData('forever',$edit_data)=='1'?"checked":"").'  />

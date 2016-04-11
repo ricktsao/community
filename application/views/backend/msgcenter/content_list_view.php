@@ -2,17 +2,10 @@
 <article class="well">              
     <div class="btn-group">
 		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
-			<i class="icon-edit bigger-120"></i>訊息發布
+			<i class="icon-edit bigger-120"></i>編輯訊息
 		</a>	
     </div>    
-    <div class="btn-group">
-      <select name="cat_sn" class="form-control">
-      		<option value=""> 綜合 </option>
-      </select>
-    </div>    
-    <div class="btn-group">        
-          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
-    </div>                
+                
 </article>	
 </form>
 

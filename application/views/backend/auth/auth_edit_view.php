@@ -1,4 +1,4 @@
-<?
+<?php
 	$auth_menu_html = '';
 	foreach ($auth_list as $key => $value)
 	{

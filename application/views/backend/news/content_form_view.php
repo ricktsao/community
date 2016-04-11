@@ -14,13 +14,14 @@
 		//showOutputBox("tools/pickup_img_view", array('elements'=>$elements)); 
 	?>
 	
-	<?php echo dropdownOption("分類","parent_sn",$edit_data,$cat_list); ?>
+	<?php
+	//echo dropdownOption("分類","parent_sn",$edit_data,$cat_list); 
+	?>
 	
 	<?php 
 		//echo urlOption("開啟方式","url",$edit_data); 
 	?>
 	
-	<?php echo textOption("來源","brief",$edit_data); ?>
 	
 	
 	

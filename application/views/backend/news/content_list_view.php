@@ -7,22 +7,9 @@
     </div>
     
     
-    <div class="btn-group">
-      <select name="cat_sn" class="form-control">
-      		<option value=""> 綜合 </option>
-		<?php 	
-			foreach ($cat_list as $key => $item){
-		?>
-			<option value="<?php echo $item['sn'] ?>"><?php echo $item['title'] ?></option>
-		<?php 	
-			}
-		?> 
-      </select>
-    </div>    
-    <div class="btn-group">
-        
-          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
-        
+   
+    <div class="btn-group" style="display:none">        
+          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>        
     </div>                
 </article>	
 <span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>		
@@ -42,13 +29,12 @@
 									<tr>										
 										<th style="width:100px">序號</th>
 										<th>標題</th>
-										<th>排序</th>
-										<th style="width:200px">分類</th>										
+									
+																			
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
 										<th style="width:120px">編輯</th>
-										<th style="width:120px">啟用/停用</th>
-										<th style="width:120px">預覽</th>
+										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
 											<label>
 												<input type="checkbox" class="ace"  />
@@ -73,8 +59,6 @@
 											 ?>
 										</td>
 										
-										<td><?php echo $list[$i]["sort"]?></td>
-										<td><?php echo $list[$i]["parent_title"]?></td>
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
@@ -89,11 +73,7 @@
 												</label>
 											</div>
 										</td>
-										<td>	
-											<a class="btn  btn-minier btn-inverse" href="<?php echo frontendUrl("news","detail",true,array(),array("cat_sn"=>$list[$i]["parent_sn"],"sn"=>$list[$i]["sn"],"preview"=>"Y")); ?>" target="_blank">
-												<i class="icon-eye-open bigger-120"></i>預覽
-											</a>
-										</td>
+										
 										<td class="center">
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
@@ -104,7 +84,7 @@
 									<?php } ?>
 									
 									<tr>
-										<td colspan="8">
+										<td colspan="5">
 											
 										</td>	
 										<td class="center">

@@ -45,7 +45,7 @@ class AuthEdit extends Backend_Controller
         else 
         {			
         	$arr_data["password"] = prepPassword($edit_data["password"]);
-        	$arr_data["update_date"] = date("Y-m-d H:i:s"); 
+        	$arr_data["updated"] = date("Y-m-d H:i:s"); 
         	$arr_data["is_chang_pwd"] = 1;
         	
       	 	$arr_return=$this->main_model->updateDB( "sys_user" , $arr_data, "sn =".$admin_sn );
