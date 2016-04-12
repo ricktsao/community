@@ -20,7 +20,7 @@ class Msgcenter extends Backend_Controller {
 	}
 	
 	
-	
+
 	function _initUnitData(&$data)
 	{
 		//秘書所屬單位
@@ -148,121 +148,52 @@ class Msgcenter extends Backend_Controller {
 		}
         else 
         {		
-        	
-			$sales_list = array();//發送的業務SN列表	
-				
-				
-				
-			if(tryGetData("target", $edit_data)=="1")
+        	$error_user_ary = array();
+			$to_user_sn_ary = tryGetData("users", $edit_data,array());
+			$msg_count = 0;
+			foreach ($to_user_sn_ary as $key => $to_user_sn) 
 			{
-				//秘書所屬單位的業務
-				//----------------------------------------------------------------------------------------------
-				//秘書所屬單位
-				$unit_list = $this->it_model->listData("unit","secretary_user_id = '".$this->session->userdata("user_id")."'");		
-						
-				//dprint($unit_list);
-				$unit_sn_ary = array();
-				
-				foreach ($unit_list["data"] as $key => $item) 
+				$user_info = $this->it_model->listData("sys_user","sn='".$to_user_sn."'");
+				if($user_info["count"]==0)
 				{
-					array_push($unit_sn_ary,$item["sn"]);
+					continue;
 				}
+				$user_info = $user_info["data"][0];
 				
-				//單位所屬業務				
-				if(count($unit_sn_ary) > 0)
+				$arr_data = array
+				(      
+					  "edit_user_sn" => $this->session->userdata('user_sn')
+					, "to_user_sn" => $to_user_sn
+					, "to_user_app_id" => $user_info["app_id"]
+					, "to_user_name" => mb_substr($user_info["name"],0,1).tryGetData($user_info["gender"],$this->config->item("gender_array"),"君") 
+					, "title" => tryGetData("title", $edit_data)
+					, "msg_content" => tryGetData("msg_content", $edit_data)
+					, "updated" => date( "Y-m-d H:i:s" )
+					, "created" => date( "Y-m-d H:i:s" )
+				);	
+								
+				$content_sn = $this->it_model->addData( "user_message" , $arr_data );
+				
+				if($content_sn > 0)
 				{
-					$sales_list = $this->it_model->listData("sys_user","unit_sn in ( ".implode(",", $unit_sn_ary)." ) AND launch = 1");
-					$sales_list = $sales_list["data"];
-				}				
-				//----------------------------------------------------------------------------------------------
-			}
-			else if(count($to_user_sn_ary) > 0)
-			{				
-				
-				$sql = "
-					select SQL_CALC_FOUND_ROWS sys_user.* ,unit.unit_name
-					from sys_user
-					left join unit on sys_user.unit_sn = unit.sn
-					where sys_user.sn in (".implode(",", $to_user_sn_ary).")
-				";				
-
-				$sales_list = $this->it_model->runSql( $sql );
-				$sales_list = $sales_list["data"];				
+					$msg_count++;
+				}
+				else
+				{
+					array_push($error_user_ary,$user_info["name"]);
+				}
 			}
 			
-			//新增指派		
-			$assign_sn = $this->updateMessageAssign($edit_data,$sales_list);
-			
-
-							
-			if($assign_sn > 0)
-			{
-				$msg_count =0;	
-				$error_user_ary = array();	
-				foreach ($sales_list as $key => $item) 
-				{
-					$from_uint_sn = $item["sn"];
-				
-					$arr_data = array
-					(      
-						  "from_unit_sn" => $this->session->userdata('unit_sn')
-						, "from_unit_name" => $this->session->userdata('unit_name')
-						, "from_user_sn" => $this->session->userdata('user_sn')
-						, "to_user_sn" => $item["sn"]
-						, "category_id" => tryGetData("category_id", $edit_data)
-						, "title" => tryGetData("title", $edit_data)					
-						, "msg_content" => tryGetData("msg_content", $edit_data)			
-						, "updated" => date( "Y-m-d H:i:s" )
-						, "created" => date( "Y-m-d H:i:s" )
-					);
-										
-					
-					if(tryGetData("category_id", $edit_data) == "meeting")
-					{
-						$arr_data["meeting_date"] = tryGetData("meeting_date", $edit_data,NULL);
-					}
-					
-					
-					$content_sn = $this->it_model->addData( "sys_message" , $arr_data );
-					if($content_sn > 0)
-					{
-						
-						//更新至行事曆
-						//---------------------------------------------------
-						if(tryGetData("category_id", $edit_data) == "meeting")
-						{							
-							$this->_updateCalendar($edit_data,$item["sn"],$item["id"]);
-						}
-						//---------------------------------------------------
-						
-						
-						
-						$msg_count++;
-					}
-					else 
-					{
-						array_push($error_user_ary,$item["id"]."-".$item["name"]);
-					}
-				}
-				
-				
-				if($msg_count == count($sales_list))
-				{	
-					$this->showSuccessMessage();							
-				}
-				else 
-				{
-					
-					$this->updateMessageAssign($edit_data,$sales_list,$error_user_ary,$assign_sn);//更新指派記錄
-					$msg = "下列人員請重新發送:<br>".implode("<br>", $error_user_ary);
-					$this->showMessage($msg);
-							
-				}
+			if($msg_count == count($to_user_sn_ary))
+			{	
+				$this->showSuccessMessage();							
 			}
 			else 
 			{
-				$this->showFailMessage();
+				$msg = "下列用戶請重新發送:<br>".implode("<br>", $error_user_ary);
+				$this->showMessage($msg);
 			}
+
 
 			
 			redirect(bUrl("contentList"));	

@@ -103,8 +103,8 @@ $config['mail']['template'] =
 $config['web_access_enable'] = 0;
 
 // 性別
-$config['gender_array'] = array(  '1' => '男'
-								, '2' => '女'
+$config['gender_array'] = array(  '1' => '先生'
+								, '2' => '女士'
 								);
 
 // 性別
