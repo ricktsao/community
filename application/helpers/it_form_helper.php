@@ -126,17 +126,16 @@ function sign_dropdown ($name="sign", $selection=NULL)
 
 
 
-function yes_no_radio ($name="yes", $checked_value=NULL)
+function generate_radio($name="yes", $checked_value=NULL, $ary_name='yes_no_array')
 {
-	$checked_value = 1;
 	// You may want to pull this from an array within the helper
-	$yea_no_array = config_item('yea_no_array');
+	$given_array = config_item($ary_name);
 
 	$html = '';
 	
-	foreach($yea_no_array as $key => $value)
+	foreach($given_array as $key => $value)
 	{
-		$check_str = ($key === $checked_value) ? 'checked' : '';
+		$check_str = ($key == $checked_value) ? 'checked' : '';
 
 		$html .= '<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;&nbsp;';
 	}
@@ -336,7 +335,7 @@ function textOption($field_title = '',$option_name = '',$edit_data = array(),$op
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-100" value="'.tryGetData( $option_name,$edit_data).'"  />					
+			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-80" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		'.$option_attr.'</div>
 		'.$hint.'
 		'.$error_msg.'		

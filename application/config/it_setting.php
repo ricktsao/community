@@ -103,12 +103,16 @@ $config['mail']['template'] =
 $config['web_access_enable'] = 0;
 
 // 性別
-$config['gender_array'] = array(  '1' => '先生'
-								, '2' => '女士'
+$config['gender_array'] = array(  1 => '先生'
+								, 2 => '女士'
 								);
 
 // 性別
-$config['yea_no_array'] = array( '0'=>'否', '1'=>'是');
+$config['yes_no_array'] = array( 0=>'否', 1=>'是');
+// 性別
+$config['yes_no_array2'] = array( 0=>'沒有', 1=>'有');
+// 性別
+$config['gender_array2'] = array('m'=>'男生','f'=>'女', 'a'=>'男女不拘');
 
 
 // 角色
