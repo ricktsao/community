@@ -28,11 +28,6 @@
             ?>                
             </tbody>            
         </table>
-        <div class="pager">
-            <a href="#"><i class="fa fa-chevron-left"></i></a>
-            <div>1</div>
-            <a href="#">2</a>
-            <a href="#">...</a>
-            <a href="#"><i class="fa fa-chevron-right"></i></a>
-        </div>
+		<?php echo showFrontendPager($pager)?>
+
     </div>
