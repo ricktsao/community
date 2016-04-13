@@ -369,19 +369,19 @@ class Auth extends Backend_Controller
 				{				
 					$edit_data["sn"] = $sys_user_sn;
 					$this->_updateWebAdminGroup($edit_data);
-					$this->showSuccessMessage();							
+					$this->showSuccessMessage();
 				}
 				else 
 				{
-					$this->showFailMessage();					
+					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("admin",TRUE,array("sn")));		
+				redirect(bUrl("admin",TRUE,array("sn")));
 			}
-        }	
-	}	
-	
-		
+        }
+	}
+
+
 	/**
 	 * 更新權限群組
 	 */
@@ -431,17 +431,8 @@ class Auth extends Backend_Controller
 			$result = $this->it_model->updateData( "sys_user_belong_group" , $arr_data, $condition );
 		}
 	}	
-		
-	
-	
-		
-		
-		
-		
-		
-		
-	
-		
+
+
 	function _validateAdmin()
 	{
 		$sn = tryGetValue($this->input->post('sn',TRUE),0);
