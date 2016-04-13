@@ -11,6 +11,7 @@ html,
 body {
     margin: 0;
     padding: 0;
+    min-width: 1024px;
 }
 
 a {
@@ -221,7 +222,7 @@ label {
     border-collapse: inherit;
     border-spacing: 0;
     width: 90%;
-    margin: 0 auto;
+    margin: 0 auto 20px auto;
 }
 
 .table_style td {
@@ -284,8 +285,13 @@ label {
 }
 
 .text_center {
-    text-align: center;
+    text-align: center  !important;
 }
+
+.text_left {
+    text-align: left !important;
+}
+
 
 .pager {
     text-align: center;
@@ -347,4 +353,20 @@ label {
 
 .form_group > .form_style > table td {
     padding-bottom: 10px;
+}
+
+
+#gas_table {
+    width: 90%;
+    margin: 0 auto;
+}
+#gas_table td{
+    text-align: left;
+
+}
+
+#gas_table thead td {
+    font-weight: bold;
+    font-size:16px;
+    padding-bottom: 20px;
 }
