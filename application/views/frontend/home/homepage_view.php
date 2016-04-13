@@ -129,12 +129,16 @@
 			<div class="leftArea">
 				<div class="title_area">
 					日行一善
-					<a href="#">更多</a>
+					<a href="<?php echo frontendUrl("daily_good","index"); ?>">更多</a>
 				</div>
 				<ul class="ul_unstyle list_type_1">
-					<li><a href="#">愛興育幼院愛興育幼院舉辦二手商品義賣...</a></li>
-					<li><a href="#">愛興育幼院舉辦二手商品義賣...</a></li>
-					<li><a href="#">愛興育幼院舉辦二手商品義賣...</a></li>
+				<?php
+				foreach ($daily_good_list as $key => $daily_good_info) 
+				{
+					echo '<li><a href="#">'.showMoreStringSimple($daily_good_info["content"],15) .'</a></li>';
+				}
+				
+				?>
 				</ul>
 			</div>
 			<div class="rightArea">

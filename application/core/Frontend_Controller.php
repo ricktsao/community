@@ -490,6 +490,25 @@ abstract class Frontend_Controller extends IT_Controller
 		return $setting_info;	
 	}
 	
+	/**
+	 * header區最新管委公告
+	 */
+	function _getLatestBulletin()
+	{		
+		$bulletin_info = $this->c_model->GetList2( "bulletin" , "" ,TRUE, 1 , 1 , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		if($bulletin_info["count"]>0)
+		{
+			$bulletin_info = $bulletin_info["data"][0];
+		}
+		else 
+		{
+			$bulletin_info = array();
+		}
+		
+		return $bulletin_info;
+	}
+
+
 
 	
 	function _commonArea($view="",&$data = array())
@@ -526,12 +545,6 @@ abstract class Frontend_Controller extends IT_Controller
 		
 		$data['show_message'] =$this->session->flashdata('show_message');
 		
-		
-
-		$this->addJs("js/alertify/alertify.js");
-		$this->addCss("css/alertify/alertify.style.css");	
-		$this->addCss("css/alertify/alertify.core.css");	
-		$this->addCss("css/alertify/alertify.default.css");	
 		//dprint($data);
 		
 		$data['web_menu_content_parent_sn'] = $this->web_menu_content_parent_sn;
@@ -544,7 +557,9 @@ abstract class Frontend_Controller extends IT_Controller
 		
 		$data['templateUrl'] = $this->config->item("template_frontend_path");
 		
-		$data['is_marguee'] = $this->is_marguee;
+
+		$data['latest_bulletin_info'] = $this->_getLatestBulletin();
+
 		$data['show_header'] = $this->show_header;
 		$data['show_footer'] = $this->show_footer;
 		

@@ -29,7 +29,7 @@ class Bulletin extends Backend_Controller {
 		}
 		
 		$list = $this->c_model->GetList2( "bulletin" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+		//img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
 		

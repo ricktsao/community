@@ -21,6 +21,12 @@ class Home extends Frontend_Controller {
 		
 		$data = array();
 		
+		//日行一善 
+		//----------------------------------------------------------------------------
+		$daily_good_list = $this->c_model->GetList2( "daily_good" , "" ,TRUE, 3 , 1 , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$data["daily_good_list"] = $daily_good_list["data"];
+		//----------------------------------------------------------------------------
+		
 		$this->display("homepage_view",$data);
 	}		
 }
