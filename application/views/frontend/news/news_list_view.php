@@ -11,7 +11,7 @@
             </thead>
             <tbody>
             <?php
-        	foreach ($bulletin_list as $key => $bulletin_info) 
+        	foreach ($news_list as $key => $bulletin_info) 
         	{
 				echo '
 				

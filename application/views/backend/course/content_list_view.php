@@ -59,7 +59,17 @@
 											 
 											 ?>
 										</td>
-										<td><?php echo $list[$i]["brief"] ?></td>
+										<td><?php
+										if($list[$i]["brief"]==1)
+										{
+											echo '需收費';
+										}
+										else 
+										{
+											echo '不需收費';
+										}
+										?>
+										</td>
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
