@@ -27,6 +27,23 @@ class Home extends Frontend_Controller {
 		$data["daily_good_list"] = $daily_good_list["data"];
 		//----------------------------------------------------------------------------
 		
+		//社區公告
+		//----------------------------------------------------------------------------
+		$news_list = $this->c_model->GetList2( "news" , "" ,TRUE, 3 , 1 , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$data["news_list"] = $news_list["data"];
+		
+		//dprint($news_list);
+		//----------------------------------------------------------------------------
+		
+		//課程訊息 
+		//--------------------------------------------------------------------
+		$course_list = $this->c_model->GetList2( "course" , "" ,TRUE, 3 , 1 , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		
+		$data["course_list"] = $course_list["data"];
+		//--------------------------------------------------------------------	
+		
+		
+		
 		$this->display("homepage_view",$data);
 	}		
 }

@@ -15,7 +15,7 @@
 <form  role="search" action="<?php echo bUrl('index');?>">
 <article class="well">              
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("edit");?>">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("edit", false);?>">
 			<i class="icon-edit bigger-120"></i>新增
 		</a>
     </div>　　
@@ -66,11 +66,11 @@
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'><?php echo tryGetData('post_date', $item, '-');?></td>
+										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td>
 										<?php
-										echo sprintf('%s房 %s廳 %s衛' 
+										echo sprintf('%d 房 %d 廳 %d 衛' 
 													, tryGetData('room', $item)
 													, tryGetData('livingroom', $item)
 													, tryGetData('bathroom', $item)
@@ -90,7 +90,7 @@
 										<?php echo tryGetData('move_in', $item);?>
 										</td>
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
 										</td>

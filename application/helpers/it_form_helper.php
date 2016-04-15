@@ -126,19 +126,18 @@ function sign_dropdown ($name="sign", $selection=NULL)
 
 
 
-function yes_no_radio ($name="yes", $checked_value=NULL)
+function generate_radio($name="yes", $checked_value=NULL, $ary_name='yes_no_array')
 {
-	$checked_value = 1;
 	// You may want to pull this from an array within the helper
-	$yea_no_array = config_item('yea_no_array');
+	$given_array = config_item($ary_name);
 
 	$html = '';
 	
-	foreach($yea_no_array as $key => $value)
+	foreach($given_array as $key => $value)
 	{
-		$check_str = ($key === $checked_value) ? 'checked' : '';
+		$check_str = ($key == $checked_value) ? 'checked' : '';
 
-		$html .= '<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;&nbsp;';
+		$html .= '<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$name.'_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$name.'_'.$key.'" class="middle">'.$value.'</label>&nbsp;&nbsp;';
 	}
 
 	return $html;
@@ -155,7 +154,7 @@ function gender_radio ($name="gender", $checked_value=NULL)
 	{
 		$check_str = $key === $checked_value? 'checked':'';
 
-		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$key.'" class="middle">'.$value.'</label>&nbsp;';
+		$html.='<input name="'.$name.'" '.$check_str.'  value="'.$key.'" id="radio_'.$name.'_'.$key.'" value="'.$key.'" type="radio" class="middle"><label for="radio_'.$name.'_'.$key.'" class="middle">'.$value.'</label>&nbsp;';
 	}
 
 	return $html;
@@ -318,6 +317,30 @@ if ( ! function_exists('formArraySet'))
 }
 
 
+function textNumberOption($field_title = '',$option_name = '',$edit_data = array(),$option_attr = '',$hint = '')
+{
+	$error_css = '';
+	$error_msg = '';	
+	
+	if(isNotNull(form_error($option_name)))
+	{
+		$error_css = 'has-error';
+		$error_msg = 
+		'<div class="help-block col-xs-12 col-sm-reset inline">'.form_error($option_name).'</div>';
+	}
+	
+	$html = 
+	'<div class="form-group '.$error_css.'">
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<div class="col-xs-12 col-sm-4">
+			<input type="number" min=0 step=1 id="'.$option_name.'" name="'.$option_name.'"  class="width-30" value="'.tryGetData( $option_name,$edit_data).'"  />					
+		'.$option_attr.'</div>
+		'.$hint.'
+		'.$error_msg.'		
+	</div>';
+	
+	return $html;	
+}
 
 
 function textOption($field_title = '',$option_name = '',$edit_data = array(),$option_attr = '',$hint = '')
@@ -335,8 +358,8 @@ function textOption($field_title = '',$option_name = '',$edit_data = array(),$op
 	$html = 
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
-		<div class="col-xs-12 col-sm-4">
-			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-100" value="'.tryGetData( $option_name,$edit_data).'"  />					
+		<div class="col-xs-12 col-sm-6">
+			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-40" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		'.$option_attr.'</div>
 		'.$hint.'
 		'.$error_msg.'		
