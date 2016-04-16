@@ -183,16 +183,16 @@
 			<div class="rightArea">
 				<div class="title_area">
 					課程訊息
-					<a href="#">更多</a>
+					<a href="<?php echo frontendUrl("course","index");?>">更多</a>
 				</div>
 				<ul class="ul_unstyle list_type_2">
 				<?php
 				//dprint($news_list);
-				foreach ($course_list as $key => $news_info) 
+				foreach ($course_list as $key => $course_info) 
 				{
 					echo					
-					'<li><a href="'.frontendUrl("course","index").'" > '.showMoreStringSimple($news_info["title"],40) .'</a>
-						<div class="date">'.showDateFormat($news_info["start_date"],"Y.m.d").'</div>
+					'<li><a href="'.frontendUrl("course","detail",TRUE,array("all"=>"all"),array("sn"=>$course_info["sn"])).'" > '.showMoreStringSimple($course_info["title"],40) .'</a>
+						<div class="date">'.showDateFormat($course_info["start_date"],"Y.m.d").'</div>
 					</li>';
 				}
 				?>	
