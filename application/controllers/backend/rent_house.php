@@ -23,6 +23,8 @@ class Rent_House extends Backend_Controller {
 			$condition .= " AND ( `title` like '%".$keyword."%' "
 						."      OR `addr` like '%".$keyword."%' "
 						."      OR `living` like '%".$keyword."%' "
+						."      OR `traffic` like '%".$keyword."%' "
+						."      OR `desc` like '%".$keyword."%' "
 						."      OR `rent_price` = '".$keyword."'  ) "
 						;
 		}
@@ -95,8 +97,10 @@ class Rent_House extends Backend_Controller {
 				'end_date' => date( "Y-m-d", strtotime("+1 month") ),
 				'forever' => 1,
 				'launch' => 1,
-				'furniture' => 'a,c,e',
-				'electric' => 'b,c'
+				//'rent_type' => array(),
+				//'house_type' => array(),
+				'furniture' => '',
+				'electric' => ''
 			);
 			
 			$data["sys_user_group"] = $sys_user_group;
@@ -112,15 +116,7 @@ class Rent_House extends Backend_Controller {
 				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
 				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( tryGetData('end_date',$edit_data, '+1 month' ) ) );
 				
-						
-				$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group","sys_user_sn = ".$edit_data["sn"]." and launch = 1" );				
-				foreach($sys_user_belong_group["data"] as $item)
-				{
-					array_push($sys_user_group,$item["sys_user_group_sn"]);	
-				}
 				
-				//dprint($sys_user_group);
-				$data["sys_user_group"] = $sys_user_group;
 				$data['edit_data'] = $edit_data;
 				$this->display("edit_view",$data);
 			}
@@ -150,6 +146,8 @@ class Rent_House extends Backend_Controller {
 			//---------------------------------------------------------------------------------------------------------------
 			
 
+			//$edit_data['rent_type'] = implode(',', tryGetData('rent_type', $edit_data, array()));
+			//$edit_data['house_type'] = implode(',', tryGetData('house_type', $edit_data, array()));
 			$edit_data['furniture'] = implode(',', tryGetData('furniture', $edit_data, array()));
 			$edit_data['electric'] = implode(',', tryGetData('electric', $edit_data, array()));
 			$data["edit_data"] = $edit_data;
@@ -161,29 +159,9 @@ class Rent_House extends Backend_Controller {
         else 
         {
 
-dprint("[測試]... 租屋資訊送出 ".$edit_data['title']);
 			/*
 			dprint($edit_data);
 Array
-(
-    [sn] => 2
-    [title] => 【南京三民站精選】優質裝潢明亮管理大樓
-    [name] => 李小姐
-    [phone] => 02-22518879
-    [room] => 3
-    [livingroom] => 2
-    [bathroom] => 2
-    [locate_level] => 9
-    [total_level] => 10
-    [area_ping] => 68
-    [rent_price] => 70000
-    [deposit] => 15000元
-    [addr] => 台北市松山區三民路35巷2號
-    [move_in] => 隨時
-    [rent_term] => 一年
-    [current] => 電梯大樓/整層住家
-    [usage] => 住宅用
-    [meterial] => 水泥磚牆
     [furniture] => Array
         (
             [0] => a
@@ -198,22 +176,14 @@ Array
             [2] => g
         )
 
-    [flag_cooking] => 1
-    [flag_pet] => 0
-    [flag_parking] => 1
-    [gender_term] => a
-    [tenant_term] => 學生、上班族
-    [living] => 7-11
-    [traffic] => 近南京三民捷運站
-    [desc] => 特色特色特色特色特色特色特色特色特色特色
-    [start_date] => 2016-04-05
-    [end_date] => 
-    [forever] => 1
-    [launch] => 1
 )
 			*/
         	$arr_data = array(
 				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
+				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
+				, "house_type"		=>	tryGetData("house_type", $edit_data)
+				, "furniture"		=>	implode(',', tryGetData("furniture", $edit_data))
+				, "electric"		=>	implode(',', tryGetData("electric", $edit_data))
 				, "title"		=>	tryGetData("title", $edit_data)
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)

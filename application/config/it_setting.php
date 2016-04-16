@@ -102,6 +102,13 @@ $config['mail']['template'] =
 //外網權限功能(1:開啟,2:關閉)
 $config['web_access_enable'] = 0;
 
+// 角色
+$config['role_array'] = array(  'I' => '住　戶'
+								, 'M' => '物業人員'
+								//, 'G' => '警衛'
+								//, 'S' => '秘書'
+								, 'F' => '富網通'
+								);
 // 性別
 $config['gender_array'] = array(  1 => '先生'
 								, 2 => '女士'
@@ -133,15 +140,22 @@ $config['electric_array'] = array( array('value'=>'a', 'title'=>'電視')
 								, array('value'=>'g', 'title'=>'天然瓦斯')
 								);
 
-
-
-// 角色
-$config['role_array'] = array(  'I' => '住　戶'
-								, 'M' => '物業人員'
-								//, 'G' => '警衛'
-								//, 'S' => '秘書'
-								, 'F' => '富網通'
+// 型態
+$config['rent_type_array'] = array( 'a'=>'整層住家'
+								, 'b'=>'獨立套房'
+								, 'c'=>'分租套房'
+								, 'd'=>'雅房'
+								, 'e'=>'店面'
+								, 'f'=>'辦公'
 								);
+// 家具
+$config['house_type_array'] = array( 'a'=>'電梯大樓'
+								, 'b'=>'透天厝'
+								, 'c'=>'華廈'
+								, 'd'=>'公寓'
+								, 'e'=>'別墅'
+								);
+
 									
 											
 //檔案類型

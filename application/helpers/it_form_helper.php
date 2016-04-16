@@ -317,7 +317,7 @@ if ( ! function_exists('formArraySet'))
 }
 
 
-function textNumberOption($field_title = '',$option_name = '',$edit_data = array(),$option_attr = '',$hint = '')
+function textNumberOption($field_title = '',$option_name = '',$edit_data = array(), $min=0, $max=100, $step=1, $hint = '')
 {
 	$error_css = '';
 	$error_msg = '';	
@@ -333,10 +333,9 @@ function textNumberOption($field_title = '',$option_name = '',$edit_data = array
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="number" min=0 step=1 id="'.$option_name.'" name="'.$option_name.'"  class="width-25" value="'.tryGetData( $option_name,$edit_data).'"  />					
-		'.$option_attr.'</div>
-		'.$hint.'
-		'.$error_msg.'		
+			<input type="number" min='.$min.'  max='.$max.' step='.$step.' id="'.$option_name.'" name="'.$option_name.'"  class="width-25" value="'.tryGetData( $option_name,$edit_data).'"  />'
+		.$hint.'</div>'		
+		.$error_msg.'		
 	</div>';
 	
 	return $html;	
