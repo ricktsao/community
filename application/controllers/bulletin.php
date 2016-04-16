@@ -15,6 +15,8 @@ class Bulletin extends Frontend_Controller {
 		
 		$bulletin_list = $this->c_model->GetList2( "bulletin" , "" ,TRUE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 
+		$data["pager"] = $this->getPager($bulletin_list["count"],$this->page,$this->per_page_rows,"index");	
+		
 		$data["bulletin_list"] = $bulletin_list["data"];
 		
 		$this->display("bulletin_list_view",$data);
