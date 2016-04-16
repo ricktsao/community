@@ -135,7 +135,7 @@
 				<?php
 				foreach ($daily_good_list as $key => $daily_good_info) 
 				{
-					echo '<li><a href="#">'.showMoreStringSimple($daily_good_info["content"],15) .'</a></li>';
+					echo '<li><a href="'.frontendUrl("daily_good","index").'" >'.showMoreStringSimple($daily_good_info["content"],15) .'</a></li>';
 				}
 				
 				?>
@@ -144,18 +144,20 @@
 			<div class="rightArea">
 				<div class="title_area">
 					社區公告
-					<a href="#">更多</a>
+					<a href="<?php echo frontendUrl("news","index"); ?>">更多</a>
 				</div>
 				<ul class="ul_unstyle list_type_2">
-					<li><a href="#">停電公告：台電更換變電箱工程預計8月15日凌晨5點至下午8點</a>
-						<div class="date">2015.6.15</div>
-					</li>
-					<li><a href="#">停電公告：台電更換變電箱工程預計8月15日凌晨5點至下午8點</a>
-						<div class="date">2015.6.15</div>
-					</li>
-					<li><a href="#">停電公告：台電更換變電箱工程預計8月15日凌晨5點至下午8點</a>
-						<div class="date">2015.6.15</div>
-					</li>
+				<?php
+				//dprint($news_list);
+				foreach ($news_list as $key => $news_info) 
+				{
+					echo					
+					'<li><a href="'.frontendUrl("news","index").'" > '.showMoreStringSimple($news_info["title"],40) .'</a>
+						<div class="date">'.showDateFormat($news_info["start_date"],"Y.m.d").'</div>
+					</li>';
+				}
+				
+				?>
 				</ul>
 			</div>
 			<div class="clear"></div>
@@ -184,15 +186,18 @@
 					<a href="#">更多</a>
 				</div>
 				<ul class="ul_unstyle list_type_2">
-					<li><a href="#">104年01月30日  瑜珈教室招生瑜珈教室招生瑜珈教室招生瑜珈教室招生...... </a>
-						<div class="date">2015.6.15</div>
-					</li>
-					<li><a href="#">104年01月30日  瑜珈教室招生...... </a>
-						<div class="date">2015.6.15</div>
-					</li>
-					<li><a href="#">104年01月30日  瑜珈教室招生...... </a>
-						<div class="date">2015.6.15</div>
-					</li>
+				<?php
+				//dprint($news_list);
+				foreach ($course_list as $key => $news_info) 
+				{
+					echo					
+					'<li><a href="'.frontendUrl("course","index").'" > '.showMoreStringSimple($news_info["title"],40) .'</a>
+						<div class="date">'.showDateFormat($news_info["start_date"],"Y.m.d").'</div>
+					</li>';
+				}
+				?>	
+					
+				
 				</ul>
 			</div>
 			<div class="clear"></div>

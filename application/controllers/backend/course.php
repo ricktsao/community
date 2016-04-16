@@ -48,8 +48,6 @@ class Course extends Backend_Controller {
 	 */
 	public function editContent()
 	{
-		
-		
 		$content_sn = $this->input->get('sn');
 			
 		$cat_list = $this->c_model->GetList( "course_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
@@ -70,13 +68,14 @@ class Course extends Backend_Controller {
 		}
 		else 
 		{		
-			$course_info = $this->c_model->GetList( "daily_good" , "sn =".$content_sn);
+			$course_info = $this->c_model->GetList( "course" , "sn =".$content_sn);
 			
-			if(count($daily_good_info["data"])>0)
-			{
-				img_show_list($daily_good_info["data"],'img_filename',$this->router->fetch_class());			
+
+			
+			if($course_info["count"]>0)
+			{				
 				
-				$data["edit_data"] = $daily_good_info["data"][0];			
+				$data["edit_data"] = $course_info["data"][0];			
 
 				$this->display("content_form_view",$data);
 			}
@@ -148,7 +147,7 @@ class Course extends Backend_Controller {
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
 		$this->form_validation->set_rules( 'title', '課程主旨', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
+		//$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
