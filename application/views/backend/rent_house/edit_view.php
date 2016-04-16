@@ -41,6 +41,9 @@
 		echo textOption("<span class='red'>＊</span>型態/現況", "current", $edit_data, 'ex.電梯大樓、公寓、獨立套房、華廈、整層住家');
 		echo textOption("法定用途", "usage", $edit_data,'ex.住宅用');
 		echo textOption("隔間材質", "meterial", $edit_data);
+		echo checkBoxGroup('家 俱','furniture', $edit_data, config_item('furniture_array'));
+		echo checkBoxGroup('家電設備','electric', $edit_data, config_item('electric_array'));
+		//dprint(config_item('electric_array'));
 		?>
 		<div class="hr hr-16 hr-dotted"></div>
 		<div class="form-group ">
@@ -77,6 +80,9 @@
 		</div>
 		<?php
 		echo textOption("身份要求", "tenant_term", $edit_data, 'ex.學生、上班族、家庭');
+		?>
+		<div class="hr hr-16 hr-dotted"></div>
+		<?php
 		echo textOption("生活機能", "living", $edit_data);
 		echo textOption("附近交通", "traffic", $edit_data);
 		echo textAreaOption("<span class='red'>＊</span>特色說明", "desc", $edit_data);
