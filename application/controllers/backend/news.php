@@ -104,11 +104,11 @@ class News extends Backend_Controller {
 			
 			
 			if(isNotNull($edit_data["sn"]))
-			{
-
-				
+			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
+					//dprint($edit_data);exit;
+					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -124,8 +124,11 @@ class News extends Backend_Controller {
 				
 				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
 				if($content_sn > 0)
-				{				
+				{
 					$edit_data["sn"] = $content_sn;
+					$this->sync_to_server($edit_data);
+				
+					
 					$this->showSuccessMessage();							
 				}
 				else 
@@ -138,6 +141,23 @@ class News extends Backend_Controller {
 			redirect(bUrl("contentList"));	
         }	
 	}
+	
+	
+	
+	function sync_to_server($post_data)
+	{
+		$url = "http://localhost/commapi/sync/updateContent/";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$result = curl_exec($ch);
+		curl_close ($ch);
+		return $result;
+	}
+	
 	
 	/**
 	 * 驗證newsedit 欄位是否正確
