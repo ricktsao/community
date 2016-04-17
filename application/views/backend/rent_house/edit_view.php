@@ -23,14 +23,30 @@
 		echo textOption("<span class='red'>＊</span>聯絡電話", "phone", $edit_data);
 		?>
 		<div class="hr hr-16 hr-dotted"></div>
+		<div class="form-group ">
+			<label for="house_type" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>型 態</label>
+			<div class="col-xs-12 col-sm-6">
+				<label class="middle" style="width:100%;">
+				<?php echo generate_radio('house_type', tryGetData('house_type', $edit_data, 0), 'house_type_array');?>
+				</label>
+			</div>
+		</div>
+		<div class="form-group ">
+			<label for="rent_type" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>類 別</label>
+			<div class="col-xs-12 col-sm-6">
+				<label class="middle" style="width:100%;">
+				<?php echo generate_radio('rent_type', tryGetData('rent_type', $edit_data, 0), 'rent_type_array');?>
+				</label>
+			</div>
+		</div>
 		<?php
-		echo textNumberOption("<span class='red'>＊</span>格局 - 房", "room", $edit_data,'房');
-		echo textNumberOption(" - 廳", "livingroom", $edit_data,'廳');
-		echo textNumberOption(" - 衛", "bathroom", $edit_data,'衛');
-		echo textNumberOption("<span class='red'>＊</span>位於幾樓", "locate_level", $edit_data);
-		echo textNumberOption("<span class='red'>＊</span>總樓層", "total_level", $edit_data);
-		echo textNumberOption("<span class='red'>＊</span>面積", "area_ping", $edit_data,'坪');
-		echo textNumberOption("<span class='red'>＊</span>月租金", "rent_price", $edit_data,'元');
+		echo textNumberOption("<span class='red'>＊</span>格局 - 房", "room", $edit_data, 0, 10, 1,'房');
+		echo textNumberOption(" - 廳", "livingroom", $edit_data, 0, 10, 1,'廳');
+		echo textNumberOption(" - 衛", "bathroom", $edit_data, 0, 10, 1,'衛');
+		echo textNumberOption("<span class='red'>＊</span>位於幾樓", "locate_level", $edit_data, -3, 30, 1,'樓');
+		echo textNumberOption("<span class='red'>＊</span>總樓層", "total_level", $edit_data, -3, 30, 1,'樓');
+		echo textNumberOption("<span class='red'>＊</span>面積", "area_ping", $edit_data, 0, 300, 0.01, '坪');
+		echo textNumberOption("<span class='red'>＊</span>月租金", "rent_price", $edit_data, 0, 100000, 1000, '元');
 		echo textOption("<span class='red'>＊</span>押金", "deposit", $edit_data, 'ex.兩個月');
 		echo textOption("<span class='red'>＊</span>地址", "addr", $edit_data);
 		?>
@@ -38,9 +54,12 @@
 		<?php
 		echo textOption("<span class='red'>＊</span>可遷入日", "move_in", $edit_data,'ex.隨時');
 		echo textOption("<span class='red'>＊</span>最短租期", "rent_term", $edit_data,'ex.一年');
-		echo textOption("<span class='red'>＊</span>型態/現況", "current", $edit_data, 'ex.電梯大樓、公寓、獨立套房、華廈、整層住家');
+		echo textOption("<span class='red'>＊</span>現 況", "current", $edit_data, '');
 		echo textOption("法定用途", "usage", $edit_data,'ex.住宅用');
 		echo textOption("隔間材質", "meterial", $edit_data);
+		echo checkBoxGroup('家 俱','furniture', $edit_data, config_item('furniture_array'));
+		echo checkBoxGroup('家電設備','electric', $edit_data, config_item('electric_array'));
+		//dprint(config_item('electric_array'));
 		?>
 		<div class="hr hr-16 hr-dotted"></div>
 		<div class="form-group ">
@@ -77,6 +96,9 @@
 		</div>
 		<?php
 		echo textOption("身份要求", "tenant_term", $edit_data, 'ex.學生、上班族、家庭');
+		?>
+		<div class="hr hr-16 hr-dotted"></div>
+		<?php
 		echo textOption("生活機能", "living", $edit_data);
 		echo textOption("附近交通", "traffic", $edit_data);
 		echo textAreaOption("<span class='red'>＊</span>特色說明", "desc", $edit_data);

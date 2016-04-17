@@ -317,7 +317,7 @@ if ( ! function_exists('formArraySet'))
 }
 
 
-function textNumberOption($field_title = '',$option_name = '',$edit_data = array(),$option_attr = '',$hint = '')
+function textNumberOption($field_title = '',$option_name = '',$edit_data = array(), $min=0, $max=100, $step=1, $hint = '')
 {
 	$error_css = '';
 	$error_msg = '';	
@@ -333,10 +333,9 @@ function textNumberOption($field_title = '',$option_name = '',$edit_data = array
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="number" min=0 step=1 id="'.$option_name.'" name="'.$option_name.'"  class="width-30" value="'.tryGetData( $option_name,$edit_data).'"  />					
-		'.$option_attr.'</div>
-		'.$hint.'
-		'.$error_msg.'		
+			<input type="number" min='.$min.'  max='.$max.' step='.$step.' id="'.$option_name.'" name="'.$option_name.'"  class="width-25" value="'.tryGetData( $option_name,$edit_data).'"  />'
+		.$hint.'</div>'		
+		.$error_msg.'		
 	</div>';
 	
 	return $html;	
@@ -438,7 +437,7 @@ function dropdownOption($field_title = '',$option_name = '',$edit_data = array()
 }
 
 
-function checkBoxOption($field_title = '',$option_name = '',$edit_data = array(),$option_attr = '')
+function checkBoxOption($field_title = '',$option_name = '',$edit_data = array(), $option_attr = '')
 {	
 	
 	$error_css = '';
@@ -485,8 +484,8 @@ function checkBoxGroup($field_title = '',$option_name = '',$edit_data = array(),
 	foreach ($option_arr as $key => $item) 
 	{
 		$check_str .='<label>
-						<input name="'.$option_name.'[]" type="checkbox" value="'.$item["value"].'"   '.(strpos(tryGetData($option_name,$edit_data), $item["value"])!==false?"checked":"").'  class="ace" />
-						<span class="lbl">'.$item["title"].'</span>
+						<input name="'.$option_name.'[]" type="checkbox" value="'.$item["value"].'"   '.(mb_strpos(tryGetData($option_name,$edit_data), $item["value"])!==false?"checked":"").'  class="ace" />
+						<span class="lbl">'.$item["title"].'&nbsp;&nbsp;&nbsp;&nbsp;</span>
 					</label>';	
 	}
 	$check_str .= '</div>';
@@ -496,7 +495,7 @@ function checkBoxGroup($field_title = '',$option_name = '',$edit_data = array(),
 	$html = 
 	'<div class="form-group '.$error_css.'">
 		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
-		<div class="col-xs-12 col-sm-4">
+		<div class="col-xs-12 col-sm-8">
 		'.$check_str.'			
 		</div>
 		'.$error_msg.'

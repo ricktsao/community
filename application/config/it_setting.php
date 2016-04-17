@@ -50,10 +50,10 @@ $config['image']['upload_max_size'] = '204800';
 
 //郵件設定
 //------------------------------------------------------
-$config['mail']['host'] = 'oa.chupei.com.tw'; 
+$config['mail']['host'] = 'abcde.com.tw'; 
 $config['mail']['port'] = '25';
 $config['mail']['sender_mail'] = '';
-$config['mail']['sender_name'] = '竹北置地 <it@chupei.com.tw>';
+$config['mail']['sender_name'] = '富網通 <it@abcde.com.tw>';
 $config['mail']['charset'] = 'utf-8';
 $config['mail']['encoding'] = 'base64';
 $config['mail']['is_html'] = TRUE;
@@ -102,6 +102,13 @@ $config['mail']['template'] =
 //外網權限功能(1:開啟,2:關閉)
 $config['web_access_enable'] = 0;
 
+// 角色
+$config['role_array'] = array(  'I' => '住　戶'
+								, 'M' => '物業人員'
+								//, 'G' => '警衛'
+								//, 'S' => '秘書'
+								, 'F' => '富網通'
+								);
 // 性別
 $config['gender_array'] = array(  1 => '先生'
 								, 2 => '女士'
@@ -116,13 +123,39 @@ $config['gender_array2'] = array('m'=>'男性','f'=>'女性', 'a'=>'男女不拘
 // 車位
 $config['parking_array'] = array( 0=>'沒有', 1=>'有-平面式', 2=>'有-機械式');
 
-// 角色
-$config['role_array'] = array(  'I' => '住　戶'
-								, 'M' => '物業人員'
-								//, 'G' => '警衛'
-								//, 'S' => '秘書'
-								, 'F' => '富網通'
+// 家具
+$config['furniture_array'] = array( array('value'=>'a', 'title'=>'床')
+								, array('value'=>'b', 'title'=>'衣櫃')
+								, array('value'=>'c', 'title'=>'沙發')
+								, array('value'=>'d', 'title'=>'桌子')
+								, array('value'=>'e', 'title'=>'椅子')
 								);
+// 家電
+$config['electric_array'] = array( array('value'=>'a', 'title'=>'電視')
+								, array('value'=>'b', 'title'=>'冰箱')
+								, array('value'=>'c', 'title'=>'第四台')
+								, array('value'=>'d', 'title'=>'網路')
+								, array('value'=>'e', 'title'=>'洗衣機')
+								, array('value'=>'f', 'title'=>'熱水器')
+								, array('value'=>'g', 'title'=>'天然瓦斯')
+								);
+
+// 型態
+$config['rent_type_array'] = array( 'a'=>'整層住家'
+								, 'b'=>'獨立套房'
+								, 'c'=>'分租套房'
+								, 'd'=>'雅房'
+								, 'e'=>'店面'
+								, 'f'=>'辦公'
+								);
+// 家具
+$config['house_type_array'] = array( 'a'=>'電梯大樓'
+								, 'b'=>'透天厝'
+								, 'c'=>'華廈'
+								, 'd'=>'公寓'
+								, 'e'=>'別墅'
+								);
+
 									
 											
 //檔案類型
