@@ -45,7 +45,7 @@
 
 		<!--[if !IE]> -->
 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="<?php echo site_url().$templateUrl?>js/jquery.min_203.js"></script>
 
 		<!-- <![endif]-->
 

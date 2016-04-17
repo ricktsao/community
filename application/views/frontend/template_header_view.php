@@ -6,7 +6,7 @@
                 <a href="#"><img src="<?php echo base_url().$templateUrl;?>images/btn1.png" alt=""></a>
                 <ul class="ul_unstyle">
                     <li><a href="<?php echo frontendUrl("message")?>">個人訊息通知<span></span></a></li>
-                    <li><a href="#">郵件物品通知<span></span></a></li>
+                    <li><a href="<?php echo frontendUrl("mailbox")?>">郵件物品通知<span></span></a></li>
                     <li><a href="#">瓦斯度數登記<span></span></a></li>
 					<li><a href="#">磁扣使用查詢<span></span></a></li>
                 </ul>
@@ -25,8 +25,8 @@
             <li>
                 <a href="#"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>
 				<ul class="ul_unstyle">
-                    <li><a href="#">警衛登入<span></span></a></li>
-                    <li><a href="#">秘書登入<span></span></a></li>                    
+                    <li><a href="<?php echo backendUrl("mailbox")?>">警衛登入<span></span></a></li>
+                    <li><a href="<?php echo backendUrl("mailbox")?>">秘書登入<span></span></a></li>                    
                 </ul>
             </li>
         </ul>
@@ -62,7 +62,7 @@
             </tr>           
             <tr>
                 <td>
-                     <input type="password" name="keycode" class="input_style" placeholder="請使用磁卡感應">
+                     <input type="password" name="keycode" class="input_style" autofocus placeholder="請使用磁卡感應">
                 </td>
             </tr>
            

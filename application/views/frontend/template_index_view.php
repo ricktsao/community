@@ -33,8 +33,12 @@
 <script>
 $(function() {
 
-    $("#member_login_btn").fancybox();
+$("#member_login_btn").fancybox({
 
+    	afterShow:function(){
+    		$('#member_login_form input[type=password]').focus();
+    	}
+    });
 
 })
 </script>
