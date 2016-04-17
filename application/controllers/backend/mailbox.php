@@ -96,6 +96,16 @@ class Mailbox extends Backend_Controller {
 				"updated" => date( "Y-m-d H:i:s" )
 				);
 				
+				$user_info = $this->it_model->listData("sys_user","sn='".tryGetData("user_sn",$edit_data)."'");
+				if($user_info["count"]>0)
+				{
+					$user_info = $user_info["data"][0];
+					$update_data["user_sn"] = $user_info["sn"];
+					$update_data["user_app_id"] = $user_info["app_id"];
+				}
+				
+				
+				
 				$content_sn = $this->it_model->addData( "mailbox" , $update_data );
 				if($content_sn > 0)
 				{				
@@ -168,108 +178,25 @@ class Mailbox extends Backend_Controller {
 
 	public function ajaxGetPeople()
 	{
-		echo '
-			<ul id="names_list">
-				<li onclick="selectCountry(\'14509\',\'林心城\',\'\',\'桃園市桃園區中路里２５鄰國際路二段２８號\');">林心城（身分證號：未知）　地址：桃園市桃園區中路里２５鄰國際路二段２８號</li><li onclick="selectCountry(\'14510\',\'林心正\',\'\',\'新北市新莊區西盛里２１鄰民安西路４８０巷３號\');">林心正（身分證號：未知）　地址：新北市新莊區西盛里２１鄰民安西路４８０巷３號</li>
-			</ul>';
-	}
-
-	/**
-	 
-	  
-	 */
-
-	public function ajaxGetPeople1()
-	{
 		$keyword = $this->input->get('keyword', true);
-		$case_city_code = $this->input->get('ccd', true);
-		$case_location_sn = $this->input->get('lsn', true);
-
-		if (mb_strlen($keyword) > 1) {
-
-			$keyword = big5_for_utf8($keyword);
-
-			// 搜尋客戶序號
-			/*$query = 'SELECT c.sn, c.name, c.uni_id, c.addr '
-					.'  FROM customer c LEFT JOIN customer_land_detail cld ON c.sn = cld.customer_sn '
-					.' WHERE c.name like "'.$keyword.'%"  '
-					;*/
+		
+		$user_list = $this->it_model->listData("sys_user","name like '%".$keyword."%'");
+		
+		
+		$return_string = '';
+		foreach( $user_list["data"] as $key => $user )
+		{
 			
-			## 搜尋客戶在指定行政區是否有土地
-			// 先查詢客戶的資產
-			$query = 'SELECT c.sn, c.name, c.uni_id, c.addr , GROUP_CONCAT(cld.land_sn) as land_list '
-					.'  FROM customer c LEFT JOIN customer_land_detail cld ON c.sn = cld.customer_sn   '
-					.' WHERE c.name like "%'.$keyword.'%" '
-					.'   AND LOWER(cld.city_code) = "'.strtolower($case_city_code).'" '
-					.' GROUP BY customer_sn '
-					;
-			
-			$result = $this->it_model->runSql($query, null, null, array('sn'=>'asc'));
-
-			echo '<ul id="names_list">';
-			$cust = array();
-
-			if ( $result['count'] > 0 ) {
-				$i = 0;
-				foreach ( $result['data'] as $item) {
-
-					$flag = false;
-
-					$land_list = tryGetData('land_list', $item);
-					if (substr($land_list,-1) == ',') {
-						$land_list = substr($land_list,0,-1);
-					}
-					$land_array = explode(',' , $land_list);
-
-					// 檢查客戶的資產是否在指定行政區？
-					foreach ($land_array as $land_sn) {
-						
-						$condi = 'sn='.$land_sn . ' AND location_sn='.$case_location_sn;
-						$result2 = $this->it_model->listData('b'.$case_city_code.'_land_view', $condi, null, null);
-
-						if ($result2['count'] > 0) {
-							$flag = true;
-							break;
-						} else {
-						
-					//	dprint($result['count']);
-						}
-					}
-		//dprint($query);
-					$sn = tryGetData('sn', $item);
-					$name = tryGetData('name', $item, NULL);
-					$uni_id = tryGetData('uni_id', $item, NULL);
-					$addr = tryGetData('addr', $item, '未知');
-
-					if ($flag == false) {
-						continue;
-					}
-
-					$layout = $name.'';
-					//if (isNotNull(tryGetData('uni_id', $item, NULL)) ) {
-						$layout .= '（身分證號：'.tryGetData('uni_id', $item, '未知').'）';
-					//}
-					
-					$layout .= '　地址：'.$addr;
-
-					echo '<li onclick="selectCountry(\''.$sn .'\',\''. $name .'\',\''. $uni_id .'\',\''. $addr.'\');">'. $layout . "</li>";
-					$i++;
-				}
-				if ( $i == 0 ) {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 ...</li>';
-				}
-			} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 ....</li>';
-			}
-		} else {
-					echo '<li style="font-weight:normal; color: #c8c8c8">... 查無客戶資料，請確認您的客戶擁有（或曾經擁有）此區域的土地 .....</li>';
+			$return_string .= '
+			<ul id="names_list">
+				<li onclick="selectCountry(\''.$user["sn"].'\',\''.$user["name"].'\');">'.$user["name"].'　地址：'.$user["owner_addr"].'</li>
+			</ul>
+			';	
 		}
-		// echo json_encode($return);
-		echo '</ul>';
+		echo $return_string;
 	}
 
 	
-
 
 
 	

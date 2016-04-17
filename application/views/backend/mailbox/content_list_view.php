@@ -11,7 +11,7 @@
 		<form  role="search" action="<?php echo bUrl('editContent');?>">
 		<article class="well"> 		
 			<div class="btn-group">				
-				  <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>新增</button>			
+				  <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="fa fa-pencil"></i> 登錄郵件</button>			
 			</div>			
 		</article>	
 		</form>
