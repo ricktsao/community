@@ -23,6 +23,8 @@ class Rent_House extends Backend_Controller {
 			$condition .= " AND ( `title` like '%".$keyword."%' "
 						."      OR `addr` like '%".$keyword."%' "
 						."      OR `living` like '%".$keyword."%' "
+						."      OR `traffic` like '%".$keyword."%' "
+						."      OR `desc` like '%".$keyword."%' "
 						."      OR `rent_price` = '".$keyword."'  ) "
 						;
 		}
@@ -94,7 +96,11 @@ class Rent_House extends Backend_Controller {
 				'start_date' => date( "Y-m-d" ),
 				'end_date' => date( "Y-m-d", strtotime("+1 month") ),
 				'forever' => 1,
-				'launch' => 1
+				'launch' => 1,
+				//'rent_type' => array(),
+				//'house_type' => array(),
+				'furniture' => '',
+				'electric' => ''
 			);
 			
 			$data["sys_user_group"] = $sys_user_group;
@@ -110,15 +116,7 @@ class Rent_House extends Backend_Controller {
 				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
 				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( tryGetData('end_date',$edit_data, '+1 month' ) ) );
 				
-						
-				$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group","sys_user_sn = ".$edit_data["sn"]." and launch = 1" );				
-				foreach($sys_user_belong_group["data"] as $item)
-				{
-					array_push($sys_user_group,$item["sys_user_group_sn"]);	
-				}
 				
-				//dprint($sys_user_group);
-				$data["sys_user_group"] = $sys_user_group;
 				$data['edit_data'] = $edit_data;
 				$this->display("edit_view",$data);
 			}
@@ -139,7 +137,7 @@ class Rent_House extends Backend_Controller {
 		{
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		dprint($edit_data);
+
 		if ( ! $this->_validateData() ) {
 			//權組list
 			//---------------------------------------------------------------------------------------------------------------		
@@ -148,6 +146,10 @@ class Rent_House extends Backend_Controller {
 			//---------------------------------------------------------------------------------------------------------------
 			
 
+			//$edit_data['rent_type'] = implode(',', tryGetData('rent_type', $edit_data, array()));
+			//$edit_data['house_type'] = implode(',', tryGetData('house_type', $edit_data, array()));
+			$edit_data['furniture'] = implode(',', tryGetData('furniture', $edit_data, array()));
+			$edit_data['electric'] = implode(',', tryGetData('electric', $edit_data, array()));
 			$data["edit_data"] = $edit_data;
 			
 			$data["sys_user_group"] = array();
@@ -156,36 +158,73 @@ class Rent_House extends Backend_Controller {
 		}
         else 
         {
-			dprint($edit_data);
-			die;
-        	$arr_data = array(				
-        		//"email" =>$edit_data["email"]
-				  "name"		=>	tryGetData("name", $edit_data)
-				, "phone"		=>	tryGetData("phone", $edit_data)
 
-				, "gender"		=>	tryGetData("gender", $edit_data)
-				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
-				, "voting_right"		=>	tryGetData("voting_right", $edit_data)
-				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
-				, "is_manager"		=>	tryGetData("is_manager", $edit_data)
-				, "manager_title"		=>	tryGetData("manager_title", $edit_data)
-				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
-				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
-				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
-				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
+			/*
+			dprint($edit_data);
+Array
+    [furniture] => Array
+        (
+            [0] => a
+            [1] => b
+            [2] => c
+        )
+
+    [electric] => Array
+        (
+            [0] => e
+            [1] => f
+            [2] => g
+        )
+
+)
+			*/
+        	$arr_data = array(
+				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
+				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
+				, "house_type"		=>	tryGetData("house_type", $edit_data)
+				, "furniture"		=>	implode(',', tryGetData("furniture", $edit_data))
+				, "electric"		=>	implode(',', tryGetData("electric", $edit_data))
+				, "title"		=>	tryGetData("title", $edit_data)
+				, "name"		=>	tryGetData("name", $edit_data)
+				, "phone"		=>	tryGetData("phone", $edit_data)
+				, "room"		=>	tryGetData("room", $edit_data)
+				, "livingroom"		=>	tryGetData("livingroom", $edit_data)
+				, "bathroom"		=>	tryGetData("bathroom", $edit_data)
+				, "locate_level"	=>	tryGetData("locate_level", $edit_data)
+				, "total_level"		=>	tryGetData("total_level", $edit_data)
+				, "area_ping"		=>	tryGetData("area_ping", $edit_data)
+				, "rent_price"		=>	tryGetData("rent_price", $edit_data)
+				, "deposit"			=>	tryGetData("deposit", $edit_data)
+				, "addr"		=>	tryGetData("addr", $edit_data)
+				, "move_in"		=>	tryGetData("move_in", $edit_data)
+				, "rent_term"		=>	tryGetData("rent_term", $edit_data)
+				, "current"		=>	tryGetData("current", $edit_data)
+				, "usage"		=>	tryGetData("usage", $edit_data)
+				, "meterial"		=>	tryGetData("meterial", $edit_data)
+
+				, "flag_parking"		=>	tryGetData("flag_parking", $edit_data, 0)
+				, "flag_cooking"		=>	tryGetData("flag_cooking", $edit_data, 0)
+				, "flag_pet"		=>	tryGetData("flag_pet", $edit_data, 0)
+				, "gender_term"		=>	tryGetData("gender_term", $edit_data)
+				, "tenant_term"		=>	tryGetData("tenant_term", $edit_data)
+				, "living"		=>	tryGetData("living", $edit_data)
+				, "traffic"		=>	tryGetData("traffic", $edit_data)
+				, "desc"		=>	tryGetData("desc", $edit_data)
+				, "start_date"		=>	tryGetData("start_date", $edit_data)
+				, "end_date"		=>	tryGetData("end_date", $edit_data)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
-				, "updated" =>  date( "Y-m-d H:i:s" ) 				
+				, "created" =>  date( "Y-m-d H:i:s" )
+				, "updated" =>  date( "Y-m-d H:i:s" )
 			);        	
 			
 			if($edit_data["sn"] != FALSE)
 			{
 				dprint($arr_data);
-				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
+				$arr_return = $this->it_model->updateDB( "rent_house" , $arr_data, "sn =".$edit_data["sn"] );
 				dprint($this->db->last_query());
-				if($arr_return['success'])			
-				{					
-					$this->_updateWebAdminGroup($edit_data);
+				if($arr_return['success'])
+				{
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -194,26 +233,17 @@ class Rent_House extends Backend_Controller {
 					$this->showFailMessage();
 				}
 				
-				//redirect(bUrl("admin",TRUE,array("sn")));		
+				redirect(bUrl("index",TRUE,array("sn")));		
 			}
 			else 
 			{
-				if ( $edit_data["id"] == 'I') {			//住戶用 key code
-					$arr_data["id"] = $edit_data["id"];
-
-				} elseif ( in_array($edit_data["id"], array('G','M','S')) ) {
-					$arr_data["account"] = $edit_data["account"];
-					$arr_data["password"] = prepPassword($edit_data["password"]);	
-				}
-
 				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
-				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
+				$rent_sn = $this->it_model->addData( "rent_house" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
-				if($sys_user_sn > 0)
-				{				
-					$edit_data["sn"] = $sys_user_sn;
-					$this->_updateWebAdminGroup($edit_data);
+
+				if($rent_sn > 0) {
+					$edit_data["sn"] = $rent_sn;
 					$this->showSuccessMessage();
 				}
 				else 
@@ -221,7 +251,7 @@ class Rent_House extends Backend_Controller {
 					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("admin",TRUE,array("sn")));
+				redirect(bUrl("index",TRUE,array("sn")));
 			}
         }
 	}

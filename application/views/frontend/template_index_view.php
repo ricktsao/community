@@ -8,6 +8,15 @@
 	<link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>js/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>css/font-awesome/css/font-awesome.min.css">
 	
+	
+	<script src="<?php echo base_url().$templateUrl;?>js/jquery-2.2.3.min.js"></script>
+	<script src="<?php echo base_url().$templateUrl;?>js/jquery.cycle2.min.js"></script>
+	<script src="<?php echo base_url().$templateUrl;?>js/jquery.cycle2.carousel.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url().$templateUrl;?>js/fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+	<script type="text/javascript" src="<?php echo base_url().$templateUrl;?>js/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		
+	
+	
 	<!-- 本頁使用-->
 	<?php echo $style_css;?>
 	<!-- 本頁使用-->
@@ -22,14 +31,15 @@
 <?php echo $footer;?>
 
 <script>
-$(function() 
-{
-    $("#member_login_btn").fancybox();
-	$('#cycle').cycle({
-		slides: ">a",
-		fx: "carousel",
-		pager:"#pager"
-	});
+$(function() {
+
+$("#member_login_btn").fancybox({
+
+    	afterShow:function(){
+    		$('#member_login_form input[type=password]').focus();
+    	}
+    });
+
 })
 </script>
 </body>

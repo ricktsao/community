@@ -34,7 +34,8 @@ abstract class Frontend_Controller extends IT_Controller
 	public $is_marguee = TRUE;
 	public $show_header = TRUE;
 	public $show_footer = TRUE;
-
+	public $show_banner = TRUE;
+	
 	public $web_access = 0;
 	
 	
@@ -61,6 +62,31 @@ abstract class Frontend_Controller extends IT_Controller
 		$this->getParameter();
 		
 	}	
+	
+	function checkLogin()
+	{		
+		
+		if(
+			$this->session->userdata("f_user_name") !== FALSE 
+			&& $this->session->userdata("f_user_sn") !== FALSE 	
+			&& $this->session->userdata("f_user_id") !== FALSE
+			&& $this->session->userdata("f_comm_id") !== FALSE 		
+		)
+		{
+			
+		}
+		else 
+		{
+			
+			$this->session->set_userdata('pre_login_url', base_url(uri_string()));
+			
+			
+			//dprint($this->session->userdata);
+			redirect(frontendUrl("login"));
+		}
+	}
+	
+	
 	
 	function initFrontend()
 	{		
@@ -163,7 +189,14 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$this->show_footer = $show_footer;
 	}
-		
+	
+	//設定banner區塊是否顯示
+	public function displayBanner($show_banner = TRUE)
+	{
+		$this->show_banner = $show_banner;
+	}
+
+	
 	protected function getMenuInfo()
 	{	
 		$this->menu_id = $this->uri->segment(1);				
@@ -562,6 +595,7 @@ abstract class Frontend_Controller extends IT_Controller
 
 		$data['show_header'] = $this->show_header;
 		$data['show_footer'] = $this->show_footer;
+		$data['show_banner'] = $this->show_banner;
 		
 		$data['header'] = $this->load->view('frontend/template_header_view', $data, TRUE);
 		//$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
@@ -702,10 +736,14 @@ abstract class Frontend_Controller extends IT_Controller
 	 */
 	public function logout()
 	{
-		$who = $this->session->userdata('unit_name').$this->session->userdata('user_name');
-		logData("前台登出-".$who, 1);
 
-		$this->sysLogout();
+		$this->session->unset_userdata('f_user_name');
+		$this->session->unset_userdata('f_user_sn');
+		$this->session->unset_userdata('f_user_id');
+		$this->session->unset_userdata('f_user_app_id');
+		$this->session->unset_userdata('f_comm_id');
+		
+		$this->redirectHome();
 	}	
 	
 	

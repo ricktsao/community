@@ -33,6 +33,7 @@ class IT_Controller extends CI_Controller
 		$this->session->unset_userdata('func_auth');
 		$this->session->unset_userdata('user_group');
 		$this->session->unset_userdata('comm_id');
+		$this->session->unset_userdata('user_app_id');
 		
 		$this->redirectHome();
 	}	
