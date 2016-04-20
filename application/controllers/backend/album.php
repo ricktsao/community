@@ -20,8 +20,7 @@ class Album extends Backend_Controller {
 		$this->sub_title = "相簿";	
 	
 		//---------------------------------------------------------------------
-		
-		
+	
 		
 		$list = $this->it_model->listData( "album" , null , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
 		

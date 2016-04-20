@@ -1,7 +1,17 @@
 <?php
 Class Album_model extends IT_Model
 {
-	
+	private $path;
+
+
+	function __construct() 
+	{
+		parent::__construct();
+
+		$this->path =  base_url()."upload/website/album/";
+
+	}
+
 	public function GetAlbumList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{
 		$sql = "	SELECT 	SQL_CALC_FOUND_ROWS
@@ -29,5 +39,35 @@ Class Album_model extends IT_Model
 
 		return $data;
 	}
+
+	public function GetHomeAlbumList(){
+		//$path = base_url()."upload/website/album/";
+		$sql = "SELECT title,sn,start_date FROM album  ORDER BY start_date DESC  LIMIT 0,3";
+		$data =  $this->readQuery( $sql );
+		
+		for($i=0;$i<count($data);$i++){
+
+			$itemSql = "SELECT 
+			CONCAT('".$this->path ."',img_filename) as img_filename,
+			title FROM album_item WHERE album_sn =".$data[$i]['sn']." and img_filename <>''  ORDER BY sort DESC   LIMIT 0,3";
+
+			$item_result = $this->readQuery( $itemSql );
+
+			$data[$i]['imgs']=$item_result;
+
+		}
+
+	 	return $data;
+	}
+
+		public function GetPhoto($sn){
+			$itemSql = "SELECT 
+			CONCAT('".$this->path ."',img_filename) as img_filename,
+			title FROM album_item WHERE album_sn =".$sn." and img_filename <>''  ORDER BY sort DESC";
+
+			$item_result = $this->readQuery( $itemSql );
+
+			return $item_result;
+		}
 	
 }
