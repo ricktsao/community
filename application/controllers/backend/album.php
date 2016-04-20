@@ -24,19 +24,7 @@ class Album extends Backend_Controller {
 		
 		
 		$list = $this->it_model->listData( "album" , null , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
-		//img_show_list($list["data"],'img_filename','album');
 		
-		
-		/*
-		if($this->page > 1 && $list["count"] == 0)
-		{						
-			$page = $this->page - 1;
-			redirect(bUrl("albumList?cat_sn=".$cat_sn."&page=".$page, FALSE));
-		}
-		*/
-		
-		
-		//img_show_list($list["data"],'img_filename','album');
 		$data["list"] = $list["data"];
 		
 		//dprint($data);
@@ -50,9 +38,9 @@ class Album extends Backend_Controller {
 	 */
 	public function editContent($album_sn="")
 	{	
-		$this->sub_title = "作品賞析列表";	
+		
 				
-		$album_sn = $_GET['sn'];
+		$album_sn =  tryGetArrayValue("sn",$_GET,"");
 				
 			//dprint($cat_list);	
 		if($album_sn == "")
@@ -193,9 +181,9 @@ class Album extends Backend_Controller {
 		{
 			$page = 1;
 		}
-		$cat_sn = $this->input->post("cat_sn",TRUE);
+	//	$cat_sn = $this->input->post("cat_sn",TRUE);
 		
-		$this->deleteItem("album", "albumList?cat_sn=".$cat_sn."&page=".$page);
+		$this->deleteItem("album", "contentList?page=".$page);
 
 	}
 
@@ -296,7 +284,7 @@ class Album extends Backend_Controller {
 					//dprint($arr_data);
 						
 					//圖片處理 img_filename				
-					$img_config['resize_setting'] =array("album"=>array(0,0));					
+					$img_config['resize_setting'] =array("album"=>array(800,600));					
 					$uploadedUrl = './upload/tmp/' . $_FILES['fileUpload2']['name'][$key];
 					move_uploaded_file( $_FILES['fileUpload2']['tmp_name'][$key], $uploadedUrl);
 					$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);	
@@ -335,9 +323,11 @@ class Album extends Backend_Controller {
 	 */
 	public function editItem()
 	{			
-		
+	
 		//album info
 		//---------------------------------------------------------------------
+
+		
 		$album_sn = $this->input->get("album_sn",TRUE);		
 		$album_info = $this->it_model->listData("album","sn =".$album_sn);				
 			
@@ -350,10 +340,11 @@ class Album extends Backend_Controller {
 		{
 			redirect(bUrl("albumList"));	
 		}
+		
 		//---------------------------------------------------------------------
 		
 		$this->sub_title = "作品賞析[".$album_info["title"]."] -> 圖片編輯";		
-		$item_sn = $this->input->get("item_sn",TRUE);
+		$item_sn = $this->input->get("sn",TRUE);
 		$data["album_sn"] = $album_sn;		
 				
 		
@@ -363,8 +354,7 @@ class Album extends Backend_Controller {
 			$data["edit_data"] = array
 			(
 				'sort' =>500,
-				'update_date' => date( "Y-m-d" ),
-				'launch' =>1
+				'title' => NULL
 			);
 			$this->display("item_form_view",$data);
 		}
@@ -375,7 +365,10 @@ class Album extends Backend_Controller {
 			{
 				$data["edit_data"] = $album_info["data"][0];
 				$data["edit_data"]["orig_img_filename"] = $data["edit_data"]["img_filename"];
-				$data["edit_data"]["img_filename"] = isNotNull($data["edit_data"]["img_filename"])?base_url()."upload/website/album/".$data["edit_data"]["img_filename"]:"";			
+				$data["edit_data"]["img_filename"] = isNotNull($data["edit_data"]["img_filename"])?base_url()."upload/website/album/".$data["edit_data"]["img_filename"]:"";	
+
+
+
 				$this->display("item_form_view",$data);
 			}
 			else
@@ -407,8 +400,7 @@ class Album extends Backend_Controller {
         		"title" => tryGetValue($edit_data["title"])    		
         		, "album_sn" => tryGetArrayValue("album_sn",$edit_data)	
         		, "sort" => tryGetArrayValue("sort",$edit_data,500)	
-				, "launch" => tryGetArrayValue("launch",$edit_data,0)	
-				, "update_date" =>  date( "Y-m-d H:i:s" )
+			
 			);        	
 			
 			if(isNotNull(tryGetData("del_img_filename",$edit_data)) && tryGetData("del_img_filename",$edit_data) == "1")
@@ -424,8 +416,7 @@ class Album extends Backend_Controller {
 				$img_config['resize_setting'] =array("album"=>array(0,0));					
 				$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
 				move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
-				$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);	
-						
+				$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);					
 											
 				$img_config['resize_setting'] =array("album"=>array(280,187));
 				resize_img($uploadedUrl,$img_config['resize_setting'],"s_".$arr_data['img_filename']);
