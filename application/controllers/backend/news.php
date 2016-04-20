@@ -102,20 +102,20 @@ class News extends Backend_Controller {
 			
 			deal_img($edit_data ,"img_filename",$this->router->fetch_class());			
 			
+			$is_sync = 0;
 			
 			if(isNotNull($edit_data["sn"]))
 			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
 					//dprint($edit_data);exit;
-					$this->sync_to_server($edit_data);
+					$is_sync = $this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
 				else 
 				{
 					$this->showFailMessage();
-				}
-				
+				}				
 			}
 			else 
 			{
@@ -126,7 +126,7 @@ class News extends Backend_Controller {
 				if($content_sn > 0)
 				{
 					$edit_data["sn"] = $content_sn;
-					$this->sync_to_server($edit_data);
+					$is_sync = $this->sync_to_server($edit_data);
 				
 					
 					$this->showSuccessMessage();							
@@ -134,9 +134,23 @@ class News extends Backend_Controller {
 				else 
 				{
 					$this->showFailMessage();					
-				}
-	
+				}	
 			}
+			
+			$sync_data = array(
+			
+			);
+			
+			//更新同步狀況
+			//------------------------------------------------------------------------------
+			if($is_sync != 1)
+			{
+				$is_sync = 1;
+			}			
+			$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$edit_data["sn"] );
+			//------------------------------------------------------------------------------
+			
+			
 			
 			redirect(bUrl("contentList"));	
         }	
