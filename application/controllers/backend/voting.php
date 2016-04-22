@@ -49,10 +49,7 @@ class Voting extends Backend_Controller {
 	public function editContent()
 	{
 		
-
-		
-		$content_sn = $this->input->get('sn');
-			
+		$content_sn = $this->input->get('sn');		
 				
 		if($content_sn == "")
 		{
@@ -76,8 +73,7 @@ class Voting extends Backend_Controller {
 			
 			if(count($list)>0)
 			{
-				//img_show_list($bulletin_info["data"],'img_filename',$this->router->fetch_class());			
-				
+						
 				$data["edit_data"] = $list[0];
 
 				//get option
@@ -190,6 +186,21 @@ class Voting extends Backend_Controller {
 		$this->ajaxChangeStatus("web_menu_content","launch",$this->input->post("content_sn", TRUE));
 	}
 
+	public function votingRecord()
+	{	
+
+		$sn = $this->input->get('sn');
+
+		$data = [];
+
+		$data['list'] = $this->Voting_model->votingRecord($sn);
+
+		
+		dprint($data['list']);
+
+		//$this->display("content_list_view",$data);
+		//dprint($data["pager"]);
+	}
 
 	
 	public function GenerateTopMenu()

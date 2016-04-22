@@ -48,7 +48,7 @@
                                         </td>
                                         <td>
 											<?php if($list[$i]["active"]==TRUE):?>
-											  <a class="btn  btn-minier btn-info" href="<?php echo bUrl('editContent',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
+											  <a class="btn  btn-minier btn-info" href="<?php echo bUrl('votingRecord',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
                                                 <i class="icon-edit bigger-120"></i>觀看結果
                                             </a>
 											<?php else:?>

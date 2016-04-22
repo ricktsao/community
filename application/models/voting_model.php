@@ -21,7 +21,11 @@ Class Voting_model extends IT_Model
 
 		$sql_date  = " AND '".$today."' >= voting.start_date AND '".$today."' <= voting.end_date ";
 
-		$sql_subquery =  " SELECT count(*) as counts,voting_sn FROM voting_record WHERE user_sn = ".$member_sn." GROUP BY voting_sn ";
+		$sql_subquery =  " SELECT 
+							count(*) as counts,voting_sn 
+							FROM voting_record 
+							WHERE user_sn = ".$member_sn." 
+							GROUP BY voting_sn ";
 
 		$sql = "SELECT 
 				voting.sn,
@@ -71,6 +75,40 @@ Class Voting_model extends IT_Model
 		return $re;
 
 	}
+
+	public function votingRecord($voting_sn){
+
+		$sql ="SELECT 
+			voting_option.text,
+			count(*) as counts,
+			voting_option.sn,
+			voting.allow_anony
+			FROM voting_record 
+			LEFT JOIN voting_option on voting_record.option_sn = voting_option.sn 
+			LEFT JOIN voting on voting.sn = voting_record.voting_sn
+			WHERE voting_record.voting_sn = ".$voting_sn." 
+			GROUP BY option_sn";
+
+		$re = $this->it_model->runSql($sql);
+
+		$re = $re['data'];
+
+		for($i=0;$i<count($re);$i++){
+
+			$sql="SELECT sys_user.name 
+				FROM voting_record LEFT JOIN sys_user ON voting_record.user_sn = sys_user.sn
+				WHERE voting_record.option_sn =".$re[$i]['sn'];
+
+			$user = $this->it_model->runSql($sql);
+
+			$re[$i]['user'] = $user['data'];
+
+		}
+
+		return $re;
+
+	}
+
 	
 }
 
