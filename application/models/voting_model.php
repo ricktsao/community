@@ -21,10 +21,22 @@ Class Voting_model extends IT_Model
 
 		$sql_date  = " AND '".$today."' >= voting.start_date AND '".$today."' <= voting.end_date ";
 
-		$sql = "SELECT * FROM voting WHERE 1=1".$sql_date ;
+		$sql_subquery =  " SELECT count(*) as counts,voting_sn FROM voting_record WHERE user_sn = ".$member_sn." GROUP BY voting_sn ";
+
+		$sql = "SELECT 
+				voting.sn,
+				subject,
+				description,
+				start_date,
+				end_date,
+				counts
+				FROM voting LEFT JOIN (".$sql_subquery.") AS vr ON  voting.sn = vr.voting_sn
+				WHERE vr.counts IS NULL".$sql_date;
+
 		$result = $this->it_model->runSql($sql);
+
+	
 		return $result;
-		//select * from voting left join (select count(*) as count,voting_record.voting_sn from voting_record where voting_record.user_sn = 9 ) as tt2 on voting.sn = tt2.voting_sn
 	}
 
 	public function frontendGetVotingDetail($voting_sn = null){
