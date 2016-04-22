@@ -6,7 +6,7 @@ Class C_model extends IT_Model
 		$sql = "	SELECT 	SQL_CALC_FOUND_ROWS
 							web_menu_content.*
 					FROM 	web_menu_content				
-					WHERE ( 1 )
+					WHERE ( del = 0 ) 
 					";
 		
 		if( isNotNull($content_type) )
@@ -76,7 +76,7 @@ Class C_model extends IT_Model
 							web_menu_content.*,parent.title as parent_title,parent.id as parent_id
 					FROM 	web_menu_content		
 					LEFT JOIN web_menu_content as parent on web_menu_content.parent_sn = parent.sn		
-					WHERE ( 1 )
+					WHERE ( web_menu_content.del = 0 or parent.del = 0 ) 
 					";			
 		
 		if( isNotNull($content_type) )

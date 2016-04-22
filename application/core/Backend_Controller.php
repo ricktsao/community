@@ -792,9 +792,38 @@ abstract class Backend_Controller extends IT_Controller
 
 
 
+	/**
+	 * web_menu_content 同步至雲端server
+	 */
+	function sync_to_server($post_data)
+	{
+		$url = "http://localhost/commapi/sync/updateContent/";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+
+
+
 	//ajax 取得
 	public function ajaxChangeStatus($table_name ='', $field_name = ',',$sn)
-    {   
+    {
 
         
         if(isNull($table_name) || isNull($field_name) || isNull($sn) )
@@ -824,19 +853,75 @@ abstract class Backend_Controller extends IT_Controller
 			}
 			
 			
-			
-			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );	
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
 			if($result)
 			{
 				echo json_encode($change_value);
 			}
-			else 
+			else
 			{
 				echo json_encode($data_info[$field_name]);
-			}			
+			}
 			                      
         }
     }
+	
+	
+	//ajax 取得
+	public function ajaxlaunchContent($sn)
+    {
+		$table_name = 'web_menu_content';
+        $field_name = 'launch';
+        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
+        {
+            echo json_encode(array());
+        }
+        else 
+        {		
+
+            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
+			if($data_info["count"]==0)
+			{
+				echo json_encode(array());
+				return;
+			}			  
+			
+			$data_info = $data_info["data"][0];
+			
+			$change_value = 1;
+			if($data_info[$field_name] == 0)
+			{
+				$change_value = 1;
+			}
+			else
+			{
+				$change_value = 0;
+			}
+			
+			
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
+			if($result)
+			{
+				//社區主機同步
+				//----------------------------------------------------------------------------------------------------
+				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
+				$content_info = $this->it_model->runSql($query);
+				if($content_info["count"] > 0)
+				{
+					$content_info = $content_info["data"][0]; 					
+					$this->sync_to_server($content_info);									
+				}			
+				//----------------------------------------------------------------------------------------------------
+				echo json_encode($change_value);
+			}
+			else
+			{
+				echo json_encode($data_info[$field_name]);
+			}
+			                      
+        }
+    }
+	
 	
 	
 	

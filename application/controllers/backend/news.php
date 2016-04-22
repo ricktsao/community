@@ -102,14 +102,13 @@ class News extends Backend_Controller {
 			
 			deal_img($edit_data ,"img_filename",$this->router->fetch_class());			
 			
-			$is_sync = 0;
-			
+						
 			if(isNotNull($edit_data["sn"]))
 			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
 					//dprint($edit_data);exit;
-					$is_sync = $this->sync_to_server($edit_data);
+					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -126,7 +125,7 @@ class News extends Backend_Controller {
 				if($content_sn > 0)
 				{
 					$edit_data["sn"] = $content_sn;
-					$is_sync = $this->sync_to_server($edit_data);
+					$this->sync_to_server($edit_data);
 				
 					
 					$this->showSuccessMessage();							
@@ -139,17 +138,7 @@ class News extends Backend_Controller {
 			
 			$sync_data = array(
 			
-			);
-			
-			//更新同步狀況
-			//------------------------------------------------------------------------------
-			if($is_sync != 1)
-			{
-				$is_sync = 1;
-			}			
-			$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$edit_data["sn"] );
-			//------------------------------------------------------------------------------
-			
+			);			
 			
 			
 			redirect(bUrl("contentList"));	
@@ -158,19 +147,7 @@ class News extends Backend_Controller {
 	
 	
 	
-	function sync_to_server($post_data)
-	{
-		$url = "http://localhost/commapi/sync/updateContent/";
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		//curl_setopt($ch, CURLOPT_POST,1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		$result = curl_exec($ch);
-		curl_close ($ch);
-		return $result;
-	}
+	
 	
 	
 	/**
@@ -192,20 +169,51 @@ class News extends Backend_Controller {
 
 	public function deleteContent()
 	{
-		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
 		
-		if($del_ary!= FALSE && count($del_ary)>0)
+		$del_ary = tryGetData("del",$_POST,array());				
+
+		//社區主機刪除
+		//----------------------------------------------------------------------------------------------------
+		$sync_sn_ary = array();//待同步至雲端主機 array
+		foreach ($del_ary as  $content_sn) 
 		{
-			$this->it_model->deleteDB( "web_menu_content",NULL,$del_ary );				
+			$result = $this->it_model->updateData( "web_menu_content" , array("del"=>1,"is_sync"=>0,"update_date"=>date("Y-m-d H:i:s")), "sn ='".$content_sn."'" );
+			if($result)
+			{
+				array_push($sync_sn_ary,$content_sn);
+			}						
 		}
+		//----------------------------------------------------------------------------------------------------
+				
+		//社區主機同步
+		//----------------------------------------------------------------------------------------------------
+		foreach ($sync_sn_ary as  $content_sn) 
+		{			
+			$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$content_sn."'";			
+			$content_info = $this->it_model->runSql($query);
+			if($content_info["count"] > 0)
+			{
+				$content_info = $content_info["data"][0]; 
+				
+				
+				$this->sync_to_server($content_info);
+				
+				//dprint($content_info);exit;
+								
+			}			
+		}		
+		//----------------------------------------------------------------------------------------------------
+
+		
 		$this->showSuccessMessage();
+		
 		redirect(bUrl("contentList", FALSE));	
 	}
 
 
 	public function launchContent()
 	{		
-		$this->ajaxChangeStatus("web_menu_content","launch",$this->input->post("content_sn", TRUE));
+		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
 
 
