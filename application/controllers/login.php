@@ -69,7 +69,8 @@ class Login extends Frontend_Controller {
 			
 			$this->session->set_userdata('f_user_name', $user_info["name"]);
 			$this->session->set_userdata('f_user_sn', $user_info["sn"]);
-			$this->session->set_userdata('f_user_id', $user_info["id"]);			
+			$this->session->set_userdata('f_user_id', $user_info["id"]);	
+			$this->session->set_userdata('f_building_id', $user_info["building_id"]);			
 			$this->session->set_userdata('f_user_app_id', $user_info["app_id"]);
 			$this->session->set_userdata('f_comm_id', $comm_id);
 			
