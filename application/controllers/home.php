@@ -19,6 +19,7 @@ class Home extends Frontend_Controller {
 		$this->addJs("js/fancybox/lib/jquery.mousewheel-3.0.6.pack.js");
 		$this->addJs("js/fancybox/source/jquery.fancybox.pack.js?v=2.1.5");		
 		
+		
 		$data = array();
 		
 		//日行一善 
@@ -42,7 +43,13 @@ class Home extends Frontend_Controller {
 		$data["course_list"] = $course_list["data"];
 		//--------------------------------------------------------------------	
 		
-		
+		//相簿
+		//-----------------------------------------
+		$this->load->Model("album_model");			
+		$data["album_list"] = $this->album_model->GetHomeAlbumList();
+
+
+		//-----------------------------------------
 		
 		$this->display("homepage_view",$data);
 	}		
