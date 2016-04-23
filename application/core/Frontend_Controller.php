@@ -34,7 +34,8 @@ abstract class Frontend_Controller extends IT_Controller
 	public $is_marguee = TRUE;
 	public $show_header = TRUE;
 	public $show_footer = TRUE;
-
+	public $show_banner = TRUE;
+	
 	public $web_access = 0;
 	
 	
@@ -61,6 +62,31 @@ abstract class Frontend_Controller extends IT_Controller
 		$this->getParameter();
 		
 	}	
+	
+	function checkLogin()
+	{		
+		
+		if(
+			$this->session->userdata("f_user_name") !== FALSE 
+			&& $this->session->userdata("f_user_sn") !== FALSE 	
+			&& $this->session->userdata("f_user_id") !== FALSE
+			&& $this->session->userdata("f_comm_id") !== FALSE 		
+		)
+		{
+			
+		}
+		else 
+		{
+			
+			$this->session->set_userdata('pre_login_url', base_url(uri_string()));
+			
+			
+			//dprint($this->session->userdata);
+			redirect(frontendUrl("login"));
+		}
+	}
+	
+	
 	
 	function initFrontend()
 	{		
@@ -163,7 +189,14 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$this->show_footer = $show_footer;
 	}
-		
+	
+	//設定banner區塊是否顯示
+	public function displayBanner($show_banner = TRUE)
+	{
+		$this->show_banner = $show_banner;
+	}
+
+	
 	protected function getMenuInfo()
 	{	
 		$this->menu_id = $this->uri->segment(1);				
@@ -522,10 +555,7 @@ abstract class Frontend_Controller extends IT_Controller
 		
 		$data['web_menu_list'] = $this->web_menu_list;
 		$data['web_menu_map'] = $this->web_menu_map;
-		$data['web_access'] = $this->web_access;
-				
-		//特殊權限
-		$data['func_auth'] = $this->session->userdata('func_auth');
+
 				
 		//前台單元權限
 		$data['frontend_auth'] = $this->session->userdata('frontend_auth');
@@ -562,6 +592,7 @@ abstract class Frontend_Controller extends IT_Controller
 
 		$data['show_header'] = $this->show_header;
 		$data['show_footer'] = $this->show_footer;
+		$data['show_banner'] = $this->show_banner;
 		
 		$data['header'] = $this->load->view('frontend/template_header_view', $data, TRUE);
 		//$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
@@ -702,10 +733,15 @@ abstract class Frontend_Controller extends IT_Controller
 	 */
 	public function logout()
 	{
-		$who = $this->session->userdata('unit_name').$this->session->userdata('user_name');
-		logData("前台登出-".$who, 1);
 
-		$this->sysLogout();
+		$this->session->unset_userdata('f_user_name');
+		$this->session->unset_userdata('f_user_sn');
+		$this->session->unset_userdata('f_user_id');
+		$this->session->unset_userdata('f_user_app_id');
+		$this->session->unset_userdata('f_comm_id');
+		$this->session->unset_userdata('f_building_id');
+		
+		$this->redirectHome();
 	}	
 	
 	
@@ -714,451 +750,5 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$this->output->enable_profiler(TRUE);	
 	}
-	
-	
-	
-	
-	//取得地區代碼
-	public function getSectionMap()
-    {
-    	$list = $this->it_model->listData( "section" , "status =1" , NULL , NULL , array("sn"=>"asc") );			
-		
-		$section_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$section_map[$item["section_name"]] = $item;
-		}
-			
-		return $section_map;		 
-    }
-	
-	
-	
-	//取得地區代碼 Plus
-	public function getSectionPlusMap()
-    {    	
-		$query = "		
-		SELECT SQL_CALC_FOUND_ROWS section.* ,location.city_code,location.city_name,location.town_name
-		FROM section 
-		LEFT JOIN location on location.sn = section.location_sn
-		WHERE section.status = 1 AND location.status = 1	
-		";
-
-		$list = $this->it_model->runSql( $query );
-		
-		$section_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$section_map[$item["sn"]] = $item;
-		}
-			
-		return $section_map;		 
-    }
-	
-	//取得地區代碼
-	public function getLocationMap()
-    {
-    	$list = $this->it_model->listData( "location" , "status =1" , NULL , NULL , array("sn"=>"asc") );			
-		
-		$location_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$location_map[$item["sn"]] = $item;
-		}
-			
-		return $location_map;		 
-    }
-	
-	//取得地目代碼
-	public function getLandKindMap()
-    {
-    	$list = $this->it_model->listData( "land_kind" , "" , NULL , NULL , array("id"=>"asc") );			
-		
-		$kind_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$kind_map[$item["id"]] = $item["title"];
-		}
-			
-		return $kind_map;		 
-    }
-
-	//取得使用分區代碼
-	public function getUseLandKindMap()
-    {
-    	$list = $this->it_model->listData( "land_use_kind" , "" , NULL , NULL , array("id"=>"asc") );			
-		
-		$use_kind_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$use_kind_map[$item["id"]] = $item["title"];
-		}
-			
-		return $use_kind_map;		 
-    }
-
-	//取得使用分區代碼
-	public function getUseLevelKindMap()
-    {
-    	$list = $this->it_model->listData( "land_use_level" , "" , NULL , NULL , array("id"=>"asc") );			
-		
-		$use_level_map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$use_level_map[$item["id"]] = $item["title"];
-		}
-			
-		return $use_level_map;		 
-    }
-
-	//取得登記原因代碼
-	public function getLandRegDescMap()
-    {
-    	$list = $this->it_model->listData( "land_reg_desc" , "" , NULL , NULL , array("id"=>"asc") );				
-		$map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$map[$item["id"]] = $item["title"];
-		}
-			
-		return $map;			 
-    }
-	
-	//取得權利種類代碼
-	public function getLandRightKindMap()
-    {
-    	$list = $this->it_model->listData( "land_right_kind" , "" , NULL , NULL , array("id"=>"asc") );				
-		$map = array();
-		foreach ($list["data"] as $key => $item) 
-		{
-			$map[$item["id"]] = $item["title"];
-		}
-			
-		return $map;		 
-    }
-	
-	
-	
-	
-	//ajax 取得縣市
-    public function ajaxGetCityList()
-    {		
-		$list = $this->it_model->listData( "land_city" , "status =1" , NULL , NULL , array("field(`title`, '台北市','新北市','桃園市','新竹縣','新竹市','苗栗縣')"=>"asc", "id"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-	
-	//ajax 取得計畫區By City
-    public function ajaxGetPlanListByCity()
-    {
-    	$city_code = $this->input->get('city_code');		
-		$list = $this->it_model->listData( "planing_region" , "status = 1 and city_code=".$this->db->escape($city_code)."" , NULL , NULL , array("region_name"=>"asc"));	
-		if($list["count"]==0)
-		{
-			array_push($list["data"],array("region_name"=>"計畫區","city_code"=>"0"));
-		}
-		echo json_encode($list["data"]); 
-    }
-	
-
-
-	
-	//ajax 取得所有社團名稱
-    public function ajaxGetLeagueList()
-    {
-		$query = 'SELECT DISTINCT league_name FROM league WHERE league_name NOT IN ("諮議", "北獅園地") ';
-		$list = $this->it_model->runSql( $query , NULL , array("league_name"=>"asc", "league_area"=>"asc"));
-
-		$array1 = array(NULL=>array('league_name'=>'-請選擇-'));
-		$result = array_merge($array1, $list["data"]);
-
-		echo json_encode($result); 
-    }
-	
-
-
-	//ajax 取得指定社團的分會
-    public function ajaxGetLeagueAreaList()
-    {
-    	$name = $this->input->get('name');
-		$query = 'SELECT DISTINCT league_area FROM league WHERE league_name NOT IN ("諮議", "北獅園地") ';
-		//if ( isNotNull($name)) {
-			$query .= 'AND league_name = "'.$name.'" ';
-		//}
-		$list = $this->it_model->runSql( $query , NULL , array("league_name"=>"asc", "league_area"=>"asc"));
-
-		echo json_encode($list["data"]); 
-    }
-	
-	
-	//ajax 取得所有計畫區
-    public function ajaxGetPlanList()
-    {		
-		$list = $this->it_model->listData( "planing_region" , "status = 1" , NULL , NULL , array("city_code"=>"asc", "region_name"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-	
-	public function ajaxGetLocationByCity()
-    {
-    	$city_code = $this->input->get('city_code');
-				
-		$list = $this->it_model->listData( "location" , "city_code = ".$this->db->escape($city_code)." and status =1" , NULL , NULL , array("town_name"=>"asc"));	
-		echo json_encode($list["data"]); 
-    }
-
-
-	public function ajaxGetTownByPlan()
-    {    			
-		echo $this->ajaxGetLocationByPlan(); 
-    }
-
-	public function ajaxGetLocationByPlan()
-    {
-    	$plan_sn = $this->input->get('plan_sn');
-		
-		$list = $this->land_model->getLocationByPlan($plan_sn, "planing_region_sn = ".$this->db->escape($plan_sn) , NULL , NULL , array("town_name"=>"asc"));	
-		
-		//dprint($list);
-		
-		echo json_encode($list["data"]); 
-    }
-	
-	
-	public function ajaxGetSection()
-    {
-    	$location_sn = $this->input->get('location_sn');
-		$drop_type = $this->input->get('drop_type');
-		$pc = $this->input->get('pc');
-		
-		//針對新竹市處理
-		if($location_sn == 43 || $location_sn == 44)
-		{
-			$location_sn = 42;
-		}
-		
-		
-		if($drop_type == 1)
-		{
-			$list = $this->it_model->listData( "planing_region_section_view" , "planing_region_sn = ".$this->db->escape($pc)."  and status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}
-		else
-		{
-			$list = $this->it_model->listData( "section" , "status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}		
-		
-		echo json_encode($list["data"]); 
-    }
-	
-	public function ajaxGetSectionList()
-    {
-    	$location_sn = $this->input->get('location_sn');
-		$drop_type = $this->input->get('drop_type');
-		$plan_sn = $this->input->get('plan');
-
-		
-		//針對新竹市處理
-		if($location_sn == 43 || $location_sn == 44)
-		{
-			$location_sn = 42;
-		}
-		
-		
-		if($drop_type == "plan")
-		{
-			$list = $this->it_model->listData( "planing_region_section_view" , "planing_region_sn = ".$this->db->escape($plan_sn)."  and status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}
-		else
-		{
-			$list = $this->it_model->listData( "section" , "status=1 and location_sn = ".$this->db->escape($location_sn) , NULL , NULL , array("section_code"=>"asc"));
-		}		
-		
-		echo json_encode($list["data"]); 
-    }
-	
-
-	
-	// 取得自己下屬的業務列表
-	public function ajaxGetMyUnitList()
-    {
-		$secretary_user_id = null;
-		if ($this->session->userdata('unit_sn') ==10 && $this->session->userdata('job_title') =='秘書') {
-			$secretary_user_id = $this->session->userdata('user_id');
-			$belong_unit_array = $this->person_model->getBelongUnitbySecretaryId($secretary_user_id);
-			$user_id = $belong_unit_array['manager_user_id'];
-
-		} else {
-
-			$user_id = $this->session->userdata('user_id');
-		}
-		//$my_sales_list = $this->person_model->getMyOwnSalesList($user_id );
-
-		## 查詢自己管轄的單位別
-		if ( isNotNull($secretary_user_id)) {
-			// 佳惠負責《桃園業務四組》與《桃園業務四組開發》
-			if ($this->session->userdata('job_title') =='秘書' && strtoupper($secretary_user_id) == 'SH0057') {
-				$my_unit_list_01 = $this->person_model->getMyOwnUnitList( 'SH0010' );
-				$my_unit_list_02 = $this->person_model->getMyOwnUnitList( 'SH0039' );
-
-				$my_unit_list = array_merge($my_unit_list_01, $my_unit_list_02);
-			}
-
-			// 怡萱負責《台北》與《新莊》與《悅陽》
-			if ( strtoupper($secretary_user_id) == 'CH0088') {
-
-				//$my_unit_list_01 = $this->person_model->getMyOwnUnitList( 'CH0008' );
-				//$my_unit_list = array_merge($my_unit_list_01, $my_unit_list_02, $my_unit_list_03);
-				$my_unit_list_02 = $this->person_model->getMyOwnUnitList( 'CH0029' );
-				$my_unit_list_03 = $this->person_model->getMyOwnUnitList( 'YU0002' );
-
-				$my_unit_list = array_merge($my_unit_list_02, $my_unit_list_03);
-			}
-
-		} else {
-			$my_unit_list = $this->person_model->getMyOwnUnitList( $user_id );
-		}
-
-
-
-		echo json_encode($my_unit_list); 
-    }
-
-	
-	// 取得自己下屬的業務列表
-	public function ajaxGetMySalesList()
-    {
-
-		//	$my_sales_list = $this->person_model->getMyOwnSalesList( 'LA0001' );
-		$my_sales_list = array();
-		$secretary_user_id = null;
-		if ($this->session->userdata('unit_sn') == 10 && $this->session->userdata('job_title') =='秘書') {
-			$secretary_user_id = $this->session->userdata('user_id');
-			$belong_unit_array = $this->person_model->getBelongUnitbySecretaryId($secretary_user_id);
-			$user_id = $belong_unit_array['manager_user_id'];
-
-		} else {
-
-			$user_id = $this->session->userdata('user_id');
-		}
-		if ( isNotNull($secretary_user_id)) {
-
-			// 佳惠負責《桃園業務四組》與《桃園業務四組開發》
-			if ( strtoupper($secretary_user_id) == 'SH0057') {
-				$my_sales_list_01 = $this->person_model->getMyOwnSalesList( 'SH0010' );
-				$my_sales_list_02 = $this->person_model->getMyOwnSalesList( 'SH0039' );
-
-				$my_sales_list = array_merge($my_sales_list_01, $my_sales_list_02);
-			}
-			// 怡萱負責《台北》與《新莊》與《悅陽》
-			if ( strtoupper($secretary_user_id) == 'CH0088') {
-				//$my_sales_list_01 = $this->person_model->getMyOwnSalesList( 'CH0008' );
-				//$my_sales_list = array_merge($my_sales_list_01, $my_sales_list_02, $my_sales_list_03);
-				$my_sales_list_02 = $this->person_model->getMyOwnSalesList( 'CH0029' );
-				$my_sales_list_03 = $this->person_model->getMyOwnSalesList( 'YU0002' );
-
-				$my_sales_list = array_merge($my_sales_list_02, $my_sales_list_03);
-			}
-		
-		} else {
-
-			$my_sales_list = $this->person_model->getMyOwnSalesList( $user_id );
-		
-		}
-
-		echo json_encode($my_sales_list); 
-    }
-
-	// 針對自己單位屬於公司分派名單的拜訪回報，取得那些公司名單的列表
-	public function ajaxGetMyUnitCompList()
-    {
-    	$result = array();
-
-		// 查詢自己管轄的單位別
-		$secretary_user_id = null;
-		if ($this->session->userdata('supper_admin') == 1) {
-			$result = $this->person_model->getUnitList('is_sales = 1' );
-			$my_unit_list = $result['data'];
-
-		} else {
-			//$user_id = $this->session->userdata('user_id');
-			//$my_unit_list = $this->person_model->getUnitList('UPPER(u.manager_user_id)  ="'.strtoupper($user_id).'"' );
-
-			if ($this->session->userdata('unit_sn') == 10 && $this->session->userdata('job_title') =='秘書') {
-				$secretary_user_id = $this->session->userdata('user_id');
-				$belong_unit_array = $this->person_model->getBelongUnitbySecretaryId($secretary_user_id);
-				$user_id = $belong_unit_array['manager_user_id'];
-
-			} else {
-
-				$user_id = $this->session->userdata('user_id');
-			}
-			// 佳惠負責《桃園業務四組》與《桃園業務四組開發》
-			if ( isNotNull($secretary_user_id)) {
-				if ( strtoupper($secretary_user_id) == 'SH0057') {
-					$my_sales_list_01 = $this->person_model->getMyOwnSalesList( 'SH0010' );
-					$my_sales_list_02 = $this->person_model->getMyOwnSalesList( 'SH0039' );
-
-					$my_sales_list = array_merge($my_sales_list_01, $my_sales_list_02);
-				}
-				if ( strtoupper($secretary_user_id) == 'CH0088') {
-					$my_sales_list_01 = $this->person_model->getMyOwnSalesList( 'CH0008' );
-					$my_sales_list_02 = $this->person_model->getMyOwnSalesList( 'CH0029' );
-					$my_sales_list_03 = $this->person_model->getMyOwnSalesList( 'YU0002' );
-
-					$my_sales_list = array_merge($my_sales_list_01, $my_sales_list_02, $my_sales_list_03);
-				}
-			} else {
-				$my_unit_list = $this->person_model->getMyOwnUnitList( $user_id );
-			}
-		}
-
-		foreach ($my_unit_list as $unit) {
-			$unit_sn = tryGetData('sn', $unit);
-			$result = array();
-			$result = $this->person_model->getSalesList('u.sn='.$unit_sn.' oR u.parent_sn='.$unit_sn, NULL, NULL, array('u.sn'=>'asc', 's.level'=>'desc', 's.id'=>'asc') );
-
-			if ($result['count'] > 0 ) {
-				$sales_list = array();
-				foreach ($result['data'] as $user) {
-					$sales_list[] = $user;
-					$sales_sn_list[] = $user['sn'];
-				}
-				
-				$sales_list = array_unique($sales_list, SORT_REGULAR);
-				$sales_sn_list = array_unique($sales_sn_list, SORT_REGULAR);
-
-				if (sizeof($sales_sn_list) > 0) {
-					$my_sales_sn_list = implode(',', $sales_sn_list);
-			
-					$sql_for_project =   'SELECT DISTINCT vps.visit_project_sn as sn, p.title '
-										.'  FROM visit_project_to_sales vps  '
-										.'  LEFT JOIN visit_project p ON vps.visit_project_sn = p.sn '
-										.' WHERE p.title IS NOT NULL AND user_sn IN ('.$my_sales_sn_list.')'
-										;
-			
-					$list_for_project = $this->person_model->runSql($sql_for_project, $this->per_page_rows , $this->page, array("visit_project_sn"=>"desc") );
-					$result = $list_for_project["data"];
-				}
-
-			}
-		}
-
-		echo json_encode($result); 
-    }
-
-
-	// 針對自己屬於公司分派名單的拜訪回報，取得那些公司名單的列表
-	public function ajaxGetMyCompList()
-    {
-		$user_sn = $this->session->userdata('user_sn');
-
-		$sql_for_project =   'SELECT DISTINCT vps.visit_project_sn as sn, p.title '
-							.'  FROM visit_project_to_sales vps  '
-							.'  LEFT JOIN visit_project p ON vps.visit_project_sn = p.sn '
-							.' WHERE user_sn = '.$user_sn
-							;
-
-		$list_for_project = $this->person_model->runSql($sql_for_project, $this->per_page_rows , $this->page, array("visit_project_sn"=>"desc") );
-
-		echo json_encode($list_for_project["data"]); 
-    }
 
 }

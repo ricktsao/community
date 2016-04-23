@@ -6,81 +6,26 @@
 				<a href="#"><img src="<?php echo base_url().$templateUrl;?>images/more.png" alt=""></a>
 			</div>
 			<ul id="picGroup" class="ul_unstyle">
+				<?php for($i=0;$i<count($album_list);$i++):?>
 				<li>
 					<div class="dateTime">
-						<div class="day">1</div>
-						<div class="date">2015.7.8</div>
+						<div class="day"><?php echo $i+1?></div>
+						<div class="date"><?php echo $album_list[$i]['start_date'];?></div>
 					</div>
 					<ul class="film ul_unstyle">
+						<?php for($j=0;$j<count($album_list[$i]['imgs']);$j++):?>
 						<li>
 							<a href="#">
-								<img src="upload/k5.png" alt="">
+								<img src="<?php echo $album_list[$i]['imgs'][$j]['img_filename'];?>" alt="">
 							</a>
 						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
+						<?php endfor;?>					
 					</ul>
-					<a href="#">2016年度中秋節烤肉</a>
+					<a href="#"><?php echo $album_list[$i]['title'];?></a>
 					<div class="clear"></div>
 				</li>
-				<li>
-					<div class="dateTime">
-						<div class="day">1</div>
-						<div class="date">2015.7.8</div>
-					</div>
-					<ul class="film ul_unstyle">
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-					</ul>
-					<a href="#">2016年度中秋節烤肉</a>
-					<div class="clear"></div>
-				</li>
-				<li>
-					<div class="dateTime">
-						<div class="day">1</div>
-						<div class="date">2015.7.8</div>
-					</div>
-					<ul class="film ul_unstyle">
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-						<li>
-							<a href="#">
-								<img src="upload/k5.png" alt="">
-							</a>
-						</li>
-					</ul>
-					<a href="#">2016年度中秋節烤肉</a>
-					<div class="clear"></div>
-				</li>
+				<?php endfor;?>
+				
 			</ul>
 		</div>
 		<div id="blockB">
@@ -183,16 +128,17 @@
 			<div class="rightArea">
 				<div class="title_area">
 					課程訊息
-					<a href="#">更多</a>
+					<a href="<?php echo frontendUrl("course","index");?>">更多</a>
 				</div>
 				<ul class="ul_unstyle list_type_2">
 				<?php
 				//dprint($news_list);
-				foreach ($course_list as $key => $news_info) 
+
+				foreach ($course_list as $key => $course_info) 
 				{
 					echo					
-					'<li><a href="'.frontendUrl("course","index").'" > '.showMoreStringSimple($news_info["title"],40) .'</a>
-						<div class="date">'.showDateFormat($news_info["start_date"],"Y.m.d").'</div>
+					'<li><a href="'.frontendUrl("course","detail",TRUE,array("all"=>"all"),array("sn"=>$course_info["sn"])).'" > '.showMoreStringSimple($course_info["title"],40) .'</a>
+						<div class="date">'.showDateFormat($course_info["start_date"],"Y.m.d").'</div>
 					</li>';
 				}
 				?>	

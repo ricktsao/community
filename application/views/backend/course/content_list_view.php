@@ -59,6 +59,7 @@
 											 
 											 ?>
 										</td>
+
 										<td>
 										<?php
 										if($list[$i]["brief"]==1)
@@ -71,7 +72,9 @@
 										}
 										?>
 										</td>
+
 										<td><?php echo showDateFormat($list[$i]["start_date"],"Y-m-d") ?></td>
+
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>edit

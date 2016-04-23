@@ -165,3 +165,6 @@ $config['mail_box_type'] = array(
 	"C" => "代收包裹",
 	"D" => "送洗衣物"			
 );
+
+// api server url
+$config['api_server_url'] = 'http://27.147.4.239/commapi/';
