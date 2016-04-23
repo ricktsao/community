@@ -797,7 +797,8 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function sync_to_server($post_data)
 	{
-		$url = "http://localhost/commapi/sync/updateContent/";
+		//$url = "http://localhost/commapi/sync/updateContent";
+		$url = $this->config->item("api_server_url")."sync/updateContent";
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
