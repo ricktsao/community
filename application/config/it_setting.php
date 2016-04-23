@@ -140,6 +140,13 @@ $config['electric_array'] = array( array('value'=>'a', 'title'=>'電視')
 								, array('value'=>'g', 'title'=>'天然瓦斯')
 								);
 
+// 物件類型
+$config['house_type_array'] = array( 'a'=>'電梯大樓'
+								, 'b'=>'透天厝'
+								, 'c'=>'華廈'
+								, 'd'=>'公寓'
+								, 'e'=>'別墅'
+								);
 // 型態
 $config['rent_type_array'] = array( 'a'=>'整層住家'
 								, 'b'=>'獨立套房'
@@ -148,15 +155,17 @@ $config['rent_type_array'] = array( 'a'=>'整層住家'
 								, 'e'=>'店面'
 								, 'f'=>'辦公'
 								);
-// 家具
-$config['house_type_array'] = array( 'a'=>'電梯大樓'
-								, 'b'=>'透天厝'
-								, 'c'=>'華廈'
-								, 'd'=>'公寓'
-								, 'e'=>'別墅'
-								);
 
-									
+// 型態
+$config['house_direction_array'] = array( 'a'=>'坐東朝西'
+								, 'b'=>'坐南朝北'
+								, 'c'=>'坐西朝東'
+								, 'd'=>'坐北朝南'
+								, 'e'=>'坐東南朝西北'
+								, 'f'=>'坐西南朝東北'
+								, 'g'=>'坐西北朝東南'
+								, 'h'=>'坐東北朝西南'
+								);
 											
 //檔案類型
 $config['mail_box_type'] = array(
@@ -165,6 +174,7 @@ $config['mail_box_type'] = array(
 	"C" => "代收包裹",
 	"D" => "送洗衣物"			
 );
+
 
 // api server url
 $config['api_server_url'] = 'http://27.147.4.239/commapi/';

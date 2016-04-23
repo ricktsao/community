@@ -46,13 +46,13 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>日期</th>
-										<th style="width:180px">租屋標題</th>
+										<th style="width:250px">租屋標題</th>
 										<th>格局</th>
 										<th>月租金</th>
 										<th>坪數</th>
 										<th style="width:150px">地址</th>
 										<th>可遷入日</th>
+										<th style="width:120px">日期</th>
 										<th></th>
 										<th>操作</th>
 										
@@ -66,11 +66,10 @@
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td>
 										<?php
-										echo sprintf('%d 房 %d 廳 %d 衛' 
+										echo sprintf('%d 房<br /> %d 廳<br /> %d 衛' 
 													, tryGetData('room', $item)
 													, tryGetData('livingroom', $item)
 													, tryGetData('bathroom', $item)
@@ -89,6 +88,7 @@
 										<td>
 										<?php echo tryGetData('move_in', $item);?>
 										</td>
+										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯

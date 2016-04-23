@@ -331,7 +331,7 @@ function textNumberOption($field_title = '',$option_name = '',$edit_data = array
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="number" min='.$min.'  max='.$max.' step='.$step.' id="'.$option_name.'" name="'.$option_name.'"  class="width-25" value="'.tryGetData( $option_name,$edit_data).'"  />'
 		.$hint.'</div>'		
@@ -356,7 +356,7 @@ function textOption($field_title = '',$option_name = '',$edit_data = array(),$op
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-6">
 			<input type="text" id="'.$option_name.'" name="'.$option_name.'"  class="width-40" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		'.$option_attr.'</div>
@@ -381,7 +381,7 @@ function textAreaOption($field_title = '',$option_name = '',$edit_data = array()
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-6" >
 			<textarea id="'.$option_name.'" name="'.$option_name.'" class="autosize-transition form-control" style="height:250px">'.tryGetData( $option_name,$edit_data).'</textarea>
 			'.$hint.'				
@@ -422,7 +422,7 @@ function dropdownOption($field_title = '',$option_name = '',$edit_data = array()
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4" >
 			<div class="btn-group">
               <select name="'.$option_name.'" class="form-control">
@@ -452,7 +452,7 @@ function checkBoxOption($field_title = '',$option_name = '',$edit_data = array()
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
 			<span class="help-inline col-xs-12 col-sm-7">
 				<label class="middle">
@@ -494,7 +494,7 @@ function checkBoxGroup($field_title = '',$option_name = '',$edit_data = array(),
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-8">
 		'.$check_str.'			
 		</div>
@@ -521,7 +521,7 @@ function passwordOption($field_title = '',$option_name = '',$edit_data = array()
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$option_name.'">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="password" id="'.$option_name.'" name="'.$option_name.'"  class="width-100" value="'.tryGetData( $option_name,$edit_data).'"  />					
 		</div>
@@ -551,14 +551,14 @@ function pickDateOption($edit_data = array())
 	$html = 
 	'
 	<div class="form-group '.$error_sdate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="start_date">啟始日期</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="start_date">啟始日期</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="text" id="start_date" name="start_date"  class="width-30" value="'.showDateFormat(tryGetData( 'start_date',$edit_data)).'" onclick="WdatePicker()" />					
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline">'.form_error('start_date').'</div>
 	</div>	
 	<div class="form-group '.$error_edate_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="end_date">截止日期</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="end_date">截止日期</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="text" id="end_date" name="end_date"  class="width-30" value="'.showDateFormat(tryGetData( 'end_date',$edit_data)).'" onclick="WdatePicker()" />					
 			<span class="width-30">
@@ -595,14 +595,14 @@ function urlOption($field_title = '',$option_name = '',$edit_data = array(),$sho
 	{
 		$memo_str = 
 		'<div class="form-group ">
-			<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"></label>
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url"></label>
 			<div class="col-xs-20 col-sm-7">'.$memo.'</div>				
 		</div>';
 	}
 	
 	$html = 
 	'<div class="form-group '.$error_css.'">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">'.$field_title.'</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">'.$field_title.'</label>
 		<div class="col-xs-12 col-sm-4">
 			<input type="text" id="url" name="url"  class="width-100" value="'.tryGetData( "url",$edit_data).'"  />					
 		</div>		
@@ -613,7 +613,7 @@ function urlOption($field_title = '',$option_name = '',$edit_data = array(),$sho
 	{
 		$html.=
 		'<div class="form-group">
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">開啟方式</label>
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">開啟方式</label>
 		
 		<div class="col-xs-12 col-sm-4">
 			<div class="radio">

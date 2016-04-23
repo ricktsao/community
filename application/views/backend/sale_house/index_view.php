@@ -47,16 +47,15 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>日期</th>
-										<th style="width:180px">售屋標題</th>
+										<th style="width:250px">售屋標題</th>
 										<th>格局</th>
 										<th>總價</th>
 										<th>每坪單價</th>
 										<th>坪數</th>
 										<!-- <th style="width:150px">地址</th> -->
+										<th style="width:120px">日期</th>
 										<th></th>
 										<th>操作</th>
-										
 									</tr>
 								</thead>
 								<tbody>
@@ -64,15 +63,13 @@
 									//for($i=0;$i<sizeof($list);$i++) {
 									$i = 0;
 									foreach ( $dataset as $item) {
-										dprint($item['balcony']);
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td>
 										<?php
-										echo sprintf('%d 房 %d 廳 %d 衛 %d 陽台' 
+										echo sprintf('%d 房　<br />  %d 廳　<br />  %d 衛　<br /> %d 陽台' 
 													, tryGetData('room', $item)
 													, tryGetData('livingroom', $item)
 													, tryGetData('bathroom', $item)
@@ -92,6 +89,7 @@
 										<!-- <td>
 										<?php //echo tryGetData('addr', $item);?>
 										</td> -->
+										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
