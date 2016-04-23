@@ -49,7 +49,7 @@ class Rent_House extends Backend_Controller {
 		}
 
 		$query = 'SELECT SQL_CALC_FOUND_ROWS *
-					FROM rent_house
+					FROM house_to_rent
 					WHERE ( 1 = 1 ) '.$condition
 				;
 		$dataset = $this->it_model->runSql( $query , NULL , NULL , array("sn"=>"desc","rent_price"=>"asc"));
@@ -108,7 +108,7 @@ class Rent_House extends Backend_Controller {
 		}
 		else 
 		{
-			$result = $this->it_model->listData( "rent_house" , "sn =".$sn);
+			$result = $this->it_model->listData( "house_to_rent" , "sn =".$sn);
 			
 			if (count($result["data"]) > 0) {			
 				$edit_data = $result["data"][0];
@@ -221,7 +221,7 @@ Array
 			if($edit_data["sn"] != FALSE)
 			{
 				dprint($arr_data);
-				$arr_return = $this->it_model->updateDB( "rent_house" , $arr_data, "sn =".$edit_data["sn"] );
+				$arr_return = $this->it_model->updateDB( "house_to_rent" , $arr_data, "sn =".$edit_data["sn"] );
 				dprint($this->db->last_query());
 				if($arr_return['success'])
 				{
@@ -239,7 +239,7 @@ Array
 			{
 				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
-				$rent_sn = $this->it_model->addData( "rent_house" , $arr_data );
+				$rent_sn = $this->it_model->addData( "house_to_rent" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
 
 				if($rent_sn > 0) {
