@@ -17,7 +17,7 @@
                     <li><a href="<?php echo frontendUrl("voting")?>">社區議題調查<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("repair")?>">社區環境報修<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("repair_log")?>">社區環境報修紀錄<span></span></a></li>
-                    <li><a href="#">社區意見箱<span></span></a></li>					
+                    <li><a href="<?php echo frontendUrl("suggestion")?>">社區意見箱<span></span></a></li>					
                 </ul>
             </li>
             <li>

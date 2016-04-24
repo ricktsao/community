@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Repair extends Frontend_Controller {
+class Suggestion extends Frontend_Controller {
 
 
 	function __construct() 
 	{
-		parent::__construct();	
-		$this->displayBanner(FALSE);  		
+		parent::__construct();	  
+		$this->displayBanner(FALSE);		
 	}
 	
 	
@@ -14,17 +14,14 @@ class Repair extends Frontend_Controller {
 	{
 		$data = array();
 		$edit_data["error_message"] = "";
-		$data["edit_data"] = $edit_data;
-	
-		
-		
-		$this->display("repair_view",$data);
+		$data["edit_data"] = $edit_data;		
+		$this->display("suggestion_view",$data);
 	}	
 
 		
 
 	
-	function postRepair()
+	function postSuggestion()
 	{
 		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
