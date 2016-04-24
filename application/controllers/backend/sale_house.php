@@ -314,9 +314,6 @@ class Sale_House extends Backend_Controller {
 	/**************************************************/
 	/**************************************************/
 
-
-
-
 	/**
 	 * 設定照片
 	 */
@@ -337,7 +334,7 @@ class Sale_House extends Backend_Controller {
 				$data['house_data'] = $edit_data;
 
 				## 既有照片list
-				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN sale_photo p ON h.sn = p.house_to_sale_sn" 
+				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN house_to_sale_photo p ON h.sn = p.house_to_sale_sn" 
 														, "house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
 
 				$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
@@ -358,7 +355,7 @@ class Sale_House extends Backend_Controller {
 
 
 	/**
-	 * 設定住戶車位
+	 * 設定照片
 	 */
 	public function updatePhoto()
 	{
@@ -403,7 +400,7 @@ class Sale_House extends Backend_Controller {
 							, 
 							);
 
-			$this->it_model->addData('sale_photo', $arr_data);
+			$this->it_model->addData('house_to_sale_photo', $arr_data);
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
 				$this->showSuccessMessage('房屋照片上傳成功');
 			} else {
@@ -430,7 +427,7 @@ class Sale_House extends Backend_Controller {
 			unlink('./upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
 			unlink('./upload/website/house_to_sale/'.$house_to_sale_sn.'/thumb_'.$filename);
 
-			$this->it_model->deleteData('sale_photo',  array('sn' => $sn, 'filename' => $filename));
+			$this->it_model->deleteData('house_to_sale_photo',  array('sn' => $sn, 'filename' => $filename));
 		}
 
 		$this->showSuccessMessage('物件照片刪除成功');
@@ -440,6 +437,8 @@ class Sale_House extends Backend_Controller {
 
 
 
+	/**************************************************/
+	/**************************************************/
 	/**************************************************/
 
 

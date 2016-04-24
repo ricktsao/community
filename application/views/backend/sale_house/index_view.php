@@ -54,7 +54,6 @@
 										<th>坪數</th>
 										<!-- <th style="width:150px">地址</th> -->
 										<th style="width:120px">日期</th>
-										<th></th>
 										<th>操作</th>
 									</tr>
 								</thead>
@@ -98,6 +97,8 @@
 												<i class="icon-edit bigger-120"></i>物件照片
 											</a>
 										</td>
+										<?php
+										/*
 										<td>					
 											<div class="col-xs-3">
 												<label>
@@ -106,6 +107,8 @@
 												</label>
 											</div>
 										</td>
+										*/
+										?>
 										
 									</tr>
 									<?php

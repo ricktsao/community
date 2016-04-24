@@ -24,7 +24,7 @@
 		?>
 		<div class="hr hr-16 hr-dotted"></div>
 		<div class="form-group ">
-			<label for="house_type" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>型 態</label>
+			<label for="house_type" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>型 態</label>
 			<div class="col-xs-12 col-sm-6">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('house_type', tryGetData('house_type', $edit_data, 0), 'house_type_array');?>
@@ -32,7 +32,7 @@
 			</div>
 		</div>
 		<div class="form-group ">
-			<label for="rent_type" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>類 別</label>
+			<label for="rent_type" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>類 別</label>
 			<div class="col-xs-12 col-sm-6">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('rent_type', tryGetData('rent_type', $edit_data, 0), 'rent_type_array');?>
@@ -63,7 +63,7 @@
 		?>
 		<div class="hr hr-16 hr-dotted"></div>
 		<div class="form-group ">
-			<label for="flag_cooking" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>是否可開伙</label>
+			<label for="flag_cooking" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>是否可開伙</label>
 			<div class="col-xs-12 col-sm-4">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('flag_cooking', tryGetData('flag_cooking', $edit_data, 0));?>
@@ -71,7 +71,7 @@
 			</div>
 		</div>
 		<div class="form-group ">
-			<label for="flag_pet" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>是否可養寵物</label>
+			<label for="flag_pet" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>是否可養寵物</label>
 			<div class="col-xs-12 col-sm-4">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('flag_pet', tryGetData('flag_pet', $edit_data, 0));?>
@@ -79,7 +79,7 @@
 			</div>
 		</div>
 		<div class="form-group ">
-			<label for="flag_parking" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>是否有停車位</label>
+			<label for="flag_parking" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>是否有停車位</label>
 			<div class="col-xs-12 col-sm-8">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('flag_parking', tryGetData('flag_parking', $edit_data, 0), 'parking_array');?>
@@ -87,7 +87,7 @@
 			</div>
 		</div>
 		<div class="form-group ">
-			<label for="gender_term" class="col-xs-12 col-sm-3 control-label no-padding-right"><span class='red'>＊</span>性別要求</label>
+			<label for="gender_term" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>性別要求</label>
 			<div class="col-xs-12 col-sm-4">
 				<label class="middle" style="width:100%;">
 				<?php echo generate_radio('gender_term', tryGetData('gender_term', $edit_data, 0), 'gender_array2');?>
