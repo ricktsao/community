@@ -8,7 +8,7 @@
                     <li><a href="<?php echo frontendUrl("message")?>">個人訊息通知<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("mailbox")?>">郵件物品通知<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("gas")?>">瓦斯度數登記<span></span></a></li>
-					<li><a href="#">磁扣使用查詢<span></span></a></li>
+					<li><a href="<?php echo frontendUrl("keycode")?>">磁扣使用查詢<span></span></a></li>
                 </ul>
             </li>
             <li>
