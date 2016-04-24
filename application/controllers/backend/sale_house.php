@@ -158,6 +158,7 @@ class Sale_House extends Backend_Controller {
 
         	$arr_data = array(
 				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
+				, 'comm_id'			=>  $this->getCommId()
 				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
 				, "house_type"		=>	tryGetData("house_type", $edit_data)
 				, "direction"		=>	tryGetData("direction", $edit_data)
@@ -259,6 +260,7 @@ class Sale_House extends Backend_Controller {
 		$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
+		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
 		$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
 		$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 
@@ -333,7 +335,9 @@ class Sale_House extends Backend_Controller {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
-		$config['upload_path'] = './upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'];
+		$house_to_sale_sn = tryGetData('house_to_sale_sn', $edit_data, NULL);
+		$comm_id = tryGetData('comm_id', $edit_data, NULL);
+		$config['upload_path'] = './upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'];
 		$config['allowed_types'] = 'jpg|png';
 		$config['max_size']	= '1000';
 		$config['max_width']  = '1200';
@@ -342,25 +346,26 @@ class Sale_House extends Backend_Controller {
 
 		$this->load->library('upload', $config);
 
-		if (!is_dir('./upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'])) {
-				mkdir('./upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'], 0777, true);
+		if (!is_dir('./upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'])) {
+				mkdir('./upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'], 0777, true);
 		}
 
-		if ( ! $this->upload->do_upload('filename'))
+		if ( isNull($house_to_sale_sn) || isNull($comm_id) || ! $this->upload->do_upload('filename'))
 		{
 			$error = array('error' => $this->upload->display_errors());
 
-			$this->showFailMessage('照片上傳失敗，錯誤訊息為：' .$error['error'] );
+			$this->showFailMessage('照片上傳失敗，請稍後再試　' .$error['error'] );
 
 		} else {
-			$upload = $this->upload->data();
 
+			$upload = $this->upload->data();
 			$filename = tryGetData('file_name', $upload);
 
 			// 製作縮圖
-			image_thumb('website/house_to_sale/'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
+			image_thumb('website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
 
 			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
+							, 'comm_id'				=>  tryGetData('comm_id', $edit_data)
 							, 'house_to_sale_sn'	=>	tryGetData('house_to_sale_sn', $edit_data)
 							, 'filename'			=>	$filename
 							, 'title'				=>	tryGetData('title', $edit_data)

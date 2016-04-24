@@ -27,7 +27,7 @@
 			<label for="house_type" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>型 態</label>
 			<div class="col-xs-12 col-sm-6">
 				<label class="middle" style="width:100%;">
-				<?php echo generate_radio('house_type', tryGetData('house_type', $edit_data, 0), 'house_type_array');?>
+				<?php echo generate_radio('house_type', tryGetData('house_type', $edit_data, 'a'), 'house_type_array');?>
 				</label>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 			<label for="rent_type" class="col-xs-12 col-sm-2 control-label no-padding-right"><span class='red'>＊</span>類 別</label>
 			<div class="col-xs-12 col-sm-6">
 				<label class="middle" style="width:100%;">
-				<?php echo generate_radio('rent_type', tryGetData('rent_type', $edit_data, 0), 'rent_type_array');?>
+				<?php echo generate_radio('rent_type', tryGetData('rent_type', $edit_data, 'a'), 'rent_type_array');?>
 				</label>
 			</div>
 		</div>
