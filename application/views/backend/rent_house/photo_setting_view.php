@@ -38,7 +38,7 @@
 	<div class="col-xs-12 form-horizontal">
 
 		<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
-		<input type='hidden' name='house_to_sale_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
+		<input type='hidden' name='house_to_rent_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
 
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">售屋標題：</label>
@@ -46,15 +46,13 @@
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">面 積：</label>
-				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'><?php echo tryGetData('area_ping',$house_data).'坪'; ?></span></div>
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">屋齡：</label>
-				<div class="col-xs-12 col-sm-4"><span style='font-weight:bold'><?php echo tryGetData('house_age',$house_data).'年'; ?></span></div>
+				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'><?php echo tryGetData('area_ping',$house_data).' 坪'; ?></span></div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">總 價：</label>
-				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'><?php echo tryGetData('total_price',$house_data).'萬元'; ?></span></div>
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">每坪單價：</label>
-				<div class="col-xs-12 col-sm-4"><span style='font-weight:bold'><?php echo tryGetData('unit_price',$house_data).'萬元'; ?></span></div>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">租 金：</label>
+				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'><?php echo tryGetData('rent_price',$house_data).' 元'; ?></span></div>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">押 金：</label>
+				<div class="col-xs-12 col-sm-4"><span style='font-weight:bold'><?php echo tryGetData('deposit',$house_data); ?></span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>
@@ -67,11 +65,10 @@
 				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'>
 
 				<?php
-				echo sprintf('%d 房 %d 廳 %d 衛 %d 陽台' 
+				echo sprintf('%d 房 %d 廳 %d 衛' 
 							, tryGetData('room', $house_data)
 							, tryGetData('livingroom', $house_data)
 							, tryGetData('bathroom', $house_data)
-							, tryGetData('balcony', $house_data)
 							);
 				?>
 				</span></div>
@@ -148,15 +145,15 @@
 									foreach ($exist_photo_array as $key=>$photo) {
 
 										$sn = tryGetData('sn', $photo, NULL);
-										$house_to_sale_sn = tryGetData('house_to_sale_sn', $photo, NULL);
+										$house_to_rent_sn = tryGetData('house_to_rent_sn', $photo, NULL);
 										$filename = tryGetData('filename', $photo, NULL);
 
 										if ( isNull($filename) ) continue;
 
 										// 縮圖
 										$thumb = 'thumb_'.$filename;
-										$thumb = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$thumb);
-										$url = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
+										$thumb = base_url('upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$thumb);
+										$url = base_url('upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
 									?>
 									<tr>
 										<td class="center">
@@ -164,7 +161,7 @@
 											//if ( sizeof($exist_lands_array) < 1 && sizeof($exists_custs_array) > 0) {
 											?>
 											<label>
-												<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$house_to_sale_sn.'!@'.$filename;?>" />
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$house_to_rent_sn.'!@'.$filename;?>" />
 												<span class="lbl"></span>
 											</label>
 										</td>

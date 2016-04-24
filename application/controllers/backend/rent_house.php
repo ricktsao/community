@@ -336,6 +336,136 @@ Array
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 
+	/**************************************************/
+	/**************************************************/
+	/**************************************************/
+
+	/**
+	 * 設定照片
+	 */
+	public function photoSetting()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		
+		$house_to_rent_sn = tryGetData('sn', $_GET, NULL);
+		
+		if ( isNotNull($house_to_rent_sn) ) {
+			## 物件基本資料
+			$admin_info = $this->it_model->listData( "house_to_rent" , "sn =".$house_to_rent_sn);
+			
+			if (count($admin_info["data"]) > 0) {
+				$edit_data =$admin_info["data"][0];
+				
+				$data['house_data'] = $edit_data;
+
+				## 既有照片list
+				$exist_parking_list = $this->it_model->listData( "house_to_rent h LEFT JOIN house_to_rent_photo p ON h.sn = p.house_to_rent_sn" 
+														, "house_to_rent_sn = ".$house_to_rent_sn , NULL , NULL , array("p.sn"=>"asc"));
+
+				$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
+				
+				$this->display("photo_setting_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("index"));	
+			}
+
+		} else {
+
+			redirect(bUrl("index"));	
+		}
+	}
+
+
+
+	/**
+	 * 設定照片
+	 */
+	public function updatePhoto()
+	{
+		$edit_data = array();
+		foreach( $_POST as $key => $value ) {
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
+		$config['upload_path'] = './upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'];
+		$config['allowed_types'] = 'jpg|png';
+		$config['max_size']	= '1000';
+		$config['max_width']  = '1200';
+		$config['max_height']  = '1000';
+		$config['overwrite']  = true;
+
+		$this->load->library('upload', $config);
+
+		if (!is_dir('./upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'])) {
+				mkdir('./upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'], 0777, true);
+		}
+
+		if ( ! $this->upload->do_upload('filename'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->showFailMessage('照片上傳失敗，錯誤訊息為：' .$error['error'] );
+
+		} else {
+			$upload = $this->upload->data();
+
+			$filename = tryGetData('file_name', $upload);
+
+			// 製作縮圖
+			image_thumb('website/house_to_rent/'.$edit_data['house_to_rent_sn'], $filename, '120', '100');
+
+			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
+							, 'house_to_rent_sn'	=>	tryGetData('house_to_rent_sn', $edit_data)
+							, 'filename'			=>	$filename
+							, 'title'				=>	tryGetData('title', $edit_data)
+							, 'updated'				=>	date('Y-m-d H:i:s')
+							, 'updated_by'			=>	$this->session->userdata('user_name')
+							, 
+							);
+
+			$this->it_model->addData('house_to_rent_photo', $arr_data);
+			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
+				$this->showSuccessMessage('房屋照片上傳成功');
+			} else {
+				$this->showFailMessage('房屋照片上傳失敗，請稍後再試');
+			}
+		}
+
+		redirect(bUrl("photoSetting"));
+	}
+
+	/**
+	 * 刪除照片
+	 */
+	function deletePhoto()
+	{
+		$del_array = $this->input->post("del",TRUE);
+
+		foreach( $del_array as $item ) {
+
+			$tmp = explode('!@', $item);
+			$sn = $tmp[0];
+			$house_to_rent_sn = $tmp[1];
+			$filename = $tmp[2];
+			unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
+			unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/thumb_'.$filename);
+
+			$this->it_model->deleteData('house_to_rent_photo',  array('sn' => $sn, 'filename' => $filename));
+		}
+
+		$this->showSuccessMessage('物件照片刪除成功');
+
+		redirect(bUrl("photoSetting"));
+	}
+
+
+
+	/**************************************************/
+	/**************************************************/
+	/**************************************************/
 
 
 
