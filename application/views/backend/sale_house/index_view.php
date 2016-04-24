@@ -94,6 +94,9 @@
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
+											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("photoSetting",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>物件照片
+											</a>
 										</td>
 										<td>					
 											<div class="col-xs-3">

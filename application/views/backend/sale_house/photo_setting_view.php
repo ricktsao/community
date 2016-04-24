@@ -6,7 +6,7 @@
 	.require, .error {color: #d16e6c;}
 	.note {color: #993300; font-size:12px; padding: 5px;}
 	.dataTable td {font-size:13px; font-family:verdana;}
-	#add_form {background: #f7f7f7; border-top: #d1d1d1 1px dashed; padding:10px 5px 10px 5px}
+	#add_formx {background: #f7f7f7; border-top: #d1d1d1 1px dashed; padding:10px 5px 10px 5px}
 
 	#parking_list ul {margin: 0px;}
 	#parking_list li {
@@ -26,7 +26,7 @@
 
 <div class="page-header">
 	<h1>
-		售屋照片設定
+		物件照片設定
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			
@@ -36,6 +36,10 @@
 
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
+
+		<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
+		<input type='hidden' name='house_to_sale_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
+
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">售屋標題：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('title',$house_data); ?></span></div>
@@ -83,13 +87,41 @@
 			</div>
 
 
+
+		<div class="hr hr-16 hr-dotted"></div>
+			
+				
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增照片：</label>
+				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='filename' size=20></div>
+			</div>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">說明：</label>
+				<div class="col-xs-12 col-sm-6"><input type='text' id='title' name='title' size=50></div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url"></label>
+				<div class="col-xs-12 col-sm-6">
+				<button class="btn" type="button" id="search-reset" >
+						<i class="icon-warning bigger-110"></i>
+						重設
+				</button>
+				<button class="btn btn-success" type="Submit">
+						<i class="icon-ok bigger-110"></i>
+						確定新增
+				</button>
+			</div>
+			</div>
+		</form>
+
 			<div class="form-group">
 				<div class="table-responsive">
 					<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">物件照片：</label>
-					<div class="col-xs-12 col-sm-10">
-						<div style="float:right;" id="click_add_cust">
+					<div class="col-xs-12 col-sm-8">
+						<!-- <div style="float:right;" id="click_add_cust">
 							<button class="btn btn-success">新增照片</button>
-						</div>
+						</div> -->
 						<form method="post"  id="update_form" role="form">
 						<input type="hidden" name="cases_sn" value="<?php //echo $cases_sn;?>">
 						<table id="sample-table-2" class="table table-striped table-bordered table-hover">
@@ -114,6 +146,17 @@
 							} else {
 									$note_flag = false;
 									foreach ($exist_photo_array as $key=>$photo) {
+
+										$sn = tryGetData('sn', $photo, NULL);
+										$house_to_sale_sn = tryGetData('house_to_sale_sn', $photo, NULL);
+										$filename = tryGetData('filename', $photo, NULL);
+
+										if ( isNull($filename) ) continue;
+
+										// 縮圖
+										$thumb = 'thumb_'.$filename;
+										$thumb = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$thumb);
+										$url = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
 									?>
 									<tr>
 										<td class="center">
@@ -121,16 +164,11 @@
 											//if ( sizeof($exist_lands_array) < 1 && sizeof($exists_custs_array) > 0) {
 											?>
 											<label>
-												<input type="checkbox" class="ace" name="del[]" value="<?php echo $photo["sn"].'!@'.$photo["house_to_sale_sn"];?>" />
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$house_to_sale_sn.'!@'.$filename;?>" />
 												<span class="lbl"></span>
 											</label>
-											<?php
-											//} else {
-											//	echo '-';
-											//}
-											?>
 										</td>
-										<td><?php echo tryGetData('filename', $photo, '-');?></td>
+										<td><?php echo '<a href="'.$url.'" title="檢視大圖" target=_blank><img border="0" src="'.$thumb.'?"></a>'; ?></td>
 										<td><?php echo tryGetData('title', $photo, '-');?></td>
 										
 										<td><?php echo tryGetData('updated', $photo, '-');?></td>
@@ -159,40 +197,6 @@
 				</div>
 			</div>
 
-
-
-			<div class="table-responsive" id="add_cust">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id"></label>
-				<!-- <div class="col-xs-12 col-sm-10"> -->
-
-				<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
-				<input type='text' name='house_to_sale_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
-				
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">照片：</label>
-					<div class="col-xs-12 col-sm-4"><input type='file' id='filename' name='filename' size=20></div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">說明：</label>
-					<div class="col-xs-12 col-sm-4"><input type='text' id='title' name='title' size=50></div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"></label>
-					<div class="col-xs-12 col-sm-4">
-					<button class="btn btn-minier" type="button" id="search-reset" >
-							<i class="icon-warning bigger-110"></i>
-							清除重設
-					</button>
-					<button class="btn btn-minier btn-success" type="Submit">
-							<i class="icon-ok bigger-110"></i>
-							確定新增
-					</button>
-				</div>
-				</div>
-				</form>
-				<!-- </div> -->
-			</div>
 
 
 
@@ -259,7 +263,7 @@ $(function(){
 
 
 
-
+	/*
 	$('#add_cust').hide();
 
 	$('#click_add_cust').click(function() {
@@ -274,6 +278,7 @@ $(function(){
 
 
 	});
+	*/
 });
 
 </script>

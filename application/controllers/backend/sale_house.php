@@ -318,80 +318,43 @@ class Sale_House extends Backend_Controller {
 
 
 	/**
-	 * 設定住戶車位
+	 * 設定照片
 	 */
 	public function photoSetting()
 	{
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");		
 		
-		$house_to_sale_sn = $this->input->get("sn", TRUE);
-	//	$user_id = $this->input->get("id", TRUE);
-
-		//既有車位list
-		//---------------------------------------------------------------------------------------------------------------
-		$exist_parking_list = $this->it_model->listData( "house_to_sale h left join sale_photo p on h.sn = p.house_to_sale_sn" 
-												, "house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
-
-		$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
-		//---------------------------------------------------------------------------------------------------------------
-
-		$sys_user_group = array();		
+		$house_to_sale_sn = tryGetData('sn', $_GET, NULL);
 		
-		$admin_info = $this->it_model->listData( "house_to_sale" , "sn =".$house_to_sale_sn);
-		
-		if (count($admin_info["data"]) > 0) {
-			$edit_data =$admin_info["data"][0];
+		if ( isNotNull($house_to_sale_sn) ) {
+			## 物件基本資料
+			$admin_info = $this->it_model->listData( "house_to_sale" , "sn =".$house_to_sale_sn);
 			
-			$data['house_data'] = $edit_data;
-			
-			$this->display("photo_setting_view",$data);
-		}
-		else
-		{
+			if (count($admin_info["data"]) > 0) {
+				$edit_data =$admin_info["data"][0];
+				
+				$data['house_data'] = $edit_data;
+
+				## 既有照片list
+				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN sale_photo p ON h.sn = p.house_to_sale_sn" 
+														, "house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
+
+				$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
+				
+				$this->display("photo_setting_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("index"));	
+			}
+
+		} else {
+
 			redirect(bUrl("index"));	
 		}
 	}
 
-
-	/**
-	 * 搜尋還沒有住戶登錄的車位
-	 */
-	public function ajaxGetParking()
-	{
-		$keyword = $this->input->get('keyword', true);
-
-		if (mb_strlen($keyword) == 0) {
-		
-		} else {
-		
-			echo '<ul id="parking_list" style="margin:0px">';
-			if (mb_strlen($keyword) > 1) {
-				$parking_result = $this->it_model->listData( "parking" , 'parking_id like "'.$keyword.'%" and sn not in (select distinct parking_sn from user_parking) ');
-				//dprint($parking_result);
-				if (count($parking_result["data"]) > 0) {
-
-					$i = 0;
-					$cust = array();
-					foreach ($parking_result["data"] as $parking) {
-						$parking_sn = $parking['sn'];
-						$parking_id = $parking['parking_id'];
-						$location = $parking['location'];
-						echo '<li onclick="selectParking(\''.$parking_sn .'\',\''. $parking_id .'\',\''. $location .'\');">'
-							.$parking_id.'　位置：'.$location
-							."</li>";
-						$i++;
-					}
-				} else {
-						echo '<li style="font-weight:normal; color: #c8c8c8">查無車位資料，請確認車位ID輸入無誤</li>';
-				}
-			} else {
-				echo '<li style="font-weight:normal; color: #c8c8c8">查無車位資料，請確認車位ID輸入無誤</li>';
-			}
-			// echo json_encode($return);
-			echo '</ul>';
-		}
-	}
 
 
 	/**
@@ -403,29 +366,33 @@ class Sale_House extends Backend_Controller {
 		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		dprint($_FILES);
 		
-		$config['upload_path'] = './upload/website/house_to_sale';
+		$config['upload_path'] = './upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'];
 		$config['allowed_types'] = 'jpg|png';
-		$config['max_size']	= '800';
-		$config['max_width']  = '1024';
-		$config['max_height']  = '768';
+		$config['max_size']	= '1000';
+		$config['max_width']  = '1200';
+		$config['max_height']  = '1000';
 		$config['overwrite']  = true;
 
 		$this->load->library('upload', $config);
 
+		if (!is_dir('./upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'])) {
+				mkdir('./upload/website/house_to_sale/'.$edit_data['house_to_sale_sn'], 0777, true);
+		}
+
 		if ( ! $this->upload->do_upload('filename'))
 		{
-			$error = array('error' => $this->upload->display_errors());		
-			$this->showFailMessage('車位設定失敗，請確認資料確實輸入');
-		 
-dprint( $error); die;
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->showFailMessage('照片上傳失敗，錯誤訊息為：' .$error['error'] );
 
 		} else {
 			$upload = $this->upload->data();
 
 			$filename = tryGetData('file_name', $upload);
-			image_thumb('website/house_to_sale', $filename, '300', '320');
+
+			// 製作縮圖
+			image_thumb('website/house_to_sale/'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
 
 			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
 							, 'house_to_sale_sn'	=>	tryGetData('house_to_sale_sn', $edit_data)
@@ -435,52 +402,40 @@ dprint( $error); die;
 							, 'updated_by'			=>	$this->session->userdata('user_name')
 							, 
 							);
-			
-			/*$query = 'INSERT INTO `user_parking` '
-					.'       (`parking_sn`, `user_sn`, `person_sn` '
-					.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
-					.'VALUES (?, ?, ? '
-					.'        , ?, ?, ?, ? ) '
-					.'    ON DUPLICATE KEY UPDATE  '
-					.'       `car_number` = VALUES(`car_number`) '
-					.'       , `updated` = VALUES(`updated`) '
-					.'       , `updated_by` = VALUES(`updated_by`) '
-					;
-			$this->db->query($query, $arr_data);
-			*/
 
 			$this->it_model->addData('sale_photo', $arr_data);
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
-				$this->showSuccessMessage('車位設定成功');
+				$this->showSuccessMessage('房屋照片上傳成功');
 			} else {
-				$this->showFailMessage('車位設定失敗');
+				$this->showFailMessage('房屋照片上傳失敗，請稍後再試');
 			}
-		//} else {
-		//	$this->showFailMessage('車位設定失敗，請確認資料確實輸入');
 		}
 
-		//redirect(bUrl("setParking"));
+		redirect(bUrl("photoSetting"));
 	}
 
 	/**
-	 * 刪除住戶車位
+	 * 刪除照片
 	 */
-	function deleteUserParking()
+	function deletePhoto()
 	{
 		$del_array = $this->input->post("del",TRUE);
-		
-		foreach( $del_array as $item ) {
-			$tmp = explode('!@', $item);
-			$parking_sn = $tmp[0];
-			$user_sn = $tmp[1];
-			$user_id = $tmp[2];
 
-			$this->it_model->deleteData('user_parking',  array('parking_sn' => $parking_sn, 'user_sn' => $user_sn, 'user_id' => $user_id));
+		foreach( $del_array as $item ) {
+
+			$tmp = explode('!@', $item);
+			$sn = $tmp[0];
+			$house_to_sale_sn = $tmp[1];
+			$filename = $tmp[2];
+			unlink('./upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
+			unlink('./upload/website/house_to_sale/'.$house_to_sale_sn.'/thumb_'.$filename);
+
+			$this->it_model->deleteData('sale_photo',  array('sn' => $sn, 'filename' => $filename));
 		}
 
-		$this->showSuccessMessage('住戶車位刪除成功');
+		$this->showSuccessMessage('物件照片刪除成功');
 
-		redirect(bUrl("setParking"));
+		redirect(bUrl("photoSetting"));
 	}
 
 
