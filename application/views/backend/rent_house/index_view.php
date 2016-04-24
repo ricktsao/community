@@ -27,6 +27,7 @@
 		<input type='text' size='1' name='room' value='<?php echo $given_room;?>'>房
 		<input type='text' size='1' name='livingroom' value='<?php echo $given_livingroom;?>'>廳
 		<input type='text' size='1' name='bathroom' value='<?php echo $given_bathroom;?>'>衛
+		<input type='text' size='1' name='balcony' value='<?php echo $given_balcony;?>'>陽台
     </div>  
     <div class="btn-group">
 		<button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
@@ -50,8 +51,8 @@
 										<th>格局</th>
 										<th>月租金</th>
 										<th>坪數</th>
-										<th style="width:150px">地址</th>
-										<th>可遷入日</th>
+										<th style="width:150px">型態</th>
+										<th>類別</th>
 										<th style="width:120px">日期</th>
 										<th>操作</th>
 										
@@ -68,10 +69,11 @@
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td>
 										<?php
-										echo sprintf('%d 房<br /> %d 廳<br /> %d 衛' 
+										echo sprintf('%d 房　<br />  %d 廳　<br />  %d 衛　<br /> %d 陽台' 
 													, tryGetData('room', $item)
 													, tryGetData('livingroom', $item)
 													, tryGetData('bathroom', $item)
+													, tryGetData('balcony', $item)
 													);
 										?>
 										</td>
@@ -82,10 +84,10 @@
 										<?php echo tryGetData('area_ping', $item).' 坪';?>
 										</td>
 										<td>
-										<?php echo tryGetData('addr', $item);?>
+										<?php echo tryGetData(tryGetData('house_type', $item), config_item('house_type_array'));?>
 										</td>
 										<td>
-										<?php echo tryGetData('move_in', $item);?>
+										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_type_array'));?>
 										</td>
 										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>

@@ -49,10 +49,10 @@
 										<th>序號</th>
 										<th style="width:250px">售屋標題</th>
 										<th>格局</th>
-										<th>總價</th>
-										<th>每坪單價</th>
+										<th>售價</th>
 										<th>坪數</th>
-										<!-- <th style="width:150px">地址</th> -->
+										<th>型態</th>
+										<th>類別</th>
 										<th style="width:120px">日期</th>
 										<th>操作</th>
 									</tr>
@@ -77,17 +77,20 @@
 										?>
 										</td>
 										<td>
-										<?php echo tryGetData('total_price', $item).' 萬元';?>
-										</td>
-										<td>
-										<?php echo tryGetData('unit_price', $item).' 萬元/坪';?>
+										<?php
+										echo '總價：'.tryGetData('total_price', $item).' 萬元<br />';
+										echo '單價：'.tryGetData('unit_price', $item).' 萬元/坪';
+										?>
 										</td>
 										<td>
 										<?php echo tryGetData('area_ping', $item).' 坪';?>
 										</td>
-										<!-- <td>
-										<?php //echo tryGetData('addr', $item);?>
-										</td> -->
+										<td>
+										<?php echo tryGetData(tryGetData('house_type', $item), config_item('house_type_array'));?>
+										</td>
+										<td>
+										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_type_array'));?>
+										</td>
 										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
