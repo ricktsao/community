@@ -6,14 +6,13 @@ class Message extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-		
+		$this->checkLogin();
 	}
 
 
 	public function index()
 	{
-		$data = array();
-		$this->checkLogin();
+		$data = array();		
 		$message_list = $this->it_model->listData("user_message","to_user_sn = '".$this->session->userdata("f_user_sn")."'",10,1,array("created"=>"desc"));
 		
 		$data["message_list"] = $message_list["data"];		

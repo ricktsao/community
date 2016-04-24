@@ -74,6 +74,20 @@ class Login extends Frontend_Controller {
 			$this->session->set_userdata('f_user_app_id', $user_info["app_id"]);
 			$this->session->set_userdata('f_comm_id', $comm_id);
 			
+			
+			//紀錄Keycode使用紀錄
+			//----------------------------------------------------------------------
+			$use_cnt = $user_info["use_cnt"] + 1;
+			$update_data = array(
+			"use_cnt" => $use_cnt,
+			"login_time" => date( "Y-m-d H:i:s" ),
+			"last_login_time" => $user_info["login_time"],
+			"updated" => date( "Y-m-d H:i:s" )
+			);
+			$this->it_model->updateData( "sys_user" , $update_data,"sn = '".$user_info["sn"]."'" );
+			//----------------------------------------------------------------------	
+			
+			
 			if( $this->session->userdata("pre_login_url") !== FALSE) 
 			{
 				$pre_login_url = $this->session->userdata("pre_login_url");

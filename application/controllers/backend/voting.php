@@ -196,10 +196,10 @@ class Voting extends Backend_Controller {
 		$data['list'] = $this->Voting_model->votingRecord($sn);
 
 		
-		dprint($data['list']);
-
-		//$this->display("content_list_view",$data);
-		//dprint($data["pager"]);
+		
+		
+		$this->display("voting_record_view",$data);
+		
 	}
 
 	

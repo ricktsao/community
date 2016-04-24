@@ -27,8 +27,7 @@ class Voting extends Frontend_Controller {
 	public function detail()
 	{
 		$content_sn = $this->input->get('sn');
-	
-		echo $this->session->userdata("f_user_id");			
+				
 		if($content_sn == "")
 		{
 			redirect(fUrl("index"));	

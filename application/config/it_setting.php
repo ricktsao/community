@@ -178,3 +178,19 @@ $config['mail_box_type'] = array(
 
 // api server url
 $config['api_server_url'] = 'http://27.147.4.239/commapi/';
+
+//維修範圍
+$config['repair_type'] = array(
+	"1" => "公共區域",
+	"2" => "住家內部"		
+);
+
+//維修處理進度  0:已報修,1:已讀 /2:勘驗/3:估價/4:完工
+$config['repair_status'] = array(
+	"0" => "已報修",
+	"1" => "已讀",	
+	"2" => "勘驗",
+	"3" => "估價",
+	"4" => "完工"
+);
+
