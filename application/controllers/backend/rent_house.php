@@ -47,6 +47,13 @@ class Rent_House extends Backend_Controller {
 			$given_bathroom = $bathroom;
 			$condition .= " AND `bathroom` = '".$bathroom."' ";
 		}
+		$balcony = $this->input->get('balcony', true);
+		$given_balcony = '';
+		if(isNotNull($balcony)) {
+			$given_balcony = $balcony;
+			$condition .= " AND balcony = '".$balcony."' ";
+		}
+
 
 		$query = 'SELECT SQL_CALC_FOUND_ROWS *
 					FROM house_to_rent
@@ -60,7 +67,7 @@ class Rent_House extends Backend_Controller {
 		$data['given_room'] = $given_room;
 		$data['given_livingroom'] = $given_livingroom;
 		$data['given_bathroom'] = $given_bathroom;
-
+		$data['given_balcony'] = $given_balcony;
 
 		$this->display("index_view",$data);
 	}
@@ -159,25 +166,6 @@ class Rent_House extends Backend_Controller {
         else 
         {
 
-			/*
-			dprint($edit_data);
-Array
-    [furniture] => Array
-        (
-            [0] => a
-            [1] => b
-            [2] => c
-        )
-
-    [electric] => Array
-        (
-            [0] => e
-            [1] => f
-            [2] => g
-        )
-
-)
-			*/
         	$arr_data = array(
 				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
 				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
@@ -190,6 +178,7 @@ Array
 				, "room"		=>	tryGetData("room", $edit_data)
 				, "livingroom"		=>	tryGetData("livingroom", $edit_data)
 				, "bathroom"		=>	tryGetData("bathroom", $edit_data)
+				, "balcony"		=>	tryGetData("balcony", $edit_data)
 				, "locate_level"	=>	tryGetData("locate_level", $edit_data)
 				, "total_level"		=>	tryGetData("total_level", $edit_data)
 				, "area_ping"		=>	tryGetData("area_ping", $edit_data)
@@ -311,6 +300,7 @@ Array
 		$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
+		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
 		$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 

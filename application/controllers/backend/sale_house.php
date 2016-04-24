@@ -155,37 +155,7 @@ class Sale_House extends Backend_Controller {
 		}
         else 
         {
-			/*
-			dprint($edit_data);[title] => 依山傍水三房＋車位
-    [name] => 周先生
-    [phone] => 0922333555
-    [house_type] => e
-    [rent_type] => f
-    [direction] => h
-    [room] => 3
-    [livingroom] => 2
-    [bathroom] => 2
-    [balcony] => 1
-    [area_ping] => 38.07
-    [pub_ratio] => 24.5
-    [area_desc] => 主建物、主建物 和 附屬建物坪數
-    [decoration] => 高檔裝潢
-    [locate_level] => 6
-    [total_level] => 12
-    [house_age] => 3.2
-    [total_price] => 1200
-    [unit_price] => 21.13
-    [manage_fee] => 2450
-    [addr] => 台北市內湖區舊宗路
-    [current] => 現況況
-    [usage] => 住宅用
-    [meterial] => 
-    [flag_rent] => 0
-    [flag_parking] => 1
-    [living] => 7-11
-    [traffic] => 附近交通
-    [desc] => 特色說明特色說明特色說明特色說明特色說明特色說明特色說明
-			*/
+
         	$arr_data = array(
 				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
 				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
@@ -226,9 +196,8 @@ class Sale_House extends Backend_Controller {
 			
 			if($edit_data["sn"] != FALSE)
 			{
-				dprint($arr_data);
 				$arr_return = $this->it_model->updateDB( "house_to_sale" , $arr_data, "sn =".$edit_data["sn"] );
-				dprint($this->db->last_query());
+
 				if($arr_return['success'])
 				{
 					$this->showSuccessMessage();					

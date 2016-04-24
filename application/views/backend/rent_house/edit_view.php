@@ -43,6 +43,7 @@
 		echo textNumberOption("<span class='red'>＊</span>格局 - 房", "room", $edit_data, 0, 10, 1,'房');
 		echo textNumberOption(" - 廳", "livingroom", $edit_data, 0, 10, 1,'廳');
 		echo textNumberOption(" - 衛", "bathroom", $edit_data, 0, 10, 1,'衛');
+		echo textNumberOption(" - 陽台", "balcony", $edit_data, 0, 10, 1,'陽台');
 		echo textNumberOption("<span class='red'>＊</span>位於幾樓", "locate_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>總樓層", "total_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>面積", "area_ping", $edit_data, 0, 300, 0.01, '坪');
@@ -111,7 +112,7 @@
 			
 			<button class="btn btn-info" id="Submit" type="submit">
 				<i class="icon-ok bigger-110"></i>
-				確定上傳
+				確定送出
 			</button>
 			
 		</div>
