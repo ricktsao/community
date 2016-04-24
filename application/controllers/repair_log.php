@@ -36,9 +36,16 @@ class Repair_log extends Frontend_Controller {
 			
 		if($repair_info["count"]>0)
 		{				
+			$repair_info = $repair_info["data"][0];
+			$data["repair_info"] = $repair_info;			
 			
-			$data["repair_info"] = $repair_info["data"][0];			
-
+			//reply list
+			//------------------------------------------------------------------
+			$reply_list = $this->it_model->listData("repair_reply","repair_sn = '".$repair_info["sn"]."'",NULL , NULL,array("created"=>"asc"));
+			$data["reply_list"] = $reply_list["data"];
+			//------------------------------------------------------------------
+			
+			
 			$this->display("repair_detail_view",$data);
 		}
 		else
