@@ -6,22 +6,22 @@
 			<table>
 				<tr>
 					<td colspan="2">						
-						<input type="text" name="title" class="input_style" placeholder="意見主旨">
+						<input type="text" name="title" class="input_style" value="<?php echo tryGetData("title",$edit_data);?>" placeholder="意見主旨">
 					</td>					
 				</tr>
 				<tr>
 					<td colspan="2">
-						<textarea name="content" id="" cols="30" rows="10" class="input_style" placeholder="意見內容"></textarea>
+						<textarea name="content" id="" cols="30" rows="10" class="input_style" placeholder="意見內容"><?php echo tryGetData("content",$edit_data);?></textarea>
 						<div class="error_msg"><?php echo tryGetData("error_message",$edit_data);?></div>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
 						<label>
-							<input name="to_role" value="M" type="radio" checked> 管委收
+							<input name="to_role" value="a" type="radio" checked> 管委收
 						</label>
 						<label>
-							<input name="to_role" value="S" type="radio"> 秘書收
+							<input name="to_role" value="s" type="radio"> 總幹事收
 						</label>
 					</td>
 				</tr>				

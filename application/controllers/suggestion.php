@@ -6,7 +6,8 @@ class Suggestion extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();	  
-		$this->displayBanner(FALSE);		
+		$this->displayBanner(FALSE);	
+		$this->checkLogin();
 	}
 	
 	
@@ -29,28 +30,28 @@ class Suggestion extends Frontend_Controller {
 		
 				
 		
-		if(tryGetData("content",$edit_data))
-		{
-			
+		if(tryGetData("content",$edit_data)!='' && tryGetData("title",$edit_data)!='' )
+		{			
 			$add_data = array(
-			"user_sn" => $this->session->userdata("f_user_sn"),
-			"type" => tryGetData("type",$edit_data,0),
+			"title" => tryGetData("title",$edit_data,0),
 			"content" => tryGetData("content",$edit_data),
+			"user_sn" => $this->session->userdata("f_user_sn"),
+			"to_role" => tryGetData("to_role",$edit_data,"a"),
 			"updated" => date("Y-m-d H:i:s"),
 			"created" => date("Y-m-d H:i:s")
 			);
 			
-			$repair_sn = $this->it_model->addData( "repair" , $add_data );					
+			$suggestion_sn = $this->it_model->addData( "suggestion" , $add_data );					
 						
-			redirect(frontendUrl("repair_log"));			
+			redirect(frontendUrl("suggestion_log"));			
 		}
 		else 
 		{
-			$edit_data["error_message"] = "請填寫報修內容!!";
+			$edit_data["error_message"] = "請填主旨及內容!!";
 			$data["edit_data"] = $edit_data;
 			
 			$this->displayBanner(FALSE);
-			$this->display("repair_view",$data);
+			$this->display("suggestion_view",$data);
 		}
 		
 	}
