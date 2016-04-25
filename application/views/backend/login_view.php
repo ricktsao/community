@@ -58,7 +58,9 @@
                 </tr>				
                 <tr>
                     <td colspan="3">                    	
-						<input type="submit" class="btn" value="登入">
+					
+
+                        <button type="submit" class="btn"><img src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/btn2.png"></button>
                     </td>
                 </tr>
 				<tr>
