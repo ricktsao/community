@@ -188,6 +188,11 @@ textarea.input_style {
     width: 100%;
 }
 
+.input_style.inline {
+    display: inline;
+    width: auto;
+}
+
 select {
     border-radius: 5px;
     border: 1px solid #999;
@@ -285,7 +290,7 @@ label {
 }
 
 .text_center {
-    text-align: center  !important;
+    text-align: center !important;
 }
 
 .text_left {
@@ -295,7 +300,6 @@ label {
 .text_right {
     text-align: right !important;
 }
-
 
 .pager {
     text-align: center;
@@ -359,23 +363,22 @@ label {
     padding-bottom: 10px;
 }
 
-
 #gas_table {
     width: 90%;
     margin: 0 auto;
 }
-#gas_table td{
-    text-align: left;
 
+#gas_table td {
+    text-align: left;
 }
 
 #gas_table thead td {
     font-weight: bold;
-    font-size:16px;
+    font-size: 16px;
     padding-bottom: 20px;
 }
 
 .error_msg {
-    color:#F00;
+    color: #F00;
     padding: 5px;
 }
