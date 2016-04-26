@@ -159,7 +159,7 @@ class Sale_House extends Backend_Controller {
         	$arr_data = array(
 				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
 				, 'comm_id'			=>  $this->getCommId()
-				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
+				, "sale_type"		=>	tryGetData("sale_type", $edit_data)
 				, "house_type"		=>	tryGetData("house_type", $edit_data)
 				, "direction"		=>	tryGetData("direction", $edit_data)
 				, "title"		=>	tryGetData("title", $edit_data)

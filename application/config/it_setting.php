@@ -148,7 +148,7 @@ $config['house_type_array'] = array( 'a'=>'電梯大樓'
 								, 'e'=>'別墅'
 								);
 // 型態
-$config['rent_type_array'] = array( 'a'=>'整層住家'
+$config['rent_sale_type_array'] = array( 'a'=>'整層住家'
 								, 'b'=>'獨立套房'
 								, 'c'=>'分租套房'
 								, 'd'=>'雅房'
