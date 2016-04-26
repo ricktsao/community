@@ -22,8 +22,12 @@
 			$config['height']           = $height;
 			$config['width']            = $width;
 			$CI->image_lib->initialize($config);
-			$CI->image_lib->resize();
+		//	$CI->image_lib->resize();
+			if (!$CI->image_lib->resize()) {
+				 echo $this->image_lib->display_errors();die;
+			}
 			$CI->image_lib->clear();
+
 		}
 	 
 		// return '<img src="' . dirname($_SERVER['SCRIPT_NAME']) . '/' . $image_thumb . '" />';

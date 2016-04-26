@@ -609,7 +609,7 @@ class CI_Upload {
 		if (in_array($ext, $image_types))
 		{
 			if (getimagesize($this->file_temp) === FALSE)
-			{
+			{ echo 'getimagesize error'; die;
 				return FALSE;
 			}
 		}

@@ -37,9 +37,6 @@
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
 
-		<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
-		<input type='hidden' name='house_to_sale_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
-
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">售屋標題：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('title',$house_data); ?></span></div>
@@ -91,6 +88,10 @@
 		<div class="hr hr-16 hr-dotted"></div>
 			
 				
+
+		<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
+		<input type='hidden' name='house_to_sale_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
+		<input type='hidden' name='comm_id' value='<?php echo tryGetData('comm_id', $house_data); ?>'>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增照片：</label>
 				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='filename' size=20></div>
@@ -155,8 +156,9 @@
 
 										// 縮圖
 										$thumb = 'thumb_'.$filename;
-										$thumb = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$thumb);
-										$url = base_url('upload/website/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
+										$comm_id = tryGetData('comm_id', $house_data);
+										$thumb = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$thumb);
+										$url = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$filename);
 									?>
 									<tr>
 										<td class="center">
