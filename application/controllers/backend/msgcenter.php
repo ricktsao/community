@@ -128,6 +128,10 @@ class Msgcenter extends Backend_Controller {
 				
 				if($content_sn > 0)
 				{
+					$arr_data["sn"] = $content_sn;
+					$arr_data["comm_id"] = $this->getCommId();					
+					$this->sync_message_to_server($arr_data);
+					
 					$msg_count++;
 				}
 				else
@@ -231,26 +235,7 @@ class Msgcenter extends Backend_Controller {
 
 
 
-	/**
-	 * 將行程更更新至行事曆
-	 */
-	 private function _updateCalendar($edit_data,$sales_sn,$sales_id)
-	 {					
-	 	$arr_data = array
-		(
-			  "cal_type" => "conference"
-			, "user_sn" => $sales_sn
-			, "user_id" => $sales_id
-			, "title" => tryGetData("title", $edit_data)
-			, "content" => tryGetData("msg_content", $edit_data)
-			, "readyonly" => 1
-			, "start_date" => tryGetData("meeting_date", $edit_data)		
-			, "updated" => date( "Y-m-d H:i:s" )
-			, "created" => date( "Y-m-d H:i:s" )
-		);
-		
-		$assign_sn = $this->it_model->addData( "calendar" , $arr_data );		
-	 }
+
 
 	
 	/**
@@ -267,6 +252,37 @@ class Msgcenter extends Backend_Controller {
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 
+
+
+
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_message_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync/updateUserMessage";
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "user_message" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
 
 
 
