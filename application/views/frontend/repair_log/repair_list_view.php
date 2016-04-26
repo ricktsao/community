@@ -21,7 +21,7 @@
 				<tr>                    
                     <td><div class="date_style">'.showDateFormat($repair_info["created"],"Y/m/d").'</div></td>
                     <td class="text_center">'.tryGetData( $repair_info["type"],$this->config->item('repair_type') ).'</td>
-					<td class="text_center">'.$repair_info["content"].'</td>
+					<td class="text_center">'.nl2br($repair_info["content"]).'</td>
 					<td class="text_center">'.tryGetData( $repair_info["status"],$this->config->item('repair_status') ) .' 
 						<button class="btn" onclick="location.href=\''.fUrl("detail",TRUE,array(),array("sn"=>$repair_info["sn"])).'\'"  >詳情 <i class="fa fa-chevron-right"></i></button> 
 					</td>

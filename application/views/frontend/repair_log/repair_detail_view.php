@@ -29,9 +29,25 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						回覆內容 : <?php echo nl2br($repair_info["reply"]);?> 
-					</td>					
+						回覆內容 :
+					</td>
 				</tr>
+				<?php
+					foreach ($reply_list as $key => $reply_info) 
+					{
+						echo '
+						<tr>
+							<td style="width:80px"></td>
+							<td>
+								['.$reply_info["created"].']<br>
+								'.nl2br($reply_info["reply"]).'
+							</td>
+						</tr>';
+						
+					}
+					
+				?>
+				
 				
 			</table>
 			<button class="btn block" onclick="event.preventDefault(); history.back(1);"><i class="fa fa-chevron-left"></i> 回上頁 </button>

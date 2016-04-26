@@ -5,7 +5,8 @@ class Repair extends Frontend_Controller {
 
 	function __construct() 
 	{
-		parent::__construct();	  		
+		parent::__construct();	
+		$this->displayBanner(FALSE);  		
 	}
 	
 	
@@ -16,7 +17,7 @@ class Repair extends Frontend_Controller {
 		$data["edit_data"] = $edit_data;
 	
 		
-		$this->displayBanner(FALSE);
+		
 		$this->display("repair_view",$data);
 	}	
 

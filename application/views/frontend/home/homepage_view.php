@@ -15,13 +15,13 @@
 					<ul class="film ul_unstyle">
 						<?php for($j=0;$j<count($album_list[$i]['imgs']);$j++):?>
 						<li>
-							<a href="#">
+							<a href="<?php echo frontendUrl('album');?>">
 								<img src="<?php echo $album_list[$i]['imgs'][$j]['img_filename'];?>" alt="">
 							</a>
 						</li>
 						<?php endfor;?>					
 					</ul>
-					<a href="#"><?php echo $album_list[$i]['title'];?></a>
+					<a href="<?php echo frontendUrl('album');?>"><?php echo $album_list[$i]['title'];?></a>
 					<div class="clear"></div>
 				</li>
 				<?php endfor;?>
