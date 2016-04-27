@@ -70,7 +70,18 @@ class Repair extends Backend_Controller {
 			//------------------------------------------------------------------
 			if($repair_info["status"]==0)
 			{
-				$this->it_model->updateData( "repair" , array("status"=>1,"updated"=>date("Y-m-d H:i:s")), "sn =".$content_sn );
+				$result = $this->it_model->updateData( "repair" , array("status"=>1,"is_sync" => 0,"updated"=>date("Y-m-d H:i:s")), "sn =".$content_sn );
+								
+				if($result)
+				{
+					$repair_info = $this->it_model->listData( "repair" ,"sn ='".$content_sn."'");
+					if($repair_info["count"]>0)
+					{
+						$repair_info = $repair_info["data"][0];
+						$this->sync_repair_to_server($repair_info);
+					}
+					
+				}				
 			}			
 			//------------------------------------------------------------------
 			
@@ -114,7 +125,19 @@ class Repair extends Backend_Controller {
 		{
 			//更新處理狀態
 			//------------------------------------------------------------------			
-			$this->it_model->updateData( "repair" , array("status"=>tryGetData("status",$edit_data,1),"updated"=>date("Y-m-d H:i:s")), "sn =".$edit_data["sn"] );
+			$result = $this->it_model->updateData( "repair" , array("status"=>tryGetData("status",$edit_data,1),"is_sync" => 0,"updated"=>date("Y-m-d H:i:s")), "sn ='".$edit_data["sn"]."'" );
+			if($result)
+			{
+				$repair_info = $this->it_model->listData( "repair" ,"sn ='".$edit_data["sn"]."'");
+				if($repair_info["count"]>0)
+				{
+					$repair_info = $repair_info["data"][0]; 									
+					//dprint($repair_info);exit;
+					$this->sync_repair_to_server($repair_info);
+				}
+				
+			}		
+			
 			//------------------------------------------------------------------
 			
 			
@@ -126,6 +149,7 @@ class Repair extends Backend_Controller {
 				"repair_sn" => $edit_data["sn"],
 				"repair_status" => tryGetData("status",$edit_data,1),
 				"reply" => tryGetData("reply",$edit_data),
+				"is_sync" => 0,
 				"updated" => date( "Y-m-d H:i:s" ),
 				"created" => date( "Y-m-d H:i:s" )
 				);
@@ -133,8 +157,8 @@ class Repair extends Backend_Controller {
 				$content_sn = $this->it_model->addData( "repair_reply" , $add_data );
 				if($content_sn > 0)
 				{
-					$edit_data["sn"] = $content_sn;
-					//$this->sync_to_server($edit_data);
+					$add_data["sn"] = $content_sn;
+					$this->sync_repair_reply_to_server($add_data);
 				
 					
 					$this->showSuccessMessage();							
@@ -155,6 +179,64 @@ class Repair extends Backend_Controller {
 	}
 	
 
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_repair_to_server($post_data)
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync/updateRepair";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "repair" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
+	
+	function sync_repair_reply_to_server($post_data)
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync/updateRepairReply";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "repair_reply" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
 	
 	public function GenerateTopMenu()
 	{
