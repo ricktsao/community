@@ -136,7 +136,7 @@
 					<a href="#" class="navbar-brand">
 						<small>
 							<img  style="height:25px;" src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/logo.png"/>
-							後臺管理系統
+							E-DOMA社區管理系統
 						</small>
 					</a><!-- /.brand -->
 				</div><!-- /.navbar-header -->
