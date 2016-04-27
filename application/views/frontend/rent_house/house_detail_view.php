@@ -45,32 +45,20 @@
 
 
         </div>
-<?php
+		<?php
 			foreach ($houses as $house) {
 
-				$photos = tryGetData('photos', $house, NULL);
+				$photos = tryGetData('photos', $house, array());
+				//dprint($photos );
 				$photo = '';
-					$photo = '<img src="'.base_url('/upload/rent.jpg').'" alt="">';
-				if ( isNotNull($photos) ) {
-					$photo = $photos[0];
-					$photo = '<img src="'.$photo.'" alt="">';
-					
-					
+				if ( sizeof($photos) > 0) {
+					$photo = tryGetData('photo', $photos[0], NULL);
+					if (isNotNull($photo)) {
+						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
+					}
 				}
-							/*, $photo
-							, $house['title']
-							, $house['sale_type']
-							, $house['locate_level']
-							, $house['total_level']
-							, $house['addr']
-							, $house['room']
-							, $house['livingroom']
-							, $house['bathroom']
-							, $house['balcony']
-							, $house['area_ping']
-							, $house['total_price']*/
-?>
-        <div id="rent_title"><span>住家出售</span><?php echo $house['title'];?></div>
+		?>
+        <div id="rent_title"><span>住家出租</span><?php echo $house['title'];?></div>
         <div class="row">
             <div id="slide_area">
                 <div id="slide">
@@ -96,7 +84,7 @@
                     <thead>
                         <tr>
                             <td class="text_right rent_title" colspan="2">
-                                <span><?php echo number_format_clean($house['total_price'],2);?></span>萬元
+                                <span><?php echo number_format_clean($house['rent_price'],2);?></span>元/月
                             </td>
                         </tr>
                         <tr>
@@ -105,8 +93,8 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>單價</td>
-                            <td><?php echo number_format_clean($house['unit_price'],2).' 萬元/坪';?></td>
+                            <td>押金</td>
+                            <td><?php echo $house['deposit'];?></td>
                         </tr>
                         <tr>
                             <td>格局</td>
@@ -122,11 +110,16 @@
                         </tr>
                         <tr>
                             <td>型態/現況</td>
-                            <td><?php echo $house['sale_type'];?>/<?php echo $house['house_type'];?></td>
+                            <td><?php echo $house['rent_type'];?> / 
+							<?php echo $house['house_type'];?></td>
                         </tr>
                         <tr>
-                            <td>是否含租約</td>
-                            <td><?php echo $house['flag_rent'];?></td>
+                            <td>是否含可開伙</td>
+                            <td><?php echo $house['flag_cooking'];?></td>
+                        </tr>
+                        <tr>
+                            <td>是否可養寵物</td>
+                            <td><?php echo $house['flag_pet'];?></td>
                         </tr>
                         <tr>
                             <td>車位</td>
@@ -164,9 +157,6 @@
 			foreach ($houses as $house) {
 				echo sprintf('
 							<tr>
-								<td>坪數說明：%s</td>
-							</tr>
-							<tr>
 								<td>生活機能：%s</td>
 							</tr>
 							<tr>
@@ -175,7 +165,6 @@
 							<tr>
 								<td>特色說明：%s</td>
 							</tr>'
-							, $house['area_desc']
 							, $house['living']
 							, $house['traffic']
 							, nl2br($house['desc'])

@@ -73,14 +73,14 @@
 			<?php
 			foreach ($houses as $house) {
 
-				$photos = tryGetData('photos', $house, NULL);
+				$photos = tryGetData('photos', $house, array());
+				//dprint($photos );
 				$photo = '';
-					$photo = '<img src="'.base_url('/upload/rent.jpg').'" alt="">';
-				if ( isNotNull($photos) ) {
-					$photo = $photos[0];
-					$photo = '<img src="'.$photo.'" alt="">';
-					
-					
+				if ( sizeof($photos) > 0) {
+					$photo = tryGetData('photo', $photos[0], NULL);
+					if (isNotNull($photo)) {
+						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
+					}
 				}
 				echo sprintf('
 							<tr>
@@ -96,12 +96,12 @@
 									</div>
 								</td>
 								<td class="text_center">%d 坪</td>
-								<td class="text_center"><span class="price">%s</span> 萬元</td>
+								<td class="text_center"><span class="price">%s</span> 元/月</td>
 							</tr>'
 							, $photo
 							, fUrl('index/?sn='.$house['sn'])
 							, $house['title']
-							, $house['sale_type']
+							, $house['rent_type']
 							, $house['locate_level']
 							, $house['total_level']
 							, $house['addr']
@@ -110,7 +110,7 @@
 							, $house['bathroom']
 							, $house['balcony']
 							, $house['area_ping']
-							, number_format_clean($house['total_price'],2)
+							, number_format_clean($house['rent_price'],2)
 					
 				
 				);
