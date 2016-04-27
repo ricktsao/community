@@ -28,42 +28,45 @@
 				
 			</ul>
 		</div>
+		<?php //dprint($houses);?>
 		<div id="blockB">
 			<div class="block_title">
 				<img src="<?php echo base_url().$templateUrl;?>images/index_title2.png" alt="">
 				<a href="#"><img src="<?php echo base_url().$templateUrl;?>images/more.png" alt=""></a>
 			</div>
 			<ul id="rental" class="ul_unstyle">
-				<li>
-					<a href="#" class="img">
-						<img src="upload/k1.png" alt="">
-					</a>
-					<div class="rental_content">
-						<a href="#">板橋富山街近家樂福 # 租金含水電......</a>
-						<div>板橋區 - 獨立套房.....</div>
-						<div>17800元/月</div>
-					</div>
-				</li>
-				<li>
-					<a href="#" class="img">
-						<img src="upload/k2.png" alt="">
-					</a>
-					<div class="rental_content">
-						<a href="#">板橋富山街近家樂福 # 租金含水電......</a>
-						<div>板橋區 - 獨立套房.....</div>
-						<div>17800元/月</div>
-					</div>
-				</li>
-				<li>
-					<a href="#" class="img">
-						<img src="upload/k3.png" alt="">
-					</a>
-					<div class="rental_content">
-						<a href="#">板橋富山街近家樂福 # 租金含水電......</a>
-						<div>板橋區 - 獨立套房.....</div>
-						<div>17800元/月</div>
-					</div>
-				</li>
+				<?php
+							foreach ($houses as $house) {
+
+				$photos = tryGetData('photos', $house, array());
+				//dprint($photos );
+				$photo = '';
+				if ( sizeof($photos) > 0) {
+					$photo = tryGetData('photo', $photos[0], NULL);
+					if (isNotNull($photo)) {
+						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
+					}
+				}
+				echo sprintf('	<li>
+									<a href="%s" class="img">
+										%s
+									</a>
+									<div class="rental_content">
+										<a href="%s">%s</a>
+										<div>%s - %s.....</div>
+										<div>%d 元/月</div>
+									</div>
+								</li>'
+							, frontendUrl('rent_house','index/?sn='.$house['sn'])
+							, $photo
+							, frontendUrl('rent_house','index/?sn='.$house['sn'])
+							, $house['title']
+							, $house['rent_type']
+							, $house['house_type']
+							, number_format_clean($house['rent_price'],2)
+							);
+				}
+				?>
 			</ul>
 		</div>
 	</div>

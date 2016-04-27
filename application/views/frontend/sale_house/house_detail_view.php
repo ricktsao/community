@@ -47,41 +47,24 @@
         </div>
 <?php
 			foreach ($houses as $house) {
-
-				$photos = tryGetData('photos', $house, NULL);
-				$photo = '';
-					$photo = '<img src="'.base_url('/upload/rent.jpg').'" alt="">';
-				if ( isNotNull($photos) ) {
-					$photo = $photos[0];
-					$photo = '<img src="'.$photo.'" alt="">';
-					
-					
-				}
-							/*, $photo
-							, $house['title']
-							, $house['sale_type']
-							, $house['locate_level']
-							, $house['total_level']
-							, $house['addr']
-							, $house['room']
-							, $house['livingroom']
-							, $house['bathroom']
-							, $house['balcony']
-							, $house['area_ping']
-							, $house['total_price']*/
 ?>
         <div id="rent_title"><span>住家出售</span><?php echo $house['title'];?></div>
         <div class="row">
             <div id="slide_area">
                 <div id="slide">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
+				<?php
+				$photos = tryGetData('photos', $house, NULL);
+				if ( isNotNull($photos) ) {
+					foreach($photos as $photo) {
+						$cur_photo = $photo['photo'];
+						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="物件照片" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+                    ';
+					}
+				} else {
+						echo '<img src="'.base_url('/upload/rent.jpg').'" alt="物件照片" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+                    ';
+				}
+				?>
                 </div>
                 <div id="slide_pager_area">
                     <div id="slide_pager">

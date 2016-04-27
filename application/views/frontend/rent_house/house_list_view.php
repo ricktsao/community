@@ -73,14 +73,14 @@
 			<?php
 			foreach ($houses as $house) {
 
-				$photos = tryGetData('photos', $house, array());
-				//dprint($photos );
-				$photo = '';
-				if ( sizeof($photos) > 0) {
-					$photo = tryGetData('photo', $photos[0], NULL);
-					if (isNotNull($photo)) {
-						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
-					}
+				$photos = tryGetData('photos', $house, NULL);
+
+				if ( isNotNull($photos) ) {
+					$photo = $photos[0]['photo'];
+					$photo = '<img src="'.$photo.'" alt="物件照片" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">';
+				} else {
+
+					$photo = '<img src="'.base_url('/upload/rent.jpg').'" alt="物件照片" >';
 				}
 				echo sprintf('
 							<tr>
@@ -111,9 +111,7 @@
 							, $house['balcony']
 							, $house['area_ping']
 							, number_format_clean($house['rent_price'],2)
-					
-				
-				);
+							);
 
 			
 			}
@@ -122,13 +120,7 @@
 
             </tbody>
         </table>
-        <div class="pager">
-            <a href="#"><i class="fa fa-chevron-left"></i></a>
-            <div>1</div>
-            <a href="#">2</a>
-            <a href="#">...</a>
-            <a href="#"><i class="fa fa-chevron-right"></i></a>
-        </div>
+        <?php echo showFrontendPager($pager)?>
     </div>
 
     <script>

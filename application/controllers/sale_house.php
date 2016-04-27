@@ -55,7 +55,7 @@ class Sale_house extends Frontend_Controller {
 			}*/
 
 
-			$result = $this->it_model->listData('house_to_sale', $condition);
+			$result = $this->it_model->listData('house_to_sale', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
 			
 			// Check if the rents data store contains rents (in case the database result returns NULL)
 			if ($result['count'] > 0) {
@@ -139,12 +139,15 @@ class Sale_house extends Frontend_Controller {
 					$item['photos'] = $photos;
 					$houses[] = $item;
 				}
+
+				$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
+
 				// Set the response and exit
 				//$this->response($rents, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
 
 			} else {
 
-				$msg = '找不到任何租屋資訊，請確認';
+				$msg = '找不到任何售屋資訊，請確認';
 			}
 		//}
 		$data['houses'] = $houses;

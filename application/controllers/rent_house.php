@@ -54,8 +54,9 @@ class Rent_house extends Frontend_Controller {
 				$condition .= ' AND room = '.$given_room;
 			}*/
 
-
-			$result = $this->it_model->listData('house_to_rent', $condition);
+$this->per_page_rows = 1;
+$this->page = 1;
+			$result = $this->it_model->listData('house_to_rent', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
 			
 			// Check if the rents data store contains rents (in case the database result returns NULL)
 			if ($result['count'] > 0) {
@@ -161,6 +162,7 @@ class Rent_house extends Frontend_Controller {
 		//}
 		$data['houses'] = $houses;
 
+		$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
 
 		if ( $result['count'] == 1 ) {
 			$this->display("house_detail_view", $data);

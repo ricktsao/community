@@ -47,29 +47,24 @@
         </div>
 		<?php
 			foreach ($houses as $house) {
-
-				$photos = tryGetData('photos', $house, array());
-				//dprint($photos );
-				$photo = '';
-				if ( sizeof($photos) > 0) {
-					$photo = tryGetData('photo', $photos[0], NULL);
-					if (isNotNull($photo)) {
-						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
-					}
-				}
 		?>
         <div id="rent_title"><span>住家出租</span><?php echo $house['title'];?></div>
         <div class="row">
             <div id="slide_area">
                 <div id="slide">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
-                    <img src="<?php echo base_url('/upload/rent.jpg');?>" alt="">
+				<?php
+				$photos = tryGetData('photos', $house, NULL);
+				if ( isNotNull($photos) ) {
+					foreach($photos as $photo) {
+						$cur_photo = $photo['photo'];
+						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+                    ';
+					}
+				} else {
+						echo '<img src="'.base_url('/upload/rent.jpg').'" alt="物件照片" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+                    ';
+				}
+				?>
                 </div>
                 <div id="slide_pager_area">
                     <div id="slide_pager">
@@ -167,7 +162,8 @@
 							</tr>'
 							, $house['living']
 							, $house['traffic']
-							, nl2br($house['desc'])
+							//, nl2br($house['desc'])
+							,$house['desc']
 					
 				
 				);
