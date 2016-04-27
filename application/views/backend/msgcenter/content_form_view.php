@@ -106,14 +106,9 @@
 		
 		$('#can_msg').change(function()
 	    {
-	    	if($('#can_msg').val()!="")
-	    	{
-	    		$('#msg_content').text($('#can_msg').val());
-	    	}
-	    	else
-	    	{
-	    		$('#msg_content').text('');
-	    	}
+	    	$("textarea#msg_content").val($('#can_msg').val());
+	    	//$('#msg_content').text($('#can_msg').val());
+	    	//alert('tste');
 	    });
 		
 	});

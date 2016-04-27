@@ -1,9 +1,20 @@
 
-
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<? echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	<?php echo textOption("<span class='require'>*</span>收件人","user_name",$edit_data); ?>
+	<div class="form-group" >
+		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 收件人：</label>
+		<div class="col-xs-12 col-sm-4">
+			<input type='text' name='user_name' size="50" id="user_name" placeholder="請使用住戶關鍵字搜尋" >
+			<button type="button" class="btn btn-purple" id="search-box">
+				<i class="ace-icon fa fa-key"></i> 搜尋
+			</button>
+			<div id="suggesstion-box"></div>
+			<div class="error" style="color:red;"><?php echo form_error("user_name") ?></div>
+		</div>
+		<input type="hidden" id="user_sn" name="user_sn" >
+		
+	</div>	
 	
 	<div class="form-group ">
 		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">郵件類型 </label>
@@ -30,16 +41,7 @@
 	?>	
 	
 	
-	<div class="form-group" style="display:none" >
-		<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 收件人：</label>
-		<div class="col-xs-12 col-sm-4">
-			<input type='text' name='name' size="50" id="name">
-			<button type="button" class="btn btn-purple" id="search-box">
-				<i class="ace-icon fa fa-key"></i> 搜尋
-			</button>
-			<div id="suggesstion-box"></div>
-		</div>
-	</div>	
+	
 		
 	
 	<div class="clearfix form-actions">
@@ -90,9 +92,9 @@ $(function(){
 		$.ajax({
 				type: "GET",
 				url: "<?php echo bUrl('ajaxGetPeople');?>",
-				data:'keyword='+$("#name").val()+'&ccd='+$("#ccd").val()+'&lsn='+$("#lsn").val(),
+				data:'keyword='+$("#user_name").val(),
 				beforeSend: function(){
-					var input = $('#name');
+					var input = $('#user_name');
 					var inputValue = input.val();
 					var nowLehgth = inputValue.length;
 					input.css("background","#FFF url(http://phppot.com/demo/jquery-ajax-autocomplete-country-example/loaderIcon.gif) no-repeat 165px");
@@ -101,6 +103,7 @@ $(function(){
 					} else {
 						input.css("background-image","none");
 						alert('請至少輸入二個字');
+						return false;
 					}
 
 		},
@@ -113,17 +116,26 @@ $(function(){
 		}
 		});
 	});
+	
+	
+	//form disable enter key
+	$('#update_form').on('keyup keypress', function(e) {
+	  var keyCode = e.keyCode || e.which;
+	  if (keyCode === 13) { 
+		e.preventDefault();
+		return false;
+	  }
+	});
+	
+	
+	
 }); 
 
 
 //To select country name
-function selectCountry(sn, name, id, addr) {
-	$("#cust_sn").val(sn);
-	$("#name").val(name);
-	/* $("#uni_id").val(id).attr("readonly","readonly");  Emma 說身分證號要讓user編修 */
-	/*$("#addr").val(addr).attr("readonly",true);*/
-	$("#uni_id").val(id); 
-	$("#addr").val(addr);
+function selectCountry(user_sn, user_name) {
+	$("#user_sn").val(user_sn);
+	$("#user_name").val(user_name);
 	$("#suggesstion-box").hide();
 }
 </script>	

@@ -15,7 +15,7 @@
 <form  role="search" action="<?php echo bUrl('index');?>">
 <article class="well">              
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("edit");?>">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("edit", false);?>">
 			<i class="icon-edit bigger-120"></i>新增
 		</a>
     </div>　　
@@ -27,6 +27,7 @@
 		<input type='text' size='1' name='room' value='<?php echo $given_room;?>'>房
 		<input type='text' size='1' name='livingroom' value='<?php echo $given_livingroom;?>'>廳
 		<input type='text' size='1' name='bathroom' value='<?php echo $given_bathroom;?>'>衛
+		<input type='text' size='1' name='balcony' value='<?php echo $given_balcony;?>'>陽台
     </div>  
     <div class="btn-group">
 		<button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
@@ -46,14 +47,13 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>日期</th>
-										<th style="width:180px">租屋標題</th>
+										<th style="width:250px">租屋標題</th>
 										<th>格局</th>
 										<th>月租金</th>
 										<th>坪數</th>
-										<th style="width:150px">地址</th>
-										<th>可遷入日</th>
-										<th></th>
+										<th style="width:150px">型態</th>
+										<th>類別</th>
+										<th style="width:120px">日期</th>
 										<th>操作</th>
 										
 									</tr>
@@ -66,14 +66,14 @@
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'><?php echo tryGetData('post_date', $item, '-');?></td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td>
 										<?php
-										echo sprintf('%s房 %s廳 %s衛' 
+										echo sprintf('%d 房　<br />  %d 廳　<br />  %d 衛　<br /> %d 陽台' 
 													, tryGetData('room', $item)
 													, tryGetData('livingroom', $item)
 													, tryGetData('bathroom', $item)
+													, tryGetData('balcony', $item)
 													);
 										?>
 										</td>
@@ -84,16 +84,22 @@
 										<?php echo tryGetData('area_ping', $item).' 坪';?>
 										</td>
 										<td>
-										<?php echo tryGetData('addr', $item);?>
+										<?php echo tryGetData(tryGetData('house_type', $item), config_item('house_type_array'));?>
 										</td>
 										<td>
-										<?php echo tryGetData('move_in', $item);?>
+										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_sale_type_array'));?>
 										</td>
+										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
+											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("photoSetting",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>物件照片
+											</a>
 										</td>
+										<?php
+										/*
 										<td>					
 											<div class="col-xs-3">
 												<label>
@@ -102,7 +108,8 @@
 												</label>
 											</div>
 										</td>
-										
+										*/
+										?>
 									</tr>
 									<?php
 										$i++;

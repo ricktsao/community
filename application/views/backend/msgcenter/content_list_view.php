@@ -20,10 +20,9 @@
 							<table id="sample-table-1" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>										
-										<th style="width:100px">序號</th>
-										<th style="width:100px">分類</th>										
-										<th>訊息標題</th>
-										<th>內容</th>	
+										<th style="width:80px">序號</th>
+										<th style="width:200px">訊息標題</th>										
+										<th>訊息內容</th>										
 										<th>發送人員</th>									
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>發送時間</th>
 									</tr>
@@ -31,29 +30,19 @@
 								<tbody>
 								<?php
 								foreach ($msg_list as $key => $item) 
-								{
-									$sales_people = explode( ",",$item["to_user_id"]);
-									//dprint($item["to_user_id"]);
-									$sales_content = '';
-									foreach ($sales_people as $key => $value) 
-									{
-										$sales_content .= '<li style="float:left">'.$value.'</li>';
-									}
-									
-									
+								{									
 									echo
 									'
 									<tr>
-										<td>'.(($key)+(($this->page-1) * 10)).'</td>										
-										<td>'.tryGetData($item["category_id"], $this->config->item("sys_message_category_array")).'</td>
+										<td>'.(($key+1)+(($this->page-1) * 10)).'</td>										
 										<td>'.$item["title"].'</td>
 										<td>'.nl2br($item["msg_content"]).'</td>
 										<td>										
 											<div class="tooltiptd" style="display:inline-block;">
-												<span class="tooltiptitle">共'.count($sales_people).'人</span>												
+												<span class="tooltiptitle">共'.$item["to_user_count"].'人</span>												
 												<div class="tooltip" style="width:500%;">
 													<ul>
-														'.$sales_content.'
+														'. $item["to_user_name"].'
 													</ul>
 												</div>
 											

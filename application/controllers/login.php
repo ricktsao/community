@@ -1,42 +1,115 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Login extends CI_Controller {
+class Login extends Frontend_Controller {
 
-	public $templateUrl;
-	
-	
-	
+
 	function __construct() 
 	{
-		parent::__construct();	  
-		//$this->templateUrl=base_url().$this->config->item('template_frontend_path');
+		parent::__construct();	  		
 	}
 	
-	public function test()
-	{		
-		include 'crontab/CrontabManager.php';
-		
-		//use 'php\manager\crontab\CrontabManager';
-
-	//	$crontab = new CrontabManager();
-		//$crontab.listJobs();
-	}
 	
 	public function index()
-	{		
-		//echo '<img src="http://27.147.4.239/phpjobscheduler/firepjs.php?return_image=1" border="0">';
-		echo '<br>rick test OK';
+	{
+		$data = array();
+		$edit_data["error_message"] = "";
+		$data["edit_data"] = $edit_data;
+			
+		//$pre_url= tryGetData("HTTP_REFERER",$_SERVER);
+		
+		//echo $pre_url;
+		
+		
+		$this->displayBanner(FALSE);
+		$this->display("login_view",$data);
 	}	
 
 	
 	
-	function test_sch()
+	function checkLogin()
 	{
-		$arr_data = array(
-						  "memo"	=> $this->input->ip_address()
-						, "updated"	=> date( "Y-m-d H:i:s" )
-						);
-			$this->it_model->addData( "test_sch" , $arr_data );
+		foreach( $_POST as $key => $value ) {
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
+		$keycode = $this->input->post("keycode",TRUE);
+		
+		
+		$str_conditions = "id = ".$this->db->escape(strtolower($keycode))."  
+		AND	launch = 1
+		";		
+		
+		$query = "SELECT SQL_CALC_FOUND_ROWS sys_user.* FROM sys_user WHERE role='I' AND ".$str_conditions	;
+		
+		//echo $query ;exit;		
+				
+				
+		$user_info = $this->it_model->runSql( $query );
+		
+		if($user_info["count"] > 0)
+		{
+			$user_info = $user_info["data"][0];
+			
+
+			//取得comm_id
+			//----------------------------------------------------------------------					
+			$comm_id = $this->it_model->listData("sys_config","id='comm_id'");
+			if($comm_id["count"]>0)
+			{			
+				$comm_id = $comm_id["data"][0]["value"];
+				
+			}
+			else
+			{
+				echo 'no comm_id !!';
+				die;
+			}
+			//----------------------------------------------------------------------
+			
+			
+			$this->session->set_userdata('f_user_name', $user_info["name"]);
+			$this->session->set_userdata('f_user_sn', $user_info["sn"]);
+			$this->session->set_userdata('f_user_id', $user_info["id"]);	
+			$this->session->set_userdata('f_building_id', $user_info["building_id"]);			
+			$this->session->set_userdata('f_user_app_id', $user_info["app_id"]);
+			$this->session->set_userdata('f_comm_id', $comm_id);
+			
+			
+			//紀錄Keycode使用紀錄
+			//----------------------------------------------------------------------
+			$use_cnt = $user_info["use_cnt"] + 1;
+			$update_data = array(
+			"use_cnt" => $use_cnt,
+			"login_time" => date( "Y-m-d H:i:s" ),
+			"last_login_time" => $user_info["login_time"],
+			"updated" => date( "Y-m-d H:i:s" )
+			);
+			$this->it_model->updateData( "sys_user" , $update_data,"sn = '".$user_info["sn"]."'" );
+			//----------------------------------------------------------------------	
+			
+			
+			if( $this->session->userdata("pre_login_url") !== FALSE) 
+			{
+				$pre_login_url = $this->session->userdata("pre_login_url");
+				$this->session->unset_userdata('pre_login_url');
+				redirect($pre_login_url);
+			}
+			else
+			{
+				redirect(frontendUrl());
+			}
+			
+			
+		}
+		else 
+		{
+			$edit_data["error_message"] = "磁卡不正確!!";
+			$data["edit_data"] = $edit_data;
+			
+			$this->displayBanner(FALSE);
+			$this->display("login_view",$data);
+		}
+		
 	}
 	
 }

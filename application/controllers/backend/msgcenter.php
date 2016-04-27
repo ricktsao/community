@@ -11,7 +11,7 @@ class Msgcenter extends Backend_Controller {
 
 	public function contentList()
 	{				
-		$msg_list = $this->it_model->listData("sys_message_assign","from_user_sn = '".$this->session->userdata("user_sn")."' ",$this->per_page_rows,$this->page,array("created" => "desc"));		
+		$msg_list = $this->it_model->listData("user_message_assign","",$this->per_page_rows,$this->page,array("created" => "desc"));		
 		$data["msg_list"] = $msg_list["data"];
 		
 		//取得分頁
@@ -21,59 +21,6 @@ class Msgcenter extends Backend_Controller {
 	
 	
 
-	function _initUnitData(&$data)
-	{
-		//秘書所屬單位
-		//----------------------------------------------------------------------------------------------
-		$unit_info = $this->it_model->listData("unit","secretary_user_id = '".$this->session->userdata("user_id")."' ");		
-		if($unit_info["count"]>0)
-		{
-			$unit_info = $unit_info["data"][0];
-		}	
-		else 
-		{
-			$unit_info = array();
-		}
-			
-		$data["unit_info"] = $unit_info;
-		
-		//----------------------------------------------------------------------------------------------
-		
-		//秘書所屬單位的業務
-		//----------------------------------------------------------------------------------------------
-		//秘書所屬單位
-		$unit_list = $this->it_model->listData("unit","secretary_user_id = '".$this->session->userdata("user_id")."'");		
-				
-		//dprint($unit_list);
-		$unit_sn_ary = array();
-		$unit_sales_list = array();
-		foreach ($unit_list["data"] as $key => $item) 
-		{
-			array_push($unit_sn_ary,$item["sn"]);
-			$unit_sales_list[$item["sn"]]["unit_info"] = $item;
-			$unit_sales_list[$item["sn"]]["sales_list"] = array();
-		}
-		
-		//單位所屬業務
-		
-		if(count($unit_sn_ary) > 0)
-		{
-			$sales_list = $this->it_model->listData("sys_user","unit_sn in ( ".implode(",", $unit_sn_ary)." ) AND launch = 1");
-			$sales_list = $sales_list["data"];
-			foreach ($sales_list as $key => $item) 
-			{
-				if(array_key_exists($item["unit_sn"], $unit_sales_list))
-				{
-					array_push($unit_sales_list[$item["unit_sn"]]["sales_list"],$item);
-				}				
-			}
-		}
-		
-		//dprint($unit_sales_list);
-		$data["unit_sales_list"] = $unit_sales_list;
-		//----------------------------------------------------------------------------------------------
-	}
-	
 
 	public function editContent()
 	{
@@ -150,6 +97,8 @@ class Msgcenter extends Backend_Controller {
         {		
         	$error_user_ary = array();
 			$to_user_sn_ary = tryGetData("users", $edit_data,array());
+			$to_user_name_ary = array(); 
+			
 			$msg_count = 0;
 			foreach ($to_user_sn_ary as $key => $to_user_sn) 
 			{
@@ -159,6 +108,9 @@ class Msgcenter extends Backend_Controller {
 					continue;
 				}
 				$user_info = $user_info["data"][0];
+				
+				array_push($to_user_name_ary,$user_info["name"]);
+				
 				
 				$arr_data = array
 				(      
@@ -176,6 +128,10 @@ class Msgcenter extends Backend_Controller {
 				
 				if($content_sn > 0)
 				{
+					$arr_data["sn"] = $content_sn;
+					$arr_data["comm_id"] = $this->getCommId();					
+					$this->sync_message_to_server($arr_data);
+					
 					$msg_count++;
 				}
 				else
@@ -185,7 +141,7 @@ class Msgcenter extends Backend_Controller {
 			}
 			
 			if($msg_count == count($to_user_sn_ary))
-			{	
+			{					
 				$this->showSuccessMessage();							
 			}
 			else 
@@ -194,7 +150,21 @@ class Msgcenter extends Backend_Controller {
 				$this->showMessage($msg);
 			}
 
-
+			
+			$arr_data = array
+			(      
+				  "edit_user_sn" => $this->session->userdata('user_sn')
+				, "to_user_sn" => implode(",", $to_user_sn_ary)					
+				, "to_user_name" => implode(",", $to_user_name_ary) 
+				, "to_user_count" => count($to_user_sn_ary)
+				, "title" => tryGetData("title", $edit_data)
+				, "msg_content" => tryGetData("msg_content", $edit_data)
+				, "updated" => date( "Y-m-d H:i:s" )
+				, "created" => date( "Y-m-d H:i:s" )
+			);	
+							
+			$content_sn = $this->it_model->addData( "user_message_assign" , $arr_data );
+			
 			
 			redirect(bUrl("contentList"));	
         }	
@@ -265,26 +235,7 @@ class Msgcenter extends Backend_Controller {
 
 
 
-	/**
-	 * 將行程更更新至行事曆
-	 */
-	 private function _updateCalendar($edit_data,$sales_sn,$sales_id)
-	 {					
-	 	$arr_data = array
-		(
-			  "cal_type" => "conference"
-			, "user_sn" => $sales_sn
-			, "user_id" => $sales_id
-			, "title" => tryGetData("title", $edit_data)
-			, "content" => tryGetData("msg_content", $edit_data)
-			, "readyonly" => 1
-			, "start_date" => tryGetData("meeting_date", $edit_data)		
-			, "updated" => date( "Y-m-d H:i:s" )
-			, "created" => date( "Y-m-d H:i:s" )
-		);
-		
-		$assign_sn = $this->it_model->addData( "calendar" , $arr_data );		
-	 }
+
 
 	
 	/**
@@ -301,6 +252,37 @@ class Msgcenter extends Backend_Controller {
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 
+
+
+
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_message_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync/updateUserMessage";
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "user_message" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
 
 
 

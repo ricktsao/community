@@ -205,7 +205,7 @@ class CI_Upload {
 		$this->client_name = $this->file_name;
 
 		// Is the file type allowed to be uploaded?
-		if ( ! $this->is_allowed_filetype())
+		if ( ! $this->is_allowed_filetype(TRUE))
 		{
 			$this->set_error('upload_invalid_filetype');
 			return FALSE;
@@ -591,7 +591,7 @@ class CI_Upload {
 		}
 
 		if (count($this->allowed_types) == 0 OR ! is_array($this->allowed_types))
-		{
+		{ echo 'allowed_types 11'; die;
 			$this->set_error('upload_no_file_types');
 			return FALSE;
 		}
@@ -599,20 +599,22 @@ class CI_Upload {
 		$ext = strtolower(ltrim($this->file_ext, '.'));
 
 		if ( ! in_array($ext, $this->allowed_types))
-		{
+		{ echo 'allowed_types 22'; die;
 			return FALSE;
 		}
 
+		/*
 		// Images get some additional checks
 		$image_types = array('gif', 'jpg', 'jpeg', 'png', 'jpe');
 
 		if (in_array($ext, $image_types))
 		{
 			if (getimagesize($this->file_temp) === FALSE)
-			{
+			{ echo 'getimagesize error'; die;
 				return FALSE;
 			}
 		}
+		*/
 
 		if ($ignore_mime === TRUE)
 		{
@@ -632,7 +634,8 @@ class CI_Upload {
 		{
 				return TRUE;
 		}
-
+dprint($mime);
+dprint($this->file_type);die;
 		return FALSE;
 	}
 

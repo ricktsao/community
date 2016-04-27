@@ -16,23 +16,18 @@
 
 
 <form action="<?php echo bUrl("updateImport")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
-	
+
 	<div class="form-group">
 		<label class="col-sm-2 control-label no-padding-right" for="form-field-1" style="margin-top:12px">住戶資料檔案上傳：</label>		
-		<div class="col-sm-8">			
-
+		<div class="col-sm-8">
 			<div class="widget-main">
 				<input  name="xlsfile" type="file" id="id-input-file-2" />	
 				<div id="error_msg" class="help-block" style="color:red"><?php echo  tryGetData("error", $edit_data);?></div>			
 			</div>
-			
 			<div id="loading_zone" class="spinner-loader" style="display: none">
 			  Loading…
 			</div>
-			
 		</div>
-		
-		
 	</div>
 	
 	

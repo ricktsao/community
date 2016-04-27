@@ -1038,18 +1038,18 @@
 		$pager_html = '';
 		if(isNotNull($pager) && is_array($pager) && ($pager['total_rows'] > $pager['per_page_rows']))
 		{
-			$btn_previous = '<a href="javascript:void()">&lt;</a>';
-			$btn_next = '<a href="javascript:void()">&gt;</a>';
+			$btn_previous = '<a href="javascript:void()"><i class="fa fa-chevron-left"></i></a>';
+			$btn_next = ' <a href="javascript:void()"><i class="fa fa-chevron-right"></i></a>';
 			
 			$btn_per_pages = '';
 			if($pager['has_previous'])
 			{
-				$btn_previous = '<a href="'.fUrl($pager["action"] , TRUE, array("page"),  array("page" => ($pager['page'] - 1))).'">&lt;</a>';
+				$btn_previous = '<a href="'.fUrl($pager["action"] , TRUE, array("page"),  array("page" => ($pager['page'] - 1))).'"><i class="fa fa-chevron-left"></i></a>';
 			}
 			
 			if($pager['has_next'])
 			{
-				$btn_next = '<a href="'.fUrl($pager["action"], TRUE ,array("page"),  array("page" => ($pager['page'] + 1))).'" >&gt;</a>';
+				$btn_next = ' <a href="'.fUrl($pager["action"], TRUE ,array("page"),  array("page" => ($pager['page'] + 1))).'" ><i class="fa fa-chevron-right"></i></a>';
 			}
 			
 			foreach($pager['page_range'] as $key => $per_page)
@@ -1058,7 +1058,7 @@
 				$per_page = $per_page;
 				if($pager['page'] == $per_page)
 				{
-					$btn_per_pages .= '<div>'.$per_page.'</div>';
+					$btn_per_pages .= ' <div>'.$per_page.'</div>';
 				}
 				else
 				{
@@ -1067,22 +1067,16 @@
 						$int_page = intval(($pager['page_range'][$key-1] + $pager['page_range'][$key+1] ) / 2);
 						
 					}
-					$btn_per_pages .= '<a href="'.fUrl($pager["action"], TRUE ,array("page"), array("page"=>$int_page)).'" title="'.$per_page.'">'.$per_page.'</a>';
+					$btn_per_pages .= ' <a href="'.fUrl($pager["action"], TRUE ,array("page"), array("page"=>$int_page)).'" title="'.$per_page.'">'.$per_page.'</a>';
 				}
 			}
 			
 			
 			$pager_html =
-			'	       
-	        <div class="page">
-	            <div class="pages">
-	            	<a href="'.fUrl($pager["action"], TRUE ,array("page"), array("page"=> 1)).'" '.($pager['page']==1?'class="disabled"':'').'  >&laquo;</a>                
-	
-	                '.$btn_previous.$btn_per_pages.$btn_next.'
-	                
-	                <a href="'.fUrl($pager["action"], TRUE ,array("page"), array("page"=> $pager["page_num"])).'"  '.($pager['page']==$pager["page_num"]?'class="disabled"':'').'  >&raquo;</a>
-	            </div>
-            </div>
+			'
+			<div class="pager">
+				'.$btn_previous.$btn_per_pages.$btn_next.'	
+			</div>
 			';
 		}
 
