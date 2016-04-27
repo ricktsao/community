@@ -1,4 +1,4 @@
-<div id="logo"><a href="<?php echo backendUrl();?>" title="Akacia"><img src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/logo.png" alt="iLimit" title="Akacia" border="0" /></a></div>
+<div id="logo"><a href="<?php echo backendUrl();?>" title="logo"><img src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/logo.png" alt="logo" title="logo" border="0" /></a></div>
 <div id="stay">
 	<table border="0" cellspacing="0" cellpadding="0">
       <tr>       
