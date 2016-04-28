@@ -89,7 +89,7 @@
 										<?php echo tryGetData(tryGetData('house_type', $item), config_item('house_type_array'));?>
 										</td>
 										<td>
-										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_type_array'));?>
+										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_sale_type_array'));?>
 										</td>
 										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
