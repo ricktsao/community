@@ -21,7 +21,7 @@ class Voting extends Backend_Controller {
 	{	
 
 
-		$list = $this->it_model->listData( "voting",null,20,1 );
+		$list = $this->it_model->listData( "voting","is_del=0",20,1 );
 		$data["list"] = $list['data'];
 		$list["count"] =  $list['count'];
 
@@ -95,7 +95,7 @@ class Voting extends Backend_Controller {
 		$edit_data = [];
 
 		foreach ($_POST as $key => $value) {
-			$edit_data[$key]=$value;
+			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
 
 		$edit_data["allow_anony"] = tryGetArrayValue("allow_anony",$edit_data,0);
@@ -111,10 +111,14 @@ class Voting extends Backend_Controller {
         else 
         {
 			
-        	$voting_option = $edit_data["voting_option"];
-        	unset($edit_data["voting_option"]);
+        	if(isset($edit_data["voting_option"])){
+        		$voting_option = $edit_data["voting_option"];
+        		unset($edit_data["voting_option"]);
+        	}
 
-		//	deal_img($edit_data ,"img_filename",$this->router->fetch_class());	
+       
+
+	
 			
 			if(isNotNull($edit_data["sn"]))
 			{
@@ -122,6 +126,7 @@ class Voting extends Backend_Controller {
 					
 				if($this->it_model->updateData( "voting" , $edit_data, "sn =".$edit_data["sn"] ))
 				{
+
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -137,6 +142,8 @@ class Voting extends Backend_Controller {
 				if($content_sn > 0)
 				{				
 					$edit_data["sn"] = $content_sn;
+					$re = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+					//echo $re;die();
 					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();							
 				}
@@ -170,11 +177,14 @@ class Voting extends Backend_Controller {
 
 	public function deleteContent()
 	{
-		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
-		
-		if($del_ary!= FALSE && count($del_ary)>0)
+		$del = $this->input->post('del',TRUE);		
+		$del = implode(",",$del);
+	
+		if($del!= FALSE )
 		{
-			$this->it_model->deleteDB( "voting",NULL,$del_ary );				
+			//$this->it_model->deleteDB( "voting",NULL,$del_ary );
+			$this->it_model->updateData( "voting" , array("is_del"=>1), "sn in (".$del.")" );
+
 		}
 		$this->showSuccessMessage();
 		redirect(bUrl("contentList", FALSE));	
