@@ -744,7 +744,14 @@ abstract class Frontend_Controller extends IT_Controller
 		$this->redirectHome();
 	}	
 	
-	
+	/**
+	 * 取得社區id
+	 */
+	function getCommId()
+	{
+		$comm_id = $this->session->userdata("f_comm_id");
+		return $comm_id;
+	}
 	
 	function speed()
 	{

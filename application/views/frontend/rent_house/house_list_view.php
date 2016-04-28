@@ -74,6 +74,7 @@
 			foreach ($houses as $house) {
 
 				$photos = tryGetData('photos', $house, NULL);
+
 				if ( isNotNull($photos) ) {
 					$photo = $photos[0]['photo'];
 					$photo = '<img src="'.$photo.'" alt="物件照片" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">';
@@ -81,7 +82,6 @@
 
 					$photo = '<img src="'.base_url('/upload/rent.jpg').'" alt="物件照片" >';
 				}
-
 				echo sprintf('
 							<tr>
 								<td>
@@ -96,12 +96,12 @@
 									</div>
 								</td>
 								<td class="text_center">%d 坪</td>
-								<td class="text_center"><span class="price">%s</span> 萬元</td>
+								<td class="text_center"><span class="price">%s</span> 元/月</td>
 							</tr>'
 							, $photo
 							, fUrl('index/?sn='.$house['sn'])
 							, $house['title']
-							, $house['sale_type']
+							, $house['rent_type']
 							, $house['locate_level']
 							, $house['total_level']
 							, $house['addr']
@@ -110,10 +110,8 @@
 							, $house['bathroom']
 							, $house['balcony']
 							, $house['area_ping']
-							, number_format_clean($house['total_price'],2)
-					
-				
-				);
+							, number_format_clean($house['rent_price'],2)
+							);
 
 			
 			}
@@ -122,7 +120,6 @@
 
             </tbody>
         </table>
-        
         <?php echo showFrontendPager($pager)?>
     </div>
 

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Sale_house extends Frontend_Controller {
+class Rent_house extends Frontend_Controller {
 
 
 	function __construct() 
@@ -37,10 +37,10 @@ class Sale_house extends Frontend_Controller {
             ], REST_Controller::HTTP_NOT_FOUND); // NOT_FOUND (404) being the HTTP response code
 
         } else {
-			$condition = 'comm_id="'.$comm_id.'" AND '.$this->it_model->getEffectedSQL('house_to_sale');
+			$condition = 'comm_id="'.$comm_id.'" AND '.$this->it_model->getEffectedSQL('house_to_rent');
 */
 			$condition = ' ';
-			$condition = ' '. $this->it_model->getEffectedSQL('house_to_sale') ;
+			$condition = ' '. $this->it_model->getEffectedSQL('house_to_rent') ;
 			if ( isNotNull($sn) ) {
 				// If the sn parameter doesn't exist return all the rents
 				$condition .= ' AND sn = '.$sn;
@@ -54,15 +54,16 @@ class Sale_house extends Frontend_Controller {
 				$condition .= ' AND room = '.$given_room;
 			}*/
 
-
-			$result = $this->it_model->listData('house_to_sale', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
+$this->per_page_rows = 1;
+$this->page = 1;
+			$result = $this->it_model->listData('house_to_rent', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
 			
 			// Check if the rents data store contains rents (in case the database result returns NULL)
 			if ($result['count'] > 0) {
 
 				//$rents = $result['data'];
-				//$config_electric_array = config_item('electric_array');
-				//$config_furniture_array = config_item('furniture_array');
+				$config_electric_array = config_item('electric_array');
+				$config_furniture_array = config_item('furniture_array');
 				$config_gender_array2 = config_item('gender_array2');
 				$config_parking_array = config_item('parking_array');
 				$config_rent_sale_type_array = config_item('rent_sale_type_array');
@@ -75,16 +76,28 @@ class Sale_house extends Frontend_Controller {
 					//$item['gender_term'] = $config_gender_array2[$gender_term];
 
 					// 可否開伙
-					$flag_rent = tryGetData('flag_rent', $item, NULL);
-					if ( isNotNull($flag_rent) ) {
+					$flag_cooking = tryGetData('flag_cooking', $item, NULL);
+					if ( isNotNull($flag_cooking) ) {
 
-						if ($flag_rent != 1) {
-							$item['flag_rent'] = "無";
+						if ($flag_cooking != 1) {
+							$item['flag_cooking'] = "無";
 
 						} else {
-							$item['flag_rent'] = "有";
+							$item['flag_cooking'] = "有";
 						}
 					}
+					// 可否開伙
+					$flag_pet = tryGetData('flag_pet', $item, NULL);
+					if ( isNotNull($flag_pet) ) {
+
+						if ($flag_pet != 1) {
+							$item['flag_pet'] = "不可";
+
+						} else {
+							$item['flag_pet'] = "可";
+						}
+					}
+
 
 
 					// 車位
@@ -92,18 +105,18 @@ class Sale_house extends Frontend_Controller {
 					$item['flag_parking'] = tryGetData($flag_parking, $config_parking_array, NULL);
 
 					// 型態
-					$sale_type = tryGetData('sale_type', $item, NULL);
-					$item['sale_type'] = tryGetData($sale_type, $config_rent_sale_type_array, NULL);
+					$rent_type = tryGetData('rent_type', $item, NULL);
+					$item['rent_type'] = tryGetData($rent_type, $config_rent_sale_type_array, NULL);
 
 					// 物件類型
 					$house_type = tryGetData('house_type', $item, NULL);
 					$item['house_type'] = tryGetData($house_type, $config_house_type_array, NULL);
 
-					// 物件類型
+					/* 物件類型
 					$direction = tryGetData('direction', $item, NULL);
 					$item['direction'] = tryGetData($direction, $config_house_direction_array, NULL);
-
-					/* 家具
+					*/
+					// 家具
 					$given_furni_ary = explode(',' , $item['furniture']);
 					$furni_ary = array();
 					foreach($config_furniture_array as $furni) {
@@ -124,34 +137,32 @@ class Sale_house extends Frontend_Controller {
 						}
 					}
 					$item['electric'] = implode(',', $ele_ary);
-					*/
+					
 
 					// 照片
-					//$condition = 'comm_id="'.$comm_id.'" AND house_to_sale_sn='.$item['sn'];
-					$condition = 'house_to_sale_sn='.$item['sn'];
-					$phoresult = $this->it_model->listData('house_to_sale_photo', $condition);
+					//$condition = 'comm_id="'.$comm_id.'" AND house_to_rent_sn='.$item['sn'];
+					$condition = 'house_to_rent_sn='.$item['sn'];
+					$phoresult = $this->it_model->listData('house_to_rent_photo', $condition);
 					$photos = array();
 					foreach ($phoresult['data'] as $photo) {
-						$img = base_url('upload/website/house_to_sale/'.$item['comm_id'].'/'.$item['sn'].'/'.$photo['filename']);
+						$img = base_url('upload/website/house_to_rent/'.$item['comm_id'].'/'.$item['sn'].'/'.$photo['filename']);
 						$photos[] = array('photo' => $img
 										, 'title' => $photo['title'] );
 					}
 					$item['photos'] = $photos;
 					$houses[] = $item;
 				}
-
-				$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
-
 				// Set the response and exit
 				//$this->response($rents, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
 
 			} else {
 
-				$msg = '找不到任何售屋資訊，請確認';
+				$msg = '找不到任何租屋資訊，請確認';
 			}
 		//}
 		$data['houses'] = $houses;
 
+		$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
 
 		if ( $result['count'] == 1 ) {
 			$this->display("house_detail_view", $data);
