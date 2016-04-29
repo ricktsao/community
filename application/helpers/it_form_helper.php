@@ -660,7 +660,7 @@ function textDisplay($field_title = '',$option_name = '',$edit_data = array())
 	
 	$html = 
 	'<div class="form-group" '.$error_css.'>
-		<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> '.$field_title.' </label>
+		<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> '.$field_title.' </label>
 		<div class="col-sm-9">		
 			<input type="text" id="'.$option_name.'" disabled="disabled" class="col-xs-10 col-sm-5" value="'.tryGetData( $option_name,$edit_data).'"  />							
 		</div>		

@@ -7,7 +7,7 @@
 	 
 		// Path to image thumbnail
 		//$image_thumb = dirname('upload/' . $folder_name . '/' . $image_name) . '/' . $image_name . '_' . $width . '_' . $height . strrchr($image_name, '.');
-		$image_thumb = dirname('./upload/' . $folder_name . '/' . $image_name) . '/thumb_' . $image_name ;
+		$image_thumb = dirname('./upload/' . $folder_name . '/' . $image_name) . '/' . $image_name ;
 		 
 		if( ! file_exists($image_thumb))
 		{

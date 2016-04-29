@@ -155,7 +155,8 @@
 										if ( isNull($filename) ) continue;
 
 										// 縮圖
-										$thumb = 'thumb_'.$filename;
+										//$thumb = 'thumb_'.$filename;
+										$thumb = $filename;
 										$comm_id = tryGetData('comm_id', $house_data);
 										$thumb = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$thumb);
 										$url = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$filename);
@@ -170,7 +171,7 @@
 												<span class="lbl"></span>
 											</label>
 										</td>
-										<td><?php echo '<a href="'.$url.'" title="檢視大圖" target=_blank><img border="0" src="'.$thumb.'?"></a>'; ?></td>
+										<td><?php echo '<a href="'.$url.'" title="檢視大圖" target=_blank><img border="0" width="150" src="'.$thumb.'?"></a>'; ?></td>
 										<td><?php echo tryGetData('title', $photo, '-');?></td>
 										
 										<td><?php echo tryGetData('updated', $photo, '-');?></td>
