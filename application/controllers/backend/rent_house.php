@@ -167,7 +167,8 @@ class Rent_House extends Backend_Controller {
         {
 
         	$arr_data = array(
-				 "sn"		=>	tryGetData("sn", $edit_data, NULL)
+				 "sn"				=>	tryGetData("sn", $edit_data, NULL)
+				, 'comm_id'			=>  $this->getCommId()
 				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
 				, "house_type"		=>	tryGetData("house_type", $edit_data)
 				, "furniture"		=>	implode(',', tryGetData("furniture", $edit_data))
@@ -245,35 +246,6 @@ class Rent_House extends Backend_Controller {
         }
 	}
 
-/*
-
-    [title] => 敦北生活圈新裝潢住宅華廈出租
-    [rent_price] => 42000
-    [deposit] => 兩個月
-    [room] => 3
-    [livingroom] => 1
-    [bathroom] => 2
-    [locate_level] => 10
-    [total_level] => 12
-    [addr] => 台北市松山區民族東路743號
-    [tenant_term] => 
-    [gender_term] => a
-    [meterial] => 水泥磚牆
-    [move_in] => 5月
-    [rent_term] => 一年
-    [area_ping] => 32
-    [usage] => 住宅用
-    [current] => 電梯大樓/整層住家
-    [flag_cooking] => 1
-    [flag_pet] => 0
-    [flag_parking] => 1
-    [living] => 近便利商店；傳統市場；百貨公司；公園綠地；學校；醫療機構；夜市
-    [traffic] => 近敦化民權公車站； 松山機場捷運站
-    [desc] => 
-    [start_date] => 2016-04-01
-    [end_date] => 
-    [launch] => 1
-*/
 
 	function _validateData()
 	{
@@ -300,7 +272,7 @@ class Rent_House extends Backend_Controller {
 		$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
 		$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'required|less_than[10]|greater_than[0]' );
+		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
 		$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
 		$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 
@@ -312,7 +284,7 @@ class Rent_House extends Backend_Controller {
 		$this->form_validation->set_rules( 'addr', '地址', 'required|max_length[100]' );
 		$this->form_validation->set_rules( 'move_in', '可遷入日', 'required|max_length[20]' );
 		$this->form_validation->set_rules( 'rent_term', '最短租期', 'required|max_length[20]' );
-		$this->form_validation->set_rules( 'current', '型態/現況', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'current', '現況', 'required|max_length[20]' );
 		$this->form_validation->set_rules( 'desc', '特色說明', 'required|max_length[300]' );
 
 		if ($is_manager == 1) {
@@ -380,7 +352,9 @@ class Rent_House extends Backend_Controller {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
-		$config['upload_path'] = './upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'];
+		$house_to_rent_sn = tryGetData('house_to_rent_sn', $edit_data, NULL);
+		$comm_id = tryGetData('comm_id', $edit_data, NULL);
+		$config['upload_path'] = './upload/website/house_to_rent/'.$comm_id.'/'.$edit_data['house_to_rent_sn'];
 		$config['allowed_types'] = 'jpg|png';
 		$config['max_size']	= '1000';
 		$config['max_width']  = '1200';
@@ -389,25 +363,26 @@ class Rent_House extends Backend_Controller {
 
 		$this->load->library('upload', $config);
 
-		if (!is_dir('./upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'])) {
-				mkdir('./upload/website/house_to_rent/'.$edit_data['house_to_rent_sn'], 0777, true);
+		if (!is_dir('./upload/website/house_to_rent/'.$comm_id.'/'.$edit_data['house_to_rent_sn'])) {
+				mkdir('./upload/website/house_to_rent/'.$comm_id.'/'.$edit_data['house_to_rent_sn'], 0777, true);
 		}
 
-		if ( ! $this->upload->do_upload('filename'))
+		if ( isNull($house_to_rent_sn) || isNull($comm_id) || ! $this->upload->do_upload('filename'))
 		{
 			$error = array('error' => $this->upload->display_errors());
 
-			$this->showFailMessage('照片上傳失敗，錯誤訊息為：' .$error['error'] );
+			$this->showFailMessage('照片上傳失敗，請稍後再試　' .$error['error'] );
 
 		} else {
-			$upload = $this->upload->data();
 
+			$upload = $this->upload->data();
 			$filename = tryGetData('file_name', $upload);
 
 			// 製作縮圖
-			image_thumb('website/house_to_rent/'.$edit_data['house_to_rent_sn'], $filename, '120', '100');
+			image_thumb('website/house_to_rent/'.$comm_id.'/'.$edit_data['house_to_rent_sn'], $filename, '120', '100');
 
 			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
+							, 'comm_id'				=>  tryGetData('comm_id', $edit_data)
 							, 'house_to_rent_sn'	=>	tryGetData('house_to_rent_sn', $edit_data)
 							, 'filename'			=>	$filename
 							, 'title'				=>	tryGetData('title', $edit_data)
