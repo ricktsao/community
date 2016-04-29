@@ -4,9 +4,9 @@ Class Voting_model extends IT_Model
 	
 	public function change_option($sn =null,$arr_option=null){
 
-		//$this->it_model->deleteData( "voting_option",array("voting_sn"=>$sn));
+		$this->it_model->deleteData( "voting_option",array("voting_sn"=>$sn));
 
-		$this->it_model->updateData( "voting_option",array("is_del"=>0),"voting_sn='".$sn."'");
+	//	$this->it_model->updateData( "voting_option",array("is_del"=>0),"'voting_sn'='".$sn."'");
 
 		//$query = "UPDATE voting_option SET is_del='0' WHERE voting_sn='".$sn."'";
 

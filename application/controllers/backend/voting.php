@@ -142,7 +142,7 @@ class Voting extends Backend_Controller {
 				if($content_sn > 0)
 				{				
 					$edit_data["sn"] = $content_sn;
-					$re = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+					//$re = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
 					//echo $re;die();
 					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();							
