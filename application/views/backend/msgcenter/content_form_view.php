@@ -38,7 +38,7 @@
 	?>	
 	
 	<div class="form-group <?php echo $error_css;?>">
-		<label for="url" class="col-xs-12 col-sm-3 control-label no-padding-right">發佈對象</label>
+		<label for="url" class="col-xs-12 col-sm-2 control-label no-padding-right">發佈對象</label>
 		
 		<div class="col-xs-12 col-sm-8">
 			<select multiple="multiple" size="10" name="users[]">
@@ -123,6 +123,10 @@
         infoTextEmpty: '訊息發送列表',
         //nonSelectedFilter: 'ion ([7-9]|[1][0-2])'
       });
+
+		demo1.bootstrapDualListbox("getContainer").find(".btn.moveall").append("(選擇全部)");
+		demo1.bootstrapDualListbox("getContainer").find(".btn.removeall").append("(全部移除)");
+
 	  /*
 	$("#update_form").submit(function() {
       alert('請選擇發布對象');
