@@ -6,6 +6,13 @@ Class Voting_model extends IT_Model
 
 		$this->it_model->deleteData( "voting_option",array("voting_sn"=>$sn));
 
+	//	$this->it_model->updateData( "voting_option",array("is_del"=>0),"'voting_sn'='".$sn."'");
+
+		//$query = "UPDATE voting_option SET is_del='0' WHERE voting_sn='".$sn."'";
+
+		//$this->it_model->runSqlCmd($query);
+
+
 		for($i=0;$i<count($arr_option);$i++){
 			echo $arr_option[$i];
 				$this->it_model->addData( "voting_option" , array("voting_sn" =>$sn,
@@ -35,7 +42,7 @@ Class Voting_model extends IT_Model
 				end_date,
 				counts
 				FROM voting LEFT JOIN (".$sql_subquery.") AS vr ON  voting.sn = vr.voting_sn
-				WHERE vr.counts IS NULL".$sql_date;
+				WHERE vr.counts IS NULL".$sql_date." AND is_del = 0" ;
 
 		$result = $this->it_model->runSql($sql);
 
@@ -125,7 +132,39 @@ Class Voting_model extends IT_Model
 
 		return $data;
 
+	}	
+
+
+	public	function sync_to_server($post_data =null,$page_name){
+		//$url = "http://localhost/commapi/sync/updateContent";
+		//$url = $this->config->item("api_server_url").$page_name;
+		$url = "http://localhost/commapi/".$page_name;
+
+		return $url;
+		$post_data['comm_id'] =  $this->session->userdata("comm_id");
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		return $is_sync;
+		//------------------------------------------------------------------------------
 	}
+	
 
 	
 }

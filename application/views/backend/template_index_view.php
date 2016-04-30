@@ -8,8 +8,10 @@
 		
 		<!-- basic styles -->
 		<link href="<?php echo site_url().$templateUrl?>css/bootstrap.min.css" rel="stylesheet" />
+		<link href="<?php echo site_url().$templateUrl?>css/font-awesome-4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+		<!--
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
+		-->
 		<!--[if IE 7]>
 		  <link rel="stylesheet" href="<?php echo site_url().$templateUrl?>css/font-awesome-ie7.min.css" />
 		<![endif]-->
