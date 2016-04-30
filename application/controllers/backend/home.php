@@ -31,7 +31,8 @@ class Home extends Backend_Controller{
 
 		$mpdf->Output();
 	}
- 
+ 	
+
 
 	public function query_land()
 	{
