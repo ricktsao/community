@@ -770,9 +770,7 @@ abstract class Backend_Controller extends IT_Controller
 			, "brief2" => tryGetData("brief2",$edit_data)	
 			, "id" => tryGetData("id",$edit_data,NULL)	
 			, "content_type" => tryGetData("content_type",$edit_data)	
-			, "filename" => tryGetData("filename",$edit_data)		
-			, "img_filename" => tryGetData("img_filename",$edit_data)			
-			, "img_filename2" => tryGetData("img_filename2",$edit_data)
+			, "filename" => tryGetData("filename",$edit_data)
 			, "start_date" => tryGetData("start_date",$edit_data,date( "Y-m-d H:i:s" ))
 			, "end_date" => tryGetData("end_date",$edit_data,NULL)
 			, "forever" => tryGetData("forever",$edit_data,0)
@@ -785,6 +783,15 @@ abstract class Backend_Controller extends IT_Controller
 			, "update_date" =>  date( "Y-m-d H:i:s" )
 		);        	
 		
+		if(isNotNull(tryGetData("img_filename",$edit_data)))
+		{
+			$arr_data["img_filename"] = tryGetData("img_filename",$edit_data);
+		}
+		
+		if(isNotNull(tryGetData("img_filename2",$edit_data)))
+		{
+			$arr_data["img_filename2"] = tryGetData("img_filename2",$edit_data);
+		}	
 		
 		
 		return $arr_data;
