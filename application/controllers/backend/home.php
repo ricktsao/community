@@ -17,7 +17,7 @@ class Home extends Backend_Controller{
 	public function testpdf()
 	{	
 		$time = time();
-		$pdfFilePath = "./upload/testpdf_".$time .".pdf";
+		$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
 
 		$html = "<h1>富網通社區測試</h1>";
 		$html .= "<table border=1><tr><td>表格＆圖檔</td><td><img width='100' src='".base_url('template\backend\images\img_logo.png')."'></td></tr></table>";
@@ -29,7 +29,7 @@ class Home extends Backend_Controller{
 		$mpdf->autoScriptToLang = true;
 		$mpdf->WriteHTML($html);
 
-		$mpdf->Output();		
+		$mpdf->Output();
 	}
  
 
