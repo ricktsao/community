@@ -5,7 +5,23 @@ class Auth extends Backend_Controller
 	
 	function __construct() 
 	{
-		parent::__construct();	
+		parent::__construct();
+
+		// 取得戶別相關參數
+		$this->load->model('auth_model');
+		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
+		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
+		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
+		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
+		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+
+		if (isNotNull($building_part_01_value)) {
+			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
+		}
+
+		if (isNotNull($building_part_02_value)) {
+			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
 	}
 		
 	
@@ -14,10 +30,32 @@ class Auth extends Backend_Controller
 	{
 		$condition = "";
 
-		$role = $this->input->get('role');			
-		if(isNotNull($role))
-		{
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);			
+		}
+
+		$role = tryGetData('role', $query_key, NULL);		
+		if(isNotNull($role)) {
 			$condition .= ' AND role = "'.$role.'"' ;
+		}
+
+
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+		$building_id = NULL;
+		if (isNotNull($b_part_01) && $b_part_01 > 0) {
+			$building_id = $b_part_01.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && $b_part_01 > 0 && $b_part_02 > 0) {
+			$building_id .= $b_part_02.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && isNotNull($b_part_03) && $b_part_01 > 0 && $b_part_02 > 0 && $b_part_03 > 0) {
+			$building_id .= $b_part_03;
+		}
+		if (isNotNull($building_id)) {
+			$condition .= ' AND building_id like "'.$building_id.'%"' ;
 		}
 		/*
 		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
@@ -31,14 +69,12 @@ class Auth extends Backend_Controller
 
 
 		// 指定客戶姓名
-		$keyword = $this->input->get('keyword', true);
-
+		$keyword = tryGetData('keyword', $query_key, NULL);	
 		$data['given_keyword'] = '';
 		if(isNotNull($keyword)) {
 			$data['given_keyword'] = $keyword;
 			$condition .= " AND ( `id` like '%".$keyword."%' "
 						."      OR `name` like '%".$keyword."%' "
-						."      OR `building_id` like '%".$keyword."%' "
 						."      OR `account` like '%".$keyword."%'  ) "
 						;
 		}
@@ -50,11 +86,21 @@ class Auth extends Backend_Controller
 						;
 
 		$admin_list = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
-
+//dprint( $admin_list["sql"]);
 		$data["list"] = $admin_list["data"];
 		
 		//取得分頁
 		$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
+
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		$data['b_part_03'] = $b_part_03;
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
 
 		$this->display("admin_list_view",$data);
 	}

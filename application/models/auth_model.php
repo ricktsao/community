@@ -9,6 +9,17 @@ class Auth_Model extends IT_Model
 	}
 
 	
+	public function getWebSetting( $key )
+	{
+		if (isNotNull($key)) {
+			$result = $this->it_model->listData('web_setting', '`key`="'.$key.'"');
+			$data = $result['data'][0];
+
+			return tryGetData('value', $data, NULL);
+		}
+		return false;
+	}
+	
 	public function GetWebAdminList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{
 		echo $condition;

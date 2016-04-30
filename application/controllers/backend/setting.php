@@ -9,7 +9,7 @@ class Setting extends Backend_Controller{
 
 	
 	
-	public function set()
+	public function index()
 	{	
 		$setting_list = $this->it_model->listData("web_setting","launch = 1",NULL,NULL,array("sort"=>"asc","sn"=>"desc"));
 		
