@@ -266,6 +266,8 @@ class Album extends Backend_Controller {
 		if (isset($_POST['liteUploader_id']) && $_POST['liteUploader_id'] == 'fileUpload2')
 		{
 		//echo '<br>-->2';
+			$folder_name = $this->router->fetch_class();
+
 			foreach ($_FILES['fileUpload2']['error'] as $key => $error)
 			{
 				if ($error == UPLOAD_ERR_OK)
@@ -281,25 +283,23 @@ class Album extends Backend_Controller {
 					);    
 					
 					//dprint($arr_data);
-						
+					
 					//圖片處理 img_filename				
-					$img_config['resize_setting'] =array("album"=>array(800,600));					
+					$img_config['resize_setting'] =array($folder_name=>array(1024,1024));					
 					$uploadedUrl = './upload/tmp/' . $_FILES['fileUpload2']['name'][$key];
 					move_uploaded_file( $_FILES['fileUpload2']['tmp_name'][$key], $uploadedUrl);
-					$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);	
 					
-					$img_config['resize_setting'] =array("album"=>array(280,187));
-					resize_img($uploadedUrl,$img_config['resize_setting'],"s_".$arr_data['img_filename']);
+					$img_filename = resize_img($uploadedUrl,$img_config['resize_setting']);					
+					$arr_data['img_filename'] = $img_filename;	
+					//社區同步資料夾
+					$img_config['resize_setting'] =array($folder_name=>array(500,500));
+					resize_img($uploadedUrl,$img_config['resize_setting'],$this->getCommId(),$img_filename);
 					
 					@unlink($uploadedUrl);	
-					
-					//deal_ajax_img($arr_data,$img_config,"img_filename");
+
 					$gallery_sn = $this->it_model->addData( "album_item" , $arr_data );
 					
 					
-					//$uploadedUrl = './upload/' . $_FILES['fileUpload2']['name'][$key];
-					//move_uploaded_file( $_FILES['fileUpload2']['tmp_name'][$key], $uploadedUrl);
-					//$urls[] = $uploadedUrl;
 				}
 			}
 
@@ -412,15 +412,32 @@ class Album extends Backend_Controller {
 			if(isNotNull($_FILES['img_filename']['name']))
 			{
 				//圖片處理 img_filename				
-				$img_config['resize_setting'] =array("album"=>array(0,0));					
-				$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
-				move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
-				$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);					
+				//$img_config['resize_setting'] =array("album"=>array(0,0));					
+				//$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
+				//move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
+				//$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);					
 											
-				$img_config['resize_setting'] =array("album"=>array(280,187));
-				resize_img($uploadedUrl,$img_config['resize_setting'],"s_".$arr_data['img_filename']);
+				//$img_config['resize_setting'] =array("album"=>array(280,187));
+				//resize_img($uploadedUrl,$img_config['resize_setting'],"s_".$arr_data['img_filename']);
 				
-				@unlink($uploadedUrl);
+				//@unlink($uploadedUrl);
+
+					$folder_name = $this->router->fetch_class();
+
+					//圖片處理 img_filename				
+					$img_config['resize_setting'] =array($folder_name=>array(1024,1024));					
+					$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
+					move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
+					
+					$img_filename = resize_img($uploadedUrl,$img_config['resize_setting']);					
+					$arr_data['img_filename'] = $img_filename;	
+					//社區同步資料夾
+					$img_config['resize_setting'] =array($folder_name=>array(500,500));
+					resize_img($uploadedUrl,$img_config['resize_setting'],$this->getCommId(),$img_filename);
+					
+					@unlink($uploadedUrl);	
+
+					
 			
 			}
 			
