@@ -12,6 +12,28 @@
 	</h1>
 </div>
 
+<form  role="search" action="<?php echo bUrl('index');?>">
+<article class="well">
+    <div class="btn-group">
+	<?php
+	echo $parking_part_01 .'：';
+	echo form_dropdown('p_part_01', $parking_part_01_array, $p_part_01);
+	echo '&nbsp;&nbsp;';
+	echo $parking_part_02 .'：';
+	echo form_dropdown('p_part_02', $parking_part_02_array, $p_part_02);
+	echo '&nbsp;&nbsp;';
+	echo $parking_part_03 .'：';
+	echo '<input type="text" name="p_part_03" value="'.$p_part_03.'" size="1">';
+	?>
+    </div>
+	
+
+    <div class="btn-group">
+		<button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
+    </div>
+</article>	
+
+</form>
 
 <form action="" id="update_form" method="post" class="contentForm"> 
 		<div class="row">
@@ -24,8 +46,7 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>車位ＩＤ</th>
-										<!-- <th>位置</th> -->
+										<th>車位別</th>
 										<th>戶別</th>
 										<th>住戶姓名</th>
 										<th>電話</th>
@@ -44,12 +65,24 @@
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'><?php echo tryGetData('parking_id', $item, '-');?></td>
+										<td>
+										<?php 
+										$parking_id = tryGetData('parking_id', $item, NULL);
+										if ( isNotNull($parking_id) ) {
+											echo parking_id_to_text($parking_id);
+										}
+										?>
+										</td>
 										<!-- <td>
 										<?php echo tryGetData('location', $item);?>
 										</td> -->
 										<td>
-										<?php echo tryGetData('building_id', $item);?>
+										<?php 
+										$building_id = tryGetData('building_id', $item, NULL);
+										if ( isNotNull($building_id) ) {
+											echo building_id_to_text($building_id);
+										}
+										?>
 										</td>
 										<td>
 										<?php echo tryGetData('name', $item);?>

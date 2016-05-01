@@ -15,6 +15,21 @@
 		return $building_id_to_text;
 	}
 
+	## 將戶別代號轉成文字
+	function parking_id_to_text($parking_id)
+	{
+		// Get the CodeIgniter super object
+		$CI =& get_instance();
+		$parking_id_to_text = '';
+		if ( isNotNull($parking_id) ) {
+			$parking_id_parts = explode('_', $parking_id);
+			$parking_id_to_text = $CI->parking_part_01.' '.tryGetData($parking_id_parts[0], $CI->parking_part_01_array);
+			$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_02.' '.tryGetData($parking_id_parts[1], $CI->parking_part_02_array);
+			$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_03.' '.$parking_id_parts[2];
+		}
+		return $parking_id_to_text;
+	}
+
 
 	function image_thumb($folder_name, $image_name, $width, $height)
 	{

@@ -233,404 +233,6 @@ class Userimport extends Backend_Controller {
 
 
 
-	/**
-	 * 匯入Ａ７配地街廓一覽表數據
-	 */
-	public function importA7()
-	{	
-					
-		$edit_data[] = array();
-		$data["edit_data"] = $edit_data;
-		$this->display("import_a7_view",$data);
-	}
-	
-	
-
-	/**
-	 * 匯入Ａ７配地街廓一覽表數據
-	 */
-	public function updateA7Import()
-	{
-		set_time_limit(2000);//執行時間
-		$edit_data = array();
-											
-		$config['upload_path'] = getcwd().'./upload/tmp/';
-		$config['allowed_types'] = 'xlsx';
-        $config['max_size'] = '100000';
-
-		$this->load->library('upload',$config);
-		
-		
-		
-		if ( ! $this->upload->do_upload("xlsfile"))
-		{
-			$edit_data["error"] = $this->upload->display_errors();
-			$data["edit_data"] = $edit_data;				
-			 
-			
-			$this->display("import_form_view",$data);
-		}
-		else
-		{
-			$file_info = $this->upload->data();
-			
-			//dprint($file_info);
-			//exit;
-			//echo $file_info["full_path"];
-		
-			$this->load->library('excel');
-			
-			
-			
-			//讀取excel資料
-			//--------------------------------------------------------------------------------
-			//read file from path
-			$objPHPExcel = PHPExcel_IOFactory::load(iconv("UTF-8", "big5",$file_info["full_path"]) );
-			//get only the Cell Collection
-			$cell_collection = $objPHPExcel->getActiveSheet()->getCellCollection();
-			
-			//extract to a PHP readable array format
-			foreach ($cell_collection as $cell) 
-			{
-			    $column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();	
-			    $row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
-
-
-				// $data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
-
-				// 儲存格若為日期時間格式，須轉出日期
-				$given_cell = $objPHPExcel->getActiveSheet()->getCell($cell);
-
-				if (is_object($given_cell->getValue())) {
-					$data_value= $given_cell->getValue()->getPlainText();
-
-				} else {
-					$data_value= $given_cell->getValue();
-
-				}
-
-
-				if (PHPExcel_Shared_Date::isDateTime($given_cell)) {
-					$format = 'Y-m-d';
-					$data_value = date($format, PHPExcel_Shared_Date::ExcelToPHP($data_value)); 
-				}
-				
-			    //header will/should be in row 1 only. of course this can be modified to suit your need.
-			    if ($row == 1) {			    	    	
-			        $header[$row][$column] = $data_value;
-			    } else {
-			        $arr_data[$row][$column] = $data_value;
-			    }
-			}
-			
-			//send the data in an array format
-			$xls_data['header'] = $header;
-			$xls_data['values'] = $arr_data;
-			
-			//dprint($xls_data['values']);
-
-			$mapping = array(
-				'no' => '項次'
-				, 'street_id' => '街廓編號'
-				, 'street_total_m2' => '街廓總面積'
-				, 'street_total_value' => '街廓總地價'
-				, 'first_m2' => '第一宗 面積'
-				, 'first_value' => '第一宗 評定地價'
-				, 'first_right' => '第一宗 所需權利價值'
-				, 'gen_m2' => '一般土地 總面積'
-				, 'gen_value' => '一般土地 評定地價'
-				, 'gen_total_right' => '一般土地 總地價'
-				, 'gen_min_width' => '一般土地 最小分配寬度'
-				, 'gen_min_m2' => '一般土地 最小分配面積'
-				, 'gen_min_right' => '一般土地 最低所需權利價值'
-				, 'gen_deep_m2' => '一般土地 街廓較深處 參考面積'
-				, 'gen_deep_right' => '一般土地 街廓較深處 參考權值'
-				, 'last_m2' => '最後宗土地 面積'
-				, 'last_value' => '最後宗土地 評定地價'
-				, 'last_right' => '最後宗土地 所需權利價值'
-				, 'deep_01' => '深度 起'
-				, 'deep_02' => '深度 末'
-				, 'memo' => '備註'
-				, 'flag' => '限制'
-				);
-			$tmp = array();
-			$parsed_array = array();
-			$i = 0;
-			foreach ($xls_data['values'] as $key => $item) 
-			{
-				$i++;
-				if ($i > 2) {
-//			echo $key;	
-//dprint($item);
-if (isNull(tryGetData('C', $item, NULL)) ) continue;
-
-				$tmp['no'] = tryGetData('A', $item);
-				$tmp['street_id'] = tryGetData('C', $item);
-				$tmp['street_total_m2'] = tryGetData('D', $item);
-				$tmp['street_total_value'] = tryGetData('F', $item);
-				$tmp['first_m2'] = tryGetData('G', $item);
-				$tmp['first_value'] = tryGetData('H', $item);
-				$tmp['first_right'] = tryGetData('I', $item);
-				$tmp['gen_m2'] = tryGetData('J', $item); 
-				$tmp['gen_value'] = tryGetData('L', $item);
-				$tmp['gen_total_right'] = tryGetData('M', $item);
-				$tmp['gen_min_width'] = tryGetData('P', $item);
-				$tmp['gen_min_m2'] = tryGetData('R', $item);
-				$tmp['gen_min_right'] = tryGetData('U', $item);
-				$tmp['gen_deep_m2'] = tryGetData('V', $item); 
-				$tmp['gen_deep_right'] = tryGetData('W', $item);
-				$tmp['last_m2'] = tryGetData('X', $item); 
-				$tmp['last_value'] = tryGetData('Y', $item);
-				$tmp['last_right'] = tryGetData('Z', $item);
-				$tmp['deep_01'] = tryGetData('AA', $item);
-				$tmp['deep_02'] = tryGetData('AB', $item);
-				$tmp['memo'] = tryGetData('AH', $item);
-				$parsed_array[] = $tmp;
-				}
-				//$parsed_array['flag'] = tryGetData('B', $item);
-
-				/*
-				$no = tryGetData('A', $item);
-				$street_id = tryGetData('C', $item);
-				$street_total_m2 = tryGetData('D', $item);
-				$street_total_value = tryGetData('F', $item);
-				$first_m2 = tryGetData('G', $item);
-				$first_value = tryGetData('H', $item);
-				$first_right = tryGetData('I', $item);
-				$gen_m2 = tryGetData('J', $item); 
-				$gen_value = tryGetData('L', $item);
-				$gen_total_right = tryGetData('M', $item);
-				$gen_min_width = tryGetData('P', $item);
-				$gen_min_m2 = tryGetData('R', $item);
-				$gen_min_right = tryGetData('U', $item);
-				$gen_deep_m2 = tryGetData('V', $item); 
-				$gen_deep_right = tryGetData('W', $item);
-				$last_m2 = tryGetData('X', $item); 
-				$last_value = tryGetData('Y', $item);
-				$last_right = tryGetData('Z', $item);
-				$deep_01 = tryGetData('AA', $item);
-				$deep_02 = tryGetData('AB', $item);
-				$memo = tryGetData('AH', $item);
-				$all_flag = tryGetData('B', $item);
-				*/
-			}
-
-			$sql = array();
-			$insert = '';
-			foreach ($parsed_array as $v) 
-			{
-				$insert = 'Insert into a7_setting SET ';
-				foreach ($v as $k => $vv) 
-				{	
-					if ($k == 'no')		echo '<p>';
-					if (isset($mapping[$k])) 
-						echo $mapping[$k].' = ';
-					else
-						echo $k.' ?= ';
-					
-					echo $vv .'('.gettype($vv). ')<br>';
-
-					if (is_string($vv) && $k != 'memo' && $k != 'street_id' ) {
-//						$vv = NULL;
-						$insert .= $k.' = NULL, ';
-					} else {
-						if ($k == 'memo' || $k == 'street_id') {
-							$insert .= $k.' = "'.$vv.'", ';
-						} else {
-							$insert .= $k.' = '.$vv.', ';
-						}
-					}
-					//$vv = (float) $vv;
-//					$insert .= $k.' = "'.$vv.'", ';
-					//$k = ;
-				}
-				$insert = substr($insert, 0, -2);
-				$insert .= ';';
-				$sql[] = $insert;
-			}
-//dprint($sql);
-				foreach ($sql as $query) 
-				{
-					echo $query.'<br>';
-				}
-			die;
-
-			$error = array();
-			$i = 0;
-			$j = 0;
-			foreach ($xls_data['values'] as $key => $item) 
-			{
-				$name = tryGetData('A', $item);
-				$name = big5_for_utf8($name);
-				$addr = tryGetData('B', $item);
-				$addr = big5_for_utf8($addr);
-				$sales = tryGetData('F', $item);
-				$sales = big5_for_utf8($sales);
-				$unit = tryGetData('D', $item);
-				$unit = big5_for_utf8($unit);
-				$deal_date = tryGetData('G', $item);
-				
-				// 先查詢業務序號
-				$result = $this->person_model->getSalesList('name="'.$sales.'" and u.unit_name like "'.$unit.'%"');
-				if ($result['count'] < 1 ) {
-
-					$error['wrong_sales'][] = $unit .' '.$sales.'  => '.$name .' (地址：'.$addr.')';
-
-				} else {
-
-					$u_sn = $result['data'][0]['sn'];
-					$u_id = $result['data'][0]['id'];
-					
-					$item['u_sn'] = $u_sn;
-					$item['u_id'] = $u_id;
-
-					// 查詢客戶序號
-					$cust_sn = $this->person_model->getCustomerSnbyNamenAddr($name, $addr);
-
-					if ($cust_sn == false) {
-
-						$error['wrong_cust'][] =  $unit .' '.$sales.'  => '.$name .' (地址：'.$addr.')';
-
-					} else {
-					
-						$item['c_sn'] = $cust_sn;
-/*
-						$arr_data = array('user_sn' => tryGetData('u_sn', $item)
-										, 'user_id' => tryGetData('u_id', $item)
-										, 'tmp_user_name' => tryGetData('F', $item)
-										, 'source' => 'uploaded'
-										, 'customer_sn' => tryGetData('c_sn', $item)
-										, 'customer_name' => tryGetData('A', $item)
-										, 'tmp_address' => tryGetData('B', $item)
-										, 'restricted' => 1
-										, 'restrict_forever' => 1
-										, 'status' => 1
-										, 'created' => date('Y-m-d H:i:59')
-										, 'updated' => date('Y-m-d H:i:59')
-										, 'updated_user_id' => $this->session->userdata('user_id')
-										);
-*/
-						$arr_data = array(tryGetData('u_sn', $item)
-										, tryGetData('u_id', $item)
-										, tryGetData('F', $item)
-										, 'uploaded'
-										, tryGetData('c_sn', $item)
-										, tryGetData('A', $item)
-										, tryGetData('B', $item)
-										, 1
-										, 1
-										, 1
-										, date('Y-m-d H:i:s')
-										, date('Y-m-d H:i:s')
-										, $this->session->userdata('user_id')
-										, $this->session->userdata('user_name').'上傳列管名單 '.date('Y-m-d H:i:s')
-										);
-						$query = 'INSERT INTO `sales_customer` '
-								.'       (`user_sn`, `user_id`, `tmp_user_name`, `source`, `customer_sn`, `customer_name`, `tmp_address` '
-								.'        , `restricted`, `restrict_forever`, `status`, `created`, `updated`, `updated_user_id`, `memo`) '
-								.'VALUES (?, ?, ?, ?, ?, ?, ? '
-								.'        , ?, ?, ?, ?, ?, ?, ?) '
-								.'    ON DUPLICATE KEY UPDATE  '
-								.'       `source` = VALUES(`source`) '
-								.'       , `customer_name`=VALUES(`customer_name`) '
-								.'       , `restricted`=VALUES(`restricted`) '
-								.'       , `restrict_forever` = VALUES(`restrict_forever`) '
-								.'       , `updated` = VALUES(`updated`) '
-								.'       , `updated_user_id` = VALUES(`updated_user_id`) '
-								.'       , `memo` = VALUES(`memo`) '
-								;
-
-
-						$this->db->query($query, $arr_data);
-						if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
-							$j++;
-							$error['ok'][] =  $unit .' '.$sales.'  => '.$name .' (地址：'.$addr.')';
-						} else {
-							//$error['wrong_db'] = ''
-							$error['wrong_db'][] =  $unit .' '.$sales.'  => '.$name .' (地址：'.$addr.') <br>錯誤訊息：'.$this->db->_error_message().'<br> 語法； '.$this->db->last_query();
-						}
-					}
-				}
-				$i++;
-			}
-			
-
-
-			$wrong_sales_count = count(tryGetData('wrong_sales', $error, array()));
-			$wrong_cust_count = count(tryGetData('wrong_cust', $error, array()));
-			$wrong_db_count = count(tryGetData('wrong_db', $error, array()));
-			$error_count = $wrong_sales_count + $wrong_cust_count + $wrong_db_count;
-
-			$message = "<p>檔案【".$file_info["file_name"] .'】'
-			.'共 <strong>'.$i.'</strong> 組列管名單，'
-			.'成功配對 <strong>'.$j.'</strong> 組，失敗 <strong>'.$error_count.'</strong> 組';
-
-			/*
-			$ok_count = count(tryGetData('ok', $error, array()));
-			if ( $ok_count > 0 ) {
-				$message .= '<p>成功配對的記錄如下：<br>';
-				foreach ($error['ok'] as $perline){
-					$message .= ' '.$perline.'<br>';
-				}
-			}
-			$message = '- - - - - - - - - - - - - - - - - - - - - - - - ';
-			*/
-
-			if ( $wrong_sales_count > 0 ) {
-				$message .= '<p>因 查無業務 而無法設定列管的記錄如下：<br>';
-				foreach ($error['wrong_sales'] as $perline){
-					$message .= ' '.$perline.'<br>';
-				}
-			}
-				
-			if ( $wrong_cust_count > 0 ) {
-				$message .= '<p>因 查無客戶 而無法設定列管的記錄如下：<br>';
-				foreach ($error['wrong_cust'] as $perline){
-					$message .= ' '.$perline.'<br>';
-				}
-			}
-
-			if ( $wrong_db_count > 0 ) {
-				$message .= '<p>因 未知原因 而無法設定列管的記錄如下：<br>';
-				foreach ($error['wrong_db'] as $perline){
-					$message .= ' '.$perline.'<br>';
-				}
-			}
-
-
-			logData("列管名單上傳 - ".$file_info["file_name"], 1);
-			
-
-			$template = $this->config->item('template','mail');
-			$content = '<p>'.$this->session->userdata('user_name').' 於 '.date('Y-m-d H:i:s').' 上傳列管名單檔案<Br>'
-						.'處理狀況如下：</p>'
-						.$message
-						;
-			
-			$content = sprintf($template, $content);
-			send_email($this->session->userdata('user_email'),'【竹北置地】列管名單上傳通知信函', $content);
-			send_email('claire.huang@chupei.com.tw','【竹北置地】列管名單上傳通知信函', $content);
-
-			if ($error_count > 0) {
-				$message .= '<br><br>請確實檢視您上傳的檔案資料；若無法解決，請洽詢資訊室程式組人員，謝謝。';
-			}
-
-
-			//刪除暫存檔
-			//unlink( iconv("UTF-8", "big5",$file_info["full_path"]) );
-			
-			//$this->session->set_flashdata('backend_message', $message);
-			//redirect(bUrl("editContent"));	
-
-			$data['message'] = $message;
-			$this->display("import_a7_result_view", $data);
-		}
-	}
-	
-
-
-
-
 
 	/**
 	 * category edit page
@@ -745,9 +347,27 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 				}
 				$handle = true;
 
+				$building_id_1 = null;
+				$b_id_1 = tryGetData('A', $item, null);
+				$b_id_1 = (string) $b_id_1;
 
-				$building_id_1 = tryGetData('A', $item, null);
-				$building_id_2 = tryGetData('B', $item, null);
+				if (isNotNull($b_id_1)) {
+					$building_id_1 = array_search($b_id_1, $this->building_part_01_array);
+					if ($building_id_1 === false) {
+						$building_id_1 = null;
+					}
+				}
+
+				$building_id_2 = null;
+				$b_id_2 = tryGetData('B', $item, null);
+				$b_id_2 = intval($b_id_2);
+				if (isNotNull($b_id_2)) {
+					$building_id_2 = array_search($b_id_2, $this->building_part_02_array);
+					if ($building_id_2 === false) {
+						$building_id_2 = null;
+					}
+				}
+
 				$building_id_3 = tryGetData('C', $item, null);
 				$name = tryGetData('D', $item, null);
 				$gender = tryGetData('E', $item, null);
@@ -761,17 +381,24 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 				$parking_id = tryGetData('M', $item, null);
 				$car_number = tryGetData('N', $item, null);
 
-				if (isNull($building_id_1) || isNull($building_id_2) || isNull($building_id_3)
+
+				if (isNull($building_id_1) || isNull($building_id_2) ) {
+					
+					$errorr_msg .= '第'.$i.'列　請確認 [棟別或門牌號] 及 [樓層]有填寫正確'."\n";
+					continue;
+
+				} elseif (isNull($building_id_1) || isNull($building_id_2) || isNull($building_id_3)
 					|| isNull($name) || isNull($gender) ) {
 					
 					$errorr_msg .= '第'.$i.'列　請確認必填欄位都有確實填寫'."\n";
 					continue;
+
 				} else {
 
 					// 緊急聯絡人標註
 					if ( isNotNull($is_contact) ) {
 						if ( strtoupper($is_contact) != 'Y' ) {
-							$errorr_msg .= '第'.$i.'列　緊急聯絡人請務必填寫 "Y" 或保留空白 #'.$is_contact."\n";
+							$errorr_msg .= '第'.$i.'列　[緊急聯絡人] 請務必填寫 "Y" 或保留空白 #'.$is_contact."\n";
 							continue;
 						}
 					}
@@ -779,7 +406,7 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 					// 所有權人標註
 					if ( isNotNull($is_owner) ) {
 						if ( strtoupper($is_owner) != 'Y' ) {
-							$errorr_msg .= '第'.$i.'列　所有權人請務必填寫 "Y" 或保留空白 #'.$is_owner."\n";
+							$errorr_msg .= '第'.$i.'列　[所有權人] 請務必填寫 "Y" 或保留空白 #'.$is_owner."\n";
 							continue;
 						}
 					}				
@@ -787,7 +414,7 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 					// 瓦斯表權限
 					if ( isNotNull($gas_right) ) {
 						if ( strtoupper($gas_right) != 'Y' ) {
-							$errorr_msg .= '第'.$i.'列　瓦斯表權限請務必填寫 "Y" 或保留空白 #'.$gas_right."\n";
+							$errorr_msg .= '第'.$i.'列　[瓦斯表權限] 請務必填寫 "Y" 或保留空白 #'.$gas_right."\n";
 							continue;
 						}
 					}
@@ -795,7 +422,7 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 					// 投票權權限
 					if ( isNotNull($voting_right) ) {
 						if ( strtoupper($voting_right) != 'Y' ) {
-							$errorr_msg .= '第'.$i.'列　投票權權限請務必填寫 "Y" 或保留空白 #'.$voting_right."\n";
+							$errorr_msg .= '第'.$i.'列　[投票權權限] 請務必填寫 "Y" 或保留空白 #'.$voting_right."\n";
 							continue;
 						}
 					}
@@ -803,13 +430,11 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 					// 性別
 					if ( isNotNull($gender) ) {
 						if ( in_array($gender, array('男','女')) === false ) {
-							$errorr_msg .= '第'.$i.'列　 性別請務必填寫 "男" 或 "女"  #'.$gender."\n";
+							$errorr_msg .= '第'.$i.'列　 [性別] 請務必填寫 "男" 或 "女"  #'.$gender."\n";
 							continue;
 						}
 					}
 
-					$building_id_1 = tryGetData('A', $item, null);
-					$building_id_2 = tryGetData('B', $item, null);
 					$building_id_3 = tryGetData('C', $item, null);
 					$name = tryGetData('D', $item, null);
 					$gender = tryGetData('E', $item, null);
@@ -820,16 +445,18 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 					$owner_addr = tryGetData('J', $item, null);
 					$gas_right = tryGetData('K', $item, null);
 					$voting_right = tryGetData('L', $item, null);
-					$parking_id = tryGetData('M', $item, null);
+					$parking_no = tryGetData('M', $item, null);
 					$car_number = tryGetData('N', $item, null);
 
-
+					// 取得社區ＩＤ
+					$comm_id = $this->auth_model->getWebSetting('comm_id');
 
 					## DB step 1 -> sys_user
-					$add_data = array('building_id'	=> $building_id_1.'_'.$building_id_2.'_'.$building_id_3
+					$add_data = array( 'comm_id'	=> $comm_id
+									,  'building_id'	=> $building_id_1.'_'.$building_id_2.'_'.$building_id_3
 									,  'id'			=> 'none'
 									,  'role'		=> 'I'
-									,  'name'	=> $name
+									,  'name'		=> $name
 									,  'gender'		=> $gender=='男' ? 1 : 2
 									,  'tel'		=> $tel
 									,  'phone'		=> $phone
@@ -843,14 +470,14 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 									);
 
 					$query = 'INSERT IGNORE INTO `sys_user` '
-							.'       (`building_id`, `id`, `role`, `name`, `gender` '
+							.'       (`comm_id`, `building_id`, `id`, `role`, `name`, `gender` '
 							.'       , `tel`, `phone`, `is_contact`, `is_owner`, `owner_addr` '
 							.'       , `gas_right`, `voting_right`, `created`, `created_by`) '
-							.'VALUES (?, ?, ?, ?, ? '
+							.'VALUES (?, ?, ?, ?, ?, ? '
 							.'       , ?, ?, ?, ?, ? '
 							.'       , ?, ?, ?, ?)'
 							;
-					$this->db->query($query, $add_data);
+					$ins_res = $this->db->query($query, $add_data);
 					$user_sn = $this->db->insert_id();
 
 					if ($user_sn > 0 ) {
@@ -858,39 +485,49 @@ if (isNull(tryGetData('C', $item, NULL)) ) continue;
 
 						if ( isNotNull($parking_id) ) {
 							## DB step 2 -> parking
-							$arr_data = array('parking_id'	=> $parking_id
-											, 'location'	=> '-'
+							$arr_data = array('comm_id'	=> $comm_id
+											, 'parking_no'	=> $parking_no
+											, 'parking_id'	=> NULL
+											, 'location'	=> NULL
 											, 'status'	=> 1
 											);
 							$query = 'INSERT IGNORE INTO `parking` '
-									.'       (`sn`, `parking_id`, `location`, `status`) '
-									.'VALUES (NULL, ?, ?, ? ) '
+									.'       (`sn`, `comm_id`, `parking_no`, `parking_id`, `location`, `status`) '
+									.'VALUES (NULL, ?, ?, ?, ?, ? ) '
 									;
-							$this->db->query($query, $arr_data);
+							$ins_res2 = $this->db->query($query, $arr_data);
 							$parking_sn = $this->db->insert_id();
 
-							## DB step 3 -> user_parking
-							$arr_data = array('parking_sn'	=> $parking_sn
-											, 'user_sn'	=> $user_sn
-											, 'person_sn'	=> 0
-											, 'user_id'	=> 'none'
-											, 'car_number'	=> $car_number
-											, 'updated'	=> $now
-											, 'updated_by'	=> $this->session->userdata('user_name')
-											);
+							if ($parking_sn > 0 ) {
+								## DB step 3 -> user_parking
+								$arr_data = array('comm_id'	=> $comm_id
+												, 'parking_sn'	=> $parking_sn
+												, 'user_sn'	=> $user_sn
+												, 'person_sn'	=> 0
+												, 'user_id'	=> 'none'
+												, 'car_number'	=> $car_number
+												, 'updated'	=> $now
+												, 'updated_by'	=> $this->session->userdata('user_name')
+												);
 
-							$query = 'INSERT INTO `user_parking` '
-									.'       (`parking_sn`, `user_sn`, `person_sn` '
-									.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
-									.'VALUES (?, ?, ? '
-									.'        , ?, ?, ?, ? ) '
-									.'    ON DUPLICATE KEY UPDATE  '
-									.'       `car_number` = VALUES(`car_number`) '
-									.'       , `updated` = VALUES(`updated`) '
-									.'       , `updated_by` = VALUES(`updated_by`) '
-									;
-							$this->db->query($query, $arr_data);
+								$query = 'INSERT INTO `user_parking` '
+										.'       (`comm_id`, `parking_sn`, `user_sn`, `person_sn` '
+										.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+										.'VALUES (?, ?, ?, ? '
+										.'        , ?, ?, ?, ? ) '
+										.'    ON DUPLICATE KEY UPDATE  '
+										.'       `car_number` = VALUES(`car_number`) '
+										.'       , `updated` = VALUES(`updated`) '
+										.'       , `updated_by` = VALUES(`updated_by`) '
+										;
+								$this->db->query($query, $arr_data);
+							}
 						}
+					} else {
+							$building_id = $building_id_1.'_'.$building_id_2.'_'.$building_id_3;
+							$building_id_text = building_id_to_text($building_id);
+							$errorr_msg .= '第'.$i.'列　住戶'.$name.'之戶別編號（'.$building_id_text.'）已存在，因此不予新增'."\n";
+							continue;
 					}
 				}
 			}

@@ -68,7 +68,7 @@ class Setting extends Backend_Controller{
 		$this->showSuccessMessage();
 		
 		
-			redirect(bUrl("set"));		
+		redirect(bUrl("index"));		
  
 	}
 	

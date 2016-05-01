@@ -42,12 +42,12 @@
 										<td><?php echo $list[$i]["title"]?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>edit
+												<i class="icon-edit bigger-120"></i>編輯
 											</a>
 										</td>									
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editGroupUser",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>edit
+											<a class="btn  btn-minier btn-success" href="<?php echo bUrl("editGroupUser",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+												<i class="icon-edit bigger-120"></i>人員設定
 											</a>
 										</td>
 										<td>
