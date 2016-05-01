@@ -10,7 +10,7 @@
 	?>	
 	
 	<div class="form-group ">
-        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">照片</label>
+        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">圖片</label>
         <div class="col-xs-12 col-sm-6">
             <input type="file" name="img_filename" size="20" /><br /><br />
 				<input type="hidden" name="orig_img_filename" value="<?php echo tryGetData('orig_img_filename',$edit_data)?>"  />

@@ -7,7 +7,7 @@
 <form action="<?php echo bUrl('updateItem')?>" method="post" id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
     <?php echo textOption("主題","title",$edit_data); ?>
     <div class="form-group ">
-        <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="content">照片</label>
+        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">照片</label>
         <div class="col-xs-12 col-sm-6">
             <input type="file" name="img_filename" size="20" /><br /><br />
 				<input type="hidden" name="orig_img_filename" value="<?php echo tryGetData('orig_img_filename',$edit_data)?>"  />

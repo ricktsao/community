@@ -9,18 +9,21 @@
 	  echo textAreaOption("課程內容","content",$edit_data);
 	?>	
 	<?php echo checkBoxOption("收費","brief",$edit_data);?>
-	<?php 
-		//$elements = array("title"=>"代表圖", "id"=>"img_filename","name"=>"img_filename","img_value"=>tryGetData('img_filename', $edit_data),"orig_value"=>tryGetData('orig_img_filename', $edit_data));
-		//showOutputBox("tools/pickup_img_view", array('elements'=>$elements)); 
-	?>
 	
-	<?php
-	//echo dropdownOption("分類","parent_sn",$edit_data,$cat_list); 
-	?>
-	
-	<?php 
-		//echo urlOption("開啟方式","url",$edit_data); 
-	?>
+	<div class="form-group ">
+        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">圖片</label>
+        <div class="col-xs-12 col-sm-6">
+            <input type="file" name="img_filename" size="20" /><br /><br />
+				<input type="hidden" name="orig_img_filename" value="<?php echo tryGetData('orig_img_filename',$edit_data)?>"  />
+				<?php if(isNotNull(tryGetData('img_filename',$edit_data))){ ?>
+				<img  border="0" style="width:200px;" src="<?php echo tryGetData('img_filename',$edit_data); ?>"><br />		
+				
+            	<?php } ?>
+        <div class="message">
+            <?php echo  form_error('start_date');?>
+        </div>
+        </div>
+    </div>
 	
 	
 	<div class="form-group ">
