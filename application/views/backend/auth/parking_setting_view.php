@@ -37,8 +37,15 @@
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　號：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('building_id',$user_data); ?></span></div>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　別：</label>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'>
+				<?php
+				$building_id = tryGetData('building_id', $user_data, NULL);
+				if ( isNotNull($building_id) ) {
+					echo building_id_to_text($building_id);
+				}
+				?>
+				</span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶ID：</label>

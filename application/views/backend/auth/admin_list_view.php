@@ -16,16 +16,29 @@
 		</a>
     </div>
 	
-    <div class="btn-group">
+    <!-- <div class="btn-group">
       <select name="role" class="form-control">
       		<option value=""> -不拘- </option>
       		<option value="I" <?php echo ($role=='I') ? 'selected': ''?>> 住戶 </option>
       		<option value="M" <?php echo ($role=='M') ? 'selected': ''?>> 物業人員 </option>
       </select>
+    </div> -->
+
+    <div class="btn-group">
+	<?php
+	echo $building_part_01 .'：';
+	echo form_dropdown('b_part_01', $building_part_01_array, $b_part_01);
+	echo $building_part_02 .'：';
+	echo form_dropdown('b_part_02', $building_part_02_array, $b_part_02);
+	echo $building_part_03 .'：';
+	echo '<input type="text" name="b_part_03" value="'.$b_part_03.'" size="1">';
+	?>
     </div>
+	
     <div class="btn-group">
 		關鍵字：<input type='text' name='keyword' value='<?php echo $given_keyword;?>'>
     </div>    
+
     <div class="btn-group">
 		<button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
     </div>
@@ -70,7 +83,14 @@
 										<?php echo tryGetData($item['role'], config_item('role_array'), '-'); ?>
 										</td>
 										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
-										<td style='text-align: center'><?php echo tryGetData('building_id', $item, '-');?></td>
+										<td style='text-align: center'>
+										<?php 
+										$building_id = tryGetData('building_id', $item, NULL);
+										if ( isNotNull($building_id) ) {
+											echo building_id_to_text($building_id);
+										}
+										?>
+										</td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
 										<br>
