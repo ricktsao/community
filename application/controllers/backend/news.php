@@ -149,7 +149,7 @@ class News extends Backend_Controller {
 		{
 			return;
 		}
-		
+		//dprint($_FILES);exit;
 		if(isNotNull($_FILES['img_filename']['name']))
 		{
 			$folder_name = $this->router->fetch_class();
@@ -175,6 +175,7 @@ class News extends Backend_Controller {
 			@unlink(set_realpath("upload/".$this->getCommId()."/".$folder_name).$orig_img_filename);	
 			
 			
+			$this->sync_file($folder_name);
 		}
 	}
 	
@@ -246,6 +247,7 @@ class News extends Backend_Controller {
 		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
 
+	
 
 	
 	public function GenerateTopMenu()

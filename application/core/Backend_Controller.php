@@ -826,8 +826,79 @@ abstract class Backend_Controller extends IT_Controller
 		$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
 		//------------------------------------------------------------------------------
 	}
+	
+	
+	/**
+	 * 詢問server檔案差異
+	 * $folder : /upload/社區ID 下的資料夾
+	 */
+	function ask_server_file($file_string,$folder)
+	{
+		if(isNull($file_string))
+		{
+			return;
+		}
+		$post_data = array();
+		$post_data["file_string"] = $file_string;
+		$post_data["comm_id"] = $this->getCommId();
+		$post_data["folder"] = $folder;
+		
+		$url = $this->config->item("api_server_url")."sync/askFile";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$file_list = curl_exec($ch);
+		curl_close ($ch);
+		
+		return $file_list;
+	}
+	
+	/**
+	 * 檔案同步至server
+	 * $folder : /upload/社區ID 下的資料夾
+	 */
+	public function sync_file($folder="")
+	{
+		if(isNull($folder))
+		{
+			return;
+		}
+		
+		//$folder = "news";
+		$sync_folder = set_realpath("upload/".$this->getCommId()."/".$folder);
+		$files = glob($sync_folder . '*');
+		
+		$filename_ary = array();
+		foreach( $files as $key => $file_name_with_full_path )
+		{
+			array_push($filename_ary,basename($file_name_with_full_path));
+		}		
 
+		$upload_file_list = $this->ask_server_file(implode(",",$filename_ary),$folder);
+		$upload_file_ary = explode(",",$upload_file_list);
+		
+		foreach( $upload_file_ary as $key => $file_name )
+		{		
+			$file_name_with_full_path = set_realpath("upload/".$this->getCommId()."/".$folder).$file_name;
+		
+			$cfile = new CURLFile($file_name_with_full_path);			
+			$params = array($this->getCommId().'<#-#>'.$folder => $cfile );			
 
+			$target_url = $this->config->item("api_server_url")."sync/fileUpload";
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			
+		
+			//dprint($result);
+		}		
+	}
 
 	//ajax 取得
 	public function ajaxChangeStatus($table_name ='', $field_name = ',',$sn)
