@@ -174,7 +174,7 @@ class News extends Backend_Controller {
 			@unlink(set_realpath("upload/website/".$folder_name).$orig_img_filename);	
 			@unlink(set_realpath("upload/".$this->getCommId()."/".$folder_name).$orig_img_filename);	
 			
-			
+			//檔案同步至server
 			$this->sync_file($folder_name);
 		}
 	}
