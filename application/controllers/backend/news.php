@@ -105,9 +105,8 @@ class News extends Backend_Controller {
 			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
-					$this->uploadImage($edit_data["sn"]);
-			
-					//dprint($edit_data);exit;
+					$img_filename = $this->uploadImage($edit_data["sn"]);					
+					$edit_data["img_filename"] = $img_filename;
 					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
@@ -124,8 +123,8 @@ class News extends Backend_Controller {
 				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
 				if($content_sn > 0)
 				{
-					$this->uploadImage($content_sn);
-					
+					$img_filename =$this->uploadImage($content_sn);
+					$edit_data["img_filename"] = $img_filename;
 					$edit_data["sn"] = $content_sn;
 					$this->sync_to_server($edit_data);
 				
@@ -145,6 +144,7 @@ class News extends Backend_Controller {
 	//圖片處理
 	private function uploadImage($content_sn)
 	{
+		$img_filename = "";
 		if(isNull($content_sn))
 		{
 			return;
@@ -177,6 +177,7 @@ class News extends Backend_Controller {
 			//檔案同步至server
 			$this->sync_file($folder_name);
 		}
+		return $img_filename;
 	}
 	
 	
