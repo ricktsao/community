@@ -2,11 +2,12 @@
 
 class Gas extends Frontend_Controller {
 
-
+	
 	function __construct() 
 	{
 		parent::__construct();
 		$this->checkLogin();
+		$this->displayBanner(FALSE);
 	}
 
 
@@ -125,7 +126,8 @@ class Gas extends Frontend_Controller {
 		{
 			$update_data = array(
 			"degress" => $degress,							
-			"updated" => date( "Y-m-d H:i:s" )
+			"updated" => date( "Y-m-d H:i:s" ),
+			"is_sync" => 0
 			);
 			
 			$condition = "building_id = '".$this->session->userdata('f_building_id')."' AND year = '".$year."' AND month = '".$month."' ";
@@ -133,25 +135,80 @@ class Gas extends Frontend_Controller {
 			
 			if($result === FALSE)
 			{
+				$update_data["comm_id"] = $this->getCommId();
 				$update_data["building_id"] = $this->session->userdata('f_building_id');
+				$update_data["building_text"] = building_id_to_text($this->session->userdata('f_building_id'));
 				$update_data["year"] = $year;
 				$update_data["month"] = $month;
 				$update_data["created"] = date( "Y-m-d H:i:s" );
 				
 				$content_sn = $this->it_model->addData( "gas" , $update_data );
 				
+				
 				if($content_sn > 0)
 				{				
-					//$this->showSuccessMessage();							
+					$update_data["sn"] = $content_sn;								
+					$this->sync_gas_to_server($update_data);					
 				}
 				else 
 				{
 					//$this->showFailMessage();					
 				}				
 			}
+			else
+			{
+				$condition = "building_id = '".$this->session->userdata('f_building_id')."' AND year = '".$year."' AND month = '".$month."' ";
+				$gas_info = $this->it_model->listData("gas",$condition);
+				if($gas_info["count"]>0)
+				{
+					$gas_info = $gas_info["data"][0];												
+					$this->sync_gas_to_server($gas_info);
+				}
+				
+				
+					
+			}
 		}
 		redirect(fUrl("index"));	
 	}
+	
+	
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_gas_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync/updateGas";
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//dprint($is_sync);
+		//exit;
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "gas" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
+	
+	
+	
 	
 }
 

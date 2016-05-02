@@ -5,7 +5,8 @@ class Login extends Frontend_Controller {
 
 	function __construct() 
 	{
-		parent::__construct();	  		
+		parent::__construct();
+		$this->displayBanner(FALSE);		
 	}
 	
 	
@@ -20,7 +21,7 @@ class Login extends Frontend_Controller {
 		//echo $pre_url;
 		
 		
-		$this->displayBanner(FALSE);
+		
 		$this->display("login_view",$data);
 	}	
 
