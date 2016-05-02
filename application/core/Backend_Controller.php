@@ -23,7 +23,12 @@ abstract class Backend_Controller extends IT_Controller
 	
 	public $style_css = array();
 	public $style_js = array();
-	
+
+	public $building_part_01 = "";	
+	public $building_part_02 = "";	
+	public $building_part_01_array = array();
+	public $building_part_02_array = array();
+
 	function __construct() 
 	{
 		parent::__construct();
@@ -40,6 +45,7 @@ abstract class Backend_Controller extends IT_Controller
 		$this->lang->load("common");
 		//$this->traceLog();
 		//$this->config->set_item('language', $this->language_value);	
+
 	}
 	
 	
@@ -47,6 +53,37 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$this->getLeftMenu();
 		$this->module_info = $this->getModuleInfo();
+		
+		// 取得戶別相關參數
+		$this->load->model('auth_model');
+		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
+		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
+		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
+		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
+		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+
+		if (isNotNull($building_part_01_value)) {
+			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
+		}
+
+		if (isNotNull($building_part_02_value)) {
+			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
+
+
+		
+		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
+		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
+		$this->parking_part_02 = $this->auth_model->getWebSetting('parking_part_02');
+		$parking_part_02_value = $this->auth_model->getWebSetting('parking_part_02_value');
+		$this->parking_part_03 = $this->auth_model->getWebSetting('parking_part_03');
+		if (isNotNull($parking_part_01_value)) {
+			$this->parking_part_01_array = array_merge(array(0=>' -- '), explode(',', $parking_part_01_value));
+		}
+
+		if (isNotNull($parking_part_02_value)) {
+			$this->parking_part_02_array = array_merge(array(0=>' -- '), explode(',', $parking_part_02_value));
+		}
 	}
 	
 	

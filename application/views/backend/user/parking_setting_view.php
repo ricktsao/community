@@ -63,8 +63,8 @@
 
 			<div class="form-group">
 				<div class="table-responsive">
-					<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">所屬車位：</label>
-					<div class="col-xs-12 col-sm-8">
+					<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">持有車位：</label>
+					<div class="col-xs-12 col-sm-10">
 						<div style="float:right;" id="click_add_cust">
 							<button class="btn btn-success">新增車位</button>
 						</div>

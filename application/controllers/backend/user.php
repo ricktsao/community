@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Auth extends Backend_Controller 
+class User extends Backend_Controller 
 {
 	
 	function __construct() 
@@ -8,27 +8,20 @@ class Auth extends Backend_Controller
 		parent::__construct();
 
 	}
-		
-	
 
-	public function admin()
+	public function Index()
 	{
-		$condition = "";
+		$condition = ' AND role = "I"';
 
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
-			$query_key[$key] = $this->input->get($key,TRUE);			
+			$query_key[$key] = $this->input->get($key,TRUE);
 		}
-
-		$role = tryGetData('role', $query_key, NULL);		
-		if(isNotNull($role)) {
-			$condition .= ' AND role = "'.$role.'"' ;
-		}
-
 
 		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
 		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
 		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+
 		$building_id = NULL;
 		if (isNotNull($b_part_01) && $b_part_01 > 0) {
 			$building_id = $b_part_01.'_';
@@ -42,16 +35,6 @@ class Auth extends Backend_Controller
 		if (isNotNull($building_id)) {
 			$condition .= ' AND building_id like "'.$building_id.'%"' ;
 		}
-		/*
-		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
-					.'   FROM sys_user s LEFT JOIN unit u ON s.unit_sn = u.sn '
-					.'  WHERE ( unit_sn IS NOT NULL ) '
-					;
-		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE , array("field(`unit_name`, '雄獅開發','資訊室','會計部','管理部','總管理處','董事長室','董事長')"=>"desc", "u.level"=>"asc", "u.sn"=>"asc") );
-		*/
-
-		$data["role"] = $role; 
-
 
 		// 指定客戶姓名
 		$keyword = tryGetData('keyword', $query_key, NULL);	
@@ -60,18 +43,19 @@ class Auth extends Backend_Controller
 			$data['given_keyword'] = $keyword;
 			$condition .= " AND ( `id` like '%".$keyword."%' "
 						."      OR `name` like '%".$keyword."%' "
-						."      OR `account` like '%".$keyword."%'  ) "
+						."      OR `tel` like '".$keyword."%' " 
+						."      OR `phone` like '".$keyword."%'  ) "
 						;
 		}
 
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
 						."   where 1 ".$condition
-						."   order by field(`role`, 'I', 'M') ASC, s.building_id, s.name "
+						."   order by s.building_id, s.name "
 						;
 
 		$admin_list = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
-//dprint( $admin_list["sql"]);
+		//dprint( $admin_list["sql"]);
 		$data["list"] = $admin_list["data"];
 		
 		//取得分頁
@@ -89,7 +73,7 @@ class Auth extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("admin_list_view",$data);
+		$this->display("user_list_view",$data);
 	}
 
 
@@ -245,20 +229,28 @@ class Auth extends Backend_Controller
 
 
 
-	public function editAdmin()
+	public function editUser()
 	{
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");		
 		
-		$admin_sn = $this->input->get("sn", TRUE);
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+
+		$user_sn = $this->input->get("sn", TRUE);
 		$role = $this->input->get("role", TRUE);
 		//權組list
 		//---------------------------------------------------------------------------------------------------------------
-		if ( $role == 'I') {
+		/*if ( $role == 'I') {
 			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
 		} else {
 			$condi = ' AND title NOT IN ("住戶", "管委會") AND title != "富網通" ';
-		}
+		}*/
+			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
 
 		$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1 ".$condi , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));
 
@@ -266,33 +258,34 @@ class Auth extends Backend_Controller
 		//---------------------------------------------------------------------------------------------------------------
 		$sys_user_group = array();		
 						
-		if($admin_sn == "")
-		{
-			$data["edit_data"] = array
-			(
-				'role' => $role,
-				'gender' => 1,
-				'is_owner' => 1,
-				'is_contact' => 1,
-				'is_manager' => 0,
-				'gas_right' => 0,
-				'voting_right' => 0,
-				'start_date' => date( "Y-m-d" ),
-				'forever' => 1,
-				'launch' => 1
-			);
+		if ($user_sn == "") {
+			$data["edit_data"] = array( 'role' => $role,
+										'gender' => 1,
+										'is_owner' => 1,
+										'is_contact' => 1,
+										'is_manager' => 0,
+										'gas_right' => 0,
+										'voting_right' => 0,
+										'start_date' => date( "Y-m-d" ),
+										'forever' => 1,
+										'launch' => 1
+										);
 			
 			$data["sys_user_group"] = $sys_user_group;
-			$data['role'] = $role;
-			$this->display("admin_edit_view",$data);
-		}
-		else 
-		{
-			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$admin_sn);
+			$this->display("user_edit_view",$data);
+
+		} else {
+
+			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn);
 			
 			if (count($admin_info["data"]) > 0) {			
 				$edit_data =$admin_info["data"][0];
 				
+				$building_id = explode('_', $edit_data["building_id"]);
+				$edit_data['b_part_01'] = $building_id[0];
+				$edit_data['b_part_02'] = $building_id[1];
+				$edit_data['b_part_03'] = $building_id[2];
+
 				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
 				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
 				
@@ -303,21 +296,19 @@ class Auth extends Backend_Controller
 					array_push($sys_user_group,$item["sys_user_group_sn"]);	
 				}
 				
-				//dprint($sys_user_group);
 				$data["sys_user_group"] = $sys_user_group;
 				$data['edit_data'] = $edit_data;
-				$data['role'] = tryGetData('role', $edit_data, $role);
-				$this->display("admin_edit_view",$data);
+				$this->display("user_edit_view",$data);
 			}
 			else
 			{
-				redirect(bUrl("admin"));	
+				redirect(bUrl("index"));	
 			}
 		}
 	}
 	
 
-	public function updateAdmin()
+	public function updateUser()
 	{
 		$this->load->library('encrypt');
 		
@@ -326,7 +317,7 @@ class Auth extends Backend_Controller
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
-		if ( ! $this->_validateAdmin())
+		if ( ! $this->_validateUser())
 		{
 			//權組list
 			//---------------------------------------------------------------------------------------------------------------		
@@ -345,10 +336,11 @@ class Auth extends Backend_Controller
 			$this->display("admin_edit_view",$data);
 		}
         else 
-        {	
+        {
         	$arr_data = array(				
         		//"email" =>$edit_data["email"]
-				  "name"		=>	tryGetData("name", $edit_data)
+				  "building_id"		=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
+				, "name"		=>	tryGetData("name", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
@@ -368,9 +360,9 @@ class Auth extends Backend_Controller
 			
 			if($edit_data["sn"] != FALSE)
 			{
-				dprint($arr_data);
+				//dprint($arr_data);
 				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
-				dprint($this->db->last_query());
+				//dprint($this->db->last_query());
 				if($arr_return['success'])			
 				{					
 					$this->_updateWebAdminGroup($edit_data);
@@ -382,7 +374,7 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();
 				}
 				
-				//redirect(bUrl("admin",TRUE,array("sn")));		
+				redirect(bUrl("index",TRUE,array("sn")));		
 			}
 			else 
 			{
@@ -409,7 +401,7 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("admin",TRUE,array("sn")));
+				redirect(bUrl("index",TRUE,array("sn")));
 			}
         }
 	}
@@ -466,7 +458,7 @@ class Auth extends Backend_Controller
 	}	
 
 
-	function _validateAdmin()
+	function _validateUser()
 	{
 		$sn = tryGetValue($this->input->post('sn',TRUE),0);
 		$role = tryGetValue($this->input->post('role',TRUE), 'M');
@@ -522,7 +514,7 @@ class Auth extends Backend_Controller
 
 
 
-	public function deleteAdmin()
+	public function deleteUser()
 	{
 		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
 		
@@ -534,7 +526,7 @@ class Auth extends Backend_Controller
 		redirect(bUrl("admin", FALSE));	
 	}
 
-	public function launchAdmin()
+	public function launchUser()
 	{		
 		$this->ajaxChangeStatus("sys_user","launch",$this->input->post("user_sn", TRUE));
 	}
@@ -546,7 +538,7 @@ class Auth extends Backend_Controller
 	public function generateTopMenu()
 	{
 		//addTopMenu 參數1:子項目名稱 ,參數2:相關action  
-		$this->addTopMenu(array("admin","editAdmin","updateAdmin"));
+		$this->addTopMenu(array("user","editUser","updateUser"));
 	}
 }
 

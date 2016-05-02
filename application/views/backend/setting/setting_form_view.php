@@ -1,8 +1,11 @@
 ﻿<form action="<?php echo bUrl("updateSetting")?>" method="post"  id="update_form" class="form-horizontal" role="form">
 	<?php 
-		
 		foreach ($setting_list as $key => $item) 
 		{
+			if ($item["key"] == 'building_part_01' || $item["key"] == 'parking_part_01') {
+				echo '<div class="hr hr-16 hr-dotted"></div>';
+			}
+
 			switch($item["type"])
 			{
 				
