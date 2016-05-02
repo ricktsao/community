@@ -37,6 +37,13 @@ body {
     margin: 0 auto;
 }
 
+.primary > .row {
+    width: 90%;
+    margin: 0 auto 20px auto;
+
+}
+
+
 #header {
     position: relative;
     z-index: 50;
@@ -381,4 +388,27 @@ label {
 .error_msg {
     color: #F00;
     padding: 5px;
+}
+
+.voting_result_table {
+    border-collapse:inherit;
+    border-spacing:0;
+}
+
+
+
+.voting_result_table td {
+    border-bottom: 1px dashed #aaa;
+    padding: 10px;
+}
+
+
+
+.voting_result_table  td {
+    text-align: center;
+}
+
+
+.voting_result_table  thead td {
+    border-bottom: 2px solid #aaa;
 }

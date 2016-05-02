@@ -88,6 +88,39 @@ class Voting extends Frontend_Controller {
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
+
+	public function voting_result_list(){
+
+		$voting = $this->voting_model->frontendGetVotingResultList();
+
+		$data['voting_list'] = $voting['data'];
+		$this->display("voting_result_list_view",$data);
+
+
+	}
+
+	public function voting_result_detail(){
+
+		$voting_sn = $this->input->get('sn');
+
+		if($voting_sn ==""){
+			header("location:".fUrl('voting_result_list'));
+			die();
+		}
+
+
+	
+		$voting = $this->voting_model->votingRecord($voting_sn);
+		
+		
+		$data['voting_info'] = $voting;
+		$this->display("voting_result_detail_view",$data);
+
+
+	}
+
+
+	
 	
 	
 }

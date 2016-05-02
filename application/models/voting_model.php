@@ -50,6 +50,24 @@ Class Voting_model extends IT_Model
 		return $result;
 	}
 
+	public function frontendGetVotingResultList(){
+		//runSql
+		$today = date("Y-m-d");
+
+		$sql_date  = " AND  '".$today."' >= voting.end_date ";
+
+		
+
+		$sql = "SELECT *
+				FROM voting 
+				WHERE 1=1 ".$sql_date." AND is_del = 0" ;
+
+		$result = $this->it_model->runSql($sql);
+
+	
+		return $result;
+	}
+
 	public function frontendGetVotingDetail($voting_sn = null){
 
 		$sql = "SELECT * FROM voting WHERE sn ='".$voting_sn."'";
@@ -83,49 +101,57 @@ Class Voting_model extends IT_Model
 
 	}
 
-	public function votingRecord($voting_sn){
+	public function votingRecord($voting_sn,$show_user = FALSE){
 
-		$sql ="SELECT voting_option.sn AS option_sn,
-					text,
-					 allow_anony,
-					 is_multiple,
-					start_date,
-					end_date,
-					description,
-					subject,
-					IFNULL(voting_count,0) as voting_count
-					FROM voting
-		LEFT JOIN voting_option ON voting.sn = voting_option.voting_sn
-		LEFT JOIN (select option_sn,count(*) as voting_count from voting_record group by option_sn) AS vr ON voting_option.sn = vr.option_sn
-		WHERE voting.sn = ".$voting_sn;
+		//get voting info
+
+		$sql="SELECT * FROM voting WHERE sn=".$voting_sn;
+		$re = $this->it_model->runSql($sql);
+		$re = $re['data'][0];
+		$data =array("subject" => $re['subject'],
+					"description" => $re['description'],
+					"start_date" => $re['start_date'],
+					"end_date" => $re['end_date'],
+					"allow_anony" => $re['allow_anony'],
+					"is_multiple" => $re['is_multiple'],
+					"options" => array());
+
+
+
+
+		$sql ="SELECT voting_option.sn AS option_sn,					
+					IFNULL(voting_count,0) as voting_count,
+					voting_option.text 
+					FROM voting_option 
+					LEFT JOIN 
+    				(select option_sn,count(*) as voting_count from voting_record group by option_sn) AS vr ON voting_option.sn = vr.option_sn
+					WHERE voting_option.voting_sn = ".$voting_sn;
+
+		//echo $sql;die();
 
 		$re = $this->it_model->runSql($sql);
 		$re = $re['data'];		
 		
-		$data =array("subject" => $re[0]['subject'],
-					"description" => $re[0]['description'],
-					"start_date" => $re[0]['start_date'],
-					"end_date" => $re[0]['end_date'],
-					"allow_anony" => $re[0]['allow_anony'],
-					"is_multiple" => $re[0]['is_multiple'],
-					"options" => array());
+	
 
 		for($i=0;$i<count($re);$i++){
 
 			$_arr = array(
 				"option_sn" => $re[$i]['option_sn'],
 				"option_text" => $re[$i]['text'],
-				"voting_count" => $re[$i]['voting_count']			 
+				"voting_count" => $re[$i]['voting_count'],
+				"user"=>NULL		 
 			);
 
-			$sql="SELECT sys_user.name 
-				FROM voting_record LEFT JOIN sys_user ON voting_record.user_sn = sys_user.sn
-				WHERE voting_record.option_sn =".$re[$i]['option_sn'];
+			if($show_user){
+				$sql="SELECT sys_user.name 
+					FROM voting_record LEFT JOIN sys_user ON voting_record.user_sn = sys_user.sn
+					WHERE voting_record.option_sn =".$re[$i]['option_sn'];
 
-			$user = $this->it_model->runSql($sql);
+				$user = $this->it_model->runSql($sql);
 
-			$_arr['user'] = $user['data'];
-
+				$_arr['user'] = $user['data'];
+			}
 			array_push($data['options'],$_arr);
 
 		}
