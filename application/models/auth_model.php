@@ -9,14 +9,14 @@ class Auth_Model extends IT_Model
 	}
 
 
-	
+	// 取得還有效的車位 SN
 	public function getFreeParkingSn( $parking_id )
 	{
 		if (isNotNull($parking_id)) {
 			$query = 'SELECT p.*, up.user_sn '
 					.'  FROM parking p  '
 					.'  LEFT JOIN user_parking up ON p.sn = up.parking_sn '
-					.' WHERE up.user_sn IS NULL AND p.`parking_id`="'.$parking_id.'"'
+					.' WHERE p.status = 1 AND up.user_sn IS NULL AND p.`parking_id`="'.$parking_id.'"'
 					;
 			$result = $this->it_model->runSql( $query );
 
