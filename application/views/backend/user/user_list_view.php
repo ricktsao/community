@@ -13,6 +13,7 @@
 
     <div class="btn-group">
 	<?php
+	// 戶別
 	echo $building_part_01 .'：';
 	echo form_dropdown('b_part_01', $building_part_01_array, $b_part_01);
 	echo '&nbsp;&nbsp;';

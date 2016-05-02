@@ -9,7 +9,7 @@ class User extends Backend_Controller
 
 	}
 
-	public function Index()
+	public function index()
 	{
 		$condition = ' AND role = "I"';
 
@@ -21,7 +21,8 @@ class User extends Backend_Controller
 		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
 		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
 		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
-
+		
+		// 搜尋戶別
 		$building_id = NULL;
 		if (isNotNull($b_part_01) && $b_part_01 > 0) {
 			$building_id = $b_part_01.'_';
