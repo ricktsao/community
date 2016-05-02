@@ -369,7 +369,52 @@ class Userimport extends Backend_Controller {
 				}
 
 				$building_id_3 = tryGetData('C', $item, null);
+				$building_id_3 = (int) $building_id_3;
+
+/************/
 				$name = tryGetData('D', $item, null);
+
+				$parking_id = tryGetData('M', $item, null);
+				$parking_id = tryGetData('N', $item, null);
+				$parking_id = tryGetData('O', $item, null);
+
+				$parking_id_1 = null;
+				$p_id_1 = tryGetData('M', $item, null);
+
+				if (isNotNull($p_id_1)) {
+					$parking_id_1 = array_search($p_id_1, $this->parking_part_01_array);
+					if ($parking_id_1 === false) {
+						$parking_id_1 = null;
+					}
+				}
+
+				$parking_id_2 = null;
+				$p_id_2 = tryGetData('N', $item, null);
+				if (isNotNull($p_id_2)) {
+					$parking_id_2 = array_search($p_id_2, $this->parking_part_02_array);
+					if ($parking_id_2 === false) {
+						$parking_id_2 = null;
+					}
+				}
+
+				$parking_id_3 = tryGetData('O', $item, null);
+				$parking_id_3 = (int) $parking_id_3;
+				$parking_sn = false;
+				$parking_id = NULL;
+				if (isNotNull($parking_id_1) && isNotNull($parking_id_2) && isNotNull($parking_id_3) ) {
+					$parking_id = $parking_id_1.'_'.$parking_id_2.'_'.$parking_id_3;
+					$parking_sn = $this->auth_model->getFreeParkingSn($parking_id);
+
+					if ( $parking_sn === false ) {
+						$parking_id_text = parking_id_to_text($parking_id);
+						$errorr_msg .= '第'.$i.'列　住戶【'.$name.'】之車位別【'.$parking_id_text.'】找不到或已被使用，因此不予新增其所屬的車位，請另外設定'."\n";
+						//continue;
+					}
+
+				}
+
+
+/************/
 				$gender = tryGetData('E', $item, null);
 				$tel = tryGetData('F', $item, null);
 				$phone = tryGetData('G', $item, null);
@@ -378,8 +423,7 @@ class Userimport extends Backend_Controller {
 				$owner_addr = tryGetData('J', $item, null);
 				$gas_right = tryGetData('K', $item, null);
 				$voting_right = tryGetData('L', $item, null);
-				$parking_id = tryGetData('M', $item, null);
-				$car_number = tryGetData('N', $item, null);
+				$car_number = tryGetData('P', $item, null);
 
 
 				if (isNull($building_id_1) || isNull($building_id_2) ) {
@@ -435,18 +479,6 @@ class Userimport extends Backend_Controller {
 						}
 					}
 
-					$building_id_3 = tryGetData('C', $item, null);
-					$name = tryGetData('D', $item, null);
-					$gender = tryGetData('E', $item, null);
-					$tel = tryGetData('F', $item, null);
-					$phone = tryGetData('G', $item, null);
-					$is_contact = tryGetData('H', $item, null);
-					$is_owner = tryGetData('I', $item, null);
-					$owner_addr = tryGetData('J', $item, null);
-					$gas_right = tryGetData('K', $item, null);
-					$voting_right = tryGetData('L', $item, null);
-					$parking_no = tryGetData('M', $item, null);
-					$car_number = tryGetData('N', $item, null);
 
 					// 取得社區ＩＤ
 					$comm_id = $this->auth_model->getWebSetting('comm_id');
@@ -483,46 +515,31 @@ class Userimport extends Backend_Controller {
 					if ($user_sn > 0 ) {
 						$count++;
 
-						if ( isNotNull($parking_id) ) {
-							## DB step 2 -> parking
+						if ($parking_sn > 0 ) {
+							## DB step 2 -> user_parking
 							$arr_data = array('comm_id'	=> $comm_id
-											, 'parking_no'	=> $parking_no
-											, 'parking_id'	=> NULL
-											, 'location'	=> NULL
-											, 'status'	=> 1
+											, 'parking_sn'	=> $parking_sn
+											, 'user_sn'	=> $user_sn
+											, 'person_sn'	=> 0
+											, 'user_id'	=> 'none'
+											, 'car_number'	=> $car_number
+											, 'updated'	=> $now
+											, 'updated_by'	=> $this->session->userdata('user_name')
 											);
-							$query = 'INSERT IGNORE INTO `parking` '
-									.'       (`sn`, `comm_id`, `parking_no`, `parking_id`, `location`, `status`) '
-									.'VALUES (NULL, ?, ?, ?, ?, ? ) '
+
+							$query = 'INSERT INTO `user_parking` '
+									.'       (`comm_id`, `parking_sn`, `user_sn`, `person_sn` '
+									.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+									.'VALUES (?, ?, ?, ? '
+									.'        , ?, ?, ?, ? ) '
+									.'    ON DUPLICATE KEY UPDATE  '
+									.'       `car_number` = VALUES(`car_number`) '
+									.'       , `updated` = VALUES(`updated`) '
+									.'       , `updated_by` = VALUES(`updated_by`) '
 									;
-							$ins_res2 = $this->db->query($query, $arr_data);
-							$parking_sn = $this->db->insert_id();
-
-							if ($parking_sn > 0 ) {
-								## DB step 3 -> user_parking
-								$arr_data = array('comm_id'	=> $comm_id
-												, 'parking_sn'	=> $parking_sn
-												, 'user_sn'	=> $user_sn
-												, 'person_sn'	=> 0
-												, 'user_id'	=> 'none'
-												, 'car_number'	=> $car_number
-												, 'updated'	=> $now
-												, 'updated_by'	=> $this->session->userdata('user_name')
-												);
-
-								$query = 'INSERT INTO `user_parking` '
-										.'       (`comm_id`, `parking_sn`, `user_sn`, `person_sn` '
-										.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
-										.'VALUES (?, ?, ?, ? '
-										.'        , ?, ?, ?, ? ) '
-										.'    ON DUPLICATE KEY UPDATE  '
-										.'       `car_number` = VALUES(`car_number`) '
-										.'       , `updated` = VALUES(`updated`) '
-										.'       , `updated_by` = VALUES(`updated_by`) '
-										;
-								$this->db->query($query, $arr_data);
-							}
+							$this->db->query($query, $arr_data);
 						}
+
 					} else {
 							$building_id = $building_id_1.'_'.$building_id_2.'_'.$building_id_3;
 							$building_id_text = building_id_to_text($building_id);

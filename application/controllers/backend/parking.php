@@ -42,9 +42,28 @@ class Parking extends Backend_Controller {
 					left join sys_user u on up.user_sn = u.sn
 					WHERE ( 1 = 1 ) '.$condition
 					;
-		$exist_parking_list = $this->it_model->runSql( $query , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
-//dprint($exist_parking_list["sql"]);
-		$data["user_parking_list"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
+		$exist_parking_list = $this->it_model->runSql( $query ,  $this->per_page_rows , $this->page , array("p.sn"=>"asc"));
+
+		$user_parking_list = array();
+		//$i = 0; 
+		//$j = 0; 
+		if (count($exist_parking_list["data"]) > 0) {
+			foreach ($exist_parking_list["data"] as $item) {
+				//$i++;
+				//if (isNotNull(tryGetData('user_sn', $item, NULL))) {
+				//	$j++;
+				//}
+				$user_parking_list[] = $item;
+			}
+		}
+
+		$data["user_parking_list"] = $user_parking_list;
+		//$data["i"] = $i;
+		//$data["j"] = $j;
+
+		
+		//¨ú±o¤À­¶
+		$data["pager"] = $this->getPager($exist_parking_list["count"],$this->page,$this->per_page_rows,"index");
 		//---------------------------------------------------------------------------------------------------------------
 
 

@@ -61,13 +61,51 @@
 			</div>
 
 
+			<form action="<?php echo bUrl("addUserParking")?>" method="post"  id="add_formx" role="form">
+			<input type='hidden' name='parking_sn' id='parking_sn' >
+			<input type='hidden' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
+			<input type='hidden' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增車位：</label>
+				<div class="col-xs-12 col-sm-8">
+				<?php
+				echo $parking_part_01 .'：';
+				echo form_dropdown('p_part_01', $parking_part_01_array, $p_part_01);
+				echo '&nbsp;&nbsp;';
+				echo $parking_part_02 .'：';
+				echo form_dropdown('p_part_02', $parking_part_02_array, $p_part_02);
+				echo '&nbsp;&nbsp;';
+				echo $parking_part_03 .'：';
+				echo '<input type="text" name="p_part_03" value="'.$p_part_03.'" size="1">';
+				?>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">車號：</label>
+				<div class="col-xs-12 col-sm-8"><input type='text' id='car_number' name='car_number' size=50></div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url"></label>
+				<div class="col-xs-12 col-sm-6">
+				<button class="btn" type="button" id="search-reset" >
+						<i class="icon-warning bigger-110"></i>
+						重設
+				</button>
+				<button class="btn btn-success" type="Submit">
+						<i class="icon-ok bigger-110"></i>
+						確定新增
+				</button>
+				</div>
+			</div>
+		</form>
+
 			<div class="form-group">
 				<div class="table-responsive">
 					<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">持有車位：</label>
-					<div class="col-xs-12 col-sm-10">
-						<div style="float:right;" id="click_add_cust">
-							<button class="btn btn-success">新增車位</button>
-						</div>
+					<div class="col-xs-12 col-sm-9">
 						<form method="post"  id="update_form" role="form">
 						<input type="hidden" name="cases_sn" value="<?php //echo $cases_sn;?>">
 						<table id="sample-table-2" class="table table-striped table-bordered table-hover">
@@ -146,53 +184,6 @@
 
 
 
-			<div class="table-responsive" id="add_cust">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id"></label>
-				<!-- <div class="col-xs-12 col-sm-10"> -->
-
-				<form action="<?php echo bUrl("addUserParking")?>" method="post"  id="add_form" role="form">
-				<input type='hidden' name='parking_sn' id='parking_sn' >
-				<input type='hidden' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
-				<input type='hidden' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
-				
-				<div class="form-group" >
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"><span class='require'>*</span> 車位ID：</label>
-					<div class="col-xs-12 col-sm-4">
-						<input type='text' name='parking_id' size="15" id="parking_id">
-						<button type="button" class="btn btn-minier btn-purple" id="search-box">
-							<i class="ace-icon fa fa-key"></i> 搜尋
-						</button>
-						<div id="suggesstion-box"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">位置：</label>
-					<div class="col-xs-12 col-sm-4"><input type='text' id='location' name='location' size=20></div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url">車號：</label>
-					<div class="col-xs-12 col-sm-4"><input type='text' id='car_number' name='car_number' size=50></div>
-				</div>
-
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 control-label no-padding-right" for="url"></label>
-					<div class="col-xs-12 col-sm-4">
-					<button class="btn btn-minier" type="button" id="search-reset" >
-							<i class="icon-warning bigger-110"></i>
-							清除重設
-					</button>
-					<button class="btn btn-minier btn-success" type="Submit">
-							<i class="icon-ok bigger-110"></i>
-							確定新增
-					</button>
-				</div>
-				</div>
-				</form>
-				<!-- </div> -->
-			</div>
-
-
-
 
 <script type="text/javascript"> 
 
@@ -254,23 +245,6 @@ $(function(){
 		});
 	});
 
-
-
-
-	$('#add_cust').hide();
-
-	$('#click_add_cust').click(function() {
-
-		$('#add_cust').toggle();
-
-		if($('#add_cust').is(':hidden')) {
-			$(this).text('新增車位').attr('class','btn btn-success');
-		} else {
-			$(this).text('取消新增').attr('class','btn btn-success');
-		}
-
-
-	});
 });
 
 </script>
