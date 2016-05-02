@@ -1,5 +1,5 @@
 <div class="primary">
-        <div class="row"><button class="btn" onclick="self.location='<?php echo fUrl('voting_result_list');?>'">觀看投票結果</button></div>
+        <div class="row"><button class="btn" onclick="self.location='<?php echo fUrl('index')?>'">前往投票頁面</button></div>
         
         <table class="table_style">
             <thead>
@@ -19,7 +19,7 @@
 				
 				<tr>
                     
-                    <td><a href="'.fUrl("detail",TRUE,array(),array("sn"=>$voting_list[$i]["sn"])).'">'.$voting_list[$i]["subject"].'</a></td>                
+                    <td><a href="'.fUrl("voting_result_detail",TRUE,array(),array("sn"=>$voting_list[$i]["sn"])).'">'.$voting_list[$i]["subject"].'</a></td>                
 					<td>
                         <div class=>'.$voting_list[$i]["start_date"].' ~ '.$voting_list[$i]["end_date"].'</div>
                     </td>

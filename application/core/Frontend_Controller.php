@@ -92,6 +92,38 @@ abstract class Frontend_Controller extends IT_Controller
 	{		
 		$this->menu_info = $this->getMenuInfo();	
 		$this->_getFrontendMenu();
+		
+		// 取得戶別相關參數
+		$this->load->model('auth_model');
+		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
+		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
+		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
+		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
+		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+
+		if (isNotNull($building_part_01_value)) {
+			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
+		}
+
+		if (isNotNull($building_part_02_value)) {
+			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
+
+
+		
+		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
+		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
+		$this->parking_part_02 = $this->auth_model->getWebSetting('parking_part_02');
+		$parking_part_02_value = $this->auth_model->getWebSetting('parking_part_02_value');
+		$this->parking_part_03 = $this->auth_model->getWebSetting('parking_part_03');
+		if (isNotNull($parking_part_01_value)) {
+			$this->parking_part_01_array = array_merge(array(0=>' -- '), explode(',', $parking_part_01_value));
+		}
+
+		if (isNotNull($parking_part_02_value)) {
+			$this->parking_part_02_array = array_merge(array(0=>' -- '), explode(',', $parking_part_02_value));
+		}
+		
 	}		
 	
 	
