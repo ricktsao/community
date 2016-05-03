@@ -49,6 +49,13 @@ class Home extends Frontend_Controller {
 		$data["album_list"] = $this->album_model->GetHomeAlbumList();
 		//-----------------------------------------
 
+		//廣告
+		//-----------------------------------------
+		$ad_list = $this->c_model->GetList( "ad" , "" ,TRUE, 10 , 1 , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc"));
+		img_show_list($ad_list["data"],'img_filename',"ad");
+		$data["ad_list"] = $ad_list["data"];
+		//-----------------------------------------
+		
 		$houses = array();
 		$condition = ' ';
 		$condition = ' '. $this->it_model->getEffectedSQL('house_to_rent') ;
