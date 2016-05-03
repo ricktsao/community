@@ -4,10 +4,15 @@
 </style>
 
 <form  role="search" action="<?php echo bUrl('index');?>">
-<article class="well">              
+<article class="well">
     <div class="btn-group">
 		<a class="btn  btn-sm btn-success" href="<?php echo bUrl("editUser/?role=I");?>">
 			<i class="icon-edit bigger-120"></i>新增住戶
+		</a>
+    </div>
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-primary" target="_blank" href="<?php echo bUrl("exportExcel");?>">
+			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
 
@@ -48,7 +53,9 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>戶　別</th>
+										<th><?php echo $building_part_01;?></th>
+										<th><?php echo $building_part_02;?></th>
+										<th><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>姓　名</th>
 										<th>性　別</th>
 										<th style='text-align: center'>ID</th>
@@ -65,17 +72,16 @@
 									//for($i=0;$i<sizeof($list);$i++) {
 									$i = 0;
 									foreach ( $list as $item) {
+										$building_id = tryGetData('building_id', $item, NULL);
+										if ( isNotNull($building_id) ) {
+											$building_parts = building_id_to_text($building_id, true);
+										}
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'>
-										<?php 
-										$building_id = tryGetData('building_id', $item, NULL);
-										if ( isNotNull($building_id) ) {
-											echo building_id_to_text($building_id);
-										}
-										?>
-										</td>
+										<td style='text-align: center'><?php echo $building_parts[0];?></td>
+										<td style='text-align: center'><?php echo $building_parts[1];?></td>
+										<td style='text-align: center'><?php echo $building_parts[2];?></td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
 										</td>
@@ -138,7 +144,7 @@
 									
 								</tbody>
 								<tr>
-					              	<td colspan="11">
+					              	<td colspan="13">
 									<?php echo showBackendPager($pager)?>
 					                </td>
 								</tr>
