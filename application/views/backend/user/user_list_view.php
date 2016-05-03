@@ -11,7 +11,7 @@
 		</a>
     </div>
     <div class="btn-group">
-		<a class="btn  btn-sm btn-primary" target="_blank" href="<?php echo bUrl("exportExcel");?>">
+		<a class="btn  btn-sm btn-yellow" target="_blank" href="<?php echo bUrl("exportExcel");?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
@@ -55,14 +55,14 @@
 										<th>序號</th>
 										<th><?php echo $building_part_01;?></th>
 										<th><?php echo $building_part_02;?></th>
-										<th><?php echo $building_part_03;?></th>
+										<th width="80"><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>姓　名</th>
 										<th>性　別</th>
 										<th style='text-align: center'>ID</th>
 										<th>所有權人</th>
-										<th>緊急聯絡人</th>
+										<th>緊急<br />聯絡人</th>
 										<th>管委</th>
-										<th style="width:150px">操作</th>
+										<th style="width:150px" colspan="2">操作</th>
 										<th>啟用/停用</th>
 										
 									</tr>
@@ -112,21 +112,20 @@
 										} else echo '否';
 										?>
 										</td>
-										<td>
+										<td style="text-align:left; padding-left:10px;">
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
-											<?php
-											if ( tryGetData('role', $item, NULL) == 'I' ) {
-											?>
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>車位設定
 											</a>
-											<?php
-											}
-											?>
 										</td>
-										<td>					
+										<td>
+											<a class="btn  btn-minier btn-pink" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>ID重設
+											</a>
+										</td>
+										<td>
 											<div class="col-xs-3">
 												<label>
 													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo tryGetData('launch', $item)==1?"checked":"" ?> value="<?php echo tryGetData('sn', $item) ?>" onClick='javascript:launch(this);' />

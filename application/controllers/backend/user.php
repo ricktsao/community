@@ -81,7 +81,9 @@ class User extends Backend_Controller
 
 
 
-
+	/**
+	*   匯出 excel
+	*/
 
 	public function exportExcel()
 	{
@@ -156,8 +158,82 @@ class User extends Backend_Controller
 
 
 
+	/**
+	 * 設定住戶車位
+	 */
+	public function changeId()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		$data = array();
+
+		$user_sn = $this->input->get("sn", TRUE);
+		$user_id = $this->input->get("id", TRUE);
+
+		$sys_user_group = array();		
+		
+		$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn." and comm_id='".$this->getCommId()."' and role='I' ");
+
+		if (count($admin_info["data"]) > 0) {
+			$edit_data =$admin_info["data"][0];
+
+			$data['user_data'] = $edit_data;
+			
+			$this->display("change_id_view",$data);
+		}
+		else
+		{
+			redirect(bUrl("index"));	
+		}
+	}
 
 
+
+
+	
+	public function updateId()
+	{
+		$admin_sn=$this->session->userdata('user_sn');
+
+		foreach( $_POST as $key => $value ) {
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}		
+		
+		if ( ! $this->_validate())
+		{
+			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' ");
+
+			if (count($admin_info["data"]) > 0) {
+				$user_data = $admin_info["data"][0];
+			}
+
+			$data["user_data"] = $user_data;			
+			$this->display("change_id_view",$data);
+		}			
+        else 
+        {			
+        	$arr_data["id"] = $edit_data["new_id"];
+        	$arr_data["updated"] = date("Y-m-d H:i:s");
+
+      	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' " );
+			if ($arr_return){
+				$this->showSuccessMessage();
+			} else {
+				$this->showFailMessage();	
+			}
+			redirect(bUrl("index"));
+        }	
+	}
+	
+	
+		
+	function _validate()
+	{				
+		$this->form_validation->set_rules('new_id', "新ID", 'trim|required|min_length[4]|max_length[10]' );	
+		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
+	}
+
+	
 
 
 
@@ -221,7 +297,7 @@ class User extends Backend_Controller
 		}
 		else
 		{
-			redirect(bUrl("admin"));	
+			redirect(bUrl("index"));	
 		}
 	}
 
