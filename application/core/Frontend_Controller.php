@@ -789,5 +789,37 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$this->output->enable_profiler(TRUE);	
 	}
+	
+	
+	
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_item_to_server($post_data,$func_name,$table_name)
+	{
+		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
 
 }

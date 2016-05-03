@@ -714,72 +714,6 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
-	/*
-	 * 紀錄log
-	 * $desc:log描述
-	function logData($desc="",$action = 1)
-	{
-		$table_name = $this->it_model->tryAddLogTable();
-			
-		$date = new DateTime();
-			
-		$arr_data = array(				
-
-			 "user_id" => $this->session->userdata("user_id")
-			, "session_id"=> $this->session->userdata('session_id')
-			, "ip"=> $this->input->ip_address()
-			, "module_id" =>  $this->module_id
-			, "desc" => $desc
-			, "action" => $action
-			, "active_time" =>  $date->getTimestamp()	
-			, "create_date" =>  date( "Y-m-d H:i:s" )
-		);      
-		$sys_user_sn = $this->it_model->addData( $table_name , $arr_data );		
-	}
-	 */
-	
-	
-	function traceLog()
-	{
-		$date = new DateTime();
-		
-		$last_module_id = $this->session->flashdata('last_module_id');		
-		$session_id = $this->session->userdata('session_id');		
-		$table_name = "sys_backend_log_".date( "Y" );
-		$log_info = $this->it_model->listData($table_name , "session_id = '".$session_id."' AND module_id = '".$this->module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-			
-		
-			
-		if($log_info["count"]>0)
-		{			
-			
-			$active_time = $log_info['data'][0]['active_time'];
-			$stay_time = $log_info['data'][0]['stay_time'];
-			
-			if($last_module_id == $this->module_id)
-			{
-				$stay_time = ($date->getTimestamp() - $active_time) + $stay_time;
-				$result = $this->it_model->updateDB( $table_name , array("stay_time"=>$stay_time,"active_time" =>  $date->getTimestamp()), "session_id = '".$session_id."' AND module_id = '".$this->module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-				//dprint($result);
-			}
-			else 
-			{
-				//$stay_time = ($date->getTimestamp() - $active_time) + $stay_time;
-				//$result = $this->it_model->updateDB( $table_name , array("stay_time"=>$stay_time,"active_time" =>  $date->getTimestamp()), "session_id = '".$session_id."' AND module_id = '".$last_module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-				//dprint($result);
-			}			
-		}
-		else 
-		{
-			logData("",0);			
-			//$this->it_model->updateData( $table_name , array("stay_time"=>6), "session_id = '".$session_id."' and ip = '".$this->input->ip_address()."'");
-			
-			
-		}
-		
-		$this->session->set_flashdata('last_module_id',$this->module_id);
-		
-	}
 	
 	
 	
@@ -1041,61 +975,39 @@ abstract class Backend_Controller extends IT_Controller
 	
 	
 	
-    public function ajaxChangeStatus1()
-    {   
-        $edit_data = array();
-        foreach( $_POST as $key => $value )
-        {
-            $edit_data[$key] = $this->input->post($key, FALSE);         
-        }
-        
-        if(isNull(tryGetData("tname",$edit_data)) || isNull(tryGetData("fname",$edit_data)) || isNull(tryGetData("sn",$edit_data)) )
-        {
-            echo json_encode(array());
-        }
-        else 
-        {
-        	$table_name = tryGetData("tname",$edit_data);
-			$field_name = tryGetData("fname",$edit_data);
-			$sn = tryGetData("sn",$edit_data);
-			
-
-            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
-			if($data_info["count"]==0)
-			{
-				echo json_encode(array());
-				return;
-			}			  
-			
-			$data_info = $data_info["data"][0];
-			
-			$change_value = 1;
-			if($data_info[$field_name] == 0)
-			{
-				$change_value = 1;
-			}
-			else
-			{
-				$change_value = 0;
-			}
-			
-			
-			
-			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );	
-			if($result)
-			{
-				echo json_encode($change_value);
-			}
-			else 
-			{
-				echo json_encode($data_info[$field_name]);
-			}			
-			                      
-        }
-    }
 
 
-
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_item_to_server($post_data,$func_name,$table_name)
+	{
+		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
+	
 	
 	
 	/**
