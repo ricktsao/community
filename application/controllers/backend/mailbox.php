@@ -70,11 +70,22 @@ class Mailbox extends Backend_Controller {
 					"is_receive" => 1,
 					"receive_user_name" => $receive_user_name,
 					"receive_user_sn" => $receive_user_sn,
+					"is_sync" => 0,
 					"received" => date("Y-m-d H:i:s"),
 					"updated" => date("Y-m-d H:i:s")
 				);
 				
-				$this->it_model->updateData( "mailbox" , $update_data,"sn ='".$mailbox_sn_ary[$i]."'" );
+				$result = $this->it_model->updateData( "mailbox" , $update_data,"sn ='".$mailbox_sn_ary[$i]."'" );
+				if($result)
+				{
+					$mail_info = $this->it_model->listData("mailbox","sn ='".$mailbox_sn_ary[$i]."'");
+					if($mail_info["count"]>0)
+					{
+						$mail_info =$mail_info["data"][0];
+						$this->sync_item_to_server($mail_info,"updateMailbox","mailbox");
+					}
+										
+				}
 				
 				
 			}			

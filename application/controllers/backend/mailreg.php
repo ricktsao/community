@@ -106,6 +106,11 @@ class Mailreg extends Backend_Controller
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
+		//郵件類型
+		$mail_box_type = $this->auth_model->getWebSetting('mail_box_type');
+		$mail_box_type_ary = explode(",",$mail_box_type);
+		
+		
 		
 		$update_data = array(
 		"comm_id" => $this->getCommId(),
@@ -117,6 +122,10 @@ class Mailreg extends Backend_Controller
 		"user_name" => tryGetData("user_name",$edit_data),
 		"updated" => date( "Y-m-d H:i:s" )
 		);
+		
+		$update_data["type_str"] = tryGetData(tryGetData("type",$edit_data), $mail_box_type_ary);
+		
+		
 		
 		$user_info = $this->it_model->listData("sys_user","sn='".tryGetData("user_sn",$edit_data)."'");
 		if($user_info["count"]>0)
@@ -138,6 +147,12 @@ class Mailreg extends Backend_Controller
 			$mail_no = date("Ymd").substr($mail_no,7,3);
 			$this->it_model->updateData( "mailbox" , array("no"=>$mail_no,"updated" => date( "Y-m-d H:i:s" )),"sn = ".$content_sn );					
 			//--------------------------------------------------
+			
+			$update_data["sn"] = $content_sn;
+			$update_data["no"] = $mail_no;
+			
+			$this->sync_item_to_server($update_data,"updateMailbox","mailbox");
+			
 			
 			$this->showSuccessMessage();							
 		}

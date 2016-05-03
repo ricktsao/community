@@ -45,7 +45,7 @@
 									<span class="lbl"></span>
 								</label>
 							</td>	
-							<td>'.showDateFormat($mailbox_list[$i]["booked"],"Y-m-d").'</td>
+							<td>'.showDateFormat($mail_item["booked"],"Y-m-d").'</td>
 							<td>'.$mail_item["no"].'</td>						
 							<td>'.tryGetData($mail_item["type"], $mail_box_type_ary).'</td>	
 							<td>'.$mail_item["desc"].'</td>										
