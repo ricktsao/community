@@ -2,7 +2,7 @@
 	<?php 
 		foreach ($setting_list as $key => $item) 
 		{
-			if ($item["key"] == 'building_part_01' || $item["key"] == 'parking_part_01') {
+			if ($item["key"] == 'building_part_01' || $item["key"] == 'parking_part_01' || $item["key"] == 'mail_box_type') {
 				echo '<div class="hr hr-16 hr-dotted"></div>';
 			}
 

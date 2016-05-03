@@ -6,17 +6,24 @@ class Mailbox extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-		
+		$this->checkLogin();
+		$this->displayBanner(FALSE);  
 	}
 
 
 	public function index()
 	{
 		$data = array();
-		$this->checkLogin();
-		$mailbox_list = $this->it_model->listData("mailbox","user_sn = '".$this->session->userdata("f_user_sn")."'",10,1,array("booked"=>"desc"));
 		
+		$mailbox_list = $this->it_model->listData("mailbox","user_sn = '".$this->session->userdata("f_user_sn")."'",10,1,array("booked"=>"desc"));		
 		$data["mailbox_list"] = $mailbox_list["data"];		
+		
+		//郵件類型
+		$mail_box_type = $this->auth_model->getWebSetting('mail_box_type');
+		$mail_box_type_ary = explode(",",$mail_box_type);
+		$data["mail_box_type_ary"] = $mail_box_type_ary;
+		
+		
 		$this->display("mailbox_list_view",$data);
 	}
 	

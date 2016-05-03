@@ -16,7 +16,7 @@
             <?php
         	foreach ($mailbox_list as $key => $mail_info) 
         	{
-				$mail_type_string = tryGetData($mail_info["type"],$this->config->item("mail_box_type"));
+				$mail_type_string = tryGetData($mail_info["type"],$mail_box_type_ary);
 				
 				$receive_string = '<span style="color:red;">未領取</span>';
 				if($mail_info["is_receive"]==1)

@@ -7,6 +7,7 @@ class Keycode extends Frontend_Controller {
 	{
 		parent::__construct();
 		$this->checkLogin();
+		$this->displayBanner(FALSE);  
 	}
 
 
