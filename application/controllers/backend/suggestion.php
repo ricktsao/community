@@ -126,12 +126,17 @@ class Suggestion extends Backend_Controller {
 		{
 			//更新回覆
 			//------------------------------------------------------------------			
-			$result = $this->it_model->updateData( "suggestion" , array("reply"=>tryGetData("reply",$edit_data,NULL),"updated"=>date("Y-m-d H:i:s")), "sn =".$edit_data["sn"] );
+			$result = $this->it_model->updateData( "suggestion" , array("reply"=>tryGetData("reply",$edit_data,NULL),"is_sync"=>0,"updated"=>date("Y-m-d H:i:s")), "sn =".$edit_data["sn"] );
 			if($result)
 			{
-				$edit_data["sn"] = $content_sn;
-				//$this->sync_to_server($edit_data);
-			
+				$suggestion_info = $this->it_model->listData( "suggestion" , "sn =".$edit_data["sn"]);
+				if($suggestion_info["count"]>0)
+				{	
+					$suggestion_info = $suggestion_info["data"][0];		
+					$this->sync_suggestion_to_server($suggestion_info);
+				}
+				
+				
 				
 				$this->showSuccessMessage();							
 			}
@@ -147,11 +152,41 @@ class Suggestion extends Backend_Controller {
 		}				
 		
 		
-		redirect(bUrl("contentList"));	
+		redirect(bUrl("contentList",TRUE,array("all"=>"all"),array("status"=>1)));	
         	
 	}
 	
 
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_suggestion_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync/updateSuggestion";
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "suggestion" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
 	
 	public function GenerateTopMenu()
 	{

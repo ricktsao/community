@@ -9,12 +9,12 @@
 <div class="row">
 	<div class="col-xs-12">
 
-		<form method="post" action="<?php echo bUrl('updateMailbox');?>">
 		<div class="col-xs-12">
 			<div class="table-responsive">
 				<table id="entry" class="table table-striped table-bordered table-hover">
 					<thead>
 						<tr>							
+							<th style="width:100px">狀態</th>
 							<th style="width:100px"><i class="icon-time bigger-110 hidden-480"></i>登錄時間</th>
 							<th style="width:100px">代收編號</th>							
 							<th style="width:80px">郵件類型</th>
@@ -28,18 +28,22 @@
 					<?php
 					$i = 1;
 					$hidden = '';
-
+					
+					
+					
 					foreach ($mailbox_list as $mail_item) 
 					{
+						$status_str =$mail_item["is_receive"]==1?"<span style='color:blue'>已領取</span>":"<span style='color:red'>未領取</span>";		
 						echo 
 						'
 						<tr>
+							<td>'.$status_str.'</td>
 							<td>'.showDateFormat($mailbox_list[$i]["booked"],"Y-m-d").'</td>
 							<td>'.$mail_item["no"].'</td>						
-							<td>'.tryGetData($mail_item["type"], $this->config->item("mail_box_type")).'</td>	
+							<td>'.tryGetData($mail_item["type"], $mail_box_type_ary).'</td>	
 							<td>'.$mail_item["desc"].'</td>										
 							<td>'.tryGetData("user_name", $mail_item).'</td>										
-							<td>'.$mail_item["receiver"].'</td>									
+							<td>'.$mail_item["receive_user_name"].'</td>									
 						</tr>
 						';						
 					}					
@@ -52,7 +56,7 @@
 	
 
 	</div>
-	</form>
+	
 
 
 
