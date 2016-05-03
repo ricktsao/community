@@ -34,7 +34,9 @@
 </article>	
 
 </form>
-
+<?php
+//echo '共計 '.$i.' 個車位，其中 '.$j.' 個已登記使用';
+?>
 <form action="" id="update_form" method="post" class="contentForm"> 
 		<div class="row">
 			<div class="col-xs-12">
@@ -124,10 +126,12 @@
 										$i++;
 									}
 									?>
-										
-									
 								</tbody>
-								
+								<tr>
+					              	<td colspan="11">
+									<?php echo showBackendPager($pager)?>
+					                </td>
+								</tr
 							</table>
 							
 						</div>

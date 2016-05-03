@@ -11,6 +11,7 @@ class User extends Backend_Controller
 
 	public function index()
 	{
+
 		$condition = ' AND role = "I"';
 
 		$query_key = array();
@@ -87,14 +88,39 @@ class User extends Backend_Controller
 	{
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");		
-		
+		$data = array();
+
+
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);
+		}
+
+		$p_part_01 = tryGetData('p_part_01', $query_key, NULL);
+		$p_part_02 = tryGetData('p_part_02', $query_key, NULL);
+		$p_part_03 = tryGetData('p_part_03', $query_key, NULL);
+
+		$data['p_part_01'] = $p_part_01;
+		$data['p_part_02'] = $p_part_02;
+		$data['p_part_03'] = $p_part_03;
+
+
+		// 車位別相關參數
+		$data['parking_part_01'] = $this->parking_part_01;
+		$data['parking_part_02'] = $this->parking_part_02;
+		$data['parking_part_03'] = $this->parking_part_03;
+		$data['parking_part_01_array'] = $this->parking_part_01_array;
+		$data['parking_part_02_array'] = $this->parking_part_02_array;
+
 		$user_sn = $this->input->get("sn", TRUE);
 		$user_id = $this->input->get("id", TRUE);
 
 		//既有車位list
 		//---------------------------------------------------------------------------------------------------------------
-		$exist_parking_list = $this->it_model->listData( "parking p left join user_parking up on p.sn = up.parking_sn" 
-												, "user_sn = ".$user_sn , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
+		//$exist_parking_list = $this->it_model->listData( "parking p left join user_parking up on p.sn = up.parking_sn" 
+		//										, "user_sn = ".$user_sn , NULL , NULL , array("p.parking_id"=>"asc","sn"=>"desc"));
+		$exist_parking_list = $this->it_model->listData( "parking p left join user_parking up on p.sn = up.parking_sn " 
+												, "user_sn = ".$user_sn , NULL , NULL , array("p.parking_id"=>"asc" ));
 
 		$data["exist_parking_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
 		//---------------------------------------------------------------------------------------------------------------
@@ -120,7 +146,7 @@ class User extends Backend_Controller
 	/**
 	 * 搜尋還沒有住戶登錄的車位
 	 */
-	public function ajaxGetParking()
+	public function xxxxxx_ajaxGetParking()
 	{
 		$keyword = $this->input->get('keyword', true);
 
@@ -162,42 +188,56 @@ class User extends Backend_Controller
 	 */
 	public function addUserParking()
 	{
+		$now = date('Y-m-d H:i:s');
 		$edit_data = array();
 		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		
-		if ( isNotNull(tryGetData('parking_sn', $edit_data, NULL)) 
+		if ( isNotNull(tryGetData('p_part_01', $edit_data, NULL)) 
+			&& isNotNull(tryGetData('p_part_02', $edit_data, NULL)) 
+			&& isNotNull(tryGetData('p_part_03', $edit_data, NULL)) 
 			&& isNotNull(tryGetData('user_sn', $edit_data, NULL)) 
 			&& isNotNull(tryGetData('user_id', $edit_data, NULL)) ) {
 
-			$arr_data = array('parking_sn'	=>	tryGetData('parking_sn', $edit_data)
-							, 'user_sn'	=>	tryGetData('user_sn', $edit_data)
-							, 'person_sn'	=>	0
-							, 'user_id'	=>	tryGetData('user_id', $edit_data)
-							, 'car_number'	=>	tryGetData('car_number', $edit_data)
-							, 'updated'	=>	date('Y-m-d H:i:s')
-							, 'updated_by'	=>	$this->session->userdata('user_name')
-							, 
-							);
+			$p_part_01 = tryGetData('p_part_01', $edit_data);
+			$p_part_02 = tryGetData('p_part_02', $edit_data);
+			$p_part_03 = tryGetData('p_part_03', $edit_data);
 			
-			$query = 'INSERT INTO `user_parking` '
-					.'       (`parking_sn`, `user_sn`, `person_sn` '
-					.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
-					.'VALUES (?, ?, ? '
-					.'        , ?, ?, ?, ? ) '
-					.'    ON DUPLICATE KEY UPDATE  '
-					.'       `car_number` = VALUES(`car_number`) '
-					.'       , `updated` = VALUES(`updated`) '
-					.'       , `updated_by` = VALUES(`updated_by`) '
-					;
+			$parking_id = $p_part_01.'_'.$p_part_02.'_'.$p_part_03; 
+			$parking_sn = $this->auth_model->getFreeParkingSn($parking_id);
+			if ($parking_sn > 0 ) {
+				$arr_data = array('comm_id' => $this->getCommId() 
+								, 'parking_sn'	=>	$parking_sn
+								, 'user_sn'	=>	tryGetData('user_sn', $edit_data)
+								, 'person_sn'	=>	0
+								, 'user_id'	=>	tryGetData('user_id', $edit_data)
+								, 'car_number'	=>	tryGetData('car_number', $edit_data)
+								, 'updated'	=>	$now
+								, 'updated_by'	=>	$this->session->userdata('user_name')
+								, 
+								);
+				
+				$query = 'INSERT INTO `user_parking` '
+						.'       (`comm_id`, `parking_sn`, `user_sn`, `person_sn` '
+						.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+						.'VALUES (?, ?, ?, ? '
+						.'        , ?, ?, ?, ? ) '
+						.'    ON DUPLICATE KEY UPDATE  '
+						.'       `car_number` = VALUES(`car_number`) '
+						.'       , `updated` = VALUES(`updated`) '
+						.'       , `updated_by` = VALUES(`updated_by`) '
+						;
 
 
-			$this->db->query($query, $arr_data);
-			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
-				$this->showSuccessMessage('車位設定成功');
+				$this->db->query($query, $arr_data);
+				if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
+					$this->showSuccessMessage('車位設定成功');
+				} else {
+					$this->showFailMessage('車位設定失敗');
+				}
+
 			} else {
-				$this->showFailMessage('車位設定失敗');
+					$this->showFailMessage('查無此【'.parking_id_to_text($parking_id).'】車位 或此車位已被使用，請重新確認');
 			}
 		} else {
 			$this->showFailMessage('車位設定失敗，請確認資料確實輸入');
@@ -318,6 +358,14 @@ class User extends Backend_Controller
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
+		
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+
 		if ( ! $this->_validateUser())
 		{
 			//權組list
@@ -333,8 +381,7 @@ class User extends Backend_Controller
 			
 			$data["sys_user_group"] = array();
 			
-			dprint($edit_data);
-			$this->display("admin_edit_view",$data);
+			$this->display("user_edit_view",$data);
 		}
         else 
         {

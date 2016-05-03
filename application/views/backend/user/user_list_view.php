@@ -140,9 +140,8 @@
 								<tr>
 					              	<td colspan="11">
 									<?php echo showBackendPager($pager)?>
-					                </td>            
-
-					           </tr>
+					                </td>
+								</tr>
 								
 							</table>
 							
