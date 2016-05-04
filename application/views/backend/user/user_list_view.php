@@ -11,7 +11,7 @@
 		</a>
     </div>
     <div class="btn-group">
-		<a class="btn  btn-sm btn-yellow" target="_blank" href="<?php echo bUrl("exportExcel");?>">
+		<a class="btn  btn-sm btn-purple" target="_blank" href="<?php echo bUrl("exportExcel");?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
@@ -58,9 +58,10 @@
 										<th width="80"><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>姓　名</th>
 										<th>性　別</th>
-										<th style='text-align: center'>ID</th>
+										<th style='text-align: center'>磁卡</th>
 										<th>所有權人</th>
 										<th>緊急<br />聯絡人</th>
+										<th>APP開通</th>
 										<th>管委</th>
 										<th style="width:150px" colspan="2">操作</th>
 										<th>啟用/停用</th>
@@ -107,6 +108,13 @@
 										</td>
 										<td>
 										<?php
+										if (isNotNull(tryGetData("app_id", $item, NULL))) {
+											echo '已開通';
+										} else echo '未開通';
+										?>
+										</td>
+										<td>
+										<?php
 										if (tryGetData("is_manager", $item) == 1) {
 											echo tryGetData("manager_title", $item);
 										} else echo '否';
@@ -122,7 +130,7 @@
 										</td>
 										<td>
 											<a class="btn  btn-minier btn-pink" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>ID重設
+												<i class="icon-edit bigger-120"></i>磁卡變更
 											</a>
 										</td>
 										<td>

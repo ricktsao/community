@@ -48,7 +48,7 @@
 				</span></div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶ID：</label>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶磁卡：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('id',$user_data); ?></span></div>
 			</div>
 			<div class="form-group">
