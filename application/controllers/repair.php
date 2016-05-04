@@ -70,8 +70,7 @@ class Repair extends Frontend_Controller {
 			$repair_sn = $this->it_model->addData( "repair" , $add_data );					
 			if($repair_sn > 0)
 			{
-				$add_data["sn"] = $repair_sn;
-				$add_data["comm_id"] = $this->getCommId();					
+				$add_data["sn"] = $repair_sn;								
 				$this->sync_repair_to_server($add_data);
 			}
 			redirect(frontendUrl("repair_log"));			
@@ -87,35 +86,7 @@ class Repair extends Frontend_Controller {
 	}
 	
 	
-	/**
-	 * 同步至雲端server
-	 */
-	function sync_repair_to_server($post_data)
-	{
-		$url = $this->config->item("api_server_url")."sync/updateRepair";
-		//dprint($post_data);exit;
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		//curl_setopt($ch, CURLOPT_POST,1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		$is_sync = curl_exec($ch);
-		curl_close ($ch);
-		
-		
-		//更新同步狀況
-		//------------------------------------------------------------------------------
-		if($is_sync != '1')
-		{
-			$is_sync = '0';
-		}			
-		
-		$this->it_model->updateData( "repair" , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
-		//------------------------------------------------------------------------------
-	}
-
+	
 
 	/**
 	 * 同步至雲端server
@@ -123,6 +94,7 @@ class Repair extends Frontend_Controller {
 	function sync_repair_to_server($post_data)
 	{
 		$url = $this->config->item("api_server_url")."sync/updateRepair";
+		$post_data["comm_id"] = $this->getCommId();	
 		//dprint($post_data);
 		//exit;
 		$ch = curl_init();

@@ -21,7 +21,7 @@ class Voting extends Backend_Controller {
 	{	
 
 
-		$list = $this->it_model->listData( "voting",null,20,1 );
+		$list = $this->it_model->listData( "voting","is_del=0",$this->per_page_rows , $this->page );
 		$data["list"] = $list['data'];
 		$list["count"] =  $list['count'];
 
@@ -38,7 +38,7 @@ class Voting extends Backend_Controller {
 
 
 		//取得分頁
-		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
+		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows  ,"contentList");	
 		$this->display("content_list_view",$data);
 		//dprint($data["pager"]);
 	}
@@ -77,7 +77,7 @@ class Voting extends Backend_Controller {
 				$data["edit_data"] = $list[0];
 
 				//get option
-				$option =  $this->it_model->listData( "voting_option","voting_sn =".$content_sn );				
+				$option =  $this->it_model->listData( "voting_option","voting_sn =".$content_sn." AND is_del=0" );				
 				$data['edit_data']['voting_option'] = $option['data'];
 
 				$this->display("content_form_view",$data);
@@ -95,7 +95,7 @@ class Voting extends Backend_Controller {
 		$edit_data = [];
 
 		foreach ($_POST as $key => $value) {
-			$edit_data[$key]=$value;
+			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
 
 		$edit_data["allow_anony"] = tryGetArrayValue("allow_anony",$edit_data,0);
@@ -111,10 +111,10 @@ class Voting extends Backend_Controller {
         else 
         {
 			
-        	$voting_option = $edit_data["voting_option"];
-        	unset($edit_data["voting_option"]);
-
-		//	deal_img($edit_data ,"img_filename",$this->router->fetch_class());	
+        	if(isset($edit_data["voting_option"])){
+        		$voting_option = $edit_data["voting_option"];
+        		unset($edit_data["voting_option"]);
+        	}
 			
 			if(isNotNull($edit_data["sn"]))
 			{
@@ -122,6 +122,8 @@ class Voting extends Backend_Controller {
 					
 				if($this->it_model->updateData( "voting" , $edit_data, "sn =".$edit_data["sn"] ))
 				{
+					$sync_result = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -137,6 +139,11 @@ class Voting extends Backend_Controller {
 				if($content_sn > 0)
 				{				
 					$edit_data["sn"] = $content_sn;
+					$sync_result = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+
+					$this->it_model->updateData("voting",array("is_sync"=>$sync_result),"sn = ".$content_sn);
+
+					//echo $re;die();
 					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();							
 				}
@@ -170,11 +177,18 @@ class Voting extends Backend_Controller {
 
 	public function deleteContent()
 	{
-		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
-		
-		if($del_ary!= FALSE && count($del_ary)>0)
+		$del = $this->input->post('del',TRUE);		
+		$del = implode(",",$del);
+	
+		if($del!= FALSE )
 		{
-			$this->it_model->deleteDB( "voting",NULL,$del_ary );				
+			//$this->it_model->deleteDB( "voting",NULL,$del_ary );
+			$this->it_model->updateData( "voting" , array("is_del"=>1,"is_sync"=>0), "sn in (".$del.")" );			
+			$re_sync = $this->Voting_model->sync_to_server(array("sn"=>$del),"voting/removeVoting");
+			if($re_sync=="1"){
+				$this->it_model->updateData( "voting" , array("is_sync"=>1), "sn in (".$del.")" );
+			}
+		
 		}
 		$this->showSuccessMessage();
 		redirect(bUrl("contentList", FALSE));	

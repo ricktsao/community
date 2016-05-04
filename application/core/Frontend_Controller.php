@@ -92,6 +92,38 @@ abstract class Frontend_Controller extends IT_Controller
 	{		
 		$this->menu_info = $this->getMenuInfo();	
 		$this->_getFrontendMenu();
+		
+		// 取得戶別相關參數
+		$this->load->model('auth_model');
+		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
+		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
+		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
+		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
+		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+
+		if (isNotNull($building_part_01_value)) {
+			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
+		}
+
+		if (isNotNull($building_part_02_value)) {
+			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
+
+
+		
+		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
+		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
+		$this->parking_part_02 = $this->auth_model->getWebSetting('parking_part_02');
+		$parking_part_02_value = $this->auth_model->getWebSetting('parking_part_02_value');
+		$this->parking_part_03 = $this->auth_model->getWebSetting('parking_part_03');
+		if (isNotNull($parking_part_01_value)) {
+			$this->parking_part_01_array = array_merge(array(0=>' -- '), explode(',', $parking_part_01_value));
+		}
+
+		if (isNotNull($parking_part_02_value)) {
+			$this->parking_part_02_array = array_merge(array(0=>' -- '), explode(',', $parking_part_02_value));
+		}
+		
 	}		
 	
 	
@@ -756,6 +788,38 @@ abstract class Frontend_Controller extends IT_Controller
 	function speed()
 	{
 		$this->output->enable_profiler(TRUE);	
+	}
+	
+	
+	
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_item_to_server($post_data,$func_name,$table_name)
+	{
+		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
 	}
 
 }

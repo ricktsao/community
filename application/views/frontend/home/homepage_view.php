@@ -3,7 +3,7 @@
 		<div id="blockA">
 			<div class="block_title">
 				<img src="<?php echo base_url().$templateUrl;?>images/index_title1.png" alt="">
-				<a href="#"><img src="<?php echo base_url().$templateUrl;?>images/more.png" alt=""></a>
+				<a href="<?php echo frontendUrl('album');?>"><img src="<?php echo base_url().$templateUrl;?>images/more.png" alt=""></a>
 			</div>
 			<ul id="picGroup" class="ul_unstyle">
 				<?php for($i=0;$i<count($album_list);$i++):?>
@@ -114,16 +114,18 @@
 			<div class="leftArea">
 				<div class="title_area">
 					工商服務
-					<a href="#">更多</a>
+					<a href="<?php echo frontendUrl("ad")?>">更多</a>
 				</div>
 				<div id="cycle_bg">
 					<div id="cycle">
-						<a href="#"><img src="upload/k4.png" alt=""></a>
-						<a href="#"><img src="upload/k4.png" alt=""></a>
-						<a href="#"><img src="upload/k4.png" alt=""></a>
-						<a href="#"><img src="upload/k4.png" alt=""></a>
-						<a href="#"><img src="upload/k4.png" alt=""></a>
-						<a href="#"><img src="upload/k4.png" alt=""></a>
+					<?php 
+					foreach ($ad_list as $key => $ad_info) 
+					{
+						echo					
+						'<a href="javascript:void(0)"><img src="'.$ad_info["img_filename"].'" alt=""></a>';
+					}
+					
+					?>
 					</div>
 					<div id="pager"></div>
 				</div>
@@ -153,3 +155,15 @@
 		</div>
 	</div>
 </div>
+
+<script>
+    $(function() {
+        $('#cycle').cycle({
+            slides: ">a",
+            fx: "carousel",
+            pager:"#pager"
+        });
+
+
+    })
+    </script>

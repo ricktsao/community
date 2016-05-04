@@ -11,12 +11,12 @@ class Gas_company extends Backend_Controller {
 
 
 	public function editContent()
-	{
-		
+	{		
 		$gas_company_info = $this->c_model->GetList( "gas_company" );
 		
 		if($gas_company_info["count"]>0)
 		{						
+			img_show_list($gas_company_info["data"],'img_filename',$this->router->fetch_class());			
 			//dprint($gas_company_info);
 			$data["edit_data"] = $gas_company_info["data"][0];			
 
@@ -55,6 +55,9 @@ class Gas_company extends Backend_Controller {
 			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
+					$img_filename = $this->uploadImage($edit_data["sn"]);					
+					$edit_data["img_filename"] = $img_filename;
+			
 					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
@@ -70,6 +73,9 @@ class Gas_company extends Backend_Controller {
 				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
 				if($content_sn > 0)
 				{
+					$img_filename =$this->uploadImage($content_sn);
+					$edit_data["img_filename"] = $img_filename;
+					
 					$edit_data["sn"] = $content_sn;
 					$this->sync_to_server($edit_data);
 				
@@ -85,6 +91,48 @@ class Gas_company extends Backend_Controller {
 			redirect(bUrl("editContent"));	
         }	
 	}
+	
+	
+	//圖片處理
+	private function uploadImage($content_sn)
+	{
+		$img_filename = "";
+		if(isNull($content_sn))
+		{
+			return;
+		}
+		//dprint($_FILES);exit;
+		if(isNotNull($_FILES['img_filename']['name']))
+		{
+			$folder_name = $this->router->fetch_class();
+			
+			//圖片處理 img_filename				
+			$img_config['resize_setting'] =array($folder_name=>array(1024,1024));					
+			$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
+			move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
+			
+			$img_filename = resize_img($uploadedUrl,$img_config['resize_setting']);					
+				
+			//社區同步資料夾
+			$img_config['resize_setting'] =array($folder_name=>array(500,500));
+			resize_img($uploadedUrl,$img_config['resize_setting'],$this->getCommId(),$img_filename);
+			
+			@unlink($uploadedUrl);	
+
+			$this->it_model->updateData( "web_menu_content" , array("img_filename"=> $img_filename), "sn = '".$content_sn."'" );
+			
+			$orig_img_filename = $this->input->post('orig_img_filename');
+			
+			@unlink(set_realpath("upload/website/".$folder_name).$orig_img_filename);	
+			@unlink(set_realpath("upload/".$this->getCommId()."/".$folder_name).$orig_img_filename);	
+			
+			//檔案同步至server
+			$this->sync_file($folder_name);
+		}
+		return $img_filename;
+	}
+	
+	
 	
 	/**
 	 * 驗證bulletinedit 欄位是否正確

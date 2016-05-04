@@ -14,6 +14,24 @@ class Home extends Backend_Controller{
 		$this->display("index_view");
 	}
 
+	public function testpdf()
+	{	
+		$time = time();
+		$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
+
+		$html = "<h1>富網通社區測試</h1>";
+		$html .= "<table border=1><tr><td>表格＆圖檔</td><td><img width='100' src='".base_url('template\backend\images\img_logo.png')."'></td></tr></table>";
+
+		$this->load->library('pdf');
+		$mpdf = new Pdf();
+		$mpdf = $this->pdf->load();
+		$mpdf->useAdobeCJK = true;
+		$mpdf->autoScriptToLang = true;
+		$mpdf->WriteHTML($html);
+
+		$mpdf->Output();
+	}
+ 	
 
 
 	public function query_land()

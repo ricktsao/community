@@ -22,7 +22,7 @@
                         <th style="width:100px">序號</th>
                         <th>選項</th>
                         <th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>投票人數</th>
-                        <th style="width:120px">投票名單</th>
+                       
                      
                     </tr>
                 </thead>
@@ -37,9 +37,12 @@
                         </td>
                         <td>
                             <?php echo $list['options'][$i]["voting_count"];?>
-                        </td>
-                        <td>
-                           <?php
+                        </td>                       
+                       
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                              <?php
                                 if($list['allow_anony']==1){
                                     echo "不記名投票";
                                 }else{
@@ -53,13 +56,14 @@
 
                                 }
 
-                           ?>
+                           ?>    
+                        
+
                         </td>
-                       
                     </tr>
                     <?php endfor; ?>
                     <tr>
-                        <td colspan="4">
+                        <td colspan="3">
                         </td>
                         
                     </tr>

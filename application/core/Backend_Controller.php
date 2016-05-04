@@ -23,7 +23,12 @@ abstract class Backend_Controller extends IT_Controller
 	
 	public $style_css = array();
 	public $style_js = array();
-	
+
+	public $building_part_01 = "";	
+	public $building_part_02 = "";	
+	public $building_part_01_array = array();
+	public $building_part_02_array = array();
+
 	function __construct() 
 	{
 		parent::__construct();
@@ -40,6 +45,7 @@ abstract class Backend_Controller extends IT_Controller
 		$this->lang->load("common");
 		//$this->traceLog();
 		//$this->config->set_item('language', $this->language_value);	
+
 	}
 	
 	
@@ -47,6 +53,37 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$this->getLeftMenu();
 		$this->module_info = $this->getModuleInfo();
+		
+		// 取得戶別相關參數
+		$this->load->model('auth_model');
+		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
+		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
+		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
+		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
+		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+
+		if (isNotNull($building_part_01_value)) {
+			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
+		}
+
+		if (isNotNull($building_part_02_value)) {
+			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
+
+
+		
+		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
+		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
+		$this->parking_part_02 = $this->auth_model->getWebSetting('parking_part_02');
+		$parking_part_02_value = $this->auth_model->getWebSetting('parking_part_02_value');
+		$this->parking_part_03 = $this->auth_model->getWebSetting('parking_part_03');
+		if (isNotNull($parking_part_01_value)) {
+			$this->parking_part_01_array = array_merge(array(0=>' -- '), explode(',', $parking_part_01_value));
+		}
+
+		if (isNotNull($parking_part_02_value)) {
+			$this->parking_part_02_array = array_merge(array(0=>' -- '), explode(',', $parking_part_02_value));
+		}
 	}
 	
 	
@@ -677,72 +714,6 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
-	/*
-	 * 紀錄log
-	 * $desc:log描述
-	function logData($desc="",$action = 1)
-	{
-		$table_name = $this->it_model->tryAddLogTable();
-			
-		$date = new DateTime();
-			
-		$arr_data = array(				
-
-			 "user_id" => $this->session->userdata("user_id")
-			, "session_id"=> $this->session->userdata('session_id')
-			, "ip"=> $this->input->ip_address()
-			, "module_id" =>  $this->module_id
-			, "desc" => $desc
-			, "action" => $action
-			, "active_time" =>  $date->getTimestamp()	
-			, "create_date" =>  date( "Y-m-d H:i:s" )
-		);      
-		$sys_user_sn = $this->it_model->addData( $table_name , $arr_data );		
-	}
-	 */
-	
-	
-	function traceLog()
-	{
-		$date = new DateTime();
-		
-		$last_module_id = $this->session->flashdata('last_module_id');		
-		$session_id = $this->session->userdata('session_id');		
-		$table_name = "sys_backend_log_".date( "Y" );
-		$log_info = $this->it_model->listData($table_name , "session_id = '".$session_id."' AND module_id = '".$this->module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-			
-		
-			
-		if($log_info["count"]>0)
-		{			
-			
-			$active_time = $log_info['data'][0]['active_time'];
-			$stay_time = $log_info['data'][0]['stay_time'];
-			
-			if($last_module_id == $this->module_id)
-			{
-				$stay_time = ($date->getTimestamp() - $active_time) + $stay_time;
-				$result = $this->it_model->updateDB( $table_name , array("stay_time"=>$stay_time,"active_time" =>  $date->getTimestamp()), "session_id = '".$session_id."' AND module_id = '".$this->module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-				//dprint($result);
-			}
-			else 
-			{
-				//$stay_time = ($date->getTimestamp() - $active_time) + $stay_time;
-				//$result = $this->it_model->updateDB( $table_name , array("stay_time"=>$stay_time,"active_time" =>  $date->getTimestamp()), "session_id = '".$session_id."' AND module_id = '".$last_module_id."' AND action = 0  AND ip = '".$this->input->ip_address()."'");
-				//dprint($result);
-			}			
-		}
-		else 
-		{
-			logData("",0);			
-			//$this->it_model->updateData( $table_name , array("stay_time"=>6), "session_id = '".$session_id."' and ip = '".$this->input->ip_address()."'");
-			
-			
-		}
-		
-		$this->session->set_flashdata('last_module_id',$this->module_id);
-		
-	}
 	
 	
 	
@@ -770,9 +741,7 @@ abstract class Backend_Controller extends IT_Controller
 			, "brief2" => tryGetData("brief2",$edit_data)	
 			, "id" => tryGetData("id",$edit_data,NULL)	
 			, "content_type" => tryGetData("content_type",$edit_data)	
-			, "filename" => tryGetData("filename",$edit_data)		
-			, "img_filename" => tryGetData("img_filename",$edit_data)			
-			, "img_filename2" => tryGetData("img_filename2",$edit_data)
+			, "filename" => tryGetData("filename",$edit_data)
 			, "start_date" => tryGetData("start_date",$edit_data,date( "Y-m-d H:i:s" ))
 			, "end_date" => tryGetData("end_date",$edit_data,NULL)
 			, "forever" => tryGetData("forever",$edit_data,0)
@@ -785,6 +754,15 @@ abstract class Backend_Controller extends IT_Controller
 			, "update_date" =>  date( "Y-m-d H:i:s" )
 		);        	
 		
+		if(isNotNull(tryGetData("img_filename",$edit_data)))
+		{
+			$arr_data["img_filename"] = tryGetData("img_filename",$edit_data);
+		}
+		
+		if(isNotNull(tryGetData("img_filename2",$edit_data)))
+		{
+			$arr_data["img_filename2"] = tryGetData("img_filename2",$edit_data);
+		}	
 		
 		
 		return $arr_data;
@@ -819,8 +797,79 @@ abstract class Backend_Controller extends IT_Controller
 		$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
 		//------------------------------------------------------------------------------
 	}
+	
+	
+	/**
+	 * 詢問server檔案差異
+	 * $folder : /upload/社區ID 下的資料夾
+	 */
+	function ask_server_file($file_string,$folder)
+	{
+		if(isNull($file_string))
+		{
+			return;
+		}
+		$post_data = array();
+		$post_data["file_string"] = $file_string;
+		$post_data["comm_id"] = $this->getCommId();
+		$post_data["folder"] = $folder;
+		
+		$url = $this->config->item("api_server_url")."sync/askFile";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$file_list = curl_exec($ch);
+		curl_close ($ch);
+		
+		return $file_list;
+	}
+	
+	/**
+	 * 檔案同步至server
+	 * $folder : /upload/社區ID 下的資料夾
+	 */
+	public function sync_file($folder="")
+	{
+		if(isNull($folder))
+		{
+			return;
+		}
+		
+		//$folder = "news";
+		$sync_folder = set_realpath("upload/".$this->getCommId()."/".$folder);
+		$files = glob($sync_folder . '*');
+		
+		$filename_ary = array();
+		foreach( $files as $key => $file_name_with_full_path )
+		{
+			array_push($filename_ary,basename($file_name_with_full_path));
+		}		
 
+		$upload_file_list = $this->ask_server_file(implode(",",$filename_ary),$folder);
+		$upload_file_ary = explode(",",$upload_file_list);
+		
+		foreach( $upload_file_ary as $key => $file_name )
+		{		
+			$file_name_with_full_path = set_realpath("upload/".$this->getCommId()."/".$folder).$file_name;
+		
+			$cfile = new CURLFile($file_name_with_full_path);			
+			$params = array($this->getCommId().'<#-#>'.$folder => $cfile );			
 
+			$target_url = $this->config->item("api_server_url")."sync/fileUpload";
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$target_url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+			$result=curl_exec ($ch);
+			curl_close ($ch);
+			
+		
+			//dprint($result);
+		}		
+	}
 
 	//ajax 取得
 	public function ajaxChangeStatus($table_name ='', $field_name = ',',$sn)
@@ -926,61 +975,39 @@ abstract class Backend_Controller extends IT_Controller
 	
 	
 	
-    public function ajaxChangeStatus1()
-    {   
-        $edit_data = array();
-        foreach( $_POST as $key => $value )
-        {
-            $edit_data[$key] = $this->input->post($key, FALSE);         
-        }
-        
-        if(isNull(tryGetData("tname",$edit_data)) || isNull(tryGetData("fname",$edit_data)) || isNull(tryGetData("sn",$edit_data)) )
-        {
-            echo json_encode(array());
-        }
-        else 
-        {
-        	$table_name = tryGetData("tname",$edit_data);
-			$field_name = tryGetData("fname",$edit_data);
-			$sn = tryGetData("sn",$edit_data);
-			
-
-            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
-			if($data_info["count"]==0)
-			{
-				echo json_encode(array());
-				return;
-			}			  
-			
-			$data_info = $data_info["data"][0];
-			
-			$change_value = 1;
-			if($data_info[$field_name] == 0)
-			{
-				$change_value = 1;
-			}
-			else
-			{
-				$change_value = 0;
-			}
-			
-			
-			
-			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );	
-			if($result)
-			{
-				echo json_encode($change_value);
-			}
-			else 
-			{
-				echo json_encode($data_info[$field_name]);
-			}			
-			                      
-        }
-    }
 
 
-
+	/**
+	 * 同步至雲端server
+	 */
+	function sync_item_to_server($post_data,$func_name,$table_name)
+	{
+		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		
+		//dprint($post_data);
+		//exit;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+	
+	
 	
 	
 	/**

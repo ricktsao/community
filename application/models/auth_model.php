@@ -8,6 +8,36 @@ class Auth_Model extends IT_Model
 		parent::__construct();	  
 	}
 
+
+	// 取得還有效的車位 SN
+	public function getFreeParkingSn( $parking_id )
+	{
+		if (isNotNull($parking_id)) {
+			$query = 'SELECT p.*, up.user_sn '
+					.'  FROM parking p  '
+					.'  LEFT JOIN user_parking up ON p.sn = up.parking_sn '
+					.' WHERE p.status = 1 AND up.user_sn IS NULL AND p.`parking_id`="'.$parking_id.'"'
+					;
+			$result = $this->it_model->runSql( $query );
+
+			if ( $result['count'] > 0) {
+				$data = $result['data'][0];
+				return tryGetData('sn', $data, NULL);
+			}
+		}
+		return false;
+	}
+	
+	public function getWebSetting( $key )
+	{
+		if (isNotNull($key)) {
+			$result = $this->it_model->listData('web_setting', '`key`="'.$key.'"');
+			$data = $result['data'][0];
+
+			return tryGetData('value', $data, NULL);
+		}
+		return false;
+	}
 	
 	public function GetWebAdminList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{

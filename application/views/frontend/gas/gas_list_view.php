@@ -23,7 +23,7 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 					<tr>						
 						<td style="width:20%;"><?php echo $this_mon_gas_info["year"] ?> 年 <?php echo $this_mon_gas_info["month"] ?> 月 </td>
 						<td>
-							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degrees",$this_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
+							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degress",$this_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
 						</td>
 						<td style="width:20%;">									
 							<button class="btn"  ><?php echo $btn_string1;?> <i class="fa fa-chevron-right"></i></button>
@@ -37,7 +37,7 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 					<tr>						
 						<td style="width:20%;"><?php echo $last_mon_gas_info["year"] ?> 年 <?php echo $last_mon_gas_info["month"] ?> 月 </td>
 						<td>
-							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degrees",$last_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
+							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degress",$last_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
 						</td>
 						<td style="width:20%;">									
 							<button class="btn"  ><?php echo $btn_string2;?> <i class="fa fa-chevron-right"></i></button>

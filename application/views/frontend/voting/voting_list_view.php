@@ -1,4 +1,6 @@
 <div class="primary">
+        <div class="row"><button class="btn" onclick="self.location='<?php echo fUrl('voting_result_list');?>'">觀看投票結果</button></div>
+        
         <table class="table_style">
             <thead>
                 <div>

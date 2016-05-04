@@ -37,8 +37,15 @@
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　號：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('building_id',$user_data); ?></span></div>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　別：</label>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'>
+				<?php
+				$building_id = tryGetData('building_id', $user_data, NULL);
+				if ( isNotNull($building_id) ) {
+					echo building_id_to_text($building_id);
+				}
+				?>
+				</span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶ID：</label>
@@ -72,8 +79,7 @@
 											<span class="lbl"></span>
 										</label>
 									</th>
-									<th>車位編號</th>
-									<th>位置</th>
+									<th>車位別</th>
 									<th>車號</th>
 									<th>設定日期</th>
 									<th>設定人</th>
@@ -102,8 +108,14 @@
 											//}
 											?>
 										</td>
-										<td><?php echo tryGetData('parking_id', $parking, '-');?></td>
-										<td><?php echo tryGetData('location', $parking, '-');?></td>
+										<td>
+										<?php 
+										$parking_id = tryGetData('parking_id', $parking, NULL);
+										if ( isNotNull($parking_id) ) {
+											echo parking_id_to_text($parking_id);
+										}
+										?>
+										</td>
 										<td><?php echo '<span style="font-size:16px">'.tryGetData('car_number', $parking, '-').'</span>';?></td>
 										
 										<td><?php echo tryGetData('updated', $parking, '-');?></td>

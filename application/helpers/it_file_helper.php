@@ -338,26 +338,69 @@ if ( ! function_exists('get_resize_img'))
 		$arr_data[$filename] =  resize_img($uploadedUrl,$img_config['resize_setting']);		
 	}
  
- 
-	/**
-	 * 縮圖
-	 20120906 Hans
+
+
+	 /**
+	 * 圖片處理 
+	 * 20120906 Hans
+	 * 20160430 modify by Rick 增加縮圖比例判斷,目錄位置
 	 */
-	function resize_img($filename,$imgInfo)
-	{      			
+	function resize_img($filename,$imgInfo,$sys_folder = 'website',$folder_name = '')
+	{      	
 		
-		$dest_filename = date( "YmdHis" )."_".rand( 100000 , 999999 ).".".file_extension($filename);	
-		if(is_array($imgInfo)){
+		if (!is_dir(set_realpath("upload/".$sys_folder)))
+		{
+			mkdir(set_realpath("upload/".$sys_folder),0777);
+		}  
+	
+		if(isNull($folder_name))
+		{
+			$dest_filename = date( "YmdHis" )."_".rand( 100000 , 999999 ).".".file_extension($filename);	
+		}
+		else
+		{
+			$dest_filename = $folder_name;
+		}
+		
+		
+		if(is_array($imgInfo))
+		{
 			
-			foreach($imgInfo as $key => $value){
+			foreach($imgInfo as $key => $value)
+			{				
+				if (!is_dir(set_realpath("upload/".$sys_folder."/".$key)))
+				{
+					mkdir(set_realpath("upload/".$sys_folder."/".$key),0777);
+				}
 				
-				$dest_file = set_realpath("upload/website/".$key).$dest_filename;				
-				
+				$dest_file = set_realpath("upload/".$sys_folder."/".$key).$dest_filename;
 				//move_uploaded_file($filename,$dest_file);
 				copy($filename,$dest_file);	
 			
-				$iw=$value[0];
-				$ih=$value[1];			
+				$maxWidth = $value[0];
+				$maxHeight= $value[1];
+			
+				//$iw=$value[0];
+				//$ih=$value[1];			
+				
+				
+				//$destInfo  = pathinfo($filename); 
+				//dprint($destInfo);exit;
+				$srcSize   = getimagesize($filename); //圖檔大小 
+				$srcRatio  = $srcSize[0]/$srcSize[1]; // 計算寬/高 
+				$destRatio = $maxWidth/$maxHeight; 
+				if ($destRatio > $srcRatio) 
+				{ 
+					$ih = $maxHeight; 
+					$iw = $maxHeight*$srcRatio; 
+				} 
+				else 
+				{ 
+					$iw = $maxWidth; 
+					$ih = $maxWidth/$srcRatio; 
+				} 
+				
+				
 				//echo $dest_file;	
 				//echo $iw;	
 				//echo $ih;
@@ -367,6 +410,7 @@ if ( ! function_exists('get_resize_img'))
 					$config['source_image']	  = $dest_file;
 					$config['create_thumb']   = FALSE;
 					$config['maintain_ratio'] = TRUE;
+					$config['master_dim'] = 'width';
 					$config['width']	      = $iw;
 					$config['height']	      = $ih;	
 					
@@ -379,7 +423,7 @@ if ( ! function_exists('get_resize_img'))
 				}		
 			}
 		}
-		@unlink($filename);		
+			
 		return $dest_filename;
 	}
  
