@@ -47,9 +47,7 @@ class News extends Backend_Controller {
 	 * category edit page
 	 */
 	public function editContent()
-	{
-		
-		
+	{		
 		$content_sn = $this->input->get('sn');
 			
 		$cat_list = $this->c_model->GetList( "newscat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
@@ -139,6 +137,44 @@ class News extends Backend_Controller {
 			
 			redirect(bUrl("contentList"));	
         }	
+	}
+
+
+	public function showPdf()
+	{
+		$content_sn = $this->input->get('sn');
+		$item_info = $this->c_model->GetList( "news" , "sn =".$content_sn);
+			
+		if(count($item_info["data"])>0)
+		{
+			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());			
+			
+			$item_info = $item_info["data"][0];			
+			
+			//dprint($item_info);exit;
+			
+			$time = time();
+			$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
+	
+			$html = "<h1>".$item_info["title"]."</h1>";
+			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr><tr><td><img  src='".$item_info["img_filename"]."'></td></tr></table>";
+	
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			$mpdf->WriteHTML($html);
+	
+			$mpdf->Output();
+		}
+		else
+		{
+			//redirect(bUrl("contentList"));	
+		}
+		
+			
+		
 	}
 	
 	//圖片處理
