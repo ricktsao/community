@@ -48,7 +48,10 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>車位別</th>
+										<!-- <th>車位別</th> -->
+										<th><?php echo $parking_part_01;?></th>
+										<th><?php echo $parking_part_02;?></th>
+										<th><?php echo $parking_part_03;?></th>
 										<th>戶別</th>
 										<th>住戶姓名</th>
 										<th>電話</th>
@@ -64,17 +67,17 @@
 									//for($i=0;$i<sizeof($list);$i++) {
 									$i = 0;
 									foreach ( $user_parking_list as $item) {
+										
+										$parking_id = tryGetData('parking_id', $item, NULL);
+										if ( isNotNull($parking_id) ) {
+											$parking_parts = parking_id_to_text($parking_id, true);
+										}
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td>
-										<?php 
-										$parking_id = tryGetData('parking_id', $item, NULL);
-										if ( isNotNull($parking_id) ) {
-											echo parking_id_to_text($parking_id);
-										}
-										?>
-										</td>
+										<td style='text-align: center'><?php echo $parking_parts[0];?></td>
+										<td style='text-align: center'><?php echo $parking_parts[1];?></td>
+										<td style='text-align: center'><?php echo $parking_parts[2];?></td>
 										<!-- <td>
 										<?php echo tryGetData('location', $item);?>
 										</td> -->

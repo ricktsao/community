@@ -4,10 +4,15 @@
 </style>
 
 <form  role="search" action="<?php echo bUrl('index');?>">
-<article class="well">              
+<article class="well">
     <div class="btn-group">
 		<a class="btn  btn-sm btn-success" href="<?php echo bUrl("editUser/?role=I");?>">
 			<i class="icon-edit bigger-120"></i>新增住戶
+		</a>
+    </div>
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-purple" target="_blank" href="<?php echo bUrl("exportExcel");?>">
+			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
 
@@ -48,14 +53,17 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>戶　別</th>
+										<th><?php echo $building_part_01;?></th>
+										<th><?php echo $building_part_02;?></th>
+										<th width="80"><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>姓　名</th>
 										<th>性　別</th>
-										<th style='text-align: center'>ID</th>
+										<th style='text-align: center'>磁卡</th>
 										<th>所有權人</th>
-										<th>緊急聯絡人</th>
+										<th>緊急<br />聯絡人</th>
+										<th>APP開通</th>
 										<th>管委</th>
-										<th style="width:150px">操作</th>
+										<th style="width:150px" colspan="2">操作</th>
 										<th>啟用/停用</th>
 										
 									</tr>
@@ -65,17 +73,16 @@
 									//for($i=0;$i<sizeof($list);$i++) {
 									$i = 0;
 									foreach ( $list as $item) {
+										$building_id = tryGetData('building_id', $item, NULL);
+										if ( isNotNull($building_id) ) {
+											$building_parts = building_id_to_text($building_id, true);
+										}
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'>
-										<?php 
-										$building_id = tryGetData('building_id', $item, NULL);
-										if ( isNotNull($building_id) ) {
-											echo building_id_to_text($building_id);
-										}
-										?>
-										</td>
+										<td style='text-align: center'><?php echo $building_parts[0];?></td>
+										<td style='text-align: center'><?php echo $building_parts[1];?></td>
+										<td style='text-align: center'><?php echo $building_parts[2];?></td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
 										</td>
@@ -101,26 +108,32 @@
 										</td>
 										<td>
 										<?php
+										if (isNotNull(tryGetData("app_id", $item, NULL))) {
+											echo '已開通';
+										} else echo '未開通';
+										?>
+										</td>
+										<td>
+										<?php
 										if (tryGetData("is_manager", $item) == 1) {
 											echo tryGetData("manager_title", $item);
 										} else echo '否';
 										?>
 										</td>
-										<td>
+										<td style="text-align:left; padding-left:10px;">
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
-											<?php
-											if ( tryGetData('role', $item, NULL) == 'I' ) {
-											?>
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>車位設定
 											</a>
-											<?php
-											}
-											?>
 										</td>
-										<td>					
+										<td>
+											<a class="btn  btn-minier btn-pink" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>磁卡變更
+											</a>
+										</td>
+										<td>
 											<div class="col-xs-3">
 												<label>
 													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo tryGetData('launch', $item)==1?"checked":"" ?> value="<?php echo tryGetData('sn', $item) ?>" onClick='javascript:launch(this);' />
@@ -138,7 +151,7 @@
 									
 								</tbody>
 								<tr>
-					              	<td colspan="11">
+					              	<td colspan="13">
 									<?php echo showBackendPager($pager)?>
 					                </td>
 								</tr>
