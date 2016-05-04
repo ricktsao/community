@@ -20,38 +20,7 @@ class Auth extends Backend_Controller
 			$query_key[$key] = $this->input->get($key,TRUE);			
 		}
 
-		$role = tryGetData('role', $query_key, NULL);		
-		if(isNotNull($role)) {
-			$condition .= ' AND role = "'.$role.'"' ;
-		}
-
-
-		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
-		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
-		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
-		$building_id = NULL;
-		if (isNotNull($b_part_01) && $b_part_01 > 0) {
-			$building_id = $b_part_01.'_';
-		}
-		if (isNotNull($b_part_01) && isNotNull($b_part_02) && $b_part_01 > 0 && $b_part_02 > 0) {
-			$building_id .= $b_part_02.'_';
-		}
-		if (isNotNull($b_part_01) && isNotNull($b_part_02) && isNotNull($b_part_03) && $b_part_01 > 0 && $b_part_02 > 0 && $b_part_03 > 0) {
-			$building_id .= $b_part_03;
-		}
-		if (isNotNull($building_id)) {
-			$condition .= ' AND building_id like "'.$building_id.'%"' ;
-		}
-		/*
-		$query_unit = 'SELECT SQL_CALC_FOUND_ROWS distinct u.sn, u.unit_name, u.level, u.parent_sn '
-					.'   FROM sys_user s LEFT JOIN unit u ON s.unit_sn = u.sn '
-					.'  WHERE ( unit_sn IS NOT NULL ) '
-					;
-		$unit_list = $this->it_model->runSql( $query_unit , FALSE, FALSE , array("field(`unit_name`, '雄獅開發','資訊室','會計部','管理部','總管理處','董事長室','董事長')"=>"desc", "u.level"=>"asc", "u.sn"=>"asc") );
-		*/
-
-		$data["role"] = $role; 
-
+		$condition .= ' AND role != "I"' ;
 
 		// 指定客戶姓名
 		$keyword = tryGetData('keyword', $query_key, NULL);	
@@ -76,18 +45,6 @@ class Auth extends Backend_Controller
 		
 		//取得分頁
 		$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
-
-
-		$data['b_part_01'] = $b_part_01;
-		$data['b_part_02'] = $b_part_02;
-		$data['b_part_03'] = $b_part_03;
-
-		// 戶別相關參數
-		$data['building_part_01'] = $this->building_part_01;
-		$data['building_part_02'] = $this->building_part_02;
-		$data['building_part_03'] = $this->building_part_03;
-		$data['building_part_01_array'] = $this->building_part_01_array;
-		$data['building_part_02_array'] = $this->building_part_02_array;
 
 		$this->display("admin_list_view",$data);
 	}
@@ -341,7 +298,7 @@ class Auth extends Backend_Controller
 			
 			$data["sys_user_group"] = array();
 			
-			dprint($edit_data);
+			//dprint($edit_data);
 			$this->display("admin_edit_view",$data);
 		}
         else 
@@ -368,9 +325,9 @@ class Auth extends Backend_Controller
 			
 			if($edit_data["sn"] != FALSE)
 			{
-				dprint($arr_data);
+				//dprint($arr_data);
 				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
-				dprint($this->db->last_query());
+				//dprint($this->db->last_query());
 				if($arr_return['success'])			
 				{					
 					$this->_updateWebAdminGroup($edit_data);
@@ -382,7 +339,7 @@ class Auth extends Backend_Controller
 					$this->showFailMessage();
 				}
 				
-				//redirect(bUrl("admin",TRUE,array("sn")));		
+				redirect(bUrl("admin",TRUE,array("sn")));		
 			}
 			else 
 			{

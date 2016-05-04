@@ -1,33 +1,52 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
  
 	## 將戶別代號轉成文字
-	function building_id_to_text($building_id)
+	function building_id_to_text($building_id, $separate=false)
 	{
 		// Get the CodeIgniter super object
 		$CI =& get_instance();
 		$building_id_to_text = '';
 		if ( isNotNull($building_id) ) {
 			$building_id_parts = explode('_', $building_id);
-			$building_id_to_text = $CI->building_part_01.' '.tryGetData($building_id_parts[0], $CI->building_part_01_array);
-			$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_02.' '.tryGetData($building_id_parts[1], $CI->building_part_02_array);
-			$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_03.' '.$building_id_parts[2];
+
+			if ($separate == false) {
+				$building_id_to_text = $CI->building_part_01.' '.tryGetData($building_id_parts[0], $CI->building_part_01_array);
+				$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_02.' '.tryGetData($building_id_parts[1], $CI->building_part_02_array);
+				$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_03.' '.$building_id_parts[2];
+		
+				return $building_id_to_text;
+
+			} else {
+				$parts = array(tryGetData($building_id_parts[0], $CI->building_part_01_array)
+								, tryGetData($building_id_parts[1], $CI->building_part_02_array)
+								, $building_id_parts[2] );
+				return $parts;
+			}
 		}
-		return $building_id_to_text;
+		return false;
 	}
 
 	## 將戶別代號轉成文字
-	function parking_id_to_text($parking_id)
+	function parking_id_to_text($parking_id, $separate=false)
 	{
 		// Get the CodeIgniter super object
 		$CI =& get_instance();
 		$parking_id_to_text = '';
 		if ( isNotNull($parking_id) ) {
 			$parking_id_parts = explode('_', $parking_id);
-			$parking_id_to_text = $CI->parking_part_01.' '.tryGetData($parking_id_parts[0], $CI->parking_part_01_array);
-			$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_02.' '.tryGetData($parking_id_parts[1], $CI->parking_part_02_array);
-			$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_03.' '.$parking_id_parts[2];
+
+			if ($separate == false) {
+				$parking_id_to_text = $CI->parking_part_01.' '.tryGetData($parking_id_parts[0], $CI->parking_part_01_array);
+				$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_02.' '.tryGetData($parking_id_parts[1], $CI->parking_part_02_array);
+				$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_03.' '.$parking_id_parts[2];
+			} else {
+				$parts = array(tryGetData($parking_id_parts[0], $CI->parking_part_01_array)
+								, tryGetData($parking_id_parts[1], $CI->parking_part_02_array)
+								, $parking_id_parts[2] );
+				return $parts;
+			}
 		}
-		return $parking_id_to_text;
+		return false;
 	}
 
 

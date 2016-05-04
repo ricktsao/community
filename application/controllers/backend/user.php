@@ -82,6 +82,165 @@ class User extends Backend_Controller
 
 
 	/**
+	*   匯出 excel
+	*/
+
+	public function exportExcel()
+	{
+
+		$condition = ' AND role = "I"';
+
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);
+		}
+
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+		
+		// 搜尋戶別
+		$building_id = NULL;
+		if (isNotNull($b_part_01) && $b_part_01 > 0) {
+			$building_id = $b_part_01.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && $b_part_01 > 0 && $b_part_02 > 0) {
+			$building_id .= $b_part_02.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && isNotNull($b_part_03) && $b_part_01 > 0 && $b_part_02 > 0 && $b_part_03 > 0) {
+			$building_id .= $b_part_03;
+		}
+		if (isNotNull($building_id)) {
+			$condition .= ' AND building_id like "'.$building_id.'%"' ;
+		}
+
+		// 指定客戶姓名
+		$keyword = tryGetData('keyword', $query_key, NULL);	
+		$data['given_keyword'] = '';
+		if(isNotNull($keyword)) {
+			$data['given_keyword'] = $keyword;
+			$condition .= " AND ( `id` like '%".$keyword."%' "
+						."      OR `name` like '%".$keyword."%' "
+						."      OR `tel` like '".$keyword."%' " 
+						."      OR `phone` like '".$keyword."%'  ) "
+						;
+		}
+
+		$query = "select SQL_CALC_FOUND_ROWS s.* "
+						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
+						."   where 1 ".$condition
+						."   order by s.building_id, s.name "
+						;
+
+		$admin_list = $this->it_model->runSql( $query,  NULL, NULL );
+		//dprint( $admin_list["sql"]);
+		$data["list"] = $admin_list["data"];
+		
+		//取得分頁
+		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
+
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		$data['b_part_03'] = $b_part_03;
+
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+
+		$this->load->view($this->config->item('admin_folder').'/user/excel_user_list_view', $data);
+	}
+
+
+
+
+
+	/**
+	 * 設定住戶車位
+	 */
+	public function changeId()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		$data = array();
+
+		$user_sn = $this->input->get("sn", TRUE);
+		$user_id = $this->input->get("id", TRUE);
+
+		$sys_user_group = array();		
+		
+		$admin_info = $this->it_model->listData( "sys_user" , "sn =".$user_sn." and comm_id='".$this->getCommId()."' and role='I' ");
+
+		if (count($admin_info["data"]) > 0) {
+			$edit_data =$admin_info["data"][0];
+
+			$data['user_data'] = $edit_data;
+			
+			$this->display("change_id_view",$data);
+		}
+		else
+		{
+			redirect(bUrl("index"));	
+		}
+	}
+
+
+
+
+	
+	public function updateId()
+	{
+		$admin_sn=$this->session->userdata('user_sn');
+
+		foreach( $_POST as $key => $value ) {
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}		
+		
+		if ( ! $this->_validate())
+		{
+			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' ");
+
+			if (count($admin_info["data"]) > 0) {
+				$user_data = $admin_info["data"][0];
+			}
+
+			$data["user_data"] = $user_data;			
+			$this->display("change_id_view",$data);
+		}			
+        else 
+        {			
+        	$arr_data["id"] = $edit_data["new_id"];
+        	$arr_data["updated"] = date("Y-m-d H:i:s");
+
+      	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' " );
+			if ($arr_return){
+				$this->showSuccessMessage();
+			} else {
+				$this->showFailMessage();	
+			}
+			redirect(bUrl("index"));
+        }	
+	}
+	
+	
+		
+	function _validate()
+	{				
+		$this->form_validation->set_rules('new_id', "新ID", 'trim|required|min_length[4]|max_length[10]' );	
+		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
+	}
+
+	
+
+
+
+
+
+
+	/**
 	 * 設定住戶車位
 	 */
 	public function setParking()
@@ -138,7 +297,7 @@ class User extends Backend_Controller
 		}
 		else
 		{
-			redirect(bUrl("admin"));	
+			redirect(bUrl("index"));	
 		}
 	}
 
