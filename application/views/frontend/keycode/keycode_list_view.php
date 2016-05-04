@@ -1,4 +1,5 @@
 <div class="primary">
+	<div class="form_group"><div class="form_page_title">磁扣使用查詢</div></div>
         <table class="table_style">
             <thead>
                 <div>

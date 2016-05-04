@@ -13,6 +13,7 @@ class Mailbox extends Frontend_Controller {
 
 	public function index()
 	{
+		$this->load->model('auth_model');
 		$data = array();
 		
 		$mailbox_list = $this->it_model->listData("mailbox","user_sn = '".$this->session->userdata("f_user_sn")."'",10,1,array("booked"=>"desc"));		

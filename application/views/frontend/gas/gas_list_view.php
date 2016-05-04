@@ -12,7 +12,7 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 ?>
 
 <div class="primary">
-	
+		<div class="form_group"><div class="form_page_title">瓦斯度數登記</div></div>
 		<table class="table_style">
 			<thead>
 				<div>

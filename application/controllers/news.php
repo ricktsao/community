@@ -6,7 +6,7 @@ class News extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-
+		$this->displayBanner(FALSE);  	
 	}
 
 	public function index()
@@ -21,5 +21,32 @@ class News extends Frontend_Controller {
 		
 		$this->display("news_list_view",$data);
 	}		
+	
+	public function detail()
+	{
+		$content_sn = $this->input->get('sn');
+						
+		if($content_sn == "")
+		{
+			redirect(fUrl("index"));	
+		}
+		
+		$item_info = $this->c_model->GetList( "news" , "sn =".$content_sn,TRUE);			
+
+			
+		if($item_info["count"]>0)
+		{				
+			img_show_list($item_info["data"],'img_filename',"news");
+			
+			$data["item_info"] = $item_info["data"][0];			
+
+			$this->display("detail_view",$data);
+		}
+		else
+		{
+			redirect(fUrl("index"));	
+		}
+		
+	}
 }
 

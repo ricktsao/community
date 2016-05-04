@@ -1,11 +1,11 @@
 <div class="primary">
+	<div class="form_group"><div class="form_page_title">日行一善</div></div>
         <table class="table_style">
             <thead>
                 <div>
                     <tr>
                         <td style="width:150px;">發起人</td>
-                        <td>資料來源</td>
-                        <td>資料內容</td>
+                        <td>資料來源</td>                        
                     </tr>
                 </div>
             </thead>
@@ -16,9 +16,12 @@
 				echo '
 				
 				<tr>
-                    <td class="text_center">'.$daily_good_info["title"].'</td>
-                    <td>'.$daily_good_info["brief"].'</td>
-                    <td class="text_center">'.$daily_good_info["content"].'</td>
+					<td>
+						<a href="'.fUrl("detail",TRUE,array(),array("sn"=>$daily_good_info["sn"])).'">'.$daily_good_info["title"].'</a>
+					</td>
+					<td>
+						<a href="'.fUrl("detail",TRUE,array(),array("sn"=>$daily_good_info["sn"])).'">'.$daily_good_info["brief"].'</a>
+					</td>		
                 </tr>
                 
 				'; 
