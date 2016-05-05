@@ -60,14 +60,42 @@ Class Album_model extends IT_Model
 	 	return $data;
 	}
 
-		public function GetPhoto($sn){
-			$itemSql = "SELECT 
-			CONCAT('".$this->path ."',img_filename) as img_filename,
-			title FROM album_item WHERE album_sn =".$sn." and img_filename <>''  ORDER BY sort DESC";
+	public function GetPhoto($sn){
+		$itemSql = "SELECT 
+		CONCAT('".$this->path ."',img_filename) as img_filename,
+		title FROM album_item WHERE album_sn =".$sn." and img_filename <>'' and is_del=0  ORDER BY sort DESC";
 
-			$item_result = $this->readQuery( $itemSql );
+		$item_result = $this->readQuery( $itemSql );
 
-			return $item_result;
-		}
+		return $item_result;
+	}
+
+	public	function sync_to_server($post_data =null,$page_name){
+		//$url = "http://localhost/commapi/sync/updateContent";
+		//$url = $this->config->item("api_server_url").$page_name;
+		$url = "http://localhost:8080/commapi/".$page_name;
+		
+		$post_data['comm_id'] =  $this->session->userdata("comm_id");
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		return $is_sync;
+		//------------------------------------------------------------------------------
+	}
+	
 	
 }

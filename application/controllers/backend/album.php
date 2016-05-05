@@ -22,7 +22,7 @@ class Album extends Backend_Controller {
 		//---------------------------------------------------------------------
 	
 		
-		$list = $this->it_model->listData( "album" , null , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
+		$list = $this->it_model->listData( "album" , "is_del=0" , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
 		
 		$data["list"] = $list["data"];
 		
@@ -85,8 +85,8 @@ class Album extends Backend_Controller {
 						
 		if ( ! $this->_validateContent())
 		{
-			$cat_list = $this->it_model->listData( "album_category" , NULL , NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-			$data["cat_list"] = $cat_list["data"];	
+			//$cat_list = $this->it_model->listData( "album_category" , NULL , NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
+			//$data["cat_list"] = $cat_list["data"];	
 			$data["edit_data"] = $edit_data;		
 			$this->display("album_form_view",$data);
 		}
@@ -94,8 +94,7 @@ class Album extends Backend_Controller {
         {		
         	$arr_data = array
         	(				
-        		"title" => tryGetValue($edit_data["title"])  
-				
+        		"title" => tryGetValue($edit_data["title"])  				
 				, "description" => tryGetArrayValue("description",$edit_data)	
         		, "sort" => tryGetArrayValue("sort",$edit_data,500)	
 				, "launch" => tryGetArrayValue("launch",$edit_data,0)	
@@ -105,21 +104,12 @@ class Album extends Backend_Controller {
 			
 			
 			
-			
-			
-		
-			
-			
-			//圖片處理 img_filename
-			//$this->img_config['resize_setting'] = array("album"=>array(280,187));
-			//deal_single_img($arr_data,$this->img_config,$edit_data,"img_filename","album");
-			//deal_img($arr_data,$edit_data,"img_filename","album");
-		
-			
 			if(isNotNull($edit_data["sn"]))
 			{
 				if($this->it_model->updateData( "album" , $arr_data, "sn =".$edit_data["sn"] ))
-				{					
+				{	
+					$sync_result = $this->album_model->sync_to_server($edit_data,"sync_album/updateContent");
+					$this->it_model->updateData( "album" , array("is_sync"=>$sync_result), "sn =".$edit_data["sn"] );			
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -137,6 +127,8 @@ class Album extends Backend_Controller {
 				if($album_sn > 0)
 				{				
 					$edit_data["sn"] = $album_sn;
+					$sync_result = $this->album_model->sync_to_server($edit_data,"sync_album/updateContent");
+					$this->it_model->updateData( "album" , array("is_sync"=>$sync_result), "sn =".$edit_data["sn"] );
 					$this->showSuccessMessage();							
 				}
 				else 
@@ -175,25 +167,24 @@ class Album extends Backend_Controller {
 	function deleteContent()
 	{
 		
-		$page = $this->input->get("page",TRUE);
-		if(isNull($page))
-		{
-			$page = 1;
-		}
-	//	$cat_sn = $this->input->post("cat_sn",TRUE);
-		
-		$this->deleteItem("album", "contentList?page=".$page);
-
-	}
-
-	/**
-	 * launch album
-	 */
-	function launchContent()
-	{
-		$this->launchItem("album_album", "categories");
-	}
+		$del = $this->input->post('del',TRUE);		
+		$del = implode(",",$del);
 	
+		if($del!= FALSE )
+		{
+			//$this->it_model->deleteDB( "voting",NULL,$del_ary );
+			$this->it_model->updateData( "album" , array("is_del"=>1,"is_sync"=>0), "sn in (".$del.")" );			
+			$re_sync = $this->album_model->sync_to_server(array("sn"=>$del),"sync_album/removeAlbum");
+			if($re_sync=="1"){
+				$this->it_model->updateData( "album" , array("is_sync"=>1), "sn in (".$del.")" );
+			}
+		
+		}
+		$this->showSuccessMessage();
+		redirect(bUrl("contentList", FALSE));	
+
+	}
+
 	
 	
 	/**
@@ -239,7 +230,7 @@ class Album extends Backend_Controller {
 		
 		$this->sub_title = "作品賞析[".$album_info["title"]."] -> 相片列表";	
 		
-		$list = $this->it_model->listData( "album_item" , "album_sn ='".$album_sn."'" , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
+		$list = $this->it_model->listData( "album_item" , "album_sn ='".$album_sn."' and is_del = 0" , $this->per_page_rows , $this->page , array("sort"=>"asc","sn"=>"desc") );
 		
 		if($this->page > 1 && $list["count"] == 0)
 		{						
@@ -298,8 +289,10 @@ class Album extends Backend_Controller {
 					@unlink($uploadedUrl);	
 
 					$gallery_sn = $this->it_model->addData( "album_item" , $arr_data );
-					
-					
+					$arr_data['sn'] = $gallery_sn;
+					$sync_result = $this->album_model->sync_to_server($arr_data,"sync_album/updatePhoto");
+					$this->it_model->updateData( "album_item" , array("is_sync"=>$sync_result), "sn = ".$gallery_sn);
+					$this->sync_file($folder_name);
 				}
 			}
 
@@ -398,7 +391,7 @@ class Album extends Backend_Controller {
         	(				
         		"title" => tryGetValue($edit_data["title"])    		
         		, "album_sn" => tryGetArrayValue("album_sn",$edit_data)	
-        		, "sort" => tryGetArrayValue("sort",$edit_data,500)	
+        		, "sort" => tryGetArrayValue("sort",$edit_data,500)
 			
 			);        	
 			
@@ -411,16 +404,7 @@ class Album extends Backend_Controller {
 		
 			if(isNotNull($_FILES['img_filename']['name']))
 			{
-				//圖片處理 img_filename				
-				//$img_config['resize_setting'] =array("album"=>array(0,0));					
-				//$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
-				//move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
-				//$arr_data['img_filename'] =  resize_img($uploadedUrl,$img_config['resize_setting']);					
-											
-				//$img_config['resize_setting'] =array("album"=>array(280,187));
-				//resize_img($uploadedUrl,$img_config['resize_setting'],"s_".$arr_data['img_filename']);
 				
-				//@unlink($uploadedUrl);
 
 					$folder_name = $this->router->fetch_class();
 
@@ -436,7 +420,7 @@ class Album extends Backend_Controller {
 					resize_img($uploadedUrl,$img_config['resize_setting'],$this->getCommId(),$img_filename);
 					
 					@unlink($uploadedUrl);	
-
+					$this->sync_file($folder_name);
 					
 			
 			}
@@ -444,7 +428,11 @@ class Album extends Backend_Controller {
 			if(isNotNull($edit_data["sn"]))
 			{
 				if($this->it_model->updateData( "album_item" , $arr_data, "sn =".$edit_data["sn"] ))
-				{					
+				{	
+					$arr_data['sn'] = $edit_data["sn"];
+					$sync_result = $this->album_model->sync_to_server($arr_data,"sync_album/updatePhoto");
+					$this->it_model->updateData( "album_item" , array("is_sync"=>$sync_result), "sn =".$arr_data["sn"] );	
+					
 					$this->showSuccessMessage();					
 				}
 				else 
@@ -460,7 +448,10 @@ class Album extends Backend_Controller {
 				$item_sn = $this->it_model->addData( "album_item" , $arr_data );
 				if($item_sn > 0)
 				{				
-					$edit_data["sn"] = $item_sn;
+					$arr_data["sn"] = $item_sn;
+					$sync_result = $this->album_model->sync_to_server($arr_data,"sync_album/updatePhoto");
+					$this->it_model->updateData( "album_item" , array("is_sync"=>$sync_result), "sn =".$arr_data["sn"] );	
+
 					$this->showSuccessMessage();							
 				}
 				else 
@@ -471,7 +462,7 @@ class Album extends Backend_Controller {
 			
 			
 			//圖片刪除 img_filename
-			del_img($edit_data,"img_filename","album");
+			//del_img($edit_data,"img_filename","album");
 
 			
 			redirect(bUrl("itemList"));	
@@ -497,14 +488,23 @@ class Album extends Backend_Controller {
 	 */
 	function delItem()
 	{
-		$page = $this->input->get("page",TRUE);
-		if(isNull($page))
-		{
-			$page = 1;
-		}
-		
+
+		$del = $this->input->post('del',TRUE);		
+		$del = implode(",",$del);
 		$album_sn = $this->input->post("album_sn",TRUE);
-		$this->deleteItem("album_item", "itemList?&album_sn=".$album_sn."&page=".$page);
+		
+		if($del!= FALSE )
+		{
+			//$this->it_model->deleteDB( "voting",NULL,$del_ary );
+			$this->it_model->updateData( "album_item" , array("is_del"=>1,"is_sync"=>0), "sn in (".$del.")" );			
+			$re_sync = $this->album_model->sync_to_server(array("sn"=>$del),"sync_album/removeAlbumItem");
+			if($re_sync=="1"){
+				$this->it_model->updateData( "album_item" , array("is_sync"=>1), "sn in (".$del.")" );
+			}
+		
+		}
+		$this->showSuccessMessage();
+		redirect(bUrl("itemList?&album_sn=".$album_sn, FALSE));		
 	}
 
 	/**
