@@ -29,7 +29,7 @@ header("Expires: 0");
 					<th><?php echo $building_part_03;?></th>
 					<th style='text-align: center'>姓名</th>
 					<th>性別</th>
-					<th style='text-align: center'>ID</th>
+					<th style='text-align: center'>磁卡</th>
 					<th>電話</th>
 					<th>手機</th>
 					<th>所有權人</th>
