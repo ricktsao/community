@@ -140,6 +140,22 @@ class News extends Backend_Controller {
 	}
 
 
+	public function showPdf_bak()
+	{
+		$time = time();
+		$pdf_file_name = $time .".pdf";
+		
+		$file_url = fUrl("downloadPdf",TRUE);
+		header('Content-Type: application/pdf');
+		header("Content-Transfer-Encoding: Binary"); 
+		header("Content-disposition: attachment; filename=\"" . $pdf_file_name . "\""); 
+		readfile($file_url);
+
+	}
+	
+	/**
+	 * pdf下載頁面
+	 */
 	public function showPdf()
 	{
 		$content_sn = $this->input->get('sn');
@@ -147,33 +163,55 @@ class News extends Backend_Controller {
 			
 		if(count($item_info["data"])>0)
 		{
-			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());			
-			
+			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
 			$item_info = $item_info["data"][0];			
+			
+			$img_str = "";
+			if(isNotNull($item_info["img_filename"]))
+			{
+				$img_str = "<tr><td><img src='".$item_info["img_filename"]."'></td></tr>";
+			}
 			
 			//dprint($item_info);exit;
 			
 			$time = time();
 			$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
 	
-			$html = "<h1>".$item_info["title"]."</h1>";
-			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr><tr><td><img  src='".$item_info["img_filename"]."'></td></tr></table>";
+			
+	
+			$html = "<h1 style='text-align:center'>社區公告</h1>";
+			$html .= "<h3>".$item_info["title"]."</h3>";
+			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";
 	
 			$this->load->library('pdf');
 			$mpdf = new Pdf();
 			$mpdf = $this->pdf->load();
 			$mpdf->useAdobeCJK = true;
 			$mpdf->autoScriptToLang = true;
-			$mpdf->WriteHTML($html);
-	
+			
+			
+			
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+		
+				$mpdf->SetWatermarkImage($water_info["img_filename"]);
+				$mpdf->watermarkImageAlpha = 0.081;
+				$mpdf->showWatermarkImage = true;				
+			}
+			
+			
+			
+			$mpdf->WriteHTML($html);			
+			
 			$mpdf->Output();
 		}
 		else
 		{
-			//redirect(bUrl("contentList"));	
+			$this->closebrowser();
 		}
-		
-			
 		
 	}
 	

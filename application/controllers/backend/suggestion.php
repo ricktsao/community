@@ -30,7 +30,10 @@ class Suggestion extends Backend_Controller {
 		
 		$app_data_ary =  json_decode($json_data, true);
 		
-		//dprint($app_data_ary);exit;
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
 		
 		
 		foreach( $app_data_ary as $key => $server_info ) 

@@ -27,8 +27,22 @@ class Home extends Backend_Controller{
 		$mpdf = $this->pdf->load();
 		$mpdf->useAdobeCJK = true;
 		$mpdf->autoScriptToLang = true;
-		$mpdf->WriteHTML($html);
 
+		//$mpdf->SetWatermarkText('富網通社區測試',0.1);
+		//$mpdf->showWatermarkText = true; 
+		//$mpdf->watermark_font = 'PMingLiU';		
+		
+		//$mpdf->SetWatermarkImage(base_url('template\backend\images\img_logo.png'));
+		//$mpdf->watermarkImageAlpha = 0.081;
+		//$mpdf->showWatermarkImage = true;
+		
+		$mpdf->SetWatermarkText('富網通社區測試');
+		$mpdf->watermarkTextAlpha = 0.081;
+		$mpdf->watermark_font = 'DejaVuSansCondensed';
+		$mpdf->showWatermarkText = true;
+		 
+		//$mpdf=new \mPDF('+aCJK','A4','','',32,25,27,25,16,13); 		
+		$mpdf->WriteHTML($html);
 		$mpdf->Output();
 	}
  	

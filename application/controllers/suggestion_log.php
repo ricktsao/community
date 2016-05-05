@@ -29,7 +29,10 @@ class Suggestion_log extends Frontend_Controller {
 		curl_close ($ch);
 		
 		$app_data_ary =  json_decode($json_data, true);
-		
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
 		//dprint($app_data_ary);exit;
 		
 		

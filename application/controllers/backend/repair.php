@@ -28,6 +28,11 @@ class Repair extends Backend_Controller {
 		
 		$app_data_ary =  json_decode($json_data, true);
 		
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
+		
 		foreach( $app_data_ary as $key => $server_info ) 
 		{			
 			$repair_server_info = $this->it_model->listData("repair","server_sn='".$server_info["sn"]."'");

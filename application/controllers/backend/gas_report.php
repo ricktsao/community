@@ -67,11 +67,120 @@ class Gas_report extends Backend_Controller {
 		$data["q_year"] = $year;	
 		$data["q_month"] = $month;		
 		$data["building_list"] = $building_list;
-		
+		//echo count($building_list);
 		$this->display("content_list_view",$data);
 	}
 	
 
+	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+		$year = $this->input->get("year",TRUE);		
+		$month = $this->input->get("month",TRUE);
+		
+		$building_list = array();
+		if(isNotNull($year) && isNotNull($month))
+		{
+			$building_query ="
+			select building_id,owner_addr from sys_user where role='I' group by building_id 	
+			order by building_id
+			";
+			$building_list = $this->it_model->runSql($building_query);
+			//dprint(building_list);exit;
+			$building_list = $building_list["data"];
+			foreach ($building_list as $key => $building_info) 
+			{
+				$building_list[$key]["year"] = $year;
+				$building_list[$key]["month"] = $month;
+				$building_list[$key]["degress"] = 0;			
+				
+				$query = "
+				SELECT SQL_CALC_FOUND_ROWS * from gas 
+				where year = '".$year."' and month = '".$month."'
+				and building_id = '".$building_info["building_id"]."'";	
+				
+				$gas_info = $this->it_model->runSql($query);
+				if($gas_info["count"]>0)
+				{
+					$gas_info = $gas_info["data"][0];
+					$degress = tryGetData("degress",$gas_info,"-");
+					if($degress > 0 )
+					{
+						$degress = $degress."度";
+					}
+					$building_list[$key]["degress"] = $degress ;
+				}			
+				
+			}
+		}
+					
+		if(count($building_list)>0)
+		{
+			$content_str = '
+			<tr style="color:#FFF">
+				<td style="background: #036EB8;padding:10px;color:#FFF">住戶地址</td>
+                <td style="background: #036EB8;padding:10px;text-align: center;color:#FFF">年份</td>
+                <td style="background: #036EB8;padding:10px;text-align: center;color:#FFF">月份</td>
+                <td style="background: #036EB8;padding:10px;text-align: center;color:#FFF">度數</td>
+			</tr>
+			';
+			foreach ($building_list as $key => $gas_info) 
+			{
+				$content_str .= '
+				<tr>
+					<td style="padding: 10px;">'.$gas_info["owner_addr"].'</td>
+					<td style="padding: 10px;text-align: center">'.$gas_info["year"].'</td>										
+					<td style="padding: 10px;text-align: center">'.$gas_info["month"].'</td>
+					<td style="padding: 10px;text-align: center">'.$gas_info["degress"].'</td>
+				</tr>
+				';
+			}
+			
+			
+			
+			
+			$time = time();
+			$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
+	
+			
+	
+			$html = "<h1 style='text-align:center'>".$year."年  ".$month."月 - 瓦斯報表</h1>";
+			$html .= '<table style="width: 90%;">'.$content_str.'</table>';
+			
+	
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+		
+				$mpdf->SetWatermarkImage($water_info["img_filename"]);
+				$mpdf->watermarkImageAlpha = 0.081;
+				$mpdf->showWatermarkImage = true;				
+			}
+			
+			
+			
+			$mpdf->WriteHTML($html);			
+			
+			$mpdf->Output();
+		}
+		else
+		{
+			$this->closebrowser();
+		}
+	}
+	
 	
 	
 	/**
@@ -94,8 +203,10 @@ class Gas_report extends Backend_Controller {
 		curl_close ($ch);
 		
 		$app_data_ary =  json_decode($json_data, true);
-		
-		//dprint($app_data_ary);exit;
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
 		
 		
 		foreach( $app_data_ary as $key => $server_info ) 

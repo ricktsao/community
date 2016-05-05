@@ -25,11 +25,22 @@
 
       </select>
 	</div>
+	
+	
     <div class="btn-group">        
           <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>        
-    </div>                
+    </div>     
+    
+	<?php if(count($building_list)>0){	?>
+    <div class="btn-group">        
+	    <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdf",TRUE); ?>">
+			<i class="icon-edit bigger-120"></i>瓦斯報表
+		</a>      
+    </div>  
+    <?php }	?>
+             
 </article>	
-<span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>		
+	
 </form>
 
 <form action="" id="update_form" method="post" class="contentForm">   
