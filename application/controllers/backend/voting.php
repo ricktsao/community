@@ -122,7 +122,7 @@ class Voting extends Backend_Controller {
 					
 				if($this->it_model->updateData( "voting" , $edit_data, "sn =".$edit_data["sn"] ))
 				{
-					$sync_result = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+					$sync_result = $this->Voting_model->sync_to_server($edit_data,"sync_voting/updateContent");
 					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();					
 				}
@@ -139,7 +139,7 @@ class Voting extends Backend_Controller {
 				if($content_sn > 0)
 				{				
 					$edit_data["sn"] = $content_sn;
-					$sync_result = $this->Voting_model->sync_to_server($edit_data,"voting/updateContent");
+					$sync_result = $this->Voting_model->sync_to_server($edit_data,"sync_voting/updateContent");
 
 					$this->it_model->updateData("voting",array("is_sync"=>$sync_result),"sn = ".$content_sn);
 
@@ -184,7 +184,7 @@ class Voting extends Backend_Controller {
 		{
 			//$this->it_model->deleteDB( "voting",NULL,$del_ary );
 			$this->it_model->updateData( "voting" , array("is_del"=>1,"is_sync"=>0), "sn in (".$del.")" );			
-			$re_sync = $this->Voting_model->sync_to_server(array("sn"=>$del),"voting/removeVoting");
+			$re_sync = $this->Voting_model->sync_to_server(array("sn"=>$del),"sync_voting/removeVoting");
 			if($re_sync=="1"){
 				$this->it_model->updateData( "voting" , array("is_sync"=>1), "sn in (".$del.")" );
 			}
