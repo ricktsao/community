@@ -134,7 +134,7 @@ class Voting extends Backend_Controller {
 			}
 			else 
 			{			
-				
+				$edit_data['user_sn'] = $this->session->userdata('user_sn');
 				$content_sn = $this->it_model->addData( "voting" , $edit_data );
 				if($content_sn > 0)
 				{				
