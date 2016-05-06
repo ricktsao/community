@@ -172,12 +172,7 @@ class News extends Backend_Controller {
 				$img_str = "<tr><td><img src='".$item_info["img_filename"]."'></td></tr>";
 			}
 			
-			//dprint($item_info);exit;
-			
-			$time = time();
-			$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
-	
-			
+					
 	
 			$html = "<h1 style='text-align:center'>社區公告</h1>";
 			$html .= "<h3>".$item_info["title"]."</h3>";
@@ -206,7 +201,9 @@ class News extends Backend_Controller {
 			
 			$mpdf->WriteHTML($html);			
 			
-			$mpdf->Output();
+			$time = time();
+			$pdfFilePath = "社區公告_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
 		}
 		else
 		{

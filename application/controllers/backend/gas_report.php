@@ -136,14 +136,7 @@ class Gas_report extends Backend_Controller {
 					<td style="padding: 10px;text-align: center">'.$gas_info["degress"].'</td>
 				</tr>
 				';
-			}
-			
-			
-			
-			
-			$time = time();
-			$pdfFilePath = "./upload/tmp/testpdf_".$time .".pdf";
-	
+			}	
 			
 	
 			$html = "<h1 style='text-align:center'>".$year."年  ".$month."月 - 瓦斯報表</h1>";
@@ -169,11 +162,11 @@ class Gas_report extends Backend_Controller {
 				$mpdf->showWatermarkImage = true;				
 			}
 			
-			
-			
-			$mpdf->WriteHTML($html);			
-			
-			$mpdf->Output();
+			$mpdf->WriteHTML($html);		
+
+			$time = time();
+			$pdfFilePath = "瓦斯報表_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
 		}
 		else
 		{
