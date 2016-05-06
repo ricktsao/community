@@ -1,6 +1,6 @@
 
 <form  role="search" action="<?php echo bUrl('contentList');?>">
-<article class="well">              
+<article class="well" style="display: none">              
     <div class="btn-group">
 		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
 			<i class="icon-edit bigger-120"></i>新增
@@ -54,10 +54,7 @@
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editBackendAuth",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>後台
 											</a>
-											
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editFrontendAuth",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>前台
-											</a>
+	
 										</td>										
 										<td>					
 											<div class="col-xs-3">

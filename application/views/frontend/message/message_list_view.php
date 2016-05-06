@@ -1,4 +1,5 @@
 <div class="primary">
+	<div class="form_group"><div class="form_page_title">個人訊息通知</div></div>
         <table class="table_style">
             <thead>
                 <div>

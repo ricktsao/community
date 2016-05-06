@@ -74,7 +74,7 @@ class Course extends Backend_Controller {
 			
 			if($course_info["count"]>0)
 			{				
-				
+				img_show_list($course_info["data"],'img_filename',"course");
 				$data["edit_data"] = $course_info["data"][0];			
 
 				$this->display("content_form_view",$data);
@@ -147,6 +147,63 @@ class Course extends Backend_Controller {
 			
 			redirect(bUrl("contentList"));	
         }	
+	}
+	
+	
+	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+		$content_sn = $this->input->get('sn');
+		$item_info = $this->c_model->GetList( "course" , "sn =".$content_sn);
+			
+		if(count($item_info["data"])>0)
+		{
+			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
+			$item_info = $item_info["data"][0];			
+			
+			$img_str = "";
+			if(isNotNull($item_info["img_filename"]))
+			{
+				$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+			}
+						
+			$html = "<h1 style='text-align:center'>課程專區</h1>";
+			$html .= "<h3>".$item_info["title"]."</h3>";
+			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";
+	
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+		
+				$mpdf->SetWatermarkImage($water_info["img_filename"]);
+				$mpdf->watermarkImageAlpha = 0.081;
+				$mpdf->showWatermarkImage = true;				
+			}
+			
+			
+			
+			$mpdf->WriteHTML($html);			
+			
+			$time = time();
+			$pdfFilePath = "課程專區_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
 	}
 	
 	
