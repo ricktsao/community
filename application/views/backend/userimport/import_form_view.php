@@ -1,9 +1,9 @@
 <div class="page-header">
 	<h1>
-		住戶資料上傳
+		批次匯入
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			請務必依據【住戶資料】的內容格式
+			可批次匯入社區住戶資料；請務必依據【住戶資料】的內容格式
 		</small>
 	</h1>
 </div>

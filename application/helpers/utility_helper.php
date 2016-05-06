@@ -39,7 +39,10 @@
 				$parking_id_to_text = $CI->parking_part_01.' '.tryGetData($parking_id_parts[0], $CI->parking_part_01_array);
 				$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_02.' '.tryGetData($parking_id_parts[1], $CI->parking_part_02_array);
 				$parking_id_to_text .= '&nbsp;&nbsp;'.$CI->parking_part_03.' '.$parking_id_parts[2];
+				
+				return $parking_id_to_text;
 			} else {
+
 				$parts = array(tryGetData($parking_id_parts[0], $CI->parking_part_01_array)
 								, tryGetData($parking_id_parts[1], $CI->parking_part_02_array)
 								, $parking_id_parts[2] );

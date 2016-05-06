@@ -26,7 +26,7 @@
 
 <div class="page-header">
 	<h1>
-		住戶磁卡重設
+		磁卡變更
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			
@@ -48,7 +48,7 @@
 				</span></div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶磁卡：</label>
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">現有磁卡：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('id',$user_data); ?></span></div>
 			</div>
 			<div class="form-group">
