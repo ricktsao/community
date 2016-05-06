@@ -8,11 +8,11 @@ class About extends Frontend_Controller {
 		parent::__construct();
 		$this->displayBanner(FALSE);  	
 	}
-
+	
+	
 	
 	public function index()
 	{
-
 		
 		$item_info = $this->c_model->GetList( "about");			
 
