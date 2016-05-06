@@ -29,7 +29,7 @@
 	<div class="form-group ">
 		<label for="start_date" class="col-xs-12 col-sm-3 control-label no-padding-right">課程日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" onclick="WdatePicker()" value="<?php echo tryGetData("start_date",$edit_data)?>" class="width-30" name="start_date" id="start_date">					
+			<input type="text" onclick="WdatePicker()" value="<?php echo showDateFormat(tryGetData("start_date",$edit_data),"Y-m-d")?>" class=width-30" name="start_date" id="start_date">					
 		</div>
 		<div class="help-block col-xs-12 col-sm-reset inline"></div>
 	</div>

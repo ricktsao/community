@@ -1,4 +1,6 @@
 <div class="primary">
+	<div class="form_group"><div class="form_page_title">郵件物品通知</div></div>
+
         <table class="table_style">
             <thead>
                 <div>

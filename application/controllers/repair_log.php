@@ -10,9 +10,74 @@ class Repair_log extends Frontend_Controller {
 		$this->displayBanner(FALSE);
 	}
 
-
+	/**
+	 * 查詢server上有無app新增的資料
+	 **/
+	public function getAppData()
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync/getAppRepair";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		$app_data_ary =  json_decode($json_data, true);
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
+		
+		
+		foreach( $app_data_ary as $key => $server_info ) 
+		{			
+			$repair_server_info = $this->it_model->listData("repair","server_sn='".$server_info["sn"]."'");
+			if($repair_server_info["count"]==0)
+			{
+								
+				$user_info = $this->it_model->listData("sys_user","app_id='".$server_info["app_id"]."'");
+				if($user_info["count"]>0)
+				{
+					$user_info = $user_info["data"][0];
+					
+					$add_data = array(
+					"comm_id" => $this->getCommId(),
+					"server_sn" => $server_info["sn"],
+					"user_sn" => $user_info["sn"],
+					"user_name" => $user_info["name"],
+					"app_id" => $user_info["app_id"], 
+					"type" => $server_info["type"],
+					"status" =>0,
+					"content" => $server_info["content"],
+					"updated" => date("Y-m-d H:i:s"),
+					"created" => date("Y-m-d H:i:s")
+					);
+					$repair_sn = $this->it_model->addData( "repair" , $add_data );	
+					if($repair_sn > 0)
+					{
+						$add_data["sn"] = $repair_sn;								
+						$this->sync_item_to_server($add_data,"updateServerRepair","repair");
+					}
+				}				
+				
+			}
+						
+		}
+		
+		//echo '<meta charset="UTF-8">';
+		//dprint($app_data_ary);
+		
+	}
+	
 	public function index()
 	{
+		$this->getAppData();//查詢server有無要同步的資料
 		$data = array();
 		
 		$repair_list = $this->it_model->listData("repair","user_sn = '".$this->session->userdata("f_user_sn")."'",$this->per_page_rows , $this->page,array("created"=>"desc"));
@@ -24,6 +89,7 @@ class Repair_log extends Frontend_Controller {
 	
 	public function detail()
 	{
+		$this->getAppData();//查詢server有無要同步的資料
 		$content_sn = $this->input->get('sn');
 						
 		if($content_sn == "")

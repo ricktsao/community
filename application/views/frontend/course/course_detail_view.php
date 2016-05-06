@@ -4,7 +4,10 @@
 		<div class="form_page_text">
 		<?php echo $course_info["content"];?>
 		</div>
-		
+		<div class="form_page_img">
+		<img src="<?php echo $course_info["img_filename"];?>" >
+		</div>
+		<br>
 		<button class="btn block" onclick="event.preventDefault(); history.back(1);"><i class="fa fa-chevron-left"></i> 回上頁 </button>
 	</div>
 </div>

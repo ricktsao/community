@@ -34,7 +34,7 @@
 										<th>資料來源</th>									
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
-										<th style="width:120px">編輯</th>
+										<th style="width:120px">操作</th>
 										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
 											<label>
@@ -63,7 +63,10 @@
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>edit
+												<i class="icon-edit bigger-120"></i>編輯
+											</a>
+											<a class="btn  btn-minier btn-danger" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+												<i class="icon-edit bigger-120"></i>PDF下載
 											</a>
 										</td>
 										<td>					

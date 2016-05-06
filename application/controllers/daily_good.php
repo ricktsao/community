@@ -6,6 +6,7 @@ class Daily_good extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
+		$this->displayBanner(FALSE);  	
 	}
 
 
@@ -22,6 +23,33 @@ class Daily_good extends Frontend_Controller {
 		
 		
 		$this->display("daily_good_list_view",$data);
+	}
+	
+	
+	public function detail()
+	{
+		$content_sn = $this->input->get('sn');
+						
+		if($content_sn == "")
+		{
+			redirect(fUrl("index"));	
+		}
+		
+		$item_info = $this->c_model->GetList( "daily_good" , "sn =".$content_sn,TRUE);			
+
+			
+		if($item_info["count"]>0)
+		{				
+			img_show_list($item_info["data"],'img_filename',"daily_good");
+			$data["item_info"] = $item_info["data"][0];			
+
+			$this->display("detail_view",$data);
+		}
+		else
+		{
+			redirect(fUrl("index"));	
+		}
+		
 	}
 	
 }

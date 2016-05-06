@@ -35,7 +35,7 @@ abstract class Backend_Controller extends IT_Controller
 		
 		if(!checkUserLogin())
 		{
-			redirect(backendUrl("login","index/?check_user_error"));
+			redirect(backendUrl("login","index",FALSE));
 		}		
 		
 		$this->initNavi();
@@ -1017,6 +1017,20 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$comm_id = $this->session->userdata("comm_id");
 		return $comm_id;
+	}
+	
+	
+		/**
+	 * 關閉瀏覽器
+	 */
+	public function closebrowser()
+	{
+		echo
+		'<script language="javascript">
+		window.opener=null;
+		window.open("","_self");
+		window.close();
+		</script>';
 	}
 	
 	

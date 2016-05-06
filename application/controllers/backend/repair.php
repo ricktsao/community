@@ -28,6 +28,11 @@ class Repair extends Backend_Controller {
 		
 		$app_data_ary =  json_decode($json_data, true);
 		
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
+		
 		foreach( $app_data_ary as $key => $server_info ) 
 		{			
 			$repair_server_info = $this->it_model->listData("repair","server_sn='".$server_info["sn"]."'");
@@ -40,6 +45,7 @@ class Repair extends Backend_Controller {
 					$user_info = $user_info["data"][0];
 					
 					$add_data = array(
+					"comm_id" => $this->getCommId(),
 					"server_sn" => $server_info["sn"],
 					"user_sn" => $user_info["sn"],
 					"user_name" => $user_info["name"],
@@ -56,10 +62,7 @@ class Repair extends Backend_Controller {
 						$add_data["sn"] = $repair_sn;								
 						$this->sync_item_to_server($add_data,"updateServerRepair","repair");
 					}
-				}
-				
-				
-				
+				}				
 				
 			}
 						
@@ -75,6 +78,8 @@ class Repair extends Backend_Controller {
 	 */
 	public function contentList()
 	{					
+		$this->getAppData();//查詢server有無要同步的資料
+		
 		$status = $this->input->get('status');
 		
 		$condition = "";

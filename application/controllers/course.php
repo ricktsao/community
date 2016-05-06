@@ -6,6 +6,7 @@ class Course extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
+		$this->displayBanner(FALSE);  	
 	}
 
 
@@ -39,7 +40,7 @@ class Course extends Frontend_Controller {
 			
 		if($course_info["count"]>0)
 		{				
-			
+			img_show_list($course_info["data"],'img_filename',"course");
 			$data["course_info"] = $course_info["data"][0];			
 
 			$this->display("course_detail_view",$data);
