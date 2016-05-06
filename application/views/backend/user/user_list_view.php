@@ -3,16 +3,55 @@
 	th, td {text-align:center}
 </style>
 
-<form  role="search" action="<?php echo bUrl('index');?>">
+<div class="page-header">
+	<h1>
+		<?php echo $headline;?>
+		<small>
+			<i class="ace-icon fa fa-angle-double-right"></i>
+			可依需求切換住戶資料列表
+		</small>
+	</h1>
+</div>
+
+<article class="well">
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("index/", false);?>">
+			<i class="icon-edit bigger-120"></i>所有住戶列表
+		</a>
+    </div>
+
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listMgrs", false);?>">
+			<i class="icon-edit bigger-120"></i>管委人員列表
+		</a>
+    </div>
+
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listConts", false);?>">
+			<i class="icon-edit bigger-120"></i>緊急聯絡人列表
+		</a>
+    </div>
+
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listOwns", false);?>">
+			<i class="icon-edit bigger-120"></i>所有權人列表
+		</a>
+    </div>
+
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-yellow" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
+			<i class="icon-edit bigger-120"></i>住戶資料匯出
+		</a>
+    </div>
+
+</article>
+
+
+<form  role="search" >
 <article class="well">
     <div class="btn-group">
 		<a class="btn  btn-sm btn-success" href="<?php echo bUrl("editUser/?role=I");?>">
 			<i class="icon-edit bigger-120"></i>新增住戶
-		</a>
-    </div>
-    <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" target="_blank" href="<?php echo bUrl("exportExcel");?>">
-			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
 
@@ -58,10 +97,10 @@
 										<th width="80"><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>姓　名</th>
 										<th>性　別</th>
-										<th style='text-align: center'>磁卡</th>
+										<th style='text-align: center'>磁　卡</th>
+										<th>APP開通</th>
 										<th>所有權人</th>
 										<th>緊急<br />聯絡人</th>
-										<th>APP開通</th>
 										<th>管委</th>
 										<th style="width:150px" colspan="2">操作</th>
 										<th>啟用/停用</th>
@@ -94,6 +133,13 @@
 										</td>
 										<td>
 										<?php
+										if (isNotNull(tryGetData("app_id", $item, NULL))) {
+											echo '未開通';
+										} else echo '已開通';
+										?>
+										</td>
+										<td>
+										<?php
 										if (tryGetData("is_owner", $item) == 1) {
 											echo '是';
 										} else echo '否';
@@ -104,13 +150,6 @@
 										if (tryGetData("is_contact", $item) == 1) {
 											echo '是';
 										} else echo '否';
-										?>
-										</td>
-										<td>
-										<?php
-										if (isNotNull(tryGetData("app_id", $item, NULL))) {
-											echo '已開通';
-										} else echo '未開通';
 										?>
 										</td>
 										<td>
@@ -151,7 +190,7 @@
 									
 								</tbody>
 								<tr>
-					              	<td colspan="13">
+					              	<td colspan="14">
 									<?php echo showBackendPager($pager)?>
 					                </td>
 								</tr>
