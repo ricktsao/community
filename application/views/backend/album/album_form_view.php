@@ -2,7 +2,7 @@
 <form action="<?php echo bUrl('updateContent')?>" method="post" id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
     <?php echo textOption("主題","title",$edit_data); ?>
     <div class="form-group ">
-        <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="content">時間</label>
+        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">時間</label>
         <div class="col-xs-12 col-sm-6">
             <input name="start_date" type="text" class="inputs2" value="<?php echo showDateFormat(tryGetArrayValue( 'start_date', $edit_data))?>" onclick="WdatePicker()" />
         <div class="message">

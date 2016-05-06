@@ -8,7 +8,7 @@ Class Voting_model extends IT_Model
 
 		$this->it_model->runSqlCmd($query);
 		
-		$this->Voting_model->sync_to_server(array("sn"=>$sn),"voting/preUpdateOption");
+		$this->Voting_model->sync_to_server(array("sn"=>$sn),"sync_voting/preUpdateOption");
 
 		for($i=0;$i<count($arr_option);$i++){
 
@@ -17,7 +17,7 @@ Class Voting_model extends IT_Model
 			
 				$content_sn = $this->it_model->addData( "voting_option" , $edit_data);
 				$edit_data['sn'] = $content_sn;
-				$sync_result = $this->Voting_model->sync_to_server($edit_data,"voting/updateOption");
+				$sync_result = $this->Voting_model->sync_to_server($edit_data,"sync_voting/updateOption");
 				$this->it_model->updateData("voting_option",array("is_sync"=>$sync_result),"sn = ".$content_sn);
 				//echo $re;
 				//die();
@@ -101,7 +101,7 @@ Class Voting_model extends IT_Model
 
 		$re = $this->it_model->addData("voting_record",$arr_data);
 
-		$sync_result = $this->sync_to_server($arr_data,"voting/userVoting");		
+		$sync_result = $this->sync_to_server($arr_data,"sync_voting/userVoting");		
 
 
 

@@ -15,7 +15,7 @@ class Album extends Frontend_Controller {
 	{		
 		$data = array();
 		
-		$album_list = $this->it_model->listData( "album" , NULL, $this->per_page_rows , $this->page , array("start_date"=>'desc'));
+		$album_list = $this->it_model->listData( "album" , "is_del = 0", $this->per_page_rows , $this->page , array("start_date"=>'desc'));
 
 		$data["pager"] = $this->getPager($album_list["count"],$this->page,$this->per_page_rows,"index");	
 		
