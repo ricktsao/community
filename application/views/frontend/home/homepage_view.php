@@ -31,8 +31,8 @@
 		<?php //dprint($houses);?>
 		<div id="blockB">
 			<div class="block_title">
-				<img src="<?php echo base_url().$templateUrl;?>images/index_title2.png" alt="">
-				<a href="#"><img src="<?php echo base_url().$templateUrl;?>images/more.png" alt=""></a>
+				<img src="<?php echo base_url($templateUrl);?>images/index_title2.png" alt="">
+				<a href="<?php echo frontendUrl('rent_house','index')?>"><img src="<?php echo base_url($templateUrl);?>images/more.png" alt=""></a>
 			</div>
 			<ul id="rental" class="ul_unstyle">
 				<?php
@@ -44,11 +44,11 @@
 				if ( sizeof($photos) > 0) {
 					$photo = tryGetData('photo', $photos[0], NULL);
 					if (isNotNull($photo)) {
-						$photo = '<img src="'.$photo.'" alt="'.$photo.'">';
+						$photo = '<img src="'.$photo.'" width=113 height=66>';
 					}
 				}
 				echo sprintf('	<li>
-									<a href="%s" class="img">
+									<a href="%s" title="【租屋】 %s" class="img">
 										%s
 									</a>
 									<div class="rental_content">
@@ -58,6 +58,7 @@
 									</div>
 								</li>'
 							, frontendUrl('rent_house','index/?sn='.$house['sn'])
+							, $house['title']
 							, $photo
 							, frontendUrl('rent_house','index/?sn='.$house['sn'])
 							, $house['title']

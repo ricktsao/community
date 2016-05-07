@@ -15,31 +15,31 @@
 
 <article class="well">
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("index/", false);?>">
+		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("index/", false);?>">
 			<i class="icon-edit bigger-120"></i>所有住戶列表
 		</a>
     </div>
 
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listMgrs", false);?>">
+		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("listMgrs", false);?>">
 			<i class="icon-edit bigger-120"></i>管委人員列表
 		</a>
     </div>
 
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listConts", false);?>">
+		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("listConts", false);?>">
 			<i class="icon-edit bigger-120"></i>緊急聯絡人列表
 		</a>
     </div>
 
     <div class="btn-group">
-		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("listOwns", false);?>">
+		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("listOwns", false);?>">
 			<i class="icon-edit bigger-120"></i>所有權人列表
 		</a>
     </div>
 
     <div class="btn-group">
-		<a class="btn  btn-sm btn-yellow" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
+		<a class="btn  btn-sm btn-info" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
@@ -134,8 +134,8 @@
 										<td>
 										<?php
 										if (isNotNull(tryGetData("app_id", $item, NULL))) {
-											echo '未開通';
-										} else echo '已開通';
+											echo '已開通';
+										} else echo '尚未開通';
 										?>
 										</td>
 										<td>

@@ -714,6 +714,9 @@ class User extends Backend_Controller
 						
 		if ($user_sn == "") {
 			$data["edit_data"] = array( 'role' => $role,
+										'comm_id' => $this->getCommID(),
+										'id' => NULL,
+										'app_id' => NULL,
 										'gender' => 1,
 										'is_owner' => 1,
 										'is_contact' => 1,
@@ -798,11 +801,14 @@ class User extends Backend_Controller
 		}
         else 
         {
-        	$arr_data = array(				
-        		//"email" =>$edit_data["email"]
-				  "building_id"		=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
+        	$arr_data = array(
+				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
+				, "id"			=>	tryGetData("id", $edit_data)
+				, "app_id"		=>	tryGetData("app_id", $edit_data)
+				, "building_id"		=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
+				, "addr"		=>	tryGetData("addr", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
@@ -816,8 +822,9 @@ class User extends Backend_Controller
 				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
-				, "updated" =>  date( "Y-m-d H:i:s" ) 				
-			);        	
+				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "is_sync" =>  0
+			);
 			
 			if($edit_data["sn"] != FALSE)
 			{
@@ -825,9 +832,14 @@ class User extends Backend_Controller
 				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
 				//dprint($this->db->last_query());
 				if($arr_return['success'])			
-				{					
+				{
 					$this->_updateWebAdminGroup($edit_data);
-					$this->showSuccessMessage();					
+					$this->showSuccessMessage();
+					
+									echo $this->db->last_query();
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $edit_data['sn'];
+						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
 				}
 				else 
 				{
@@ -856,6 +868,10 @@ class User extends Backend_Controller
 					$edit_data["sn"] = $sys_user_sn;
 					$this->_updateWebAdminGroup($edit_data);
 					$this->showSuccessMessage();
+
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $sys_user_sn;
+						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
 				}
 				else 
 				{
@@ -1028,6 +1044,7 @@ class User extends Backend_Controller
 		
 		
 			$update_data = array(			
+			"app_id" => $s_user_info["app_id"],			
 			"app_last_login_ip" => $s_user_info["app_last_login_ip"],			
 			"app_last_login_time" => $s_user_info["app_last_login_time"],
 			"app_login_time" => $s_user_info["app_login_time"],
