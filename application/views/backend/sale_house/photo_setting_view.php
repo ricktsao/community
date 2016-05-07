@@ -158,8 +158,8 @@
 										//$thumb = 'thumb_'.$filename;
 										$thumb = $filename;
 										$comm_id = tryGetData('comm_id', $house_data);
-										$thumb = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$thumb);
-										$url = base_url('upload/website/house_to_sale/'.$comm_id.'/'.$house_to_sale_sn.'/'.$filename);
+										$thumb = base_url('upload/'.$comm_id.'/house_to_sale/'.$house_to_sale_sn.'/'.$thumb);
+										$url = base_url('upload/'.$comm_id.'/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
 									?>
 									<tr>
 										<td class="center">

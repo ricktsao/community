@@ -345,7 +345,7 @@ class Sale_House extends Backend_Controller {
 		
 		$house_to_sale_sn = tryGetData('house_to_sale_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
-		$config['upload_path'] = './upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'];
+		$config['upload_path'] = './upload/'.$comm_id.'/house_to_sale/'.$edit_data['house_to_sale_sn'];
 		$config['allowed_types'] = 'jpg|png';
 		$config['max_size']	= '1000';
 		$config['max_width']  = '1200';
@@ -354,8 +354,8 @@ class Sale_House extends Backend_Controller {
 
 		$this->load->library('upload', $config);
 
-		if (!is_dir('./upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'])) {
-				mkdir('./upload/website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'], 0777, true);
+		if (!is_dir('./upload/'.$comm_id.'/house_to_sale/'.$edit_data['house_to_sale_sn'])) {
+				mkdir('./upload/'.$comm_id.'/house_to_sale/'.$edit_data['house_to_sale_sn'], 0777, true);
 		}
 
 		if ( isNull($house_to_sale_sn) || isNull($comm_id) || ! $this->upload->do_upload('filename'))
@@ -385,6 +385,8 @@ class Sale_House extends Backend_Controller {
 			$this->it_model->addData('house_to_sale_photo', $arr_data);
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
 				$this->showSuccessMessage('房屋照片上傳成功');
+				//檔案同步至server
+				$this->sync_file('house_to_sale\\'.$edit_data['house_to_sale_sn']);
 			} else {
 				$this->showFailMessage('房屋照片上傳失敗，請稍後再試');
 			}
