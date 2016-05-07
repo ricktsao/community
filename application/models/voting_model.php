@@ -128,9 +128,16 @@ Class Voting_model extends IT_Model
 					"end_date" => $re['end_date'],
 					"allow_anony" => $re['allow_anony'],
 					"is_multiple" => $re['is_multiple'],
+					"create_user"=>null,
 					"options" => array());
 
+		//GET user
 
+		$sql = "SELECT name FROM sys_user WHERE sn =".$re['user_sn'];
+		$user_name = $this->it_model->runSql($sql);
+		if($user_name['count']>0){
+			$data['create_user'] = $user_name['data'][0]['name']; 
+		}
 
 
 		$sql ="SELECT voting_option.sn AS option_sn,					
@@ -177,8 +184,8 @@ Class Voting_model extends IT_Model
 
 	public	function sync_to_server($post_data =null,$page_name){
 		//$url = "http://localhost/commapi/sync/updateContent";
-		//$url = $this->config->item("api_server_url").$page_name;
-		$url = "http://localhost:8080/commapi/".$page_name;
+		$url = $this->config->item("api_server_url").$page_name;
+		//$url = "http://localhost:8080/commapi/".$page_name;
 
 		
 		$post_data['comm_id'] =  $this->session->userdata("comm_id");

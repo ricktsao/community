@@ -51,6 +51,10 @@
 											  <a class="btn  btn-minier btn-info" href="<?php echo bUrl('votingRecord',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
                                                 <i class="icon-edit bigger-120"></i>觀看結果
                                             </a>
+
+                                             <a class="btn  btn-minier btn-danger" href="<?php echo bUrl('showPdf',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
+                                                <i class="icon-edit bigger-120"></i>輸出PDF
+                                            </a>
 											<?php else:?>
                                             <a class="btn  btn-minier btn-info" href="<?php echo bUrl('editContent',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
                                                 <i class="icon-edit bigger-120"></i>edit
