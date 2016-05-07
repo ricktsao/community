@@ -68,10 +68,10 @@
 								{
 									echo '
 									<tr>
-										<td>'.$gas_info["owner_addr"].'</td>
+										<td>'.$gas_info["build_addr"].'</td>
 										<td>'.$gas_info["year"].'</td>
 										<td>'.$gas_info["month"].'</td>
-										<td>'.$gas_info["degress"].'</td>
+										<td>'.($gas_info["degress"]==0?"-":$gas_info["degress"]).'</td>
 									</tr>
 									';
 								}

@@ -799,6 +799,21 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
+	
+	/**
+	 * web_menu_content 離線同步
+	 */
+	function check_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("web_menu_content","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_to_server($item);
+		}
+	}
+	
+	
+	
 	/**
 	 * 詢問server檔案差異
 	 * $folder : /upload/社區ID 下的資料夾
@@ -1009,6 +1024,62 @@ abstract class Backend_Controller extends IT_Controller
 		//------------------------------------------------------------------------------
 	}
 	
+	/**
+	 * mailbox 離線同步
+	 */
+	function check_mailbox_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("mailbox","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateMailbox","mailbox");
+		}
+	}
+	
+	
+	/**
+	 * repair 離線同步
+	 */
+	function check_repair_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("repair","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRepair","repair");			
+		}
+		
+		$sub_wait_sync_list = $this->it_model->listData("repair_reply","is_sync =0");
+		foreach( $sub_wait_sync_list["data"] as $key => $item )
+		{
+			$item["comm_id"] = $this->getCommId();
+			$this->sync_item_to_server($item,"updateRepairReply","repair_reply");			
+		}
+		
+	}
+	
+	/**
+	 * suggestion 離線同步
+	 */
+	function check_suggestion_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("suggestion","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSuggestion","suggestion");			
+		}		
+	}
+	
+	/**
+	 * gas 離線同步
+	 */
+	function check_gas_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("gas","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateGas","gas");			
+		}		
+	}
 	
 	
 	
@@ -1035,5 +1106,9 @@ abstract class Backend_Controller extends IT_Controller
 		</script>';
 	}
 	
+	function speed()
+	{
+		$this->output->enable_profiler(TRUE);	
+	}
 	
 }

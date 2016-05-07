@@ -23,9 +23,10 @@ class Gas_report extends Backend_Controller {
 		$building_list = array();
 		if(isNotNull($year) && isNotNull($month))
 		{
+			$this->getBuildData();
 			$building_query ="
-			select building_id,owner_addr from sys_user where role='I' group by building_id 	
-			order by building_id
+			select addr,building_id,owner_addr from sys_user where role='I' group by addr 	
+			order by addr
 			";
 			$building_list = $this->it_model->runSql($building_query);
 			//dprint(building_list);exit;
@@ -36,10 +37,16 @@ class Gas_report extends Backend_Controller {
 				$building_list[$key]["month"] = $month;
 				$building_list[$key]["degress"] = 0;			
 				
+				$user_build_text = building_id_to_text($building_info["building_id"]);
+				$build_text_ary = explode('&nbsp;&nbsp;',$user_build_text);
+				$build_addr = tryGetData(0,$build_text_ary).'&nbsp;&nbsp;'.tryGetData(1,$build_text_ary).'&nbsp;&nbsp;門號'.$building_info["addr"];
+				$building_list[$key]["build_addr"] = $build_addr;			
+				
+				
 				$query = "
 				SELECT SQL_CALC_FOUND_ROWS * from gas 
 				where year = '".$year."' and month = '".$month."'
-				and building_id = '".$building_info["building_id"]."'";	
+				and building_id = '".$building_info["addr"]."'";	
 				
 				$gas_info = $this->it_model->runSql($query);
 				if($gas_info["count"]>0)
@@ -50,7 +57,7 @@ class Gas_report extends Backend_Controller {
 					{
 						$degress = $degress."度";
 					}
-					$building_list[$key]["degress"] = $degress ;
+					$building_list[$key]["degress"] = $degress ;					
 				}			
 				
 			}
@@ -83,10 +90,14 @@ class Gas_report extends Backend_Controller {
 		$building_list = array();
 		if(isNotNull($year) && isNotNull($month))
 		{
+			$this->getBuildData();
+			
+			
 			$building_query ="
-			select building_id,owner_addr from sys_user where role='I' group by building_id 	
-			order by building_id
+			select addr,building_id,owner_addr from sys_user where role='I' group by addr 	
+			order by addr
 			";
+			
 			$building_list = $this->it_model->runSql($building_query);
 			//dprint(building_list);exit;
 			$building_list = $building_list["data"];
@@ -96,10 +107,15 @@ class Gas_report extends Backend_Controller {
 				$building_list[$key]["month"] = $month;
 				$building_list[$key]["degress"] = 0;			
 				
+				$user_build_text = building_id_to_text($building_info["building_id"]);
+				$build_text_ary = explode('&nbsp;&nbsp;',$user_build_text);
+				$build_addr = tryGetData(0,$build_text_ary).'&nbsp;&nbsp;'.tryGetData(1,$build_text_ary).'&nbsp;&nbsp;門號'.$building_info["addr"];
+				$building_list[$key]["build_addr"] = $build_addr;	
+				
 				$query = "
 				SELECT SQL_CALC_FOUND_ROWS * from gas 
 				where year = '".$year."' and month = '".$month."'
-				and building_id = '".$building_info["building_id"]."'";	
+				and building_id = '".$building_info["addr"]."'";
 				
 				$gas_info = $this->it_model->runSql($query);
 				if($gas_info["count"]>0)
@@ -130,10 +146,10 @@ class Gas_report extends Backend_Controller {
 			{
 				$content_str .= '
 				<tr>
-					<td style="padding: 10px;">'.$gas_info["owner_addr"].'</td>
+					<td style="padding: 10px;">'.$gas_info["build_addr"].'</td>
 					<td style="padding: 10px;text-align: center">'.$gas_info["year"].'</td>										
 					<td style="padding: 10px;text-align: center">'.$gas_info["month"].'</td>
-					<td style="padding: 10px;text-align: center">'.$gas_info["degress"].'</td>
+					<td style="padding: 10px;text-align: center">'.($gas_info["degress"]==0?"-":$gas_info["degress"]).'</td>
 				</tr>
 				';
 			}	

@@ -3,14 +3,12 @@
 class Home extends Backend_Controller{
 
 	public function index()
-	{		
-		//$this->profiler();	
-		//$this->load->helper('path');
-		//echo set_realpath('upload');
-		//echo site_url('upload').'/';		
-		//$this->display("/backend/home/index_view");
-		//$this->display("index_view");
-
+	{
+		$this->check_offline_sync();//web_menu_content 離線同步
+		$this->check_mailbox_offline_sync();//mailbox 離線同步		
+		$this->check_repair_offline_sync();//報修	
+		$this->check_suggestion_offline_sync();//社區意見箱
+		$this->check_gas_offline_sync();//gas 離線同步	
 		$this->display("index_view");
 	}
 
