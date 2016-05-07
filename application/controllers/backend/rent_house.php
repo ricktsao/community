@@ -377,7 +377,7 @@ class Rent_House extends Backend_Controller {
 		{
 			$error = array('error' => $this->upload->display_errors());
 
-			$this->showFailMessage('照片上傳失敗，請稍後再試　' .$error['error'] );
+			$this->showFailMessage('物件照片上傳失敗，請稍後再試　' .$error['error'] );
 
 		} else {
 
@@ -385,7 +385,7 @@ class Rent_House extends Backend_Controller {
 			$filename = tryGetData('file_name', $upload);
 
 			// 製作縮圖
-			image_thumb('./upload/'.$comm_id.'/house_to_rent/'.$edit_data['house_to_rent_sn'], 'ddd_'.$filename, '120', '100');
+			// image_thumb('./upload/'.$comm_id.'/house_to_rent/'.$edit_data['house_to_rent_sn'], 'ddd_'.$filename, '120', '100');
 
 			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
 							, 'comm_id'				=>  tryGetData('comm_id', $edit_data)
@@ -394,20 +394,22 @@ class Rent_House extends Backend_Controller {
 							, 'title'				=>	tryGetData('title', $edit_data)
 							, 'updated'				=>	date('Y-m-d H:i:s')
 							, 'updated_by'			=>	$this->session->userdata('user_name')
-							, 
+							//, 'is_sync'				=>  0
 							);
 
 			$this->it_model->addData('house_to_rent_photo', $arr_data);
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
-				$this->showSuccessMessage('房屋照片上傳成功');
-				//檔案同步至server
-				$this->sync_file('house_to_rent\\'.$edit_data['house_to_rent_sn']);
+				$this->showSuccessMessage('物件照片上傳成功');
+
+				// 檔案同步至server 檔案同步至server 檔案同步至server
+				$this->sync_file('house_to_rent/'.$edit_data['house_to_rent_sn']);
+
 			} else {
-				$this->showFailMessage('房屋照片上傳失敗，請稍後再試');
+				$this->showFailMessage('物件照片上傳失敗，請稍後再試');
 			}
 		}
 
-		//redirect(bUrl("photoSetting"));
+		redirect(bUrl("photoSetting"));
 	}
 
 	/**
@@ -423,13 +425,16 @@ class Rent_House extends Backend_Controller {
 			$sn = $tmp[0];
 			$house_to_rent_sn = $tmp[1];
 			$filename = $tmp[2];
-			unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
-			unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/thumb_'.$filename);
+			@unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
+			//@unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/thumb_'.$filename);
 
 			$this->it_model->deleteData('house_to_rent_photo',  array('sn' => $sn, 'filename' => $filename));
 		}
 
 		$this->showSuccessMessage('物件照片刪除成功');
+
+		// 檔案同步至server 檔案同步至server 檔案同步至server
+		$this->sync_file('house_to_sale/'.$sn);
 
 		redirect(bUrl("photoSetting"));
 	}

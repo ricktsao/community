@@ -878,7 +878,7 @@ abstract class Backend_Controller extends IT_Controller
 			curl_setopt($ch, CURLOPT_URL,$target_url);
 			curl_setopt($ch, CURLOPT_POST,1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-			$result=curl_exec($ch);
+			$result = curl_exec($ch);
 			curl_close ($ch);
 			
 		
