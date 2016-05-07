@@ -95,14 +95,13 @@
 										<th><?php echo $building_part_01;?></th>
 										<th><?php echo $building_part_02;?></th>
 										<th width="80"><?php echo $building_part_03;?></th>
-										<th style='text-align: center'>姓　名</th>
-										<th>性　別</th>
+										<th style='text-align: center'>住戶姓名</th>
 										<th style='text-align: center'>磁　卡</th>
 										<th>APP開通</th>
 										<th>所有權人</th>
 										<th>緊急<br />聯絡人</th>
 										<th>管委</th>
-										<th style="width:150px" colspan="2">操作</th>
+										<th colspan="3">操作</th>
 										<th>啟用/停用</th>
 										
 									</tr>
@@ -124,17 +123,15 @@
 										<td style='text-align: center'><?php echo $building_parts[2];?></td>
 										<td>
 										<?php echo tryGetData('name', $item);?>
-										</td>
-										<td style='text-align: center'>
 										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
 										</td>
 										<td>
-										<?php echo '<span style="color:#069">'.tryGetData('id', $item).'</span>';?>
+										<?php echo tryGetData('id', $item);?>
 										</td>
 										<td>
 										<?php
 										if (isNotNull(tryGetData("app_id", $item, NULL))) {
-											echo '已開通';
+											echo tryGetData("app_id", $item);
 										} else echo '尚未開通';
 										?>
 										</td>
@@ -155,14 +152,17 @@
 										<td>
 										<?php
 										if (tryGetData("is_manager", $item) == 1) {
-											echo tryGetData("manager_title", $item);
+											$manager_title =  tryGetData("manager_title", $item);
+											echo tryGetData($manager_title, $manager_title_array);
 										} else echo '否';
 										?>
 										</td>
-										<td style="text-align:left; padding-left:10px;">
+										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
+										</td>
+										<td>
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>車位設定
 											</a>

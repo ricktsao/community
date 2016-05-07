@@ -213,7 +213,7 @@ class Sale_House extends Backend_Controller {
 					$this->showFailMessage();
 				}
 				
-				//redirect(bUrl("index",TRUE,array("sn")));		
+				redirect(bUrl("index",TRUE,array("sn")));		
 			}
 			else 
 			{
@@ -235,7 +235,7 @@ class Sale_House extends Backend_Controller {
 					$this->showFailMessage();
 				}
 				
-				//redirect(bUrl("index",TRUE,array("sn")));
+				redirect(bUrl("index",TRUE,array("sn")));
 			}
         }
 	}

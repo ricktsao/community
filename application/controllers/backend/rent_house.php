@@ -206,13 +206,12 @@ class Rent_House extends Backend_Controller {
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
 				, "created" =>  date( "Y-m-d H:i:s" )
 				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "is_sync"		=>	0
 			);        	
 			
 			if($edit_data["sn"] != FALSE)
 			{
-				dprint($arr_data);
 				$arr_return = $this->it_model->updateDB( "house_to_rent" , $arr_data, "sn =".$edit_data["sn"] );
-				dprint($this->db->last_query());
 				if($arr_return['success'])
 				{
 					$this->showSuccessMessage();

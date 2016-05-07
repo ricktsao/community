@@ -37,7 +37,7 @@ class Parking extends Backend_Controller {
 			$condition .= ' AND parking_id like "'.$parking_id.'%"' ;
 		}
 
-		$query = 'SELECT SQL_CALC_FOUND_ROWS p.*, up.car_number, u.building_id, u.name, u.tel, u.phone
+		$query = 'SELECT SQL_CALC_FOUND_ROWS p.*, up.car_number, u.building_id, u.name, u.tel, u.phone, u.role
 					FROM parking p left join user_parking up on p.sn = up.parking_sn
 					left join sys_user u on up.user_sn = u.sn
 					WHERE ( 1 = 1 ) '.$condition

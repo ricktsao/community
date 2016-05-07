@@ -82,10 +82,14 @@
 										<?php echo tryGetData('location', $item);?>
 										</td> -->
 										<td>
-										<?php 
-										$building_id = tryGetData('building_id', $item, NULL);
-										if ( isNotNull($building_id) ) {
-											echo building_id_to_text($building_id);
+										<?php
+										if (tryGetData('role', $item)=='I') {
+											$building_id = tryGetData('building_id', $item, NULL);
+											if ( isNotNull($building_id) ) {
+												echo building_id_to_text($building_id);
+											}
+										} elseif (tryGetData('role', $item)=='P') {
+											echo '獨立車位所有人';
 										}
 										?>
 										</td>
