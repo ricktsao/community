@@ -999,9 +999,6 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
-		//dprint($url);
-		//dprint($post_data);
-		//exit;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
@@ -1011,7 +1008,14 @@ abstract class Backend_Controller extends IT_Controller
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
 
-		//dprint($is_sync);die;
+		/* debug
+		if ($table_name =='house_to_sale') {
+			dprint($url);
+			dprint($post_data);
+			dprint($is_sync);
+			die;
+		}
+		*/
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------
@@ -1081,7 +1085,43 @@ abstract class Backend_Controller extends IT_Controller
 		}		
 	}
 	
+
 	
+	/**
+	 * User 離線同步
+	 */
+	function check_user_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("sys_user","role='I' and is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateUser","sys_user");			
+		}
+	}
+
+	/**
+	 * House to Rent 離線同步
+	 */
+	function check_house_to_rent_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_rent","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRentHouse","house_to_rent");			
+		}
+	}
+	
+	/**
+	 * House to Sale 離線同步
+	 */
+	function check_house_to_sale_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_sale","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSaleHouse","house_to_sale");			
+		}
+	}
 	
 	/**
 	 * 取得社區id
