@@ -245,9 +245,13 @@ class Gas extends Frontend_Controller {
 			
 			if($result === FALSE)
 			{
+				$user_build_text = building_id_to_text($server_info["building_text"]);
+				$build_text_ary = explode('&nbsp;&nbsp;',$user_build_text);
+				$build_addr = tryGetData(0,$build_text_ary).'&nbsp;&nbsp;'.tryGetData(1,$build_text_ary).'&nbsp;&nbsp;門號'.$server_info["building_id"];
+				
+				$update_data["building_text"] = $build_addr;	
 				$update_data["comm_id"] = $this->getCommId();
-				$update_data["building_id"] =  $server_info["building_id"];
-				$update_data["building_text"] = building_id_to_text($server_info["building_id"]);
+				$update_data["building_id"] =  $server_info["building_id"];				
 				$update_data["year"] = $server_info["year"];
 				$update_data["month"] = $server_info["month"];
 				$update_data["created"] = date( "Y-m-d H:i:s" );
@@ -268,7 +272,7 @@ class Gas extends Frontend_Controller {
 			}
 			else
 			{
-				$condition = "building_id = '".$this->session->userdata('f_building_id')."' AND year = '".$year."' AND month = '".$month."' ";
+				$condition = "building_id = '".$server_info["building_id"]."' AND year = '".$server_info["year"]."' AND month = '".$server_info["month"]."' ";
 				$gas_info = $this->it_model->listData("gas",$condition);
 				if($gas_info["count"]>0)
 				{
