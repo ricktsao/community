@@ -8,7 +8,7 @@
 			<?php echo $user_info["name"]?>
 		</div>
 		<input type="hidden" id="user_sn" name="user_sn" value="<?php echo $user_info["sn"]?>" >
-		
+		<input type="hidden" id="user_name" name="user_name" value="<?php echo $user_info["name"]?>" >
 	</div>	
 	
 	<div class="form-group ">

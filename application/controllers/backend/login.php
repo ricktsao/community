@@ -174,8 +174,20 @@ class Login extends CI_Controller {
 					}
 					else
 					{
-						echo 'no comm_id !!';
-						die;
+						$comm_id = $this->generateCommId();
+						$update_data = array(
+							"id" => "comm_id",
+							"value" => $comm_id,
+							"launch" => 1,
+							"received" => date("Y-m-d H:i:s"),
+							"updated" => date("Y-m-d H:i:s")
+						);
+						
+						$result_sn = $this->it_model->addData( "sys_config" , $update_data);
+						if($result_sn == 0)
+						{
+							$this->redirectLoginPage();
+						}			
 					}
 					//----------------------------------------------------------------------
 					
@@ -222,6 +234,17 @@ class Login extends CI_Controller {
 		} 	
 	}	
 	
+	
+	function generateCommId($length = 8) 
+	{
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
+	}
 	
 	function _validateLogin()
 	{

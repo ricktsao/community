@@ -72,8 +72,8 @@ Class Album_model extends IT_Model
 
 	public	function sync_to_server($post_data =null,$page_name){
 		//$url = "http://localhost/commapi/sync/updateContent";
-		//$url = $this->config->item("api_server_url").$page_name;
-		$url = "http://localhost:8080/commapi/".$page_name;
+		$url = $this->config->item("api_server_url").$page_name;
+		//$url = "http://localhost:8080/commapi/".$page_name;
 		
 		$post_data['comm_id'] =  $this->session->userdata("comm_id");
 

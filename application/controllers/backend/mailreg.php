@@ -49,6 +49,23 @@ class Mailreg extends Backend_Controller
 						;
 		}
 
+		$headline = '所有住戶列表';
+		if (isNotNull(tryGetData('qy', $query_key, NULL))) {
+			if (tryGetData('qy', $query_key) == 'mgrs' ) {
+				$condition .= ' AND is_manager = 1 ' ;
+				$headline = '管委人員列表';
+			}
+			if (tryGetData('qy', $query_key) == 'cnts' ) {
+				$condition .= ' AND is_contact = 1 ' ;
+				$headline = '緊急聯絡人員列表';
+			}
+			if (tryGetData('qy', $query_key) == 'owns' ) {
+				$condition .= ' AND is_owner = 1 ' ;
+				$headline = '所有權人列表';
+			}
+		}
+		$data['headline'] = $headline;
+
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
 						."   where 1 ".$condition
