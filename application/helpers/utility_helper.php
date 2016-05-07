@@ -26,7 +26,7 @@
 		return false;
 	}
 
-	## 將戶別代號轉成文字
+	## 將車位代號轉成文字
 	function parking_id_to_text($parking_id, $separate=false)
 	{
 		// Get the CodeIgniter super object

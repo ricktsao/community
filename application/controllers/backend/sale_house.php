@@ -191,6 +191,7 @@ class Sale_House extends Backend_Controller {
 				, "end_date"		=>	tryGetData("end_date", $edit_data)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
+				, "is_sync"		=>	0
 				, "created" =>  date( "Y-m-d H:i:s" )
 				, "updated" =>  date( "Y-m-d H:i:s" )
 			);        	
@@ -201,7 +202,10 @@ class Sale_House extends Backend_Controller {
 
 				if($arr_return['success'])
 				{
-					$this->showSuccessMessage();					
+					$this->showSuccessMessage();
+						
+						/* 同步 同步 同步 同步 同步 */
+						$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 				}
 				else 
 				{
@@ -209,25 +213,29 @@ class Sale_House extends Backend_Controller {
 					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("index",TRUE,array("sn")));		
+				//redirect(bUrl("index",TRUE,array("sn")));		
 			}
 			else 
 			{
 				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
-				$rent_sn = $this->it_model->addData( "house_to_sale" , $arr_data );
+				$sale_sn = $this->it_model->addData( "house_to_sale" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
 
-				if($rent_sn > 0) {
-					$edit_data["sn"] = $rent_sn;
+				if($sale_sn > 0) {
+					$edit_data["sn"] = $sale_sn;
 					$this->showSuccessMessage();
+
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $sale_sn;
+						$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 				}
 				else 
 				{
 					$this->showFailMessage();
 				}
 				
-				redirect(bUrl("index",TRUE,array("sn")));
+				//redirect(bUrl("index",TRUE,array("sn")));
 			}
         }
 	}
@@ -362,7 +370,7 @@ class Sale_House extends Backend_Controller {
 			$filename = tryGetData('file_name', $upload);
 
 			// 製作縮圖
-			image_thumb('website/house_to_sale/'.$comm_id.'/'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
+			// image_thumb('website/house_to_sale/'.$comm_id.'/thumb_'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
 
 			$arr_data = array('sn'					=>	tryGetData('sn', $edit_data, NULL)
 							, 'comm_id'				=>  tryGetData('comm_id', $edit_data)

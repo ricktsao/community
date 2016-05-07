@@ -984,6 +984,7 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
+		//dprint($url);
 		//dprint($post_data);
 		//exit;
 		$ch = curl_init();
@@ -994,7 +995,8 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
-		
+
+		//dprint($is_sync);die;
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------

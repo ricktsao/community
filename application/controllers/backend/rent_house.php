@@ -171,8 +171,8 @@ class Rent_House extends Backend_Controller {
 				, 'comm_id'			=>  $this->getCommId()
 				, "rent_type"		=>	tryGetData("rent_type", $edit_data)
 				, "house_type"		=>	tryGetData("house_type", $edit_data)
-				, "furniture"		=>	implode(',', tryGetData("furniture", $edit_data))
-				, "electric"		=>	implode(',', tryGetData("electric", $edit_data))
+				, "furniture"		=>	implode(',', tryGetData("furniture", $edit_data, array()))
+				, "electric"		=>	implode(',', tryGetData("electric", $edit_data, array()))
 				, "title"		=>	tryGetData("title", $edit_data)
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
@@ -215,7 +215,10 @@ class Rent_House extends Backend_Controller {
 				dprint($this->db->last_query());
 				if($arr_return['success'])
 				{
-					$this->showSuccessMessage();					
+					$this->showSuccessMessage();
+
+						/* 同步 同步 同步 同步 同步 */
+						$this->sync_item_to_server($arr_data, 'updateRentHouse', 'house_to_rent');
 				}
 				else 
 				{
@@ -235,6 +238,10 @@ class Rent_House extends Backend_Controller {
 				if($rent_sn > 0) {
 					$edit_data["sn"] = $rent_sn;
 					$this->showSuccessMessage();
+
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $rent_sn;
+						$this->sync_item_to_server($arr_data, 'updateRentHouse', 'house_to_rent');
 				}
 				else 
 				{
