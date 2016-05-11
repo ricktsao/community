@@ -154,8 +154,8 @@
 										//$thumb = 'thumb_'.$filename;
 										$thumb = $filename;
 										$comm_id = tryGetData('comm_id', $house_data);
-										$thumb = base_url('upload/website/house_to_rent/'.$comm_id.'/'.$house_to_rent_sn.'/'.$thumb);
-										$url = base_url('upload/website/house_to_rent/'.$comm_id.'/'.$house_to_rent_sn.'/'.$filename);
+										$thumb = base_url('upload/'.$comm_id.'/house_to_rent/'.$house_to_rent_sn.'/'.$thumb);
+										$url = base_url('upload/'.$comm_id.'/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
 									?>
 									<tr>
 										<td class="center">

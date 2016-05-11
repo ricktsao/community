@@ -116,6 +116,7 @@ class Repair extends Backend_Controller {
 		//--------------------------------------------------------
 		
 		//dprint($data["list"]);
+		//$this->speed();
 		$this->display("content_list_view",$data);
 	}
 	

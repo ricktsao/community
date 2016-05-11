@@ -799,6 +799,21 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
+	
+	/**
+	 * web_menu_content 離線同步
+	 */
+	function check_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("web_menu_content","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_to_server($item);
+		}
+	}
+	
+	
+	
 	/**
 	 * 詢問server檔案差異
 	 * $folder : /upload/社區ID 下的資料夾
@@ -863,7 +878,7 @@ abstract class Backend_Controller extends IT_Controller
 			curl_setopt($ch, CURLOPT_URL,$target_url);
 			curl_setopt($ch, CURLOPT_POST,1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-			$result=curl_exec ($ch);
+			$result = curl_exec($ch);
 			curl_close ($ch);
 			
 		
@@ -984,8 +999,6 @@ abstract class Backend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
-		//dprint($post_data);
-		//exit;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
@@ -994,7 +1007,15 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
-		
+
+		/* debug
+		if ($table_name =='house_to_sale') {
+			dprint($url);
+			dprint($post_data);
+			dprint($is_sync);
+			die;
+		}
+		*/
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------
@@ -1007,8 +1028,100 @@ abstract class Backend_Controller extends IT_Controller
 		//------------------------------------------------------------------------------
 	}
 	
+	/**
+	 * mailbox 離線同步
+	 */
+	function check_mailbox_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("mailbox","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateMailbox","mailbox");
+		}
+	}
 	
 	
+	/**
+	 * repair 離線同步
+	 */
+	function check_repair_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("repair","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRepair","repair");			
+		}
+		
+		$sub_wait_sync_list = $this->it_model->listData("repair_reply","is_sync =0");
+		foreach( $sub_wait_sync_list["data"] as $key => $item )
+		{
+			$item["comm_id"] = $this->getCommId();
+			$this->sync_item_to_server($item,"updateRepairReply","repair_reply");			
+		}
+		
+	}
+	
+	/**
+	 * suggestion 離線同步
+	 */
+	function check_suggestion_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("suggestion","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSuggestion","suggestion");			
+		}		
+	}
+	
+	/**
+	 * gas 離線同步
+	 */
+	function check_gas_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("gas","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateGas","gas");			
+		}		
+	}
+	
+
+	
+	/**
+	 * User 離線同步
+	 */
+	function check_user_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("sys_user","role='I' and is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateUser","sys_user");			
+		}
+	}
+
+	/**
+	 * House to Rent 離線同步
+	 */
+	function check_house_to_rent_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_rent","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRentHouse","house_to_rent");			
+		}
+	}
+	
+	/**
+	 * House to Sale 離線同步
+	 */
+	function check_house_to_sale_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_sale","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSaleHouse","house_to_sale");			
+		}
+	}
 	
 	/**
 	 * 取得社區id
@@ -1033,5 +1146,9 @@ abstract class Backend_Controller extends IT_Controller
 		</script>';
 	}
 	
+	function speed()
+	{
+		$this->output->enable_profiler(TRUE);	
+	}
 	
 }

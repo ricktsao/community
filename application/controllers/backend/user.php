@@ -20,6 +20,12 @@ class User extends Backend_Controller
 			$query_key[$key] = $this->input->get($key,TRUE);
 		}
 
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
+
 		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
 		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
 		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
@@ -686,8 +692,14 @@ class User extends Backend_Controller
 		$this->getAppData();//同步app登入資料
 		
 		$this->addCss("css/chosen.css");
-		$this->addJs("js/chosen.jquery.min.js");		
+		$this->addJs("js/chosen.jquery.min.js");
 		
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
+
 		// 戶別相關參數
 		$data['building_part_01'] = $this->building_part_01;
 		$data['building_part_02'] = $this->building_part_02;
@@ -714,6 +726,9 @@ class User extends Backend_Controller
 						
 		if ($user_sn == "") {
 			$data["edit_data"] = array( 'role' => $role,
+										'comm_id' => $this->getCommID(),
+										'id' => NULL,
+										'app_id' => NULL,
 										'gender' => 1,
 										'is_owner' => 1,
 										'is_contact' => 1,
@@ -764,6 +779,9 @@ class User extends Backend_Controller
 
 	public function updateUser()
 	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");
+
 		$this->load->library('encrypt');
 		
 		foreach( $_POST as $key => $value )
@@ -772,6 +790,11 @@ class User extends Backend_Controller
 		}
 		
 		
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
 		// 戶別相關參數
 		$data['building_part_01'] = $this->building_part_01;
 		$data['building_part_02'] = $this->building_part_02;
@@ -798,26 +821,32 @@ class User extends Backend_Controller
 		}
         else 
         {
-        	$arr_data = array(				
-        		//"email" =>$edit_data["email"]
-				  "building_id"		=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
+        	$arr_data = array(
+				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
+				, "id"			=>	tryGetData("id", $edit_data)
+				, "app_id"		=>	tryGetData("app_id", $edit_data)
+				, "role"		=>	'I'
+				, "building_id"	=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
 				, "name"		=>	tryGetData("name", $edit_data)
+				, "tel"			=>	tryGetData("tel", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
+				, "addr"		=>	tryGetData("addr", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
-				, "voting_right"		=>	tryGetData("voting_right", $edit_data)
+				, "voting_right"	=>	tryGetData("voting_right", $edit_data)
 				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
 				, "is_manager"		=>	tryGetData("is_manager", $edit_data)
-				, "manager_title"		=>	tryGetData("manager_title", $edit_data)
+				, "manager_title"	=>	tryGetData("manager_title", $edit_data)
 				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
 				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
 				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
 				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
-				, "updated" =>  date( "Y-m-d H:i:s" ) 				
-			);        	
+				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "is_sync" =>  0
+			);
 			
 			if($edit_data["sn"] != FALSE)
 			{
@@ -825,9 +854,14 @@ class User extends Backend_Controller
 				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
 				//dprint($this->db->last_query());
 				if($arr_return['success'])			
-				{					
+				{
 					$this->_updateWebAdminGroup($edit_data);
-					$this->showSuccessMessage();					
+					$this->showSuccessMessage();
+					
+									echo $this->db->last_query();
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $edit_data['sn'];
+						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
 				}
 				else 
 				{
@@ -856,6 +890,10 @@ class User extends Backend_Controller
 					$edit_data["sn"] = $sys_user_sn;
 					$this->_updateWebAdminGroup($edit_data);
 					$this->showSuccessMessage();
+
+						/* 同步 同步 同步 同步 同步 */
+						$arr_data["sn"] = $sys_user_sn;
+						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
 				}
 				else 
 				{
@@ -924,6 +962,7 @@ class User extends Backend_Controller
 		$sn = tryGetValue($this->input->post('sn',TRUE),0);
 		$role = tryGetValue($this->input->post('role',TRUE), 'M');
 		$is_manager = tryGetValue($this->input->post('is_manager',TRUE), 0);
+		$gas_right = tryGetValue($this->input->post('gas_right',TRUE), 0);
 		$end_date = tryGetValue($this->input->post('end_date',TRUE), 0);
 		$forever = tryGetValue($this->input->post('forever',TRUE), 0);
 
@@ -934,9 +973,7 @@ class User extends Backend_Controller
 		
 		if($sn==0)
 		{
-			if ($role == 'I') {
-				$this->form_validation->set_rules('id', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );
-			} else {
+			if ($role != 'I') {
 				$this->form_validation->set_rules('account', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );
 				$this->form_validation->set_rules('password', $this->lang->line("field_password"), 'trim|required|min_length[4]|max_length[10]' );
 			}
@@ -952,14 +989,25 @@ class User extends Backend_Controller
 			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
 		}
 		*/
-		$this->form_validation->set_rules( 'name', $this->lang->line("field_name"), 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'phone', $this->lang->line("field_phone"), 'required|max_length[20]' );
+
+		
+		$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'required|greater_than[0]' );
+		$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'required|greater_than[0]' );
+		$this->form_validation->set_rules( 'b_part_03', $this->building_part_03, 'required|greater_than[0]' );
+
+		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
+		$this->form_validation->set_rules( 'tel', '電話', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'phone', '行動電話', 'required|max_length[20]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
 		}
 
+		if ($gas_right == 1) {
+			$this->form_validation->set_rules( 'addr', '門牌號碼', 'required|min_length[1]' );
+		}
+
 		if ($is_manager == 1) {
-			$this->form_validation->set_rules( 'manager_title', $this->lang->line("field_manager_title"), 'required|max_length[30]' );
+			$this->form_validation->set_rules( 'manager_title', '管委職稱', 'required|greater_than[0]' );
 			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required');
 			
 			if ($forever != 1) {
@@ -977,7 +1025,7 @@ class User extends Backend_Controller
 
 	public function deleteUser()
 	{
-		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
+		$del_ary =array('role'=>'I', 'sn'=> $this->input->post('del',TRUE));		
 		
 		if($del_ary!= FALSE && count($del_ary)>0)
 		{
@@ -1028,6 +1076,7 @@ class User extends Backend_Controller
 		
 		
 			$update_data = array(			
+			"app_id" => $s_user_info["app_id"],			
 			"app_last_login_ip" => $s_user_info["app_last_login_ip"],			
 			"app_last_login_time" => $s_user_info["app_last_login_time"],
 			"app_login_time" => $s_user_info["app_login_time"],

@@ -37,9 +37,10 @@
 	
 	<?php echo pickDateOption($edit_data);?>
 	<?php echo textOption("排序","sort",$edit_data); ?>
+	<?php echo checkBoxOption("APP橫條資訊 啟用","hot",$edit_data);?>
 	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
 	
-	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
+	<input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
 	<input type="hidden" name="content_type" value="news" />
 		
 
@@ -48,7 +49,7 @@
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				Back
+				回上頁
 			</a>		
 		
 
@@ -56,7 +57,7 @@
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				送出
 			</button>
 			
 		</div>

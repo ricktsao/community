@@ -179,6 +179,7 @@ $config['mail_box_type'] = array(
 // api server url
 $config['api_server_url'] = 'http://27.147.4.239/commapi/';
 
+
 //維修範圍
 $config['repair_type'] = array(
 	"1" => "公共區域",

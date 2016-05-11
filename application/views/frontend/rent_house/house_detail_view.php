@@ -83,7 +83,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="rent_sub_title">房源介绍</td>
+                            <td colspan="2" class="rent_sub_title">房源基本資料</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -142,7 +142,7 @@
             <thead>
                 <div>
                     <tr>
-                        <td class="text_left">其他房源</td>
+                        <td class="text_left">房源介紹</td>
                     </tr>
                 </div>
             </thead>
