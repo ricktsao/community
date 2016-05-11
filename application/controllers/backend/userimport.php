@@ -7,232 +7,6 @@ class Userimport extends Backend_Controller {
 		parent::__construct();		
 		
 	}
-	
-
-	/**
-	 * Deal一覽表數據
-	 */
-	public function detail()
-	{
-		$sn = $this->input->get('sn');
-
-
-		$role_array = array('B' => '買家', 'S' => '賣家', 'N' => '名義登記人');
-		$data["role_array"] = $role_array;
-
-		$deal_list = $this->it_model->listData("deal" ,'sn = '.$sn);
-		$org_map = array();
-		$deal_info = $deal_list["data"][0];
-
-		$deal_sn = tryGetData('sn', $deal_info);
-
-		$deal_lands_list = $this->it_model->listData("deal_lands" ,'deal_sn = '.$deal_sn);
-		$deal_info['deal_land_list'] = $deal_lands_list['data'];
-
-		$deal_customers_list = $this->it_model->listData("deal_customers" ,'deal_sn = '.$deal_sn, NULL, NULL, array('customer_role'=>'ASC') );
-		$deal_info['deal_customer_list'] = $deal_customers_list['data'];
-
-		$deal_sales_list = $this->it_model->listData("deal_sales" ,'deal_sn = '.$deal_sn, NULL, NULL, array('agent_role'=>'ASC') );
-		$deal_info['deal_sales_list'] = $deal_sales_list['data'];
-
-		// 查詢單位成交編號
-		$seller_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'S');
-		$deal_info['seller_unit_deal_list'] = $seller_unit_deal_list;
-
-		$buyer_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'B');
-		$deal_info['buyer_unit_deal_list'] = $buyer_unit_deal_list;
-
-		$register_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'N');
-		$deal_info['register_unit_deal_list'] = $register_unit_deal_list;
-
-		$deal_info['total_deal_amount'] = number_format_clean($deal_info['total_deal_amount'],2);
-		$deal_info['fake_commission'] = number_format_clean($deal_info['fake_commission'],2);
-		$deal_info['total_commission'] = number_format_clean($deal_info['total_commission'],2);
-		$deal_info['m_commission_01'] = number_format_clean($deal_info['m_commission_01'],2);
-		$deal_info['m_commission_02'] = number_format_clean($deal_info['m_commission_02'],2);
-		$deal_info['m_commission_03'] = number_format_clean($deal_info['m_commission_03'],2);
-		$deal_info['m_commission_04'] = number_format_clean($deal_info['m_commission_04'],2);
-		$deal_info['m_commission_05'] = number_format_clean($deal_info['m_commission_05'],2);
-		$deal_info['m_commission_06'] = number_format_clean($deal_info['m_commission_06'],2);
-
-		$data["edit_data"] = $deal_info;
-
-
-		$this->display("content_view", $data);
-
-	}
-
-
-
-
-	
-	/**
-	 * 清除成交客資，重新上傳，主表的成交日期跟不會清
-	 */
-	public function resetDealSubInfo()
-	{
-		$deal_sn = $this->input->get('sn', true);
-		$contract_no = $this->input->get('cno', true);
-
-		if (isNotNull($contract_no) && $deal_sn > 0) {
-
-			## 交易開始　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　
-			$this->db->trans_begin();
-			$this->db->trans_strict(FALSE);
-
-			$update_01 = 'UPDATE deal '
-						.'   SET deal_date=NULL, target_type=NULL, deal_type=NULL, sub_source=NULL, sub_source_alert=NULL '
-						.'       , sub_source_user_id=NULL, sub_source_created=NULL '
-						.' WHERE sn = '.$deal_sn.' AND contract_no="'.$contract_no.'" '
-						;
-
-			$this->db->query($update_01);
-
-			if ( $this->db->affected_rows() > 0 ) {
-
-				//dprint($this->db->last_query(). ' → '. $this->db->affected_rows() .'筆');
-
-				$this->db->delete('deal_sales', array('deal_sn' => $deal_sn)); 
-				//dprint($this->db->last_query(). ' → '. $this->db->affected_rows() .'筆');
-
-				$this->db->delete('deal_lands', array('deal_sn' => $deal_sn)); 
-				//dprint($this->db->last_query(). ' → '. $this->db->affected_rows() .'筆');
-
-				$this->db->delete('deal_customers', array('deal_sn' => $deal_sn)); 
-				//dprint($this->db->last_query(). ' → '. $this->db->affected_rows() .'筆');
-			}
-
-
-			if ( $this->db->trans_status() === FALSE) {
-
-				$this->db->trans_rollback();
-				$this->showFailMessage();
-
-			} else {
-				$this->db->trans_commit();
-				$this->showSuccessMessage();
-
-			}
-			## 交易結束　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　－　
-
-		}
-		redirect(bUrl('listDeal'));
-
-	}
-
-
-
-	/**
-	 * Deal一覽表數據
-	 */
-	public function listDeal()
-	{
-		$list = array();
-		/* 改用 dataTable → ajax 取得資料
-		$deal_list = $this->it_model->listData("deal" );
-		$org_map = array();
-		foreach ($deal_list["data"] as $item) 
-		{
-			$deal_sn = tryGetData('sn', $item);
-			// 查詢單位成交編號
-			$seller_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'S');
-			$item['seller_unit_deal_list'] = $seller_unit_deal_list;
-
-			$buyer_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'B');
-			$item['buyer_unit_deal_list'] = $buyer_unit_deal_list;
-
-			$register_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'N');
-			$item['register_unit_deal_list'] = $register_unit_deal_list;
-
-			$list[] = $item;
-		}
-		*/
-
-		$data["list"] = $list;
-		$this->display("list_view", $data);
-
-	}
-
-
-	/**
-	 * Deal一覽表數據
-	 */
-	public function ajaxGetDealList()
-	{	
-		$list = array();
-
-		$deal_list = $this->it_model->listData("deal", null, null, null, array('deal_date'=>'desc', 'contract_no'=>'asc'));
-
-		$org_map = array();
-		foreach ($deal_list["data"] as $item) 
-		{
-			$deal_sn = tryGetData('sn', $item);
-
-			// 查詢單位成交編號
-			$seller_unit_deal_list = '';
-			$seller_unit_deal_result = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'S');
-			if ( isNotNull($seller_unit_deal_result) ) {
-				foreach ($seller_unit_deal_result as $seller_unit_deal_info) {
-					$agent_role = tryGetData('agent_role', $seller_unit_deal_info);
-					$unit_name = tryGetData('unit_name', $seller_unit_deal_info);
-					$unit_deal_no = tryGetData('unit_deal_no', $seller_unit_deal_info);
-					$seller_unit_deal_list .= $unit_name.' '.$unit_deal_no.'<br>';
-				}
-			} else {
-				$seller_unit_deal_list = '-';
-			}
-			$item['seller_unit_deal_list'] = $seller_unit_deal_list;
-
-			$buyer_unit_deal_list = '';
-			$buyer_unit_deal_result = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'B');
-			if ( isNotNull($buyer_unit_deal_result) ) {
-				foreach ($buyer_unit_deal_result as $seller_unit_deal_info) {
-					$agent_role = tryGetData('agent_role', $seller_unit_deal_info);
-					$unit_name = tryGetData('unit_name', $seller_unit_deal_info);
-					$unit_deal_no = tryGetData('unit_deal_no', $seller_unit_deal_info);
-					$buyer_unit_deal_list .= $unit_name.' '.$unit_deal_no.'<br>';
-				}
-			} else {
-				$buyer_unit_deal_list = '-';
-			}
-			$item['buyer_unit_deal_list'] = $buyer_unit_deal_list;
-
-			//$register_unit_deal_list = $this->deal_model->getUnitDealNoByDealSn($deal_sn, 'N');
-			//$item['register_unit_deal_list'] = $register_unit_deal_list;
-			if ( isNotNull(tryGetData('total_deal_amount', $item, NULL)) ) {
-				$item['total_deal_amount'] = '$ '.number_format_clean($item['total_deal_amount'],2);
-			} else {
-				$item['total_deal_amount'] = '';
-			}
-
-			$urls = '<a class="btn btn-minier btn-info" href="'.bUrl("detail",TRUE,NULL,array("sn"=>tryGetData('sn', $item))).'">
-												<i class="icon-edit bigger-120"></i>檢視
-											</a>';
-			$urls .= '&nbsp;&nbsp;<a class="btn btn-minier btn-purple" href="'.bUrl("resetDealSubInfo",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "cno"=>tryGetData('contract_no', $item))).'">
-												<i class="icon-edit bigger-120"></i>重設客資
-											</a>';
-			$item['urls'] = $urls;
-			$list[] = $item;
-		}
-
-		$data["list"] = $list;
-
-
-		$output_ary = array();
-		$output_ary["data"] = $list;
-
-		echo json_encode($output_ary, JSON_UNESCAPED_UNICODE);
-
-		//$this->display("list_view",$data);
-
-	}
-
-
-
-
-
-
-
 
 	/**
 	 * category edit page
@@ -497,6 +271,8 @@ class Userimport extends Backend_Controller {
 									,  'owner_addr'	=> $owner_addr
 									,  'gas_right'	=> $gas_right=='Y' ? 1 : 0
 									,  'voting_right'	=> $voting_right=='Y' ? 1 : 0
+									,  'is_sync'	=> 0
+									,  'launch'		=> 0
 									,  'created'	=> $now
 									,  'created_by'	=> $this->session->userdata('user_name')
 									);
@@ -504,10 +280,10 @@ class Userimport extends Backend_Controller {
 					$query = 'INSERT IGNORE INTO `sys_user` '
 							.'       (`comm_id`, `building_id`, `id`, `role`, `name`, `gender` '
 							.'       , `tel`, `phone`, `is_contact`, `is_owner`, `owner_addr` '
-							.'       , `gas_right`, `voting_right`, `created`, `created_by`) '
+							.'       , `gas_right`, `voting_right`, is_sync, launch, `created`, `created_by`) '
 							.'VALUES (?, ?, ?, ?, ?, ? '
 							.'       , ?, ?, ?, ?, ? '
-							.'       , ?, ?, ?, ?)'
+							.'       , ?, ?, ?, ?, ?, ?)'
 							;
 					$ins_res = $this->db->query($query, $add_data);
 					$user_sn = $this->db->insert_id();
@@ -580,7 +356,7 @@ class Userimport extends Backend_Controller {
 
 	public function GenerateTopMenu()
 	{		
-		$this->addTopMenu(array("listDeal","importContent","updateImport"));
+		$this->addTopMenu(array("index","updateImport"));
 	}
 
 }
