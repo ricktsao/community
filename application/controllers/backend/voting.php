@@ -123,6 +123,7 @@ class Voting extends Backend_Controller {
 				if($this->it_model->updateData( "voting" , $edit_data, "sn =".$edit_data["sn"] ))
 				{
 					$sync_result = $this->Voting_model->sync_to_server($edit_data,"sync_voting/updateContent");
+					$this->it_model->updateData("voting",array("is_sync"=>$sync_result),"sn = ".$edit_data["sn"]);
 					$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					$this->showSuccessMessage();					
 				}
@@ -205,15 +206,101 @@ class Voting extends Backend_Controller {
 
 		$sn = $this->input->get('sn');
 
+		//check is manager
+
+		$this->session->userdata('user_sn');
+
+		$sql="SELECT IF(is_manager=1,TRUE,FALSE) as is_manager FROM sys_user WHERE sn=".$this->session->userdata('user_sn');
+
+		$is_manager = $this->it_model->runSql($sql);
+
+		$is_manager = $is_manager['data'][0]['is_manager'];
+		
+
 		$data = [];
 
-		$data['list'] = $this->Voting_model->votingRecord($sn);
+		$data['list'] = $this->Voting_model->votingRecord($sn,$is_manager);
 
 		
 		
 		
 		$this->display("voting_record_view",$data);
 		
+	}
+
+	public function showPdf()
+	{
+		$sn = $this->input->get('sn');
+		//$item_info = $this->c_model->GetList( "bulletin" , "sn =".$content_sn);
+		$list = $this->Voting_model->votingRecord($sn);
+
+	//	dprint($list);
+	//	die();	
+		if($list)
+		{		
+						
+	
+			$html = "<h1 style='text-align:center'>社區議題投票</h1>";
+			$html .= "<h2>".$list["subject"]."</h2>";
+			$html .= "<h3>".$list["description"]."</h3>";
+			if($list['create_user']!=''){
+				$html .= "<h3>發起人:".$list["create_user"]."</h3>";
+			}
+			$html .= "<table border=1 style='width:100%;'>
+						<thead>
+							<tr>
+								<td style='text-align:center'>項次</td>
+								<td style='text-align:center'>選項</td>
+								<td style='text-align:center'>得票</td>
+							</tr>
+						</thead>
+						<tbody>";
+
+			for($i=0;$i<count($list['options']);$i++){
+
+				$html.= "<tr>
+							<td style='text-align:center'>".($i+1).".</td>
+							<td>".$list['options'][$i]['option_text']."</td>
+							<td style='text-align:center'>".$list['options'][$i]['voting_count']."</td>
+						</tr>";
+
+
+			}
+
+			$html .= "<tbody></table>";
+	
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+		
+				$mpdf->SetWatermarkImage($water_info["img_filename"]);
+				$mpdf->watermarkImageAlpha = 0.081;
+				$mpdf->showWatermarkImage = true;				
+			}
+			
+			
+			
+			$mpdf->WriteHTML($html);	
+
+
+			$time = time();
+			$pdfFilePath = "社區議題投票_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
 	}
 
 	

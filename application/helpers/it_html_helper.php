@@ -303,6 +303,7 @@
   	
 	function tryGetData($arry_key,$check_ary , $default_value='')
 	{
+		//echo '<br>#'.$arry_key;
 		if(isNotNull($check_ary) && array_key_exists($arry_key , $check_ary))
 		{
 			if($check_ary[$arry_key] == '')

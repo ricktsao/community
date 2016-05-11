@@ -32,7 +32,7 @@ tinymce.init({
          "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
          "save table contextmenu directionality emoticons template paste textcolor"
    ],
-   toolbar: "insertfile undo redo | styleselect | fontselect fontsizeselect bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage code | forecolor backcolor emoticons",
+   toolbar: "insertfile undo redo | styleselect | fontselect fontsizeselect bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link  | print preview media fullpage code | forecolor backcolor emoticons",
    
     add_unload_trigger: false,
     remove_linebreaks: false,

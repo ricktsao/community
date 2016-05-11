@@ -7,9 +7,9 @@
 		<i class="ace-icon fa fa-angle-double-right"></i>請選擇收件人		
 	</h1>
 </div>
-<form  role="search" action="<?php echo bUrl('index');?>">
-<article class="well">              
-
+<form  role="search" >
+<article class="well">
+    
     <div class="btn-group">
 	<?php
 	// 戶別

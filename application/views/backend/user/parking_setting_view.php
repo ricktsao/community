@@ -117,7 +117,9 @@
 											<span class="lbl"></span>
 										</label>
 									</th>
-									<th>車位別</th>
+									<th><?php echo $parking_part_01;?></th>
+									<th><?php echo $parking_part_02;?></th>
+									<th><?php echo $parking_part_03;?></th>
 									<th>車號</th>
 									<th>設定日期</th>
 									<th>設定人</th>
@@ -130,6 +132,11 @@
 							} else {
 									$note_flag = false;
 									foreach ($exist_parking_array as $key=>$parking) {
+
+										$parking_id = tryGetData('parking_id', $parking, NULL);
+										if ( isNotNull($parking_id) ) {
+											$parking_part =  parking_id_to_text($parking_id, true);
+										}
 									?>
 									<tr>
 										<td class="center">
@@ -146,14 +153,9 @@
 											//}
 											?>
 										</td>
-										<td>
-										<?php 
-										$parking_id = tryGetData('parking_id', $parking, NULL);
-										if ( isNotNull($parking_id) ) {
-											echo parking_id_to_text($parking_id);
-										}
-										?>
-										</td>
+										<td><?php echo $parking_part[0];?></td>
+										<td><?php echo $parking_part[1];?></td>
+										<td><?php echo $parking_part[2];?></td>
 										<td><?php echo '<span style="font-size:16px">'.tryGetData('car_number', $parking, '-').'</span>';?></td>
 										
 										<td><?php echo tryGetData('updated', $parking, '-');?></td>

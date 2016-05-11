@@ -24,7 +24,7 @@
                 </ul>
             </li>
             <li>
-                <a href="#"><img src="<?php echo base_url().$templateUrl;?>images/btn3.png" alt=""></a>
+                <a href="<?php echo frontendUrl("about")?>"><img src="<?php echo base_url().$templateUrl;?>images/btn3.png" alt=""></a>
             </li>
             <li>
                 <a href="<?php echo backendUrl()?>"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>				

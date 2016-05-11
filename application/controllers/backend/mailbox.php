@@ -41,8 +41,16 @@ class Mailbox extends Backend_Controller {
 		$mail_box_type_ary = explode(",",$mail_box_type);
 		$data["mail_box_type_ary"] = $mail_box_type_ary;
 		
+		$build_id_ary = explode("_", tryGetData("building_id", $user_info));
+		$build_id_str = "";
+		if(count($build_id_ary)==3)
+		{
+			$build_id_str = $build_id_ary[0]."_".$build_id_ary[1]."_%";
+		}
+				
+		$mailbox_list = $this->it_model->listData("mailbox","is_receive = 0 and user_building_id like '".$build_id_str."' ", NULL , NULL, array("booked"=>'desc'));				
+		//dprint($mailbox_list);
 		
-		$mailbox_list = $this->it_model->listData("mailbox","is_receive = 0 and user_building_id = '".$user_info["building_id"]."' ", NULL , NULL, array("booked"=>'desc'));				
 		$data["mailbox_list"] = $mailbox_list["data"];
 		
 		$this->display("content_list_view",$data);
