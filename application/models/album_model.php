@@ -70,6 +70,30 @@ Class Album_model extends IT_Model
 		return $item_result;
 	}
 
+
+	public function all_sync(){
+
+		$query = "SELECT * FROM album WHERE is_sync=0";
+		$re = $this->runSql($query);
+		$data = $re['data'];
+		for($i=0;$i<$re['count'];$i++){
+			unset($data[$i]['is_sync']);
+			$sync_result = $this->sync_to_server($data[$i],"sync_album/updateContent");
+			$this->updateData( "album" , array("is_sync"=>$sync_result), "sn =".$data[$i]["sn"]);
+		}
+
+		$query = "SELECT * FROM album_item WHERE is_sync=0";
+		$re = $this->runSql($query);
+		$data = $re['data'];
+		for($i=0;$i<$re['count'];$i++){
+			unset($data[$i]['is_sync']);
+			$sync_result = $this->sync_to_server($data[$i],"sync_album/updatePhoto");
+			$this->updateData( "album_item" , array("is_sync"=>$sync_result), "sn =".$data[$i]["sn"]);
+		}
+
+
+	}
+
 	public	function sync_to_server($post_data =null,$page_name){
 		//$url = "http://localhost/commapi/sync/updateContent";
 		$url = $this->config->item("api_server_url").$page_name;
