@@ -51,19 +51,27 @@
                 <div>
                     <tr>
                         <td class="text_left">房源列表</td>
-                        <td style="width:15%;">
+                        <td style="width:15%;">坪數
+							<?php
+							/*
                             <a href="#" class="orange_btn">
                                     坪數
                                 <i style="display:none" class="fa fa-arrow-down" aria-hidden="true"></i>
                                 <i style="display:none" class="fa fa-arrow-up" aria-hidden="true"></i> 
                             </a>
+							*/
+							?>
                         </td>
-                        <td style="width:15%;">
+                        <td style="width:15%;">總價
+							<?php
+							/*
                             <a href="#" class="gray_btn">
                                 總價
                                 <i style="display:none" class="fa fa-arrow-down" aria-hidden="true"></i>
                                 <i style="display:none" class="fa fa-arrow-up" aria-hidden="true"></i> 
                             </a>
+							*/
+							?>
                         </td>
                     </tr>
                 </div>

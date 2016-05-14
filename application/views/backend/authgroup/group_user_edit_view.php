@@ -33,7 +33,7 @@
 							</label>
 						</td>
 						
-						<td><?php echo $user_list[$i]["id"]?></td>
+						<td><?php echo $user_list[$i]["account"]?></td>
 						<td><?php echo $user_list[$i]["name"]?></td>
 						<td><?php echo $user_list[$i]["title"]?></td>					
 						<td><?php echo $user_list[$i]["phone"]?></td>
@@ -172,7 +172,7 @@ $(function(){
                 $(nTd).html('<label class="pos-rel"><input type="checkbox" class="ace" name="user_sn[]" value="' + sData + '" /><span class="lbl"></span></label>');
             }
         }, 
-        { "data": "id" },
+        { "data": "account" },
         { "data": "name" },
         { "data": "title" },        
         { "data": "phone" },

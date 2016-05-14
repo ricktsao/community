@@ -546,7 +546,7 @@ class Authgroup extends Backend_Controller
 		
 		if(count($user_sn_ary)>0)
 		{
-			$condition = "AND sn in (".implode(",", $user_sn_ary).")";
+			$condition = "AND role='M' AND sn in (".implode(",", $user_sn_ary).")";
 			$query = "select SQL_CALC_FOUND_ROWS * "
 						."    from sys_user"						
 						."   where 1 ".$condition
@@ -594,10 +594,10 @@ class Authgroup extends Backend_Controller
 		$user_sn_ary = datatoArray($user_group_list,"sys_user_sn");	
 		//-----------------------------------------------------------------------------------------------------------------------------
 
-		$condition = "";
+		$condition = "AND role='M' ";
 		if(count($user_sn_ary)>0)
 		{
-			$condition = "AND sn not in (".implode(",", $user_sn_ary).") AND launch=1";			
+			$condition .= "AND sn not in (".implode(",", $user_sn_ary).") AND launch=1";			
 		}
 		
 		
@@ -618,7 +618,7 @@ class Authgroup extends Backend_Controller
 			$tmp_data = array
 			(
 				"sn" => $item["sn"],
-				"id" => $item["id"],
+				"account" => $item["account"],
 				"name" => $item["name"],
 				"title" => $item["title"],
 				"phone" => $item["phone"],
