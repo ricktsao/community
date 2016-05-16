@@ -31,41 +31,41 @@
 		<?php //dprint($houses);?>
 		<div id="blockB">
 			<div class="block_title">
-				<img src="<?php echo base_url($templateUrl);?>images/index_title2.png" alt="">
-				<a href="<?php echo frontendUrl('rent_house','index')?>"><img src="<?php echo base_url($templateUrl);?>images/more.png" alt=""></a>
+				<img src="<?php echo base_url($templateUrl);?>/images/index_title2.png" alt="">
+				<a href="<?php echo frontendUrl('rent_house','index')?>"><img src="<?php echo base_url($templateUrl);?>/images/more.png" alt=""></a>
 			</div>
 			<ul id="rental" class="ul_unstyle">
 				<?php
-							foreach ($houses as $house) {
+				foreach ($houses as $house) {
 
-				$photos = tryGetData('photos', $house, array());
-				//dprint($photos );
-				$photo = '';
-				if ( sizeof($photos) > 0) {
-					$photo = tryGetData('photo', $photos[0], NULL);
-					if (isNotNull($photo)) {
-						$photo = '<img src="'.$photo.'" width=113 height=66>';
+					$photos = tryGetData('photos', $house, array());
+					//dprint($photos );
+					$photo = '';
+					if ( sizeof($photos) > 0) {
+						$photo = tryGetData('photo', $photos[0], NULL);
+						if (isNotNull($photo)) {
+							$photo = '<img src="'.$photo.'" width=113 height=66>';
+						}
 					}
-				}
-				echo sprintf('	<li>
-									<a href="%s" title="【租屋】 %s" class="img">
-										%s
-									</a>
-									<div class="rental_content">
-										<a href="%s">%s</a>
-										<div>%s - %s.....</div>
-										<div>%d 元/月</div>
-									</div>
-								</li>'
-							, frontendUrl('rent_house','index/?sn='.$house['sn'])
-							, $house['title']
-							, $photo
-							, frontendUrl('rent_house','index/?sn='.$house['sn'])
-							, $house['title']
-							, $house['rent_type']
-							, $house['house_type']
-							, number_format_clean($house['rent_price'],2)
-							);
+					echo sprintf('	<li>
+										<a href="%s" title="【租屋】 %s" class="img">
+											%s
+										</a>
+										<div class="rental_content">
+											<a href="%s">%s</a>
+											<div>%s - %s.....</div>
+											<div>%d 元/月</div>
+										</div>
+									</li>'
+								, frontendUrl('rent_house','index/?sn='.$house['sn'])
+								, $house['title']
+								, $photo
+								, frontendUrl('rent_house','index/?sn='.$house['sn'])
+								, $house['title']
+								, $house['rent_type']
+								, $house['house_type']
+								, number_format_clean($house['rent_price'],2)
+								);
 				}
 				?>
 			</ul>
