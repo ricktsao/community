@@ -334,6 +334,83 @@ class User extends Backend_Controller
 
 
 
+	/**
+	*   匯出 excel
+	*/
+
+	public function exportJson()
+	{
+		echo 'app random number.. '.time();
+		die;
+
+		$condition = ' AND role = "I"';
+
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);
+		}
+
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+		
+		// 搜尋戶別
+		$building_id = NULL;
+		if (isNotNull($b_part_01) && $b_part_01 > 0) {
+			$building_id = $b_part_01.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && $b_part_01 > 0 && $b_part_02 > 0) {
+			$building_id .= $b_part_02.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && isNotNull($b_part_03) && $b_part_01 > 0 && $b_part_02 > 0 && $b_part_03 > 0) {
+			$building_id .= $b_part_03;
+		}
+		if (isNotNull($building_id)) {
+			$condition .= ' AND building_id like "'.$building_id.'%"' ;
+		}
+
+		// 指定客戶姓名
+		$keyword = tryGetData('keyword', $query_key, NULL);	
+		$data['given_keyword'] = '';
+		if(isNotNull($keyword)) {
+			$data['given_keyword'] = $keyword;
+			$condition .= " AND ( `id` like '%".$keyword."%' "
+						."      OR `name` like '%".$keyword."%' "
+						."      OR `tel` like '".$keyword."%' " 
+						."      OR `phone` like '".$keyword."%'  ) "
+						;
+		}
+
+		$query = "select SQL_CALC_FOUND_ROWS s.* "
+						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
+						."   where 1 ".$condition
+						."   order by s.building_id, s.name "
+						;
+
+		$admin_list = $this->it_model->runSql( $query,  NULL, NULL );
+		//dprint( $admin_list["sql"]);
+		$data["list"] = $admin_list["data"];
+		
+		//取得分頁
+		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
+
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		$data['b_part_03'] = $b_part_03;
+
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+
+		$this->load->view($this->config->item('admin_folder').'/user/user_list_json_view.php', $data);
+	}
+
+
+
 
 	/**
 	*   匯出 excel
