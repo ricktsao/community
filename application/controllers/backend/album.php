@@ -17,6 +17,11 @@ class Album extends Backend_Controller {
 	 */
 	public function contentList()
 	{
+		
+		$this->album_model->all_sync();
+		$folder_name = $this->router->fetch_class();
+		$this->sync_file($folder_name);
+
 		$this->sub_title = "相簿";	
 	
 		//---------------------------------------------------------------------
