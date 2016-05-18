@@ -131,7 +131,12 @@
 										<td>
 										<?php
 										if (isNotNull(tryGetData("app_id", $item, NULL))) {
-											echo tryGetData("app_id", $item);
+											echo '******'.mb_substr(tryGetData("app_id", $item), 6);
+											//echo '已開通';
+										?>
+										
+											
+										<?php
 										} else echo '尚未開通';
 										?>
 										</td>
@@ -169,7 +174,7 @@
 										</td>
 										<td>
 											<a class="btn  btn-minier btn-pink" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>磁卡變更
+												<i class="icon-edit bigger-120"></i>磁卡設定
 											</a>
 										</td>
 										<td>

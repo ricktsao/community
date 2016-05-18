@@ -340,9 +340,6 @@ class User extends Backend_Controller
 
 	public function exportJson()
 	{
-		echo 'app random number.. '.time();
-		die;
-
 		$condition = ' AND role = "I"';
 
 		$query_key = array();
@@ -369,27 +366,53 @@ class User extends Backend_Controller
 			$condition .= ' AND building_id like "'.$building_id.'%"' ;
 		}
 
-		// 指定客戶姓名
-		$keyword = tryGetData('keyword', $query_key, NULL);	
-		$data['given_keyword'] = '';
-		if(isNotNull($keyword)) {
-			$data['given_keyword'] = $keyword;
-			$condition .= " AND ( `id` like '%".$keyword."%' "
-						."      OR `name` like '%".$keyword."%' "
-						."      OR `tel` like '".$keyword."%' " 
-						."      OR `phone` like '".$keyword."%'  ) "
-						;
-		}
 
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
-						."   where 1 ".$condition
+						."   where 1 "
+						//." AND id IS NULL "
 						."   order by s.building_id, s.name "
 						;
 
-		$admin_list = $this->it_model->runSql( $query,  NULL, NULL );
-		//dprint( $admin_list["sql"]);
-		$data["list"] = $admin_list["data"];
+		$result = $this->it_model->runSql( $query,  NULL, NULL );
+	//dprint( $result);
+		$list = array();
+		foreach ($result['data'] as $item) {
+
+			$building_id = tryGetData('building_id', $item, NULL);
+			if ( isNotNull($building_id) ) {
+				$building_parts = building_id_to_text($building_id, true);
+				if ( $building_parts !== false) {
+					$mixed_sn = tryGetData('sn', $item);
+					$mixed_sn = ($mixed_sn + 1911 ) * 3;
+
+					$comm_id = tryGetData('comm_id', $item);
+					$comm_name = $this->auth_model->getWebSetting('comm_name');
+					$part_1_name = $this->auth_model->getWebSetting('building_part_01');
+					$part_2_name = $this->auth_model->getWebSetting('building_part_02');
+					$part_3_name = $this->auth_model->getWebSetting('building_part_03');
+
+					$list[] = array( 'comm_id' => $comm_id
+									, 'comm_name' => $comm_name
+									, 'part_1_name' => $part_1_name
+									, 'b_parts_1' => $building_parts[0]
+									, 'part_2_name' => $part_2_name
+									, 'b_parts_2' => $building_parts[1]
+									, 'part_3_name' => $part_3_name
+									, 'b_parts_3' => $building_parts[2]
+									, 'sn' => $mixed_sn
+									, 'name' => tryGetData('name', $item)
+									, 'tel' => tryGetData('tel', $item)
+									, 'phone' => tryGetData('phone', $item)
+									, 'id' => ''
+									);
+				}
+			}
+		}
+		
+
+
+		$data["list"] = $list;
 		
 		//取得分頁
 		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
