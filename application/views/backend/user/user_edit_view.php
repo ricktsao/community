@@ -8,6 +8,60 @@
 	</h1>
 </div>
 
+<article class="well">
+			<?php
+			if (isNotNull(tryGetData('id', $edit_data, NULL)) ){
+			?>
+				<a class="btn btn-sm btn-info" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>" >
+					<i class="icon-edit bigger-120"></i>變更磁卡
+				</a>
+				<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>">
+					<i class="icon-edit bigger-120"></i>設定車位
+				</a>
+			<?php
+			} else {
+			?>
+				<a class="btn btn-sm btn-info" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>" >
+					<i class="icon-edit bigger-120"></i>設定磁卡
+				</a>
+				<a class="btn btn-sm btn-gray" href="#" onclick='return alert("請先設定住戶磁卡")'>
+					<i class="icon-edit bigger-120"></i>設定車位
+				</a>
+			<?php
+			}
+
+			$building_id = tryGetData('building_id', $edit_data);
+			$tmp_array = array("sn" => tryGetData('sn', $edit_data)
+							,  "id" => tryGetData('id', $edit_data)
+							,  "b_id" => base64_encode($building_id)
+							,  "n" => tryGetData('name', $edit_data)
+							,  "g" => tryGetData('gender', $edit_data)
+							,  "role"=>tryGetData('role', $edit_data)
+							) ;
+			if ( isNotNull(tryGetData('app_id', $edit_data , NULL)) || isNotNull(tryGetData('act_code', $edit_data , NULL))) {
+			?>
+				<a class="btn btn-sm btn-pink" href="<?php echo bUrl("resetActCode",TRUE,NULL, $tmp_array); ?>" onclick='return confirm("重設APP開通碼，必須請住戶重新執行APP啟用程序，\n\n請再次確認是否重設??")'>
+					<i class="icon-edit bigger-120"></i>重設APP開通碼
+				</a>
+			<?php
+			} else {
+
+				if (isNotNull(tryGetData('id', $edit_data, NULL)) ){
+				?>
+					<a class="btn btn-sm btn-pink" href="<?php echo bUrl("resetActCode", TRUE, NULL, $tmp_array); ?>" onclick='return confirm("設定APP開通碼，須請住戶執行APP啟用程序，\n\n請確認??")'>
+						<i class="icon-edit bigger-120"></i>設定APP開通碼
+					</a>
+				<?php
+				} else {
+				?>
+					<a class="btn btn-sm btn-gray" href="#" onclick='return alert("請先設定住戶磁卡")'>
+						<i class="icon-edit bigger-120"></i>設定APP開通碼
+					</a>
+				<?php
+				}
+			}
+			?>
+</article>
 
 <?php
   if(validation_errors() != false) {
@@ -28,48 +82,83 @@
 	?>
 	<div class="form-group ">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">磁　卡</label>
-		<div class="col-xs-12 col-sm-4">
+		<div class="col-xs-12 col-sm-3">
 			<label class="middle" style="width:100%;">
 			<?php
 			if (isNotNull(tryGetData('id', $edit_data , NULL)) ){
-				echo mask($edit_data['id'] , 3, 4).'　　　';
-				?>
-				<a class="btn  btn-minier btn-yellow" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>">
-					<i class="icon-edit bigger-120"></i>變更
-				</a>
-				<?php
+				echo mask($edit_data['id'] , 2, 4);
 			} else {
-				echo '　　　';
+				echo '（未登錄）';
+			}
 			?>
-			<a class="btn  btn-minier btn-yellow" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>">
-				<i class="icon-edit bigger-120"></i>設定
+			</label>
+		</div>
+
+		<!-- <div class="col-xs-12 col-sm-2">
+			<?php
+			if (isNotNull(tryGetData('id', $edit_data , NULL)) ){
+			?>
+			<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>">
+				<i class="icon-edit bigger-120"></i>變更磁卡
 			</a>
 			<?php
 			}
 			?>
-			</label>
-		</div>
+		</div> -->
 	</div>
+
+
 	<div class="form-group ">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">APP ID</label>
-		<div class="col-xs-12 col-sm-4">
+		<div class="col-xs-12 col-sm-3">
 			<label class="middle" style="width:100%;">
 			<?php
 			if (isNotNull(tryGetData('app_id', $edit_data , NULL)) ){
-			?>
-				<?php
-				echo mask($edit_data['app_id'] , 3, 4).'　　　';
-				?>
-				<a class="btn  btn-minier btn-pink" href="#<?php echo bUrl("resetApp",TRUE,NULL,array("sn"=>tryGetData('sn', $edit_data), "role"=>tryGetData('role', $edit_data))); ?>">
-					<i class="icon-edit bigger-120"></i>設定
-				</a>
-			<?php
+				echo mask($edit_data['app_id'] , 2, 4).'　　　';
+
 			} else {
-				echo 'random number';
+				
+				if (isNotNull(tryGetData('act_code', $edit_data , NULL)) ){
+					echo '（APP 開通碼：'.tryGetData('act_code', $edit_data).'）';
+				} else {
+					echo '（待開通）';
+				}
 			}
 			?>
 			</label>
 		</div>
+
+		<!-- <div class="col-xs-12 col-sm-2">
+			<?php
+					$building_id = tryGetData('building_id', $edit_data);
+					$tmp_array = array("sn" => tryGetData('sn', $edit_data)
+									,  "id" => tryGetData('id', $edit_data)
+									,  "b_id" => base64_encode($building_id)
+									,  "n" => tryGetData('name', $edit_data)
+									,  "g" => tryGetData('gender', $edit_data)
+									,  "role"=>tryGetData('role', $edit_data)
+									) ;
+			if ( isNotNull(tryGetData('app_id', $edit_data , NULL)) || isNotNull(tryGetData('act_code', $edit_data , NULL))) {
+			?>
+				<a class="btn  btn-sm btn-pink" href="<?php echo bUrl("resetActCode",TRUE,NULL, $tmp_array); ?>">
+					<i class="icon-edit bigger-120"></i>重設
+				</a>
+			<?php
+			} else {
+
+				if (isNotNull(tryGetData('id', $edit_data , NULL)) ){
+
+					?>
+					<a class="btn  btn-sm btn-pink" href="<?php echo bUrl("resetActCode", TRUE, NULL, $tmp_array); ?>">
+						<i class="icon-edit bigger-120"></i>設定
+					</a>
+				<?php
+				}
+			}
+			?>
+		</div> -->
+
+
 	</div>
 	
 	<?php

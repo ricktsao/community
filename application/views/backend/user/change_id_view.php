@@ -49,7 +49,13 @@
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">現有磁卡：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:normal'><?php echo tryGetData('id',$user_data); ?></span></div>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:normal'>
+				<?php
+				if (isNotNull(tryGetData('id', $user_data , NULL)) ){
+					echo mask($user_data['id'] , 2, 4);
+				}
+				?>
+				</span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>

@@ -43,7 +43,6 @@
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
-
 </article>
 
 
@@ -101,7 +100,7 @@
 										<th>所有權人</th>
 										<th>緊急<br />聯絡人</th>
 										<th>管委</th>
-										<th colspan="3">操作</th>
+										<th>操作</th>
 										<th>啟用/停用</th>
 										
 									</tr>
@@ -126,7 +125,13 @@
 										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
 										</td>
 										<td>
-										<?php echo tryGetData('id', $item);?>
+										<?php
+										if (isNotNull(tryGetData('id', $item, NULL)) ) {
+											echo mask($item['id'] , 2, 4);
+										} else {
+											echo '（未登錄）';
+										}
+										?>
 										</td>
 										<td>
 										<?php
@@ -137,7 +142,14 @@
 										
 											
 										<?php
-										} else echo '尚未開通';
+										} else {
+
+											if (isNotNull(tryGetData("act_code", $item, NULL))) {
+												echo '（待開通）';
+											} else {
+												echo '（尚未開通）';
+											}
+										}
 										?>
 										</td>
 										<td>
@@ -168,16 +180,6 @@
 											</a>
 										</td>
 										<td>
-											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>車位設定
-											</a>
-										</td>
-										<td>
-											<a class="btn  btn-minier btn-pink" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>磁卡設定
-											</a>
-										</td>
-										<td>
 											<div class="col-xs-3">
 												<label>
 													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo tryGetData('launch', $item)==1?"checked":"" ?> value="<?php echo tryGetData('sn', $item) ?>" onClick='javascript:launch(this);' />
@@ -195,7 +197,7 @@
 									
 								</tbody>
 								<tr>
-					              	<td colspan="14">
+					              	<td colspan="13">
 									<?php echo showBackendPager($pager)?>
 					                </td>
 								</tr>

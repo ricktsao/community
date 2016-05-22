@@ -1009,7 +1009,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='house_to_sale') {
+		if ($table_name =='sys_user') {
 			dprint($url);
 			dprint($post_data);
 			dprint($is_sync);
