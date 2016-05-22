@@ -76,27 +76,47 @@
 										<td><?php echo showDateFormat($list[$i]["start_date"],"Y-m-d") ?></td>
 
 										<td>
+											<?php if($list[$i]["is_edoma"]==1){?>
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+												<i class="icon-edit bigger-120"></i>檢視
+											</a>
+											<?php }else{?>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
+											<?php } ?>
+											
+											
 											<a class="btn  btn-minier btn-danger" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>PDF下載
 											</a>
+											
 										</td>
 										<td>					
 											<div class="col-xs-3">
+												<?php if($list[$i]["is_edoma"]==1){?>
+												-
+												<?php }else{?>
 												<label>
 													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo $list[$i]["launch"]==1?"checked":"" ?> value="<?php echo $list[$i]["sn"] ?>" onClick='javascript:launch(this);' />
 													<span class="lbl"></span>
 												</label>
+												<?php } ?>
+											
+												
 											</div>
 										</td>
 										
 										<td class="center">
+											<?php if($list[$i]["is_edoma"]==1){?>
+											-
+											<?php }else{?>
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
 												<span class="lbl"></span>
 											</label>
+											<?php } ?>
+											
 										</td>
 									</tr>
 									<?php } ?>

@@ -5,7 +5,7 @@ class Course extends Backend_Controller {
 	function __construct() 
 	{
 		parent::__construct();		
-		
+		$this->getEdomaData();
 	}
 	
 
@@ -75,9 +75,18 @@ class Course extends Backend_Controller {
 			if($course_info["count"]>0)
 			{				
 				img_show_list($course_info["data"],'img_filename',"course");
-				$data["edit_data"] = $course_info["data"][0];			
-
-				$this->display("content_form_view",$data);
+				$course_info = $course_info["data"][0];
+				$data["edit_data"] = $course_info;			
+				
+				if($course_info["is_edoma"]==1)
+				{
+					$this->display("content_view",$data);
+				}
+				else
+				{
+					$this->display("content_form_view",$data);
+				}
+				
 			}
 			else
 			{
@@ -90,7 +99,8 @@ class Course extends Backend_Controller {
 	public function updateContent()
 	{	
 		$edit_data = $this->dealPost();
-						
+		$edit_data["brief"] = tryGetData("brief",$_POST,0);	
+			
 		if ( ! $this->_validateContent())
 		{
 			$data["edit_data"] = $edit_data;		
