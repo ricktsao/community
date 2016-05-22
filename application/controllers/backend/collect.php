@@ -92,7 +92,10 @@ class Collect extends Backend_Controller
 	*/
 
 	public function exportJson()
-	{
+	{	
+		$fPath = "template/backend/card_id_manager/";
+		$this->load->library('zip');
+
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s "
 						."   where role = 'I' "
@@ -136,12 +139,17 @@ class Collect extends Backend_Controller
 			}
 		}
 
-		$data["list"] = $list;
+		$fp = fopen($fPath.'d.js', 'w');
+		fwrite($fp, "var member = ".json_encode($list));
+		fclose($fp);
+
+		$this->zip->read_dir($fPath,FALSE);
+		$this->zip->download('id_manager.zip');
+
 		
-		$this->load->view($this->config->item('admin_folder').'/collect/user_list_json_view.php', $data);
 	}
 
-
+	
 	/**
 	 * category edit page
 	 */
