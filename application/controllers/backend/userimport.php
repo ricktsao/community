@@ -261,6 +261,7 @@ class Userimport extends Backend_Controller {
 					$add_data = array( 'comm_id'	=> $comm_id
 									,  'building_id'	=> $building_id_1.'_'.$building_id_2.'_'.$building_id_3
 									,  'id'			=> 'none'
+									,  'act_code'	=> random_string('numeric',12)
 									,  'role'		=> 'I'
 									,  'name'		=> $name
 									,  'gender'		=> $gender=='男' ? 1 : 2
