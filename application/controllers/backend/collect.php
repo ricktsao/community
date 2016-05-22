@@ -88,13 +88,11 @@ class Collect extends Backend_Controller
 
 
 	/**
-	*   匯出 json
+	*   匯出 json 
 	*/
 
 	public function exportJson()
 	{
-		$condition = ' AND role = "I"';
-
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s "
 						."   where role = 'I' "
