@@ -5,7 +5,7 @@ class Ad extends Backend_Controller {
 	function __construct() 
 	{
 		parent::__construct();		
-		
+		$this->getEdomaData();
 	}
 	
 
@@ -57,10 +57,17 @@ class Ad extends Backend_Controller {
 			if(count($ad_info["data"])>0)
 			{
 				img_show_list($ad_info["data"],'img_filename',$this->router->fetch_class());			
-				
-				$data["edit_data"] = $ad_info["data"][0];			
+				$ad_info = $ad_info["data"][0];
+				$data["edit_data"] = $ad_info;			
 
-				$this->display("content_form_view",$data);
+				if($ad_info["is_edoma"]==1)
+				{
+					$this->display("content_view",$data);
+				}
+				else
+				{
+					$this->display("content_form_view",$data);
+				}
 			}
 			else
 			{

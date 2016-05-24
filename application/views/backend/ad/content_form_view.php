@@ -33,7 +33,7 @@
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				Back
+				回上一頁
 			</a>		
 		
 
@@ -41,7 +41,7 @@
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				送出
 			</button>
 			
 		</div>

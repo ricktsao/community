@@ -1123,6 +1123,169 @@ abstract class Backend_Controller extends IT_Controller
 		}
 	}
 	
+	
+	
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaData()
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma/getEdomaContent";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $json_data;exit;
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+		//dprint($edoma_data_ary);exit;
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+		
+		
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+
+			$arr_data = array
+			(
+				 "comm_id" => $this->getCommId()	
+				, "server_sn" => $server_info["sn"]				
+				, "title" => tryGetData("title",$server_info)	
+				, "brief" => tryGetData("brief",$server_info)
+				, "brief2" => tryGetData("brief2",$server_info)	
+				, "id" => tryGetData("id",$server_info,NULL)	
+				, "content_type" => tryGetData("content_type",$server_info)	
+				, "filename" => tryGetData("filename",$server_info)
+				, "img_filename" => tryGetData("img_filename",$server_info)
+				, "start_date" => tryGetData("start_date",$server_info,NULL)
+				, "end_date" => tryGetData("end_date",$server_info,NULL)
+				, "forever" => tryGetData("forever",$server_info,0)
+				, "launch" => tryGetData("launch",$server_info,0)
+				, "hot" => tryGetData("hot",$server_info,0)
+				, "sort" => tryGetData("sort",$server_info,500)
+				, "url" => tryGetData("url",$server_info)
+				, "target" => tryGetData("target",$server_info,0)
+				, "content" => tryGetData("content",$server_info)
+				, "update_date" =>  date( "Y-m-d H:i:s" )
+				, "del" => tryGetData("del",$server_info,0)
+				, "is_edoma" => 1
+			);        	
+			
+
+		
+			$content_server_info = $this->it_model->listData("web_menu_content","server_sn = '".$server_info["sn"]."'");
+			if($content_server_info["count"]==0)
+			{
+				$arr_data["create_date"] =   date( "Y-m-d H:i:s" );
+				$content_sn = $this->it_model->addData( "web_menu_content" , $arr_data );
+				if($content_sn > 0)
+				{
+					//sync image
+					//--------------------------------------------------------------------
+					if( isNotNull(tryGetData("img_filename",$server_info)) )
+					{
+						$img_url = $this->config->item("api_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
+						$saveto = set_realpath("upload/website/".$server_info["content_type"]).$server_info["img_filename"];
+						$this->download_image($img_url,$saveto);
+					}					
+					//--------------------------------------------------------------------
+					
+					
+					$arr_data["sn"] = $content_sn;					
+					$this->sync_edoma_to_server($arr_data);
+				}
+				
+			}
+			else
+			{
+				$content_server_info = $content_server_info["data"][0];
+				$result = $this->it_model->updateData( "web_menu_content" , $arr_data, "server_sn = '".$server_info["sn"]."'" );
+				if($result)
+				{					
+					//sync image
+					//--------------------------------------------------------------------
+					if( isNotNull(tryGetData("img_filename",$server_info)) )
+					{
+						$img_url = $this->config->item("api_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
+						$saveto = set_realpath("upload/website/".$server_info["content_type"]).$server_info["img_filename"];
+						//dprint($img_url);
+						//dprint($saveto);
+						//exit;
+						$this->download_image($img_url,$saveto);
+					}					
+					//--------------------------------------------------------------------
+			
+					$arr_data["sn"] = $content_server_info["sn"];				
+					$this->sync_edoma_to_server($arr_data);
+				}
+			}
+						
+		}
+		
+		//echo '<meta charset="UTF-8">';
+		//dprint($app_data_ary);
+		
+	}
+	
+	
+	/**
+	 * web_menu_content 同步至雲端server
+	 */
+	function sync_edoma_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync_edoma/updateEdomaContent";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $is_sync;exit;
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "web_menu_content" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+		
+	/**
+	 * 下載圖片
+	 */
+	function download_image($url,$saveto)
+	{
+		$ch = curl_init ($url);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+		$raw=curl_exec($ch);
+		curl_close ($ch);
+		if(file_exists($saveto)){
+			unlink($saveto);
+		}
+		$fp = fopen($saveto,'x');
+		fwrite($fp, $raw);
+		fclose($fp);
+	}
+	
+	
+	
 	/**
 	 * 取得社區id
 	 */
