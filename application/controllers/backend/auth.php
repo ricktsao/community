@@ -20,7 +20,7 @@ class Auth extends Backend_Controller
 			$query_key[$key] = $this->input->get($key,TRUE);			
 		}
 
-		$condition .= ' AND role != "I"' ;
+		$condition .= ' AND role = "M"' ;
 
 		// 指定客戶姓名
 		$keyword = tryGetData('keyword', $query_key, NULL);	
@@ -227,7 +227,8 @@ class Auth extends Backend_Controller
 		{
 			$data["edit_data"] = array
 			(
-				'role' => $role,
+				'role' => 'M',
+				'comm_id' => $this->getCommID(),
 				'gender' => 1,
 				'is_owner' => 1,
 				'is_contact' => 1,
@@ -276,6 +277,9 @@ class Auth extends Backend_Controller
 
 	public function updateAdmin()
 	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");
+		
 		$this->load->library('encrypt');
 		
 		foreach( $_POST as $key => $value )
@@ -306,7 +310,10 @@ class Auth extends Backend_Controller
         	$arr_data = array(				
         		//"email" =>$edit_data["email"]
 				  "name"		=>	tryGetData("name", $edit_data)
+				, "role"		=>	tryGetData("role", $edit_data)
+				, "comm_id"		=>	tryGetData("comm_id", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
+				, "title"		=>	tryGetData("title", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
@@ -316,11 +323,11 @@ class Auth extends Backend_Controller
 				, "manager_title"		=>	tryGetData("manager_title", $edit_data)
 				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
 				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
-				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
+				, "start_date"	=>	date( "Y-m-d" ).' 00:00:01'
 				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
-				, "forever"		=>	tryGetData("forever", $edit_data, 0)
+				, "forever"		=>	tryGetData("forever", $edit_data, 1)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
-				, "updated" =>  date( "Y-m-d H:i:s" ) 				
+				, "updated" =>  date( "Y-m-d H:i:s" )
 			);        	
 			
 			if($edit_data["sn"] != FALSE)
@@ -343,14 +350,9 @@ class Auth extends Backend_Controller
 			}
 			else 
 			{
-				if ( $edit_data["id"] == 'I') {			//住戶用 key code
-					$arr_data["id"] = $edit_data["id"];
 
-				} elseif ( in_array($edit_data["id"], array('G','M','S')) ) {
-					$arr_data["account"] = $edit_data["account"];
-					$arr_data["password"] = prepPassword($edit_data["password"]);	
-				}
-
+				$arr_data["account"] = $edit_data["account"];
+				$arr_data["password"] = prepPassword($edit_data["password"]);
 				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
 				
 				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
@@ -456,8 +458,8 @@ class Auth extends Backend_Controller
 			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
 		}
 		*/
-		$this->form_validation->set_rules( 'name', $this->lang->line("field_name"), 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'phone', $this->lang->line("field_phone"), 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
+		$this->form_validation->set_rules( 'phone', '電話', 'required|max_length[20]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
 		}

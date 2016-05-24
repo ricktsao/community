@@ -119,6 +119,61 @@ class Ad extends Backend_Controller {
 	}
 	
 	
+	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+		$content_sn = $this->input->get('sn');
+		$item_info = $this->c_model->GetList( "ad" , "sn =".$content_sn);
+			
+		if(count($item_info["data"])>0)
+		{
+			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
+			$item_info = $item_info["data"][0];			
+			
+			$img_str = "";
+			if(isNotNull($item_info["img_filename"]))
+			{
+				$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+			}
+			
+			
+			$html .= "<table border=0><tr><td>".$img_str."</table>";
+	
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+		
+				$mpdf->SetWatermarkImage($water_info["img_filename"]);
+				$mpdf->watermarkImageAlpha = 0.081;
+				$mpdf->showWatermarkImage = true;				
+			}
+			
+			
+			
+			$mpdf->WriteHTML($html);	
+
+
+			$time = time();
+			$pdfFilePath = "管廣告託撥_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
+	}
 	
 	//圖片處理
 	private function uploadImage($content_sn)

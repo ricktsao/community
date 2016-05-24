@@ -109,17 +109,17 @@ $config['role_array'] = array(  'I' => '住　戶'
 								//, 'S' => '秘書'
 								, 'F' => '富網通'
 								);
-// 性別
-$config['gender_array'] = array(  1 => '先生'
-								, 2 => '女士'
-								);
+
+// 是否
+$config['yes_no_array'] = array( 0=>'否', 1=>'是');
+// 有無
+$config['yes_no_array2'] = array( 0=>'沒有', 1=>'有');
 
 // 性別
-$config['yes_no_array'] = array( 0=>'否', 1=>'是');
-// 性別
-$config['yes_no_array2'] = array( 0=>'沒有', 1=>'有');
+$config['gender_array'] = array(  1 => '先生' , 2 => '小姐' );
 // 性別
 $config['gender_array2'] = array('m'=>'男性','f'=>'女性', 'a'=>'男女不拘');
+
 // 車位
 $config['parking_array'] = array( 0=>'沒有', 1=>'有-平面式', 2=>'有-機械式');
 
@@ -178,6 +178,7 @@ $config['mail_box_type'] = array(
 
 // api server url
 $config['api_server_url'] = 'http://27.147.4.239/commapi/';
+//$config['api_server_url'] = 'http://localhost/commapi/';
 
 
 //維修範圍

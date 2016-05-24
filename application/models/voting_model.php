@@ -181,6 +181,57 @@ Class Voting_model extends IT_Model
 
 	}	
 
+	public function all_sync(){
+
+		$query = "SELECT * FROM voting WHERE is_sync=0";
+		$re = $this->runSql($query);
+		$data = $re['data'];
+		for($i=0;$i<$re['count'];$i++){
+			unset($data[$i]['is_sync']);
+			$sync_result = $this->sync_to_server($data[$i],"sync_voting/updateContent");
+			$this->updateData( "voting" , array("is_sync"=>$sync_result), "sn =".$data[$i]["sn"]);
+		}
+
+		$query = "SELECT * FROM voting_option WHERE is_sync=0";
+		$re = $this->runSql($query);
+		$data = $re['data'];
+		for($i=0;$i<$re['count'];$i++){
+			unset($data[$i]['is_sync']);
+			$sync_result = $this->sync_to_server($data[$i],"sync_voting/updateOption");
+			$this->updateData( "voting_option" , array("is_sync"=>$sync_result), "sn =".$data[$i]["sn"]);
+		}
+
+
+		$query = "SELECT * FROM voting_record WHERE is_sync=0";
+		$re = $this->runSql($query);
+		$data = $re['data'];
+		for($i=0;$i<$re['count'];$i++){
+			unset($data[$i]['is_sync']);
+			$sync_result = $this->sync_to_server($data[$i],"sync_voting/updateUserVoting");			
+			$this->updateData( "voting_record" , array("is_sync"=>$sync_result), "sn =".$data[$i]["sn"]);
+		}
+
+		//pull cloud data
+
+		$unSyncRecord = json_decode($this->get_un_sync_voting_record(),TRUE);
+
+		for($i=0;$i<count($unSyncRecord);$i++){
+
+			unset($unSyncRecord[$i]['sn']);
+			unset($unSyncRecord[$i]['comm_id']);
+			
+			$content_sn = $this->addData("voting_record",$unSyncRecord[$i]);
+
+			if($content_sn > 0){
+				$sync_result = $this->sync_to_server($unSyncRecord[$i],"sync_voting/updateUserVoting");
+				$this->updateData( "voting_record" , array("is_sync"=>$sync_result), "sn =".$content_sn);
+			}
+
+		}
+
+
+	}
+
 
 	public	function sync_to_server($post_data =null,$page_name){
 		//$url = "http://localhost/commapi/sync/updateContent";
@@ -214,6 +265,35 @@ Class Voting_model extends IT_Model
 		//------------------------------------------------------------------------------
 	}
 	
+	public	function get_un_sync_voting_record(){
+		$page_name = "sync_voting/getUnSyncRecord";
+		//$url = "http://localhost/commapi/sync/updateContent";
+		$url = $this->config->item("api_server_url").$page_name;
+
+		//$url = "http://localhost:8080/commapi/".$page_name;
+
+		
+		$post_data['comm_id'] =  $this->session->userdata("comm_id");
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+
+		
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+	
+		
+		return $is_sync;
+		//------------------------------------------------------------------------------
+	}
+
 
 	
 }

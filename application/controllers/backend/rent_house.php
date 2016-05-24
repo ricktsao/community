@@ -425,7 +425,8 @@ class Rent_House extends Backend_Controller {
 			$sn = $tmp[0];
 			$house_to_rent_sn = $tmp[1];
 			$filename = $tmp[2];
-			@unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
+
+			@unlink('./upload/'.$comm_id.'/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
 			//@unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/thumb_'.$filename);
 
 			$this->it_model->deleteData('house_to_rent_photo',  array('sn' => $sn, 'filename' => $filename));

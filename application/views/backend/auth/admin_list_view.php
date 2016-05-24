@@ -35,9 +35,9 @@
 								<thead>
 									<tr>
 										<th>序號</th>
-										<th>職稱</th>
-										<th>帳號</th>
 										<th style='text-align: center'>姓名</th>
+										<th>帳號</th>
+										<th>職稱</th>
 										<th>性別</th>
 										<th style="width:150px">操作</th>
 										<th>啟用/停用</th>
@@ -52,11 +52,9 @@
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
+										<td style='text-align: center'><?php echo tryGetData('name', $item);?></td>
 										<td style='text-align: center'><?php echo tryGetData('account', $item, '-');?></td>
-										<td>
-										<?php echo tryGetData('name', $item);?>
-										</td>
+										<td style='text-align: center'><?php echo tryGetData('title', $item, '-');?></td>
 										<td style='text-align: center'>
 										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
 										</td>

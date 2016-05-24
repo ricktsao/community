@@ -19,7 +19,7 @@ class Voting extends Backend_Controller {
 	 */
 	public function contentList()
 	{	
-
+		$this->Voting_model->all_sync();
 
 		$list = $this->it_model->listData( "voting","is_del=0",$this->per_page_rows , $this->page );
 		$data["list"] = $list['data'];

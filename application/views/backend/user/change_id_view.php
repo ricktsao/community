@@ -26,7 +26,7 @@
 
 <div class="page-header">
 	<h1>
-		磁卡變更
+		磁卡設定
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			
@@ -38,7 +38,7 @@
 	<div class="col-xs-12 form-horizontal">
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">戶　別：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight: normal'>
 				<?php
 				$building_id = tryGetData('building_id', $user_data, NULL);
 				if ( isNotNull($building_id) ) {
@@ -49,15 +49,21 @@
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">現有磁卡：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('id',$user_data); ?></span></div>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:normal'>
+				<?php
+				if (isNotNull(tryGetData('id', $user_data , NULL)) ){
+					echo mask($user_data['id'] , 2, 4);
+				}
+				?>
+				</span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('name',$user_data); ?></span></div>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:normal'><?php echo tryGetData('name',$user_data); ?></span></div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">行動電話：</label>
-				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('phone',$user_data); ?></span></div>
+				<div class="col-xs-12 col-sm-8"><span style='font-weight:normal'><?php echo tryGetData('phone',$user_data); ?></span></div>
 			</div>
 
 

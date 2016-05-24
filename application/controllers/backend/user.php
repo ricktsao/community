@@ -12,7 +12,7 @@ class User extends Backend_Controller
 	public function index()
 	{
 		$this->getAppData();//同步app登入資料
-		
+	//	die;
 		$condition = ' AND role = "I"';
 
 		$query_key = array();
@@ -334,6 +334,64 @@ class User extends Backend_Controller
 
 
 
+	/**
+	*   匯出 json
+	*/
+
+	public function exportJson()
+	{
+		$condition = ' AND role = "I"';
+
+		$query = "select SQL_CALC_FOUND_ROWS s.* "
+						."    FROM sys_user s "
+						."   where role = 'I' "
+						." AND id IS NULL "
+						."   order by s.building_id, s.name "
+						;
+
+		$result = $this->it_model->runSql( $query,  NULL, NULL );
+
+		$list = array();
+		foreach ($result['data'] as $item) {
+
+			$building_id = tryGetData('building_id', $item, NULL);
+			if ( isNotNull($building_id) ) {
+				$building_parts = building_id_to_text($building_id, true);
+				if ( $building_parts !== false) {
+					$mixed_sn = tryGetData('sn', $item);
+					$mixed_sn = ($mixed_sn + 1911 ) * 3;
+
+					$comm_id = tryGetData('comm_id', $item);
+					$comm_name = $this->auth_model->getWebSetting('comm_name');
+					$part_1_name = $this->auth_model->getWebSetting('building_part_01');
+					$part_2_name = $this->auth_model->getWebSetting('building_part_02');
+					$part_3_name = $this->auth_model->getWebSetting('building_part_03');
+
+					$list[] = array( 'comm_id' => $comm_id
+									, 'comm_name' => $comm_name
+									, 'part_1_name' => $part_1_name
+									, 'b_parts_1' => $building_parts[0]
+									, 'part_2_name' => $part_2_name
+									, 'b_parts_2' => $building_parts[1]
+									, 'part_3_name' => $part_3_name
+									, 'b_parts_3' => $building_parts[2]
+									, 'sn' => $mixed_sn
+									, 'name' => tryGetData('name', $item)
+									, 'tel' => tryGetData('tel', $item)
+									, 'phone' => tryGetData('phone', $item)
+									, 'id' => ''
+									);
+				}
+			}
+		}
+
+		$data["list"] = $list;
+		
+		$this->load->view($this->config->item('admin_folder').'/user/user_list_json_view.php', $data);
+	}
+
+
+
 
 	/**
 	*   匯出 excel
@@ -443,7 +501,39 @@ class User extends Backend_Controller
 		}
 	}
 
+	
+	public function resetActCode()
+	{
+		$sn = $this->input->get('sn',TRUE);
+		$id = $this->input->get('id',TRUE);
+		$name = $this->input->get('n',TRUE);
+		$gender = $this->input->get('g',TRUE);
+		$building_id = base64_decode($this->input->get('b_id',TRUE));
 
+		$arr_data = array("act_code" => random_string('numeric',12)
+						, "app_id" => NULL
+						, "name" => $name
+						, "gender" => $gender
+						, "comm_id" => $this->getCommId()
+						, "building_id" => $building_id
+						, "updated" => date('Y-m-d H:i:s')
+						, "is_sync" =>  0
+						);
+
+		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND id ='".$id."' AND comm_id='".$this->getCommId()."' and role='I' " );
+		if ($arr_return){
+			$this->showSuccessMessage();
+
+			/* 同步 同步 同步 同步 同步 */
+			$arr_data["sn"] = $sn;
+			$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+
+		} else {
+			$this->showFailMessage();	
+		}
+		redirect(bUrl("index"));
+	}
+	
 
 
 	
@@ -453,7 +543,7 @@ class User extends Backend_Controller
 
 		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
-		}		
+		}
 		
 		if ( ! $this->_validate())
 		{
@@ -467,13 +557,19 @@ class User extends Backend_Controller
 			$this->display("change_id_view",$data);
 		}			
         else 
-        {			
+        {
         	$arr_data["id"] = $edit_data["new_id"];
         	$arr_data["updated"] = date("Y-m-d H:i:s");
+        	$arr_data["is_sync"] = 0;
 
       	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' " );
 			if ($arr_return){
 				$this->showSuccessMessage();
+
+				/* 同步 同步 同步 同步 同步 */
+				$arr_data["sn"] = $edit_data['user_sn'];
+				$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+
 			} else {
 				$this->showFailMessage();	
 			}
@@ -824,7 +920,8 @@ class User extends Backend_Controller
         	$arr_data = array(
 				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
 				, "id"			=>	tryGetData("id", $edit_data)
-				, "app_id"		=>	tryGetData("app_id", $edit_data)
+				, "app_id"		=>	NULL
+				, "act_code"	=>  random_string('numeric',12)
 				, "role"		=>	'I'
 				, "building_id"	=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
 				, "name"		=>	tryGetData("name", $edit_data)
@@ -858,7 +955,6 @@ class User extends Backend_Controller
 					$this->_updateWebAdminGroup($edit_data);
 					$this->showSuccessMessage();
 					
-									echo $this->db->last_query();
 						/* 同步 同步 同步 同步 同步 */
 						$arr_data["sn"] = $edit_data['sn'];
 						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
@@ -1073,19 +1169,22 @@ class User extends Backend_Controller
 		
 		foreach( $app_data_ary as $key => $s_user_info ) 
 		{		
-		
+			$act_code = $s_user_info["act_code"];
 		
 			$update_data = array(			
 			"app_id" => $s_user_info["app_id"],			
 			"app_last_login_ip" => $s_user_info["app_last_login_ip"],			
 			"app_last_login_time" => $s_user_info["app_last_login_time"],
 			"app_login_time" => $s_user_info["app_login_time"],
-			"app_use_cnt" => $s_user_info["app_use_cnt"],							
+			"app_use_cnt" => $s_user_info["app_use_cnt"],
 			"updated" => date( "Y-m-d H:i:s" )
 			);
 			
-			$condition = "sn = '".$s_user_info["client_sn"]."' ";
+			$condition = "sn = '".$s_user_info["client_sn"]."' AND (`act_code` IS NULL OR `act_code` = '".$act_code."') ";
 			$result = $this->it_model->updateData( "sys_user" , $update_data,$condition );
+			
+			
+			//dprint($this->db->last_query());
 		}		
 		
 	}
