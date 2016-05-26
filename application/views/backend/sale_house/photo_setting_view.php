@@ -167,7 +167,7 @@
 											//if ( sizeof($exist_lands_array) < 1 && sizeof($exists_custs_array) > 0) {
 											?>
 											<label>
-												<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$house_to_sale_sn.'!@'.$filename;?>" />
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$comm_id.'!@'.$house_to_sale_sn.'!@'.$filename;?>" />
 												<span class="lbl"></span>
 											</label>
 										</td>
