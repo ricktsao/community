@@ -522,7 +522,6 @@ class User extends Backend_Controller
 
 		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND id ='".$id."' AND comm_id='".$this->getCommId()."' and role='I' " );
 		if ($arr_return){
-						dprint( $this->db->last_query());
 			$this->showSuccessMessage();
 
 			/* 同步 同步 同步 同步 同步 */
@@ -921,7 +920,8 @@ class User extends Backend_Controller
         	$arr_data = array(
 				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
 				, "id"			=>	tryGetData("id", $edit_data)
-				, "app_id"		=>	tryGetData("app_id", $edit_data)
+				, "app_id"		=>	NULL
+				, "act_code"	=>  random_string('numeric',12)
 				, "role"		=>	'I'
 				, "building_id"	=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
 				, "name"		=>	tryGetData("name", $edit_data)
