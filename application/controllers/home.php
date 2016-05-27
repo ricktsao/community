@@ -6,7 +6,7 @@ class Home extends Frontend_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-
+		$this->getEdomaData();
 	}
 
 	public function index()
