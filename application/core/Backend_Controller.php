@@ -1288,6 +1288,224 @@ abstract class Backend_Controller extends IT_Controller
 	
 	
 	
+
+/**/
+
+
+
+
+
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaSale()
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma_sale/getEdomaSale";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $json_data;exit;
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+		//dprint($edoma_data_ary);exit;
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+		dprint($edoma_data_ary);
+		
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+
+/*
+
+Array
+(
+								[sn] => 6   server_sn
+    [comm_id] => 5tgb4rfv
+				 [client_sn] => 0
+				 [edoma_sn] => 1
+				  [client_sync] => 0
+    [del] => 0
+    [sale_type] => a
+    [house_type] => c
+    [direction] => c
+    [title] => 瑞安馥邑庭院 平面車位
+    [name] => 聯絡人
+    [phone] => 聯絡電話
+    [area_desc] => 主建物、主建物 和 附屬建物坪數
+    [total_price] => 3111.00
+    [unit_price] => 121.00
+    [manage_fee] => 13333
+    [area_ping] => 55
+    [house_age] => 10
+    [pub_ratio] => 6.00
+    [room] => 1
+    [livingroom] => 2
+    [bathroom] => 3
+    [balcony] => 4
+    [locate_level] => 8
+    [total_level] => 9
+    [usage] => 住宅用
+    [current] => 現況
+    [flag_rent] => 1
+    [flag_parking] => 1
+    [addr] => 經國路1110號
+    [start_date] => 2016-05-22
+    [end_date] => 0000-00-00
+    [forever] => 1
+    [decoration] => 高檔裝潢
+    [living] => 7-11
+    [traffic] => 附近交通
+    [desc] => 特色說明特色說明特色說明特色說明特色說明特色說明特色說明特色說明
+    [launch] => 1
+    [created] => 2016-05-28 17:59:39
+    [updated] => 2016-05-28 17:59:39
+)
+
+*/
+		dprint($server_info);die;
+			$arr_data = array
+			(
+				 "comm_id" => $this->getCommId()	
+				, "server_sn" => $server_info["sn"]				
+				, "title" => tryGetData("title",$server_info)	
+				, "brief" => tryGetData("brief",$server_info)
+				, "brief2" => tryGetData("brief2",$server_info)	
+				, "id" => tryGetData("id",$server_info,NULL)	
+				, "content_type" => tryGetData("content_type",$server_info)	
+				, "filename" => tryGetData("filename",$server_info)
+				, "img_filename" => tryGetData("img_filename",$server_info)
+				, "start_date" => tryGetData("start_date",$server_info,NULL)
+				, "end_date" => tryGetData("end_date",$server_info,NULL)
+				, "forever" => tryGetData("forever",$server_info,0)
+				, "launch" => tryGetData("launch",$server_info,0)
+				, "hot" => tryGetData("hot",$server_info,0)
+				, "sort" => tryGetData("sort",$server_info,500)
+				, "url" => tryGetData("url",$server_info)
+				, "target" => tryGetData("target",$server_info,0)
+				, "content" => tryGetData("content",$server_info)
+				, "update_date" =>  date( "Y-m-d H:i:s" )
+				, "del" => tryGetData("del",$server_info,0)
+				, "is_edoma" => 1
+			);        	
+			
+
+		
+			$content_server_info = $this->it_model->listData("house_to_sale","server_sn = '".$server_info["sn"]."'");
+			if($content_server_info["count"]==0)
+			{
+				$arr_data["create_date"] =   date( "Y-m-d H:i:s" );
+				$content_sn = $this->it_model->addData( "house_to_rent" , $arr_data );
+				if($content_sn > 0)
+				{
+					
+					$arr_data["sn"] = $content_sn;					
+					$this->sync_edoma_rent_to_server($arr_data);
+				}
+				
+			}
+			else
+			{
+				$content_server_info = $content_server_info["data"][0];
+				$result = $this->it_model->updateData( "house_to_sale" , $arr_data, "server_sn = '".$server_info["sn"]."'" );
+				if($result)
+				{
+			
+					$arr_data["sn"] = $content_server_info["sn"];				
+					$this->sync_edoma_sale_to_server($arr_data);
+				}
+			}
+						
+		}
+		
+		//echo '<meta charset="UTF-8">';
+		//dprint($app_data_ary);
+		
+	}
+	
+
+	/**
+	 * web_menu_content 同步至雲端server
+	 */
+	function sync_edoma_sale_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync_edoma_sale/updateEdomaSale";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $is_sync;exit;
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "house_to_sale" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**/
+
+
 	/**
 	 * 取得社區id
 	 */
