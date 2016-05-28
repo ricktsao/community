@@ -1287,6 +1287,143 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
+	/**
+	 * 設定web_menu_photo照片
+	 */
+	public function contentPhoto()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		
+		$content_sn = tryGetData('sn', $_GET, NULL);
+		
+		if ( isNotNull($content_sn) ) {
+			## 物件基本資料
+			$content_info = $this->it_model->listData( "web_menu_content" , "sn =".$content_sn);
+			
+			if ($content_info["count"] > 0) 
+			{
+				$edit_data =$content_info["data"][0];
+				
+				$data['content_info'] = $edit_data;
+
+				## 既有照片list
+				$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+				$data["photo_list"] = $photo_list["data"];
+				
+				$this->display("photo_setting_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("contentList"));	
+			}
+
+		}
+		else 
+		{
+			redirect(bUrl("contentList"));	
+		}
+	}
+
+
+
+	/**
+	 * web_menu_photo照片上傳
+	 */
+	public function updateContentPhoto()
+	{
+		$edit_data = array();
+		foreach( $_POST as $key => $value ) 
+		{
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
+		$content_sn = tryGetData('content_sn', $edit_data, NULL);
+		$comm_id = tryGetData('comm_id', $edit_data, NULL);
+		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
+		$config['allowed_types'] = 'jpg|png';
+		//$config['max_size']	= '1000';
+		//$config['max_width']  = '1200';
+		//$config['max_height']  = '1000';
+		$config['overwrite']  = true;
+
+		$this->load->library('upload', $config);
+
+		if (!is_dir('./upload/content_photo/')) 
+		{
+			mkdir('./upload/content_photo/', 0777, true);
+		}
+		
+		if (!is_dir('./upload/content_photo/'.$edit_data['content_sn'])) 
+		{
+			mkdir('./upload/content_photo/'.$edit_data['content_sn'], 0777, true);
+		}
+
+		if ( isNull($content_sn) || ! $this->upload->do_upload('img_filename'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->showFailMessage('照片上傳失敗，請稍後再試　' .$error['error'] );
+		} 
+		else 
+		{
+
+			$upload = $this->upload->data();
+			$img_filename = tryGetData('file_name', $upload);
+			
+			$arr_data = array(							
+							  'content_sn'	=>	tryGetData('content_sn', $edit_data)
+							, 'img_filename'			=>	$img_filename
+							, 'title'				=>	tryGetData('title', $edit_data)
+							, 'updated'				=>	date('Y-m-d H:i:s')
+							, 'updated_by'			=>	$this->session->userdata('user_name')
+							, 'created'				=>	date('Y-m-d H:i:s')
+							);
+
+			$photo_sn = $this->it_model->addData('web_menu_photo', $arr_data);
+			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') 
+			{
+				$this->showSuccessMessage('物件照片上傳成功');
+			} else {
+				$this->showFailMessage('物件照片上傳失敗，請稍後再試');
+			}
+		}
+
+		redirect(bUrl("contentPhoto"));
+	}
+
+	/**
+	 * 刪除web_menu_photo照片
+	 */
+	function deleteContentPhoto()
+	{
+		$del_array = $this->input->post("del",TRUE);
+
+		foreach( $del_array as $item ) 
+		{
+
+			$tmp = explode('!@', $item);
+			$sn = $tmp[0];
+			$content_sn = $tmp[1];
+			$filename = $tmp[2];
+
+			unlink('./upload/content_photo/'.$content_sn.'/'.$filename);
+
+			$del = $this->it_model->deleteData('web_menu_photo',  array('sn' => $sn));
+			
+			if ($del) 
+			{			
+				
+			}
+		}
+
+		$this->showSuccessMessage('物件照片刪除成功');
+
+
+		redirect(bUrl("contentPhoto"));
+	}
+	
+	
 	
 	/**
 	 * 取得社區id

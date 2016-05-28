@@ -769,7 +769,33 @@ abstract class Frontend_Controller extends IT_Controller
 			);
 			
 			$result_sn = $this->it_model->addData( "sys_config" , $update_data);
-			if($result_sn == 0)
+			if($result_sn > 0)
+			{
+				//代表為新社區,新增一筆admin
+				$admin_data = array(
+				"comm_id" => $comm_id,
+				"name" => '管理者',
+				"title" => '管理者',
+				"role" => 'M',				
+				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
+				"is_manger" => 1,
+				"launch" => 1,
+				"forever" => 1,
+				"received" => date("Y-m-d H:i:s"),
+				"updated" => date("Y-m-d H:i:s")
+				);
+				
+				$result = $this->it_model->updateData( "sys_user" , $admin_data,"account ='admin'" );		
+				if($result == FALSE)
+				{
+					$admin_data["account"] = "admin";
+					$admin_data["start_date"] = date("Y-m-d H:i:s");
+					$admin_data["created"] = date("Y-m-d H:i:s");
+					$this->it_model->addData( "sys_user" , $admin_data);	
+				}
+				
+			}			
+			else
 			{
 				$this->redirectLoginPage();
 			}				
