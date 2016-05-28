@@ -16,6 +16,9 @@ class Home extends Backend_Controller{
 		$this->check_house_to_rent_sync();	// 租屋離線同步	 
 		$this->check_house_to_sale_sync();	// 售屋離線同步	
 
+//echo time();
+//$this->getEdomaSale();
+
 		$this->display("index_view");
 	}
 
