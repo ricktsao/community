@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <style>
+    table {
+        width: 800px;
+        margin: 0 auto;
+        border: 1px solid #333;
+    }
+    
+    table td {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 20px;
+        text-align: center;
+        color: #555;
+        border-bottom: 1px solid #666;
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+    
+    .text-right {
+        text-align: right;
+    }
+    </style>
+</head>
+
+<body>
+    <div>
+        <form action="">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <h1>離線登入卡號系統<span style="color:red">(IE專用)</span></h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">棟別</td>
+                    <td>
+                        <select id="b_parts_1"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">樓層</td>
+                    <td>
+                        <select id="b_parts_2"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">住戶編號</td>
+                    <td>
+                        <select id="b_parts_3"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" id="search" style="display:block;width:100%;">搜尋</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="name" colspan="2"></td>
+                </tr>
+                <tr>
+                    <td class="text-right">ID卡號:</td>
+                    <td>
+                        <input type="text" id="id">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="msg"></div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+<script src="js/jquery-1.12.3.min.js"></script>
+<script src="d.js"></script>
+<script>
+var unicodeField = ["comm_name", "part_1_name", "part_2_name", "part_3_name", "name"];
+var currentObj = null;
+var currentPath = null;
+var fName = "d.js";
+
+String.prototype.toUnicode = function() {
+    var result = "";
+    for (var i = 0; i < this.length; i++) {
+        var partial = this[i].charCodeAt(0).toString(16);
+        while (partial.length !== 4) partial = "0" + partial;
+        result += "\\u" + partial;
+    }
+    return result;
+};
+
+
+function WriteToFile(text) {
+
+    var j = "var member = " + JSON.stringify(text);
+    j = j.replace(/\\\\/g, '\\');
+
+    console.log(j);
+
+    var fso = new ActiveXObject('Scripting.FileSystemObject');
+
+    var fileNamePath = currentPath + fName;
+
+    var flOutput = fso.CreateTextFile(fileNamePath, true);
+    //flOutput.BinaryWrite(utf8Enc.UnicodeToUtf8(j));
+    flOutput.WriteLine(j);
+    flOutput.Close();
+
+}
+
+function getCurrentPath() {
+
+    var url = window.location.href;
+    var reg = /([A-Z]{1}:{1}.*)/;
+    var path = "";
+    url.match(reg);
+
+    url = RegExp.$1.split("/");
+    for (var i = 0; i < url.length - 1; i++) {
+        path += url[i] + "/";
+    }
+
+    return path;
+}
+
+
+function saveProcess(_obj) {
+
+    var _newObj = [];
+
+    for (var i = 0; i < _obj.length; i++) {
+        _newObj.push($.extend({}, _obj[i]));
+        for (var j = 0; j < unicodeField.length; j++) {
+            _newObj[i][unicodeField[j]] = _newObj[i][unicodeField[j]].toUnicode();
+        }
+    }
+
+    // console.log(_newObj);
+    WriteToFile(_newObj);
+}
+
+function dataInit() {
+    var p1 = [],
+        p2 = [],
+        p3 = [];
+
+    for (var i = 0; i < member.length; i++) {
+        if (p1.indexOf(member[i].b_parts_1) == -1) {
+            p1.push(member[i].b_parts_1);
+        }
+
+        if (p2.indexOf(member[i].b_parts_2) == -1) {
+            p2.push(member[i].b_parts_2);
+        }
+
+        if (p3.indexOf(member[i].b_parts_3) == -1) {
+            p3.push(member[i].b_parts_3);
+        }
+    }
+
+    renderSelect($('#b_parts_1'), p1);
+
+    renderSelect($('#b_parts_2'), p2);
+
+    renderSelect($('#b_parts_3'), p3);
+
+
+
+    function renderSelect(_elem, _arr) {
+        var _option = "<option>--</option>";
+
+        for (var i = 0; i < _arr.length; i++) {
+
+            _option += "<option value='" + _arr[i] + "'>" + _arr[i] + "</option>";
+
+        }
+
+        _elem.html(_option);
+    }
+
+
+}
+
+
+$(function() {
+
+    currentPath = getCurrentPath();
+
+    dataInit();
+
+
+    $('#search').click(function() {
+        var b_parts_1 = $('#b_parts_1').val();
+        var b_parts_2 = $('#b_parts_2').val();
+        var b_parts_3 = $('#b_parts_3').val();
+
+        $('#id').val("");
+        $('#name').text("查無此住戶");
+        $('#msg').text("");
+        currentObj = null;
+
+        for (var i = 0; i < member.length; i++) {
+
+            if (member[i].b_parts_1 == b_parts_1 &&
+                member[i].b_parts_2 == b_parts_2 &&
+                member[i].b_parts_3 == b_parts_3) {
+
+                currentObj = member[i];
+                $('#id').val(member[i].id);
+                $('#name').text(member[i].name);
+                $('#msg').html("");
+                $("#id").focus();
+
+                break;
+            }
+        }
+    })
+/*
+    $("#id").keyup(function(event) {
+        if (event.keyCode == 13) {
+            if (!currentObj) {
+                return;
+            }
+
+            currentObj.id = $(this).val();
+            saveProcess(member);
+            $('#msg').html("儲存完成");
+
+            return false;
+        }
+
+
+
+
+    })
+
+    
+*/
+
+    $('form').submit(function() {
+        
+    
+
+
+        if (!currentObj) {
+            return false;
+        }
+
+        currentObj.id = $("#id").val();
+        saveProcess(member);
+        $('#msg').html("儲存完成");
+
+        return false;
+       
+    })
+    
+})
+</script>
+
+</html>

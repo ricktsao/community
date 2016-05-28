@@ -838,7 +838,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$file_list = curl_exec($ch);
 		curl_close ($ch);
-		
+
 		return $file_list;
 	}
 	
@@ -880,7 +880,7 @@ abstract class Backend_Controller extends IT_Controller
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			$result = curl_exec($ch);
 			curl_close ($ch);
-			
+
 		
 			//dprint($result);
 		}		
@@ -1009,7 +1009,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='sys_user') {
+		if ($table_name =='house_to_rent_photo') {
 			dprint($url);
 			dprint($post_data);
 			dprint($is_sync);
@@ -1025,6 +1025,8 @@ abstract class Backend_Controller extends IT_Controller
 		}			
 		
 		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+
+
 		//------------------------------------------------------------------------------
 	}
 	

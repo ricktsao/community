@@ -177,8 +177,8 @@ $config['mail_box_type'] = array(
 
 
 // api server url
-$config['api_server_url'] = 'http://27.147.4.239/commapi/';
-//$config['api_server_url'] = 'http://localhost/commapi/';
+//$config['api_server_url'] = 'http://27.147.4.239/commapi/';
+$config['api_server_url'] = 'http://localhost/commapi/';
 
 
 //維修範圍
