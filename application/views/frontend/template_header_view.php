@@ -58,11 +58,15 @@
     <form action="<?php echo frontendUrl("login","checkLogin");?>" method="post" id="member_login_form">
         <table>
             <tr>
-                <td>住戶登入</td>
+                <td style="text-align:center">住戶登入</td>
             </tr>           
             <tr>
                 <td>
-                     <input type="password" name="keycode" class="input_style" autofocus placeholder="請使用磁卡感應">
+                <div style="text-align:center">
+                <br/>
+                            - 請感應磁卡 -
+                        </div>
+                     <input type="password" name="keycode" class="input_style" autofocus placeholder="請使用磁卡感應" style="width:0px;height:0px;padding:0px;border:none;">
                 </td>
             </tr>
            
