@@ -1,9 +1,21 @@
+<style type="text/css">
+	th, td {text-align:center}
+</style>
+
+<div class="page-header">
+	<h1>
+		群組管理
+		<small>
+			<i class="ace-icon fa fa-angle-double-right"></i>
+		</small>
+	</h1>
+</div>
 
 <form  role="search" action="<?php echo bUrl('contentList');?>">
-<article class="well" style="display: none">              
+<article class="well" style="">              
     <div class="btn-group">
 		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
-			<i class="icon-edit bigger-120"></i>新增
+			<i class="icon-edit bigger-120"></i>新增群組
 		</a>	
     </div>
 </article>	
@@ -21,8 +33,8 @@
 							<table id="sample-table-1" class="table table-striped table-bordered table-hover">
 								<thead>
 									<tr>										
-										<th style="width:50px">序號</th>
-										<th>名稱</th>
+										<th style="width:100px">序號</th>
+										<th style="text-align: left;">名稱</th>
 										<th style="width:120px">編輯</th>
 										<th style="width:120px">權限設定</th>
 										<th style="width:120px">人員設定</th>
@@ -37,33 +49,36 @@
 								</thead>
 								<tbody>
 									<?php
-									for($i=0;$i<sizeof($list);$i++){
-										if ( in_array($list[$i]["sn"], array('1')) ) continue;
+									//for($i=0;$i<sizeof($list);$i++){
+									$i = 0;
+									foreach ( $list as $item ){
+										if ( in_array($item["sn"], array('1', '5')) ) continue;		// 1是住戶 5是富網通
+										$i++;
 									?>
 									<tr>
-										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td><?php echo $list[$i]["title"]?></td>
+										<td><?php echo $i+(($this->page-1) * 10);?></td>
+										<td style="text-align: left;"><?php echo $item["title"]?></td>
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$item["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
 										</td>
-										<td>
+										<td class="center">
 										<?php
-										if ( in_array($list[$i]["sn"], array('1')) === false ) {	// 須從住戶管理作設定
+										if ( in_array($item["sn"], array('1')) === false ) {	// 須從住戶管理作設定
 										?>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editBackendAuth",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editBackendAuth",TRUE,NULL,array("sn"=>$item["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>後台
 											</a>
 										<?php
 										}
 										?>
 										</td>
-										<td>
+										<td class="center">
 										<?php
-										if ( in_array($list[$i]["sn"], array('1','2')) === false ) {	// 須從住戶管理作設定
+										if ( in_array($item["sn"], array('1','2')) === false ) {	// 須從住戶管理作設定
 										?>
-											<a class="btn  btn-minier btn-success" href="<?php echo bUrl("editGroupUser",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+											<a class="btn  btn-minier btn-success" href="<?php echo bUrl("editGroupUser",TRUE,NULL,array("sn"=>$item["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>人員設定
 											</a>
 										<?php
@@ -71,18 +86,30 @@
 										?>
 										</td>
 										<td>
+										<?php
+										if ( $item["sn"] > 5 ) {					// 預設群組不能啟用停用
+										?>
 											<div class="col-xs-3">
 												<label>
-													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo $list[$i]["launch"]==1?"checked":"" ?> value="<?php echo $list[$i]["sn"] ?>" onClick='javascript:launch(this);' />
+													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo $item["launch"]==1?"checked":"" ?> value="<?php echo $item["sn"] ?>" onClick='javascript:launch(this);' />
 													<span class="lbl"></span>
 												</label>
 											</div>
-										</td>										
+										<?php
+										}
+										?>
+										</td>
 										<td class="center">
+										<?php
+										if ( $item["sn"] > 5 ) {					// 預設群組不能刪除
+										?>
 											<label>
-												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $item["sn"];?>" />
 												<span class="lbl"></span>
 											</label>
+										<?php
+										}
+										?>
 										</td>
 									</tr>
 									<?php } ?>
