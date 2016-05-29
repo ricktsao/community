@@ -71,12 +71,21 @@
 				break;
 			}
 			
+			$img_str = '';
+			foreach( $item["photo_list"] as $key => $photo ) 
+			{
+				$img_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				
+				$img_str .= '<p><img src="'.$img_url.'"></p>';
+			}
+			
+			
 			echo '
 			<div>
 				<h1 style="text-align:center">'.$type_title.'</h1>
 				<h2>'.$item["title"].'</h2>
 				<p>'.$item["content"].'</p>
-				<p><img src="'.$item["img_filename"].'"></p>
+				'.$img_str.'
 			</div>		
 			          
 			'; 
