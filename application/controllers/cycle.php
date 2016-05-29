@@ -11,6 +11,9 @@ class Cycle extends Frontend_Controller {
 
 	public function index()
 	{
+		$setting_info = $this->loadWebSetting();
+		$data["cycle_sec"] = tryGetData("bulletin_cycle_sec",$setting_info,4)*1000;
+		
 		$cycle_list = array();
 		
 		//社區公告

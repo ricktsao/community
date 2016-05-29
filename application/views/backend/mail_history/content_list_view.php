@@ -17,10 +17,12 @@
 							<th style="width:100px">狀態</th>
 							<th style="width:100px"><i class="icon-time bigger-110 hidden-480"></i>登錄時間</th>
 							<th style="width:100px">代收編號</th>							
-							<th style="width:80px">郵件類型</th>
+							<th style="width:100px">郵件類型</th>
 							<th style="width:200px">郵件敘述說明</th>
-							<th style="width:200px">收件人</th>
-							<th style="width:120px">領收人</th>												
+							<th style="width:120px">收件人</th>
+							<th style="width:120px">領收人</th>		
+							<th style="width:120px">代收郵件警衛</th>
+							<th style="width:120px">領收作業警衛</th>							
 						</tr>
 					</thead>
 
@@ -33,6 +35,10 @@
 					
 					foreach ($mailbox_list as $mail_item) 
 					{
+						
+						$reg_agent_name = tryGetData($mail_item["booker"],$user_map);
+						$receive_agent_name = tryGetData($mail_item["receive_agent_sn"],$user_map);
+						
 						$status_str =$mail_item["is_receive"]==1?"<span style='color:blue'>已領取</span>":"<span style='color:red'>未領取</span>";		
 						echo 
 						'
@@ -43,7 +49,9 @@
 							<td>'.tryGetData($mail_item["type"], $mail_box_type_ary).'</td>	
 							<td>'.$mail_item["desc"].'</td>										
 							<td>'.tryGetData("user_name", $mail_item).'</td>										
-							<td>'.$mail_item["receive_user_name"].'</td>									
+							<td>'.$mail_item["receive_user_name"].'</td>	
+							<td>'.$reg_agent_name.'</td>
+							<td>'.$receive_agent_name.'</td>							
 						</tr>
 						';						
 					}					
