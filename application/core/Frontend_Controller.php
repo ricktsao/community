@@ -776,7 +776,7 @@ abstract class Frontend_Controller extends IT_Controller
 				"comm_id" => $comm_id,
 				"name" => '管理者',
 				"title" => '管理者',
-				"role" => 'M',				
+				"role" => 'F',				
 				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
 				"is_manager" => 1,
 				"launch" => 1,
