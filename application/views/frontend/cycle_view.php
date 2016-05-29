@@ -91,7 +91,7 @@
 
         $('.slideshow').cycle({
             slides: "> div",
-            speed:2000//速度
+            speed:<?php echo $cycle_sec;?>//速度
         });
 
 
