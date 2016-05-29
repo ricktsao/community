@@ -79,6 +79,7 @@ class Mailbox extends Backend_Controller {
 					"receive_user_name" => $receive_user_name,
 					"receive_user_sn" => $receive_user_sn,
 					"is_sync" => 0,
+					"receive_agent_sn" => $this->session->userdata("user_sn"),
 					"received" => date("Y-m-d H:i:s"),
 					"updated" => date("Y-m-d H:i:s")
 				);
