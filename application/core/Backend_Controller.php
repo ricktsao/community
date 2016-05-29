@@ -1342,6 +1342,13 @@ abstract class Backend_Controller extends IT_Controller
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
 		$config['allowed_types'] = 'jpg|png';
+		
+		
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
+		$config['file_name'] = $filename;
+		$config['overwrite'] = false;
+		
+		
 		//$config['max_size']	= '1000';
 		//$config['max_width']  = '1200';
 		//$config['max_height']  = '1000';
@@ -1422,7 +1429,7 @@ abstract class Backend_Controller extends IT_Controller
 			
 			$this->pingConentPhoto($content_sn);
 		}
-		$this->showSuccessMessage('物件照片刪除成功');
+		$this->showSuccessMessage('圖片刪除成功');
 
 
 		redirect(bUrl("contentPhoto"));
