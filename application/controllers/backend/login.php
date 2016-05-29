@@ -90,7 +90,8 @@ class Login extends CI_Controller {
 				}
 
 				$query = 'SELECT SQL_CALC_FOUND_ROWS sys_user.* FROM sys_user'						
-						.' WHERE role="M" AND '.$str_conditions
+						.' WHERE role != "I" '
+						.'   AND '.$str_conditions
 						;
 				
 				

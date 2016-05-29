@@ -49,6 +49,8 @@
 									//for($i=0;$i<sizeof($list);$i++) {
 									$i = 0;
 									foreach ( $list as $item) {
+
+										if (tryGetData('account', $item) == 'admin') continue;
 									?>
 									<tr>
 										<td style='text-align: center'><?php echo ($i+1)+(($this->page-1) * 10);?></td>
