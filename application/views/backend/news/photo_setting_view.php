@@ -36,8 +36,13 @@
 
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
-
-			
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">標題：</label>
+			<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('title',$content_info); ?></span></div>
+		</div>
+		
+		<div class="hr hr-16 hr-dotted"></div>	
+		
 		<form action="<?php echo bUrl("updateContentPhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
 		<input type='hidden' name='content_sn' value='<?php echo tryGetData('sn', $content_info); ?>'>		
 			<div class="form-group">
@@ -146,7 +151,15 @@
 			</div>
 
 
-
+<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
+				<i class="icon-undo bigger-110"></i>
+				回上頁
+			</a>					
+			
+		</div>
+	</div>
 
 
 <script type="text/javascript"> 

@@ -89,7 +89,7 @@ class News extends Backend_Controller {
 	{	
 		$edit_data = $this->dealPost();
 		//dprint($edit_data);exit;
-		
+		$edit_data["is_sync"] = 0;
 		
 		if ( ! $this->_validateContent())
 		{
