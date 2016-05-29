@@ -16,6 +16,7 @@ class Login extends CI_Controller {
 	
 	public function index()
 	{		
+		$this->checkCommId();
 		if(checkUserLogin())
 		{
 			redirect(backendUrl());
@@ -258,5 +259,78 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('vcode', '驗證碼', 'trim|required');
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
+	}
+	
+	
+	/**
+	 * 取得社區id
+	 */
+	function checkCommId()
+	{
+		//取得comm_id
+		//----------------------------------------------------------------------					
+		$comm_id = $this->it_model->listData("sys_config","id='comm_id'");
+		if($comm_id["count"]>0)
+		{			
+			$comm_id = $comm_id["data"][0]["value"];
+			
+		}
+		else
+		{
+			$comm_id = $this->generateCommId();
+			$update_data = array(
+				"id" => "comm_id",
+				"value" => $comm_id,
+				"launch" => 1,
+				"updated" => date("Y-m-d H:i:s"),
+				"created" => date("Y-m-d H:i:s")
+			);
+			
+			$result_sn = $this->it_model->addData( "sys_config" , $update_data);
+			if($result_sn > 0)
+			{
+				//代表為新社區,新增一筆admin
+				$admin_data = array(
+				"comm_id" => $comm_id,
+				"name" => '管理者',
+				"title" => '管理者',
+				"role" => 'M',				
+				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
+				"is_manager" => 1,
+				"launch" => 1,
+				"forever" => 1,				
+				"updated" => date("Y-m-d H:i:s")
+				);
+				
+				$result = $this->it_model->updateData( "sys_user" , $admin_data,"account ='admin'" );		
+				if($result == FALSE)
+				{
+					$admin_data["account"] = "admin";
+					$admin_data["start_date"] = date("Y-m-d H:i:s");
+					$admin_data["created"] = date("Y-m-d H:i:s");
+					$user_sn = $this->it_model->addData( "sys_user" , $admin_data);	
+					if($user_sn > 0 )
+					{
+						$group_data = array(
+						"sys_user_sn" => $user_sn,
+						"sys_user_group_sn" => 5,
+						"launch" => 1,
+						"update_date" => date("Y-m-d H:i:s")
+						);
+						$this->it_model->addData( "sys_user_belong_group" , $group_data);	
+					}
+						
+				}
+				
+			}			
+			else
+			{
+				$this->redirectLoginPage();
+			}				
+			
+		}
+		//----------------------------------------------------------------------		
+		
+		//return $comm_id;
 	}
 }

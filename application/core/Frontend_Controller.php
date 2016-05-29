@@ -764,8 +764,8 @@ abstract class Frontend_Controller extends IT_Controller
 				"id" => "comm_id",
 				"value" => $comm_id,
 				"launch" => 1,
-				"received" => date("Y-m-d H:i:s"),
-				"updated" => date("Y-m-d H:i:s")
+				"updated" => date("Y-m-d H:i:s"),
+				"created" => date("Y-m-d H:i:s")
 			);
 			
 			$result_sn = $this->it_model->addData( "sys_config" , $update_data);
@@ -778,10 +778,9 @@ abstract class Frontend_Controller extends IT_Controller
 				"title" => '管理者',
 				"role" => 'M',				
 				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
-				"is_manger" => 1,
+				"is_manager" => 1,
 				"launch" => 1,
-				"forever" => 1,
-				"received" => date("Y-m-d H:i:s"),
+				"forever" => 1,				
 				"updated" => date("Y-m-d H:i:s")
 				);
 				
@@ -791,7 +790,18 @@ abstract class Frontend_Controller extends IT_Controller
 					$admin_data["account"] = "admin";
 					$admin_data["start_date"] = date("Y-m-d H:i:s");
 					$admin_data["created"] = date("Y-m-d H:i:s");
-					$this->it_model->addData( "sys_user" , $admin_data);	
+					$user_sn = $this->it_model->addData( "sys_user" , $admin_data);	
+					if($user_sn > 0 )
+					{
+						$group_data = array(
+						"sys_user_sn" => $user_sn,
+						"sys_user_group_sn" => 5,
+						"launch" => 1,
+						"update_date" => date("Y-m-d H:i:s")
+						);
+						$this->it_model->addData( "sys_user_belong_group" , $group_data);	
+					}
+						
 				}
 				
 			}			
@@ -804,6 +814,18 @@ abstract class Frontend_Controller extends IT_Controller
 		//----------------------------------------------------------------------		
 		
 		return $comm_id;
+	}
+	
+	
+	function generateCommId($length = 8) 
+	{
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
 	}
 	
 	function speed()
