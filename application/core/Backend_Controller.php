@@ -831,12 +831,24 @@ abstract class Backend_Controller extends IT_Controller
 		
 		$url = $this->config->item("api_server_url")."sync/askFile";
 		$ch = curl_init();
+			$this_header = array(
+			"content-type: application/x-www-form-urlencoded; 
+			charset=UTF-8"
+			);
+			curl_setopt($ch,CURLOPT_HTTPHEADER,$this_header);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$file_list = curl_exec($ch);
+if(curl_error($ch))
+{
+    echo '## ------ CURL ERror:' . curl_error($ch);
+}
 		curl_close ($ch);
 
 		return $file_list;
@@ -853,37 +865,71 @@ abstract class Backend_Controller extends IT_Controller
 			return;
 		}
 		
+			dprint( $folder);
 		//$folder = "news";
-		$sync_folder = set_realpath("upload/".$this->getCommId()."/".$folder);
+		$sync_folder = set_realpath("upload\\".$this->getCommId()."\\".$folder);
 		$files = glob($sync_folder . '*');
 		
+			dprint( $files);
 		$filename_ary = array();
 		foreach( $files as $key => $file_name_with_full_path )
 		{
-			array_push($filename_ary,basename($file_name_with_full_path));
+			if (preg_match("/[\x7f-\xff]/", $file_name_with_full_path)) { 
+			//echo "含有中文"; 
+				$file_name_with_full_path = iconv("big5", "UTF-8", $file_name_with_full_path);
+			} 
+
+			array_push($filename_ary, basename($file_name_with_full_path));
 		}		
 
+			dprint(  $filename_ary);
 		$upload_file_list = $this->ask_server_file(implode(",",$filename_ary),$folder);
 		$upload_file_ary = explode(",",$upload_file_list);
 		
+			dprint('<hr>');
+			dprint(  $upload_file_ary);
+			dprint('<hr>');
 		foreach( $upload_file_ary as $key => $file_name )
-		{		
-			$file_name_with_full_path = set_realpath("upload/".$this->getCommId()."/".$folder).$file_name;
+		{
+			dprint('#1@ '. $file_name);
+			//$file_name = iconv("UTF-8", "big5", $file_name);
+			//dprint('#@ '. $file_name);
+			$file_name_with_full_path = set_realpath("upload\\".$this->getCommId()."\\".$folder).$file_name;
 		
+			dprint('#2@ '. $file_name_with_full_path);
 			$cfile = new CURLFile($file_name_with_full_path);			
 			$params = array($this->getCommId().'<#-#>'.$folder => $cfile );			
 
 			$target_url = $this->config->item("api_server_url")."sync/fileUpload";
+			dprint('#3@ '. $target_url);
+			dprint(  $params);
+
 			$ch = curl_init();
+
+			$this_header = array(
+			"content-type: application/x-www-form-urlencoded; 
+			charset=UTF-8"
+			);
+			curl_setopt($ch,CURLOPT_HTTPHEADER,$this_header);
+
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+
 			curl_setopt($ch, CURLOPT_URL,$target_url);
 			curl_setopt($ch, CURLOPT_POST,1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			$result = curl_exec($ch);
-			curl_close ($ch);
+			dprint($result);
 
+if(curl_error($ch))
+{
+    echo '## ------ CURL Error:' . curl_error($ch);
+}
+
+			curl_close ($ch);
+print_r(error_get_last());
 		
-			//dprint($result);
-		}		
+		}		die;
 	}
 
 	//ajax 取得

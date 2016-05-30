@@ -408,7 +408,7 @@ class Rent_House extends Backend_Controller {
 				$this->sync_item_to_server($arr_data, 'updateRentHousePhoto', 'house_to_rent_photo');
 
 				/* 檔案同步至server 檔案同步至server 檔案同步至server */
-				$this->sync_file('house_to_rent/'.$edit_data['house_to_rent_sn'].'/');
+				$this->sync_file('house_to_rent\\'.$edit_data['house_to_rent_sn'].'\\');
 
 
 
@@ -434,6 +434,7 @@ class Rent_House extends Backend_Controller {
 			$comm_id = $tmp[1];
 			$house_to_rent_sn = $tmp[2];
 			$filename = $tmp[3];
+			$filename = iconv("UTF-8", "big5", $filename);
 
 			unlink('./upload/'.$comm_id.'/house_to_rent/'.$house_to_rent_sn.'/'.$filename);
 			//@unlink('./upload/website/house_to_rent/'.$house_to_rent_sn.'/thumb_'.$filename);
@@ -450,7 +451,7 @@ class Rent_House extends Backend_Controller {
 				$this->sync_item_to_server($arr_data, 'updateRentHousePhoto', 'house_to_rent_photo');
 
 				/* 檔案同步至server 檔案同步至server 檔案同步至server */
-				$this->sync_file('house_to_rent/'.$sn.'/');
+				$this->sync_file('house_to_rent\\'.$sn.'\\');
 			}
 		}
 
