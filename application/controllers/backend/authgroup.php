@@ -80,9 +80,9 @@ class Authgroup extends Backend_Controller
 			
 			$arr_data = array(				
 				  "title" => tryGetData("title", $edit_data)   
-				, "id" => tryGetData("id", $edit_data)     		
+				, "id" => tryGetData("id", $edit_data, random_string('alpha', 10))     		
 				, "launch" => tryGetData("launch", $edit_data)
-				, "sort" => tryGetData("sort", $edit_data)				
+				, "sort" => tryGetData("sort", $edit_data, 500)				
 				, "update_date" =>  date( "Y-m-d H:i:s" ) 				
 			);        			
 			
@@ -129,9 +129,9 @@ class Authgroup extends Backend_Controller
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
-		$this->form_validation->set_rules( 'id', 'id', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
+		$this->form_validation->set_rules( 'title', '群組名稱', 'required' );	
+		//$this->form_validation->set_rules( 'id', '英文名稱', 'required' );	
+		//$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}

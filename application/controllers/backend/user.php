@@ -227,6 +227,11 @@ class User extends Backend_Controller
 		}
 
 
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
 
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s " //left join unit u on s.unit_sn = u.sn
@@ -920,8 +925,6 @@ class User extends Backend_Controller
         	$arr_data = array(
 				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
 				, "id"			=>	tryGetData("id", $edit_data)
-				, "app_id"		=>	NULL
-				, "act_code"	=>  random_string('numeric',12)
 				, "role"		=>	'I'
 				, "building_id"	=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
 				, "name"		=>	tryGetData("name", $edit_data)
@@ -977,7 +980,8 @@ class User extends Backend_Controller
 					$arr_data["password"] = prepPassword($edit_data["password"]);	
 				}
 
-				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
+				$arr_data["act_code"] = random_string('numeric',12);
+				$arr_data["created"] = date( "Y-m-d H:i:s" );
 				
 				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
