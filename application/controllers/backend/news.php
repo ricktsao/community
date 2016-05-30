@@ -89,7 +89,7 @@ class News extends Backend_Controller {
 	{	
 		$edit_data = $this->dealPost();
 		//dprint($edit_data);exit;
-		
+		$edit_data["is_sync"] = 0;
 		
 		if ( ! $this->_validateContent())
 		{
@@ -166,14 +166,20 @@ class News extends Backend_Controller {
 			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
 			$item_info = $item_info["data"][0];			
 			
-			$img_str = "";
-			if(isNotNull($item_info["img_filename"]))
-			{
-				$img_str = "<tr><td><img src='".$item_info["img_filename"]."'></td></tr>";
-			}
+			//多圖處理
+			//------------------------------------------------------------------------------
+			$img_str = "";			
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
 			
-					
-	
+			foreach( $photo_list["data"] as $key => $photo ) 
+			{
+				$img_url = base_url('upload/content_photo/'.$content_sn.'/'.$photo["img_filename"]);
+				
+				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
+			}
+			//------------------------------------------------------------------------------
+			//dprint($photo_list["data"]);exit;
+			
 			$html = "<h1 style='text-align:center'>社區公告</h1>";
 			$html .= "<h3>".$item_info["title"]."</h3>";
 			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";

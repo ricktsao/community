@@ -314,7 +314,7 @@ class Sale_House extends Backend_Controller {
 
 				## 既有照片list
 				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN house_to_sale_photo p ON h.sn = p.house_to_sale_sn" 
-														, "house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
+														, "p.del=0 and house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
 
 				$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
 				
@@ -382,12 +382,16 @@ class Sale_House extends Backend_Controller {
 							//, 'is_sync'				=>  0
 							);
 
-			$this->it_model->addData('house_to_sale_photo', $arr_data);
+			$sale_photo_sn = $this->it_model->addData('house_to_sale_photo', $arr_data);
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
 				$this->showSuccessMessage('物件照片上傳成功');
 
-				// 檔案同步至server 檔案同步至server 檔案同步至server
-				$this->sync_file('house_to_sale/'.$edit_data['house_to_sale_sn']);
+				/* 同步 同步 同步 同步 同步 */
+				$arr_data["sn"] = $sale_photo_sn;
+				$this->sync_item_to_server($arr_data, 'updateSaleHousePhoto', 'house_to_sale_photo');
+
+				/* 檔案同步至server 檔案同步至server 檔案同步至server */
+				$this->sync_file('house_to_sale/'.$edit_data['house_to_sale_sn'].'/');
 
 			} else {
 				$this->showFailMessage('物件照片上傳失敗，請稍後再試');
@@ -397,34 +401,46 @@ class Sale_House extends Backend_Controller {
 		redirect(bUrl("photoSetting"));
 	}
 
+
 	/**
 	 * 刪除照片
 	 */
 	function deletePhoto()
 	{
 		$del_array = $this->input->post("del",TRUE);
-		$comm_id = $this->getCommId();
+
 		foreach( $del_array as $item ) {
 
 			$tmp = explode('!@', $item);
 			$sn = $tmp[0];
-			$house_to_sale_sn = $tmp[1];
-			$filename = $tmp[2];
+			$comm_id = $tmp[1];
+			$house_to_sale_sn = $tmp[2];
+			$filename = $tmp[3];
+
+			unlink('./upload/'.$comm_id.'/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
+			//@unlink('./upload/website/house_to_sale/'.$house_to_sale_sn.'/thumb_'.$filename);
+
+			//$del = $this->it_model->deleteData('house_to_sale_photo',  array('sn' => $sn, 'filename' => $filename));
+			$del = $this->it_model->updateDB( "house_to_sale_photo" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
+
+			if ($del) {
 			
-			@unlink('./upload/'.$comm_id.'/house_to_sale/'.$house_to_sale_sn.'/'.$filename);
-			//unlink('./upload/'.$comm_id.'/house_to_sale/'.$house_to_sale_sn.'/thumb_'.$filename);
+				/* 同步 同步 同步 同步 同步 */
+				$arr_data = array("sn" => $sn
+								, "comm_id" => $comm_id 
+								, "del" => 1 );
+				$this->sync_item_to_server($arr_data, 'updateSaleHousePhoto', 'house_to_sale_photo');
 
-			$this->it_model->deleteData('house_to_sale_photo',  array('sn' => $sn, 'filename' => $filename));
+				/* 檔案同步至server 檔案同步至server 檔案同步至server */
+				$this->sync_file('house_to_sale/'.$sn.'/');
+			}
 		}
-
-		// 檔案同步至server 檔案同步至server 檔案同步至server
-		$this->sync_file('house_to_sale/'.$sn);
 
 		$this->showSuccessMessage('物件照片刪除成功');
 
+
 		redirect(bUrl("photoSetting"));
 	}
-
 
 
 	/**************************************************/

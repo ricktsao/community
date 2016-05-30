@@ -262,6 +262,7 @@ class Userimport extends Backend_Controller {
 									,  'building_id'	=> $building_id_1.'_'.$building_id_2.'_'.$building_id_3
 									,  'id'			=> 'none'
 									,  'role'		=> 'I'
+									,  'act_code'	=> random_string('numeric',12)
 									,  'name'		=> $name
 									,  'gender'		=> $gender=='男' ? 1 : 2
 									,  'tel'		=> $tel
@@ -278,10 +279,10 @@ class Userimport extends Backend_Controller {
 									);
 
 					$query = 'INSERT IGNORE INTO `sys_user` '
-							.'       (`comm_id`, `building_id`, `id`, `role`, `name`, `gender` '
+							.'       (`comm_id`, `building_id`, `id`, `role`, `act_code`, `name`, `gender` '
 							.'       , `tel`, `phone`, `is_contact`, `is_owner`, `owner_addr` '
 							.'       , `gas_right`, `voting_right`, is_sync, launch, `created`, `created_by`) '
-							.'VALUES (?, ?, ?, ?, ?, ? '
+							.'VALUES (?, ?, ?, ?, ?, ?, ? '
 							.'       , ?, ?, ?, ?, ? '
 							.'       , ?, ?, ?, ?, ?, ?)'
 							;

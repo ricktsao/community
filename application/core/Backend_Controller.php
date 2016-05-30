@@ -838,7 +838,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$file_list = curl_exec($ch);
 		curl_close ($ch);
-		
+
 		return $file_list;
 	}
 	
@@ -880,7 +880,7 @@ abstract class Backend_Controller extends IT_Controller
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 			$result = curl_exec($ch);
 			curl_close ($ch);
-			
+
 		
 			//dprint($result);
 		}		
@@ -1009,7 +1009,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='sys_user') {
+		if ($table_name =='house_to_rent_photo') {
 			dprint($url);
 			dprint($post_data);
 			dprint($is_sync);
@@ -1025,6 +1025,8 @@ abstract class Backend_Controller extends IT_Controller
 		}			
 		
 		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+
+
 		//------------------------------------------------------------------------------
 	}
 	
@@ -1285,7 +1287,495 @@ abstract class Backend_Controller extends IT_Controller
 	}
 	
 	
+	/**
+	 * 設定web_menu_photo照片
+	 */
+	public function contentPhoto()
+	{
+		$this->addCss("css/chosen.css");
+		$this->addJs("js/chosen.jquery.min.js");		
+		
+		$content_sn = tryGetData('sn', $_GET, NULL);
+		
+		if ( isNotNull($content_sn) ) {
+			## 物件基本資料
+			$content_info = $this->it_model->listData( "web_menu_content" , "sn =".$content_sn);
+			
+			if ($content_info["count"] > 0) 
+			{
+				$edit_data =$content_info["data"][0];
+				
+				$data['content_info'] = $edit_data;
+
+				## 既有照片list
+				$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+				$data["photo_list"] = $photo_list["data"];
+				
+				$this->display("photo_setting_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("contentList"));	
+			}
+
+		}
+		else 
+		{
+			redirect(bUrl("contentList"));	
+		}
+	}
+
+
+
+	/**
+	 * web_menu_photo照片上傳
+	 */
+	public function updateContentPhoto()
+	{
+		$edit_data = array();
+		foreach( $_POST as $key => $value ) 
+		{
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}
+		
+		$content_sn = tryGetData('content_sn', $edit_data, NULL);
+		$comm_id = tryGetData('comm_id', $edit_data, NULL);
+		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
+		$config['allowed_types'] = 'jpg|png';
+		
+		
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
+		$config['file_name'] = $filename;
+		$config['overwrite'] = false;
+		
+		
+		//$config['max_size']	= '1000';
+		//$config['max_width']  = '1200';
+		//$config['max_height']  = '1000';
+		$config['overwrite']  = true;
+
+		$this->load->library('upload', $config);
+
+		if (!is_dir('./upload/content_photo/')) 
+		{
+			mkdir('./upload/content_photo/', 0777, true);
+		}
+		
+		if (!is_dir('./upload/content_photo/'.$edit_data['content_sn'])) 
+		{
+			mkdir('./upload/content_photo/'.$edit_data['content_sn'], 0777, true);
+		}
+
+		if ( isNull($content_sn) || ! $this->upload->do_upload('img_filename'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->showFailMessage('圖片上傳失敗，請稍後再試　' .$error['error'] );
+		} 
+		else 
+		{
+
+			$upload = $this->upload->data();
+			$img_filename = tryGetData('file_name', $upload);
+			
+			$arr_data = array(							
+							  'content_sn'	=>	tryGetData('content_sn', $edit_data)
+							, 'img_filename'			=>	$img_filename
+							, 'title'				=>	tryGetData('title', $edit_data)
+							, 'updated'				=>	date('Y-m-d H:i:s')
+							, 'updated_by'			=>	$this->session->userdata('user_name')
+							, 'created'				=>	date('Y-m-d H:i:s')
+							);
+
+			$photo_sn = $this->it_model->addData('web_menu_photo', $arr_data);
+			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') 
+			{
+				$this->pingConentPhoto(tryGetData('content_sn', $edit_data));
+				$this->showSuccessMessage('圖片上傳成功');
+			} else {
+				$this->showFailMessage('圖片上傳失敗，請稍後再試');
+			}
+		}
+
+		redirect(bUrl("contentPhoto"));
+	}
+
+	/**
+	 * 刪除web_menu_photo照片
+	 */
+	function deleteContentPhoto()
+	{
+		$del_array = $this->input->post("del",TRUE);
+		if(count($del_array)>0)
+		{			
+			$content_sn = 0;
+			foreach( $del_array as $item ) 
+			{
+
+				$tmp = explode('!@', $item);
+				$sn = $tmp[0];
+				$content_sn = $tmp[1];
+				$filename = $tmp[2];
+
+				unlink('./upload/content_photo/'.$content_sn.'/'.$filename);
+
+				$del = $this->it_model->deleteData('web_menu_photo',  array('sn' => $sn));
+				
+				if ($del) 
+				{			
+					
+				}
+			}
+			
+			$this->pingConentPhoto($content_sn);
+		}
+		$this->showSuccessMessage('圖片刪除成功');
+
+
+		redirect(bUrl("contentPhoto"));
+	}
 	
+	
+	/**
+	 * 拼接web_menu_photo照片
+	 */
+	function pingConentPhoto($content_sn)
+	{
+		ini_set("memory_limit","256M");
+		$content_info = $this->it_model->listData("web_menu_content","sn = '".$content_sn."'");
+		if($content_info["count"]==0)
+		{
+			return;
+		}
+		$content_info = $content_info["data"][0];
+		
+		$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+		$source = array();
+		
+		$dest_width = 0;
+		$dest_height = 0;
+		foreach( $photo_list["data"] as $key => $photo ) 
+		{
+			$img = set_realpath("upload/content_photo/".$content_sn).$photo["img_filename"];
+			
+			$exploded = explode('.',$photo["img_filename"]);
+			$ext = $exploded[count($exploded) - 1]; 
+
+			if (preg_match('/jpg|jpeg/i',$ext))
+			{
+				$source[$key]['source']=imagecreatefromjpeg($img);
+			}				
+			else if(preg_match('/png/i',$ext))
+			{
+				$source[$key]['source']=imagecreatefrompng($img);
+			}			
+			else if (preg_match('/gif/i',$ext))
+			{
+				$source[$key]['source']=imagecreatefromgif($img);
+			}				
+			else if (preg_match('/bmp/i',$ext))
+			{
+				$source[$key]['source']=imagecreatefrombmp($img);
+			}
+				
+
+			$source[$key]['size'] = getimagesize($img);
+			
+			if($source[$key]['size'][0] > $dest_width)
+			{
+				$dest_width = (int)$source[$key]['size'][0];
+			}
+			
+			
+			$dest_height += (int)($source[$key]['size'][1] + 2);
+			
+			
+			//echo '<br>'.;
+			//echo '<br>'.$photo["img_filename"];
+		}
+		//dprint($source);die;
+		
+		
+		$dest = imagecreatetruecolor($dest_width, $dest_height);
+		$red = imagecolorallocate($dest, 255, 255, 255);
+		imagefill($dest, 0, 0, $red);
+				
+		
+		$dest_y = 0;
+		$dest_x = 0;
+		
+		foreach( $source as $key => $item ) 
+		{
+			//echo '<br>-->'.$target_img;
+			//dprint($item);
+			
+			/*
+			語法 : int ImageCopy (source dst_im, source src_im, int dst_x, int dst_y, int src_x, int src_y, int src_w, int src_h)
+			說明 :
+			複製 src_im的一部份到 dst_im上，起始點在 src_x , src_y，src_w的寬度，src_y的高度，所定義的這一個部份將會複製到 dst_x , dst_y的位置上。
+
+			*/
+			
+			$img_w = $item['size'][0];
+			$img_h = $item['size'][1];
+			imagecopy($dest, $item['source'], $dest_x , $dest_y, 0, 0, $img_w , $img_h);
+			
+			$dest_y += ($img_h + 2);
+
+			
+		}
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 ).".jpg";	
+		$img_url = './upload/tmp/' . $filename;
+		Imagejpeg($dest, $img_url);
+		
+		
+		//sync file 
+		//--------------------------------------------------------------------------------
+		//圖片處理 img_filename				
+		$folder_name = $content_info["content_type"];
+		$img_config['resize_setting'] =array($folder_name=>array(1024,1024));		
+		$img_filename = resize_img($img_url,$img_config['resize_setting']);	
+
+		//社區同步資料夾
+		$img_config['resize_setting'] =array($folder_name=>array(500,500));
+		resize_img($img_url,$img_config['resize_setting'],$this->getCommId(),$img_filename);
+				
+		@unlink($img_url);
+		
+		$orig_img_filename = tryGetData("img_filename",$content_info);
+		
+		$this->it_model->updateData( "web_menu_content" , array("img_filename"=> $img_filename,"is_sync"=>0,"update_date" => date("Y-m-d H:i:s")  ), "sn = '".$content_sn."'" );
+			
+				
+		@unlink(set_realpath("upload/website/".$folder_name).$orig_img_filename);	
+		@unlink(set_realpath("upload/".$this->getCommId()."/".$folder_name).$orig_img_filename);	
+		
+		//檔案同步至server
+		$this->sync_file($folder_name);
+		
+		$content_info["img_filename"] = $img_filename;
+		$content_info["is_sync"] = 0;
+		$this->sync_to_server($content_info);
+		//--------------------------------------------------------------------------------
+	}
+
+
+
+
+
+
+
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaSale()
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma_sale/getEdomaSale";
+		//dprint($post_data);exit;
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $json_data;exit;
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+		//dprint($edoma_data_ary);exit;
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+		dprint($edoma_data_ary);
+		
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+
+/*
+
+Array
+(
+								[sn] => 6   server_sn
+    [comm_id] => 5tgb4rfv
+				 [client_sn] => 0
+				 [edoma_sn] => 1
+				  [client_sync] => 0
+    [del] => 0
+    [sale_type] => a
+    [house_type] => c
+    [direction] => c
+    [title] => 瑞安馥邑庭院 平面車位
+    [name] => 聯絡人
+    [phone] => 聯絡電話
+    [area_desc] => 主建物、主建物 和 附屬建物坪數
+    [total_price] => 3111.00
+    [unit_price] => 121.00
+    [manage_fee] => 13333
+    [area_ping] => 55
+    [house_age] => 10
+    [pub_ratio] => 6.00
+    [room] => 1
+    [livingroom] => 2
+    [bathroom] => 3
+    [balcony] => 4
+    [locate_level] => 8
+    [total_level] => 9
+    [usage] => 住宅用
+    [current] => 現況
+    [flag_rent] => 1
+    [flag_parking] => 1
+    [addr] => 經國路1110號
+    [start_date] => 2016-05-22
+    [end_date] => 0000-00-00
+    [forever] => 1
+    [decoration] => 高檔裝潢
+    [living] => 7-11
+    [traffic] => 附近交通
+    [desc] => 特色說明特色說明特色說明特色說明特色說明特色說明特色說明特色說明
+    [launch] => 1
+    [created] => 2016-05-28 17:59:39
+    [updated] => 2016-05-28 17:59:39
+)
+
+*/
+		dprint($server_info);die;
+			$arr_data = array
+			(
+				 "comm_id" => $this->getCommId()	
+				, "server_sn" => $server_info["sn"]				
+				, "title" => tryGetData("title",$server_info)	
+				, "brief" => tryGetData("brief",$server_info)
+				, "brief2" => tryGetData("brief2",$server_info)	
+				, "id" => tryGetData("id",$server_info,NULL)	
+				, "content_type" => tryGetData("content_type",$server_info)	
+				, "filename" => tryGetData("filename",$server_info)
+				, "img_filename" => tryGetData("img_filename",$server_info)
+				, "start_date" => tryGetData("start_date",$server_info,NULL)
+				, "end_date" => tryGetData("end_date",$server_info,NULL)
+				, "forever" => tryGetData("forever",$server_info,0)
+				, "launch" => tryGetData("launch",$server_info,0)
+				, "hot" => tryGetData("hot",$server_info,0)
+				, "sort" => tryGetData("sort",$server_info,500)
+				, "url" => tryGetData("url",$server_info)
+				, "target" => tryGetData("target",$server_info,0)
+				, "content" => tryGetData("content",$server_info)
+				, "update_date" =>  date( "Y-m-d H:i:s" )
+				, "del" => tryGetData("del",$server_info,0)
+				, "is_edoma" => 1
+			);        	
+			
+
+		
+			$content_server_info = $this->it_model->listData("house_to_sale","server_sn = '".$server_info["sn"]."'");
+			if($content_server_info["count"]==0)
+			{
+				$arr_data["create_date"] =   date( "Y-m-d H:i:s" );
+				$content_sn = $this->it_model->addData( "house_to_rent" , $arr_data );
+				if($content_sn > 0)
+				{
+					
+					$arr_data["sn"] = $content_sn;					
+					$this->sync_edoma_rent_to_server($arr_data);
+				}
+				
+			}
+			else
+			{
+				$content_server_info = $content_server_info["data"][0];
+				$result = $this->it_model->updateData( "house_to_sale" , $arr_data, "server_sn = '".$server_info["sn"]."'" );
+				if($result)
+				{
+			
+					$arr_data["sn"] = $content_server_info["sn"];				
+					$this->sync_edoma_sale_to_server($arr_data);
+				}
+			}
+						
+		}
+		
+		//echo '<meta charset="UTF-8">';
+		//dprint($app_data_ary);
+		
+	}
+	
+
+	/**
+	 * web_menu_content 同步至雲端server
+	 */
+	function sync_edoma_sale_to_server($post_data)
+	{
+		$url = $this->config->item("api_server_url")."sync_edoma_sale/updateEdomaSale";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $is_sync;exit;
+		//更新同步狀況
+		//------------------------------------------------------------------------------
+		if($is_sync != '1')
+		{
+			$is_sync = '0';
+		}			
+		
+		$this->it_model->updateData( "house_to_sale" , array("is_sync"=>$is_sync,"update_date"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
+		//------------------------------------------------------------------------------
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**/
+
+
 	/**
 	 * 取得社區id
 	 */

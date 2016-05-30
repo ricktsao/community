@@ -9,7 +9,7 @@
 	  echo textAreaOption("內容","content",$edit_data);
 	?>	
 	
-	<div class="form-group ">
+	<div class="form-group " style="display:none">
         <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">圖片</label>
         <div class="col-xs-12 col-sm-6">
             <input type="file" name="img_filename" size="20" /><br /><br />

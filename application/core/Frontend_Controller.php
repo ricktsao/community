@@ -764,12 +764,48 @@ abstract class Frontend_Controller extends IT_Controller
 				"id" => "comm_id",
 				"value" => $comm_id,
 				"launch" => 1,
-				"received" => date("Y-m-d H:i:s"),
-				"updated" => date("Y-m-d H:i:s")
+				"updated" => date("Y-m-d H:i:s"),
+				"created" => date("Y-m-d H:i:s")
 			);
 			
 			$result_sn = $this->it_model->addData( "sys_config" , $update_data);
-			if($result_sn == 0)
+			if($result_sn > 0)
+			{
+				//代表為新社區,新增一筆admin
+				$admin_data = array(
+				"comm_id" => $comm_id,
+				"name" => '管理者',
+				"title" => '管理者',
+				"role" => 'F',				
+				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
+				"is_manager" => 1,
+				"launch" => 1,
+				"forever" => 1,				
+				"updated" => date("Y-m-d H:i:s")
+				);
+				
+				$result = $this->it_model->updateData( "sys_user" , $admin_data,"account ='admin'" );		
+				if($result == FALSE)
+				{
+					$admin_data["account"] = "admin";
+					$admin_data["start_date"] = date("Y-m-d H:i:s");
+					$admin_data["created"] = date("Y-m-d H:i:s");
+					$user_sn = $this->it_model->addData( "sys_user" , $admin_data);	
+					if($user_sn > 0 )
+					{
+						$group_data = array(
+						"sys_user_sn" => $user_sn,
+						"sys_user_group_sn" => 5,
+						"launch" => 1,
+						"update_date" => date("Y-m-d H:i:s")
+						);
+						$this->it_model->addData( "sys_user_belong_group" , $group_data);	
+					}
+						
+				}
+				
+			}			
+			else
 			{
 				$this->redirectLoginPage();
 			}				
@@ -778,6 +814,18 @@ abstract class Frontend_Controller extends IT_Controller
 		//----------------------------------------------------------------------		
 		
 		return $comm_id;
+	}
+	
+	
+	function generateCommId($length = 8) 
+	{
+	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    return $randomString;
 	}
 	
 	function speed()
@@ -794,7 +842,7 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
-		//dprint($post_data);
+		dprint($post_data);
 		//exit;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -805,6 +853,8 @@ abstract class Frontend_Controller extends IT_Controller
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
 		
+		dprint($is_sync);
+		die;
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------
