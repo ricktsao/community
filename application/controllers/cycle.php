@@ -19,16 +19,29 @@ class Cycle extends Frontend_Controller {
 		//社區公告
 		//---------------------------------------------------------------
 		$news_list = $this->c_model->GetList2( "news" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($news_list["data"],'img_filename',"news");
+		$news_list = $news_list["data"];
+		foreach( $news_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$news_list[$key]["photo_list"] = $photo_list["data"];						
+		}
+			
+		
+		//img_show_list($news_list["data"],'img_filename',"news");
 		//---------------------------------------------------------------
 		
 		//管委公告
 		//---------------------------------------------------------------
 		$bulletin_list = $this->c_model->GetList2( "bulletin" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($bulletin_list["data"],'img_filename',"bulletin");
+		$bulletin_list = $bulletin_list["data"];
+		foreach( $bulletin_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$bulletin_list[$key]["photo_list"] = $photo_list["data"];						
+		}
 		//---------------------------------------------------------------
 		
-		$cycle_list = array_merge($news_list["data"], $bulletin_list["data"]);
+		$cycle_list = array_merge($news_list, $bulletin_list);
 	
 		
 		
