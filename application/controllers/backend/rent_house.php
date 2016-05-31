@@ -367,6 +367,10 @@ class Rent_House extends Backend_Controller {
 		$config['max_height']  = '1000';
 		$config['overwrite']  = true;
 
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );
+		$config['file_name'] = $filename;
+
+
 		$this->load->library('upload', $config);
 
 		if (!is_dir('./upload/'.$comm_id.'/house_to_rent/'.$edit_data['house_to_rent_sn'])) {
@@ -382,7 +386,8 @@ class Rent_House extends Backend_Controller {
 		} else {
 
 			$upload = $this->upload->data();
-			$filename = tryGetData('file_name', $upload);
+			$file_ext = tryGetData('file_ext', $upload);
+			$filename .= $file_ext;
 
 			// 製作縮圖
 			// image_thumb('./upload/'.$comm_id.'/house_to_rent/'.$edit_data['house_to_rent_sn'], 'ddd_'.$filename, '120', '100');
@@ -408,7 +413,7 @@ class Rent_House extends Backend_Controller {
 				$this->sync_item_to_server($arr_data, 'updateRentHousePhoto', 'house_to_rent_photo');
 
 				/* 檔案同步至server 檔案同步至server 檔案同步至server */
-				$this->sync_file('house_to_rent\\'.$edit_data['house_to_rent_sn'].'\\');
+				$this->sync_file('house_to_rent/'.$edit_data['house_to_rent_sn'].'/');
 
 
 
