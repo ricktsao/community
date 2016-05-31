@@ -1555,6 +1555,9 @@ abstract class Backend_Controller extends IT_Controller
 		
 		$content_info["img_filename"] = $img_filename;
 		$content_info["is_sync"] = 0;
+		
+		
+		$content_info["img_filename"] = $img_filename;
 		$this->sync_to_server($content_info);
 		//--------------------------------------------------------------------------------
 	}
