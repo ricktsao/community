@@ -881,9 +881,8 @@ abstract class Backend_Controller extends IT_Controller
 			$result = curl_exec($ch);
 			curl_close ($ch);
 
-		
-			//dprint($result);
-		}		
+		}	
+		//	dprint($result);die;
 	}
 
 	//ajax 取得
