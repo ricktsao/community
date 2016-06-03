@@ -34,7 +34,7 @@
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
 										<th style="width:180px">操作 </th>
-										<th style="width:120px">APP橫條資訊<br>啟用/停用</th>
+										<th style="width:120px">輪播公告<br>啟用/停用</th>
 										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
 											<label>
