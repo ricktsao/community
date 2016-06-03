@@ -14,7 +14,7 @@
         
     </div>                
 </article>	
-<span style="display: none" class="label label-sx label-warning">Hot於前端首頁只顯示1則(列表第一筆)</span>		
+		
 </form>
 
 <form action="" id="update_form" method="post" class="contentForm">   
@@ -30,12 +30,12 @@
 								<thead>
 									<tr>										
 										<th style="width:100px">序號</th>
-										<th>廣告圖</th>
+										<th>內容</th>
 									
 																			
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
-										<th style="width:120px">操作</th>
+										<th style="width:180px">操作</th>
 										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
 											<label>
@@ -48,46 +48,36 @@
 								<tbody>
 									<?php for($i=0;$i<sizeof($list);$i++){ ?>
 									<tr>
-										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>		
-										<td><?php echo '<a href="'.$list[$i]["img_filename"].'" title="檢視大圖" target=_blank><img border="0" style="height:150px" src="'.$list[$i]["img_filename"].'?"></a>'; ?></td>
+										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
+										<td>
+											<?php
+											
+												echo nl2br($list[$i]["content"]);
+											 
+											 ?>
+										</td>
+										
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
-											<?php if($list[$i]["is_edoma"]==1){?>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>檢視
-											</a>
-											<?php }else{?>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
-											</a>
-											<?php } ?>
+											</a>											
 											
-											<a class="btn  btn-minier btn-danger" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>PDF下載
-											</a>
 										</td>
 										<td>					
 											<div class="col-xs-3">
-												<?php if($list[$i]["is_edoma"]==1){?>
-												-
-												<?php }else{?>
 												<label>
 													<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo $list[$i]["launch"]==1?"checked":"" ?> value="<?php echo $list[$i]["sn"] ?>" onClick='javascript:launch(this);' />
 													<span class="lbl"></span>
 												</label>
-												<?php } ?>
 											</div>
 										</td>
 										
 										<td class="center">
-											<?php if($list[$i]["is_edoma"]==1){?>
-											-
-											<?php }else{?>
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
 												<span class="lbl"></span>
 											</label>
-											<?php } ?>
 										</td>
 									</tr>
 									<?php } ?>

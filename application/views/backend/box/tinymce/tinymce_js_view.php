@@ -1,5 +1,6 @@
 <?php
-$selector_string = '';
+$selector_string = 'textarea#content1';
+/*
 if ( empty($elements) === TRUE )
 {
 	$selector_string = 'textarea#content';
@@ -17,7 +18,7 @@ else
 		$selector_string = substr($selector_string, 1);
 	}
 }
-
+*/
 
 ?>
 
