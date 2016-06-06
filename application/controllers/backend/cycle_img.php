@@ -129,6 +129,27 @@ class Cycle_img extends Backend_Controller {
         }	
 	}
 	
+	function changeBg()
+	{
+		$content_sn = $this->input->post('hot');
+		
+		if(isNotNull($content_sn))
+		{
+			$this->it_model->updateData("web_menu_content",array("hot"=>1,"update_date"=>date("Y-m-d H:i:s")),"content_type = 'cycle_img' and sn = ".$content_sn);
+			$this->it_model->updateData("web_menu_content",array("hot"=>0,"update_date"=>date("Y-m-d H:i:s")),"content_type = 'cycle_img' and sn != ".$content_sn);
+		
+			$this->showSuccessMessage();
+		}
+		else
+		{
+			$this->showFailMessage();
+		}
+		
+		
+		redirect(bUrl("contentList"));	
+	}
+	
+	
 		
 	//圖片處理
 	private function uploadImage($content_sn)

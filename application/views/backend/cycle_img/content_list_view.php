@@ -35,7 +35,8 @@
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
 										<th style="width:120px">操作</th>
-										<th style="width:120px">啟用/停用</th>										
+										<th style="width:120px">啟用/停用</th>	
+										<th style="width:180px">選擇使用的底圖</th>											
 										<th class="center" style="width:80px">
 											<label>
 												<input type="checkbox" class="ace"  />
@@ -78,6 +79,13 @@
 											</div>
 										</td>
 										
+										<td class="center">											
+											<label>
+												<input type="radio" class="ace" name="hot" <?php echo $list[$i]["hot"]==1?"checked":"";?> value="<?php echo $list[$i]["sn"];?>" />
+												<span class="lbl">選擇</span>
+											</label>										
+										</td>
+										
 										<td class="center">
 											<?php if($list[$i]["is_edoma"]==1){?>
 											-
@@ -91,10 +99,17 @@
 									</tr>
 									<?php } ?>
 									
+									
+									
 									<tr>
 										<td colspan="6">
 											
-										</td>	
+										</td>
+										<td class="center">
+											<a class="btn  btn-minier btn-inverse" href="javascript:ChangeBg('<?php echo bUrl('changeBg');?>');">
+												<i class="icon-trash bigger-120"></i>更換底圖
+											</a>
+										</td>						
 										<td class="center">
 											<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteContent');?>');">
 												<i class="icon-trash bigger-120"></i>刪除
@@ -144,6 +159,19 @@
             }
         });	 
 	}
+	
+	function ChangeBg(url) 
+	{
+		if (confirm("是否確定更換底圖?"))
+		{
+			var query_string = url;	
+			document.getElementById( "update_form" ).action = query_string;	
+			document.getElementById( "update_form" ).submit();     
+		}
+	}
+	
+	
+	
 </script>
 
 
