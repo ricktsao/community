@@ -252,7 +252,7 @@
 
         for (var i = 0; i < arr_t.length; i++) {
 
-            pageTemp += arr_t[i];
+            pageTemp += arr_t[i]+"<br/>";
 
             if (i + 1 < arr_t.length) {
                 if ((pageTemp.length + arr_t[i + 1].length) > pageFontLimit) {
