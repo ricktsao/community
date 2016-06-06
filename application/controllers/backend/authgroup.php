@@ -594,9 +594,9 @@ class Authgroup extends Backend_Controller
 		$user_sn_ary = datatoArray($user_group_list,"sys_user_sn");	
 		//-----------------------------------------------------------------------------------------------------------------------------
 
-		$condition = "AND role='M' ";
-		if(count($user_sn_ary)>0)
-		{
+		$condition = "AND `account` != 'admin' AND `role` = 'M' ";
+
+		if (count($user_sn_ary) > 0) {
 			$condition .= "AND sn not in (".implode(",", $user_sn_ary).") AND launch=1";			
 		}
 		
