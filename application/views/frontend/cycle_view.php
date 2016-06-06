@@ -45,6 +45,7 @@
         width: 900px;
         height: 1008px;
         overflow: hidden;
+        font-size: 20px;
     }
     
     #slide > div img {
@@ -164,15 +165,24 @@
 
                 for (var i = 0; i < data.length; i++) {
 
+                    var _title = "";
 
-                    subPage = pText(data[i].content);
+                    if(data[i].title!=undefined){
+                        _title = data[i].title;
+                    }
 
-                    for (var j = 0; j < subPage.length; j++) {
-                        mainPage.push({
-                            type: "text",
-                            content: subPage[j],
-                            title: data[i].title
-                        });
+                    var subPage = pText(data[i].content);
+
+                    if(subPage){
+
+                        for (var j = 0; j < subPage.length; j++) {
+                            mainPage.push({
+                                type: "text",
+                                content: subPage[j],
+                                title: _title
+                            });
+                        }
+
                     }
                     if (data[i].photo_list) {
                         for (var j = 0; j < data[i].photo_list.length; j++) {
@@ -182,7 +192,7 @@
                             mainPage.push({
                                 type: "image",
                                 content: photo.img_filename,
-                                title: data[i].title
+                                title: _title
                             });
                         }
                     }
@@ -231,7 +241,9 @@
 
 
     function pText(_txt) {
-
+        if(!_txt){
+            return false;
+        }
         var pageFontLimit = 500;
         var page = [];
 
