@@ -29,6 +29,7 @@
 	
 	<?php echo pickDateOption($edit_data);?>
 	<?php echo textOption("排序","sort",$edit_data); ?>
+	<?php echo checkBoxOption("輪播公告啟用","hot",$edit_data);?>
 	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
 	
 	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
