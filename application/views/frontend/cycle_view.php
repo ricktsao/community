@@ -43,7 +43,6 @@
         width: 900px;
         height: 1008px;
         overflow: hidden;
-        font-size: 20px;
     }
     
     #slide > div img {
@@ -77,7 +76,9 @@
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
-    <marquee id="marquee" direction="left">This text will scroll from bottom to top</marquee>
+	
+	
+    <marquee id="marquee" direction="left"><?php echo $marquee_str;?></marquee>
     <div id="dates">
     </div>
     <div id="slide" class="slideshow">
@@ -163,24 +164,15 @@
 
                 for (var i = 0; i < data.length; i++) {
 
-                    var _title = "";
 
-                    if(data[i].title!=undefined){
-                        _title = data[i].title;
-                    }
+                    subPage = pText(data[i].content);
 
-                    var subPage = pText(data[i].content);
-
-                    if(subPage){
-
-                        for (var j = 0; j < subPage.length; j++) {
-                            mainPage.push({
-                                type: "text",
-                                content: subPage[j],
-                                title: _title
-                            });
-                        }
-
+                    for (var j = 0; j < subPage.length; j++) {
+                        mainPage.push({
+                            type: "text",
+                            content: subPage[j],
+                            title: data[i].title
+                        });
                     }
                     if (data[i].photo_list) {
                         for (var j = 0; j < data[i].photo_list.length; j++) {
@@ -190,7 +182,7 @@
                             mainPage.push({
                                 type: "image",
                                 content: photo.img_filename,
-                                title: _title
+                                title: data[i].title
                             });
                         }
                     }
@@ -239,9 +231,7 @@
 
 
     function pText(_txt) {
-        if(!_txt){
-            return false;
-        }
+
         var pageFontLimit = 500;
         var page = [];
 

@@ -118,21 +118,32 @@ class Cycle extends Frontend_Controller {
 		$data["list"] = $cycle_list;
 		*/
 		
+		//底圖
+		//------------------------------------------------------------------------------
 		$bg_img = base_url().'template/'.$this->config->item('frontend_name').'/images/bg.jpg';
-		
-		
-		$bg_img_info = $this->c_model->GetList( "cycle_img" , "hot = 1 AND launch =1" ,FALSE );
-		
+		$bg_img_info = $this->c_model->GetList( "cycle_img" , "hot = 1 AND launch =1" ,FALSE );		
 		img_show_list($bg_img_info["data"],'img_filename',"cycle_img");
-
 		if($bg_img_info["count"]>0)
 		{
 			$bg_img_info = $bg_img_info["data"][0];
 			$bg_img = $bg_img_info["img_filename"];
 		}
-		
-		
 		$data['bg_img'] = $bg_img;
+		//------------------------------------------------------------------------------
+		
+		
+		//跑馬燈
+		//------------------------------------------------------------------------------
+		$marquee_list = $this->c_model->GetList( "marquee" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		//dprint($marquee_list);
+		$marquee_str = '';
+        foreach ($marquee_list["data"] as $key => $marquee) 
+        {
+			$marquee_str .= $marquee["content"].'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+		$data["marquee_str"] = $marquee_str;
+		//------------------------------------------------------------------------------
+		
 		$data["edit_data"] = array();
 		$data['templateUrl'] = $this->config->item("template_frontend_path");
 		
