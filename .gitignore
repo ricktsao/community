@@ -1,5 +1,4 @@
 /application/config/database.php
 *.gitignore
-/upload/5tgb4rfv/house_to_rent/1/*.jpg
 *.jpg
 *.png
