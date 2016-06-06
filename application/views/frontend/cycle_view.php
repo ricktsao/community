@@ -51,7 +51,7 @@
         max-width: 100%;
         display: block;
     }
-
+    
     #dates {
         position: absolute;
         left: 0;
@@ -59,16 +59,16 @@
         top: 0;
         text-align: center;
         font-weight: bold;
-        font-size:50px;
+        font-size: 50px;
         padding-top: 20px;
     }
-
+    
     #marquee {
         position: absolute;
         left: 0;
         right: 0;
         bottom: 40px;
-        font-size:50px;
+        font-size: 50px;
         font-weight: bold;
     }
     </style>
@@ -80,8 +80,6 @@
     </div>
     <marquee id="marquee" direction="left">This text will scroll from bottom to top</marquee>
     <div id="dates">
-        
-
     </div>
     <div id="slide" class="slideshow">
         <?php
@@ -132,11 +130,11 @@
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
     var date = new Date();
-    var day  = date.getDay();
+    var day = date.getDay();
 
-    var today =  date.getFullYear()+ " 年 " + (date.getMonth()+1) + " 月 " + date.getDate() + " 日 星期"+day_list[day];
+    var today = date.getFullYear() + " 年 " + (date.getMonth() + 1) + " 月 " + date.getDate() + " 日 星期" + day_list[day];
 
-   // console.log(today);
+    // console.log(today);
 
 
     //day_list[day]
@@ -159,6 +157,9 @@
             cache: false,
             success: function(data) {
                 console.log(data);
+
+
+
                 var mainPage = [];
 
                 for (var i = 0; i < data.length; i++) {
@@ -173,14 +174,17 @@
                             title: data[i].title
                         });
                     }
+                    if (data[i].photo_list) {
+                        for (var j = 0; j < data[i].photo_list.length; j++) {
 
-                    for (var j = 0; j < data[i].photo_list.length; j++) {
-                        var photo = data[i].photo_list[j];
-                        mainPage.push({
-                            type: "image",
-                            content: baseUrl + "/" + photo.content_sn + "/" + photo.img_filename,
-                            title: data[i].title
-                        });
+
+                            var photo = data[i].photo_list[j];
+                            mainPage.push({
+                                type: "image",
+                                content: photo.img_filename,
+                                title: data[i].title
+                            });
+                        }
                     }
                 }
 
@@ -201,7 +205,7 @@
 
                 }
 
-              
+
 
                 $('#slide').html(innerCon);
                 $('.slideshow').cycle({
