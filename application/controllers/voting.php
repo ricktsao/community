@@ -107,10 +107,14 @@ class Voting extends Frontend_Controller {
 			header("location:".fUrl('voting_result_list'));
 			die();
 		}
-
-
+		$manager = FALSE;
+		if($this->session->userdata("f_is_manager")){
+			$manager =TRUE;			
+		}
 	
-		$voting = $this->voting_model->votingRecord($voting_sn);
+		$voting = $this->voting_model->votingRecord($voting_sn,$manager);
+
+		
 		
 		
 		$data['voting_info'] = $voting;
