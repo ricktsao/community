@@ -152,7 +152,7 @@
 
 
         $.ajax({
-            url: "ajaxGetNews",
+            url: "<?php echo frontendUrl("cycle","ajaxGetNews");?>",
             dataType: "JSON",
             cache: false,
             success: function(data) {

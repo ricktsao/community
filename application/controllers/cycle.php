@@ -20,7 +20,7 @@ class Cycle extends Frontend_Controller {
 		
 		//社區公告
 		//---------------------------------------------------------------
-		$news_list = $this->c_model->GetList2( "news" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$news_list = $this->c_model->GetList( "news" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		$news_list = $news_list["data"];
 		foreach( $news_list as $key => $info ) 
 		{
@@ -42,7 +42,7 @@ class Cycle extends Frontend_Controller {
 		
 		//管委公告
 		//---------------------------------------------------------------
-		$bulletin_list = $this->c_model->GetList2( "bulletin" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$bulletin_list = $this->c_model->GetList( "bulletin" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		$bulletin_list = $bulletin_list["data"];
 		foreach( $bulletin_list as $key => $info ) 
 		{
