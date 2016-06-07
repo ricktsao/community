@@ -13,9 +13,7 @@
     }
     
     body {
-        background: url(<?php echo base_url();
-        ?>template/<?php echo $this->config->item('frontend_name');
-        ?>/images/bg.jpg) top center no-repeat #aac9eb;
+        background: url(<?php echo $bg_img;?>) top center no-repeat #aac9eb;
         height: 1920px;
     }
     
