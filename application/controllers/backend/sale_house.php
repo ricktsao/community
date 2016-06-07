@@ -352,6 +352,10 @@ class Sale_House extends Backend_Controller {
 		$config['max_height']  = '1000';
 		$config['overwrite']  = true;
 
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );
+		$config['file_name'] = $filename;
+
+
 		$this->load->library('upload', $config);
 
 		if (!is_dir('./upload/'.$comm_id.'/house_to_sale/'.$edit_data['house_to_sale_sn'])) {
@@ -367,7 +371,8 @@ class Sale_House extends Backend_Controller {
 		} else {
 
 			$upload = $this->upload->data();
-			$filename = tryGetData('file_name', $upload);
+			$file_ext = tryGetData('file_ext', $upload);
+			$filename .= $file_ext;
 
 			// 製作縮圖
 			// image_thumb('website/house_to_sale/'.$comm_id.'/thumb_'.$edit_data['house_to_sale_sn'], $filename, '120', '100');
