@@ -16,6 +16,20 @@ class Setting extends Backend_Controller{
 		$data["setting_list"] = $setting_list["data"];
 
 		
+		$parking = $this->it_model->listData('parking');
+		$parking_flag = false;
+		if ( $parking['count'] > 0 ) {
+			$parking_flag = true;
+		}
+		$data["parking_flag"] = $parking_flag;
+
+		$users = $this->it_model->listData('sys_user', 'role="I"');
+		$users_flag = false;
+		if ( $users['count'] > 0 ) {
+			$users_flag = true;
+		}
+		$data["users_flag"] = $users_flag;
+
 		$this->display("setting_form_view",$data);
 	}
 	
@@ -52,12 +66,20 @@ class Setting extends Backend_Controller{
 		{
 			//$edit_data[$key] = $this->input->post($key,TRUE);	
 			
+			
+			$value = $this->input->post($key,FALSE); 
+			if ( in_array($key, array('manager_title','building_part_01_value','building_part_02_value','parking_part_01_value','parking_part_02_value','mail_box_type')) ) {
+				if ( mb_substr($value, -1) == ',') {
+					$value = mb_substr($value, 0, -1);
+				}
+			}
+
 			$arr_data = array
 			(	
-				  "value" =>  $this->input->post($key,FALSE)
+				  "value" =>  $value
 				, "update_date" => date( "Y-m-d H:i:s" )
-			);        	
-			
+			);
+
 			$this->it_model->updateData( "web_setting" , $arr_data, "key ='".$key."'");
 					
 		}		
