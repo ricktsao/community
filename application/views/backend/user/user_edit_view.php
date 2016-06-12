@@ -7,7 +7,14 @@
 		</small>
 	</h1>
 </div>
-
+<?php
+//if (validation_errors() != false) {
+//	echo "<div class='error'>" . validation_errors() . "</div>" ;
+//}
+?>
+<?php
+if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
+?>
 <article class="well">
 			<?php
 			if (isNotNull(tryGetData('id', $edit_data, NULL)) ){
@@ -62,11 +69,10 @@
 			}
 			?>
 </article>
-
 <?php
-  if(validation_errors() != false) {
-  //  echo "<div id='errors'>" . validation_errors() . "</div>" ;
-  }
+}
+
+
 ?>
 <form action="<?php echo bUrl("updateUser")?>" method="post"  id="update_form" class="form-horizontal" role="form">
 
@@ -177,21 +183,56 @@
 	}
 	?>
 
+	<?php
+	$b_part_01 = tryGetData('b_part_01', $edit_data);
+	$b_part_02 = tryGetData('b_part_02', $edit_data);
+
+	if(tryGetData('sn', $edit_data) > 0) {
+		echo form_hidden('building_id', tryGetData('building_id', $edit_data, NULL));
+		$building_field = '';	
+	?>
 	<div class="form-group <?php echo $error?>">
-		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">＊戶　別</label>
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">戶　別</label>
 		<div class="col-xs-12 col-sm-6">
-			<label class="middle" style="width:100%;">
+			<label class="middle"> 
 			<?php
+			echo '<input type="radio" name="chg_b_id" value=0 checked> 維持－';
+			echo '<span style="color:#00c;">';
+			echo $building_part_01 .'：'. tryGetData($b_part_01, $building_part_01_array);
+			echo '&nbsp;&nbsp;';
+			echo $building_part_02 .'：'. tryGetData($b_part_02, $building_part_02_array);
+			echo '&nbsp;&nbsp;';
+			echo $building_part_03 .'：'.tryGetData('b_part_03', $edit_data);
+			echo '</span>';
+			?>
+			</label>
+		</div>
+	</div>
+	<?php
+	} else {
+		$building_field = '＊戶　別';
+	}
+	?>
+
+	<div class="form-group <?php echo $error?>">
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right"><?php echo $building_field;?></label>
+		<div class="col-xs-12 col-sm-6">
+			<label class="middle" >
+			<?php
+			if(tryGetData('sn', $edit_data) > 0) {
+				echo '<input type="radio" name="chg_b_id" value=1> 變更－';
+			}
 			echo $building_part_01 .'：';
 			$js = 'id="b_part_01"';
-			echo form_dropdown('b_part_01', $building_part_01_array, tryGetData('b_part_01', $edit_data), $js);
+			echo form_dropdown('b_part_01', $building_part_01_array, 0, $js);
 			echo '&nbsp;&nbsp;';
 			echo $building_part_02 .'：';
 			$js = 'id="b_part_02"';
-			echo form_dropdown('b_part_02', $building_part_02_array, tryGetData('b_part_02', $edit_data), $js);
+			echo form_dropdown('b_part_02', $building_part_02_array, 0, $js);
 			echo '&nbsp;&nbsp;';
-			echo $building_part_03 .'：';
-			echo '<input type="text" name="b_part_03" value="'.tryGetData('b_part_03', $edit_data).'" size="1" id="b_part_03">';
+			echo $building_part_03 .'：(系統自動編號)';
+			//echo '<input type="text" name="tmp_b_part_03" value="'.tryGetData('b_part_03', $edit_data).'" size="1" id="b_part_03">';
+			//echo "<input type='hidden' id='b_part_03' value='".tryGetData('b_part_03', $edit_data)."' size='1'>";
 			?>
 			</label>
 		</div>
@@ -200,7 +241,7 @@
 			echo '<div class="error">';
 			echo form_error('b_part_01');
 			echo form_error('b_part_02');
-			echo form_error('b_part_03');
+			//echo form_error('b_part_03');
 			echo '</div>';
 			echo '</div>';
 			?>
@@ -254,16 +295,34 @@
 
 	<?php echo textOption("門牌號碼","addr",$edit_data,'若有瓦斯登記權限，請一併填寫門牌號碼');?>
 	
-	
-	<div class="form-group ">
+
+	<?php
+	$error = '';
+	if (form_error('group_sn')) {
+		$error = 'has-error';
+	}
+	?>
+	<div class="form-group <?php echo $error?>">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">權限群組</label>
 		<div class="col-xs-12 col-sm-4">
 			<label class="middle" style="width:100%;">
 				<?php
-					echo '<select multiple class="chzn-select" name="group_sn[]" id="form-field-select-4" data-placeholder="請選擇(可複選)..." style="width:100%;">';
+				echo '<select multiple class="chzn-select" id="group_sn" name="group_sn[]" id="form-field-select-4" data-placeholder="請選擇(可複選)..." style="width:100%;">';
 				
 				foreach ($group_list as $key => $item) {
-					echo '<option '.(in_array( $item["sn"], $sys_user_group) ? "selected" : "").'  value="'.$item["sn"].'" />'.$item["title"];
+					$selected = '';
+					if ( sizeof($sys_user_group) == 0) {
+						// 若為新增，預設給定"住戶"群組權限
+						if ( $item["sn"] == 1 ) {
+						//	$selected = 'selected';
+						}
+					} else {
+						if ( in_array( $item["sn"], $sys_user_group) ) {
+							$selected = 'selected';
+						}
+					}
+
+					echo '<option '.$selected.'  value="'.$item["sn"].'" />'.$item["title"];
 				}
 				?>					
 				</select>
@@ -275,6 +334,13 @@
 				?>	
 			</label>
 		</div>
+			<?php
+			echo '<div class="help-block col-xs-12 col-sm-4 col-sm-reset inline">';
+			echo '<div class="error">';
+			echo form_error('group_sn');
+			echo '</div>';
+			echo '</div>';
+			?>
 	</div>
 	<div class="hr hr-16 hr-dotted"></div>
 
