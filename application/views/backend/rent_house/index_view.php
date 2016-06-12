@@ -55,7 +55,7 @@
 										<th>類別</th>
 										<th style="width:120px">日期</th>
 										<th>操作</th>
-										
+										<th>刪除</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -98,6 +98,12 @@
 												<i class="icon-edit bigger-120"></i>物件照片
 											</a>
 										</td>
+										<td class="center">
+											<label>
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo tryGetData('sn', $item);?>" />
+												<span class="lbl"></span>
+											</label>
+										</td>
 										<?php
 										/*
 										<td>					
@@ -118,6 +124,16 @@
 										
 									
 								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="9"></td>
+										<td class="center">
+											<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteHouse');?>');">
+												<i class="icon-trash bigger-120"></i>刪除
+											</a>
+										</td>
+									</tr>
+								</tfoot>
 								
 							</table>
 							

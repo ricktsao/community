@@ -177,7 +177,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("owners_list_view",$data);
 	}
 
 
@@ -258,7 +258,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("mgrs_list_view",$data);
 	}
 
 
@@ -334,7 +334,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("contacts_list_view",$data);
 	}
 
 
@@ -456,6 +456,12 @@ class User extends Backend_Controller
 		//取得分頁
 		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
 
+		// 從片語設定取得管委職稱
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
 
 		$data['b_part_01'] = $b_part_01;
 		$data['b_part_02'] = $b_part_02;
@@ -795,6 +801,7 @@ class User extends Backend_Controller
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");
 		
+		// 從片語設定取得管委職稱
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
 			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));

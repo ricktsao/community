@@ -101,7 +101,7 @@
                         </tr>
                         <tr>
                             <td>樓層</td>
-                            <td><?php echo $house['locate_level'];?> F / <?php echo $house['total_level'];?> F</td>
+                            <td><?php echo $house['locate_level'];?> 樓 / <?php echo $house['total_level'];?> 樓</td>
                         </tr>
                         <tr>
                             <td>型態/現況</td>
