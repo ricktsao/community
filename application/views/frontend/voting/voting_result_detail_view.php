@@ -36,6 +36,16 @@
                     <?php echo $voting_info['options'][$i]['voting_count'];?>
                     </td>
                 </tr>
+                <?php if( $voting_info['options'][$i]['user']):?>
+                <tr>
+                    <td colspan="3" style="text-align:left;">
+                        <?php foreach ($voting_info['options'][$i]['user'] as $item) { echo $item['name'].",";} ?> 
+
+                    </td>
+                    
+                </tr>
+                <?php endif;?>
+
                 <?php endfor;?>              
                </tbody>
                 

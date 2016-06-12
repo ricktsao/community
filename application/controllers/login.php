@@ -86,7 +86,10 @@ class Login extends Frontend_Controller {
 			$this->session->set_userdata('f_user_id', $user_info["id"]);	
 			$this->session->set_userdata('f_building_id', $user_info["building_id"]);			
 			$this->session->set_userdata('f_user_app_id', $user_info["app_id"]);
+			$this->session->set_userdata('f_is_manager', $user_info["is_manager"]);
 			$this->session->set_userdata('f_comm_id', $comm_id);
+
+			
 			
 			
 			//紀錄Keycode使用紀錄
