@@ -1747,8 +1747,8 @@ Array
 	 */
 	function ajaxGetAvailableParking()
 	{
-		$p_part_01 = $this->input->get('part_01', true);
-		$p_part_02 = $this->input->get('part_02', true);
+		$p_part_01 = $this->input->get('p_part_01', true);
+		$p_part_02 = $this->input->get('p_part_02', true);
 
 		$prefix = $p_part_01.'_'.$p_part_02.'_';
 		$condition = 'sn NOT IN ( SELECT parking_sn FROM user_parking ) '
