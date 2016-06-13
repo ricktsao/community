@@ -77,7 +77,8 @@
 				echo form_dropdown('p_part_02', $parking_part_02_array, $p_part_02);
 				echo '&nbsp;&nbsp;';
 				echo $parking_part_03 .'：';
-				echo '<input type="text" name="p_part_03" value="'.$p_part_03.'" size="1">';
+				//echo '<input type="text" name="p_part_03" value="'.$p_part_03.'" size="1">';
+				echo "<select name='p_part_03'></select>";
 				?>
 				</div>
 			</div>
@@ -200,6 +201,45 @@ function selectParking(parking_sn, parking_id, xlocation) {
 
 $(function(){
 
+	var pPart1 = $('select[name=p_part_01]');
+	var pPart2 = $('select[name=p_part_02]');
+	var pPart3 = $('select[name=p_part_03]');
+
+	pPart1.change(getCartNum);
+	pPart2.change(getCartNum);
+
+	function getCartNum(){
+		
+		if(pPart1.val()!=0&&pPart2.val()!=0){
+
+			$.ajax({
+				type: "GET",
+				dataType :"JSON",
+				url: "<?php echo bUrl('ajaxGetAvailableParking', false);?>",
+				data:{p_part_01:pPart1.val(),
+					p_part_02:pPart2.val()},
+				success:function(_data){
+					var options = "";
+					for (var k in _data){						
+						options+="<option value='"+k+"'>"+_data[k]+"</option>";
+					}
+
+					pPart3.html(options);
+					/*for(var i=0;i<data.length;i++){
+						options+="<option ></option>";
+					}
+*/
+
+				}
+			
+
+			})
+
+
+		}
+	}
+
+
 	$("#search-reset").click(function(){
 
 			$("#cust_sn").val('');
@@ -248,5 +288,7 @@ $(function(){
 	});
 
 });
+
+
 
 </script>
