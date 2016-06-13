@@ -64,7 +64,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td id="name" colspan="2"></td>
+                    <td class="text-right">姓名:</td>
+                    <td id="name" ></td>
+                </tr>
+                <tr>
+                    <td class="text-right">APP開通碼:</td>
+                    <td id="app_id" ></td>
                 </tr>
                 <tr>
                     <td class="text-right">ID卡號:</td>
@@ -218,6 +223,7 @@ $(function() {
                 currentObj = member[i];
                 $('#id').val(member[i].id);
                 $('#name').text(member[i].name);
+                $('#app_id').text(member[i].act_code);
                 $('#msg').html("");
                 $("#id").focus();
 
