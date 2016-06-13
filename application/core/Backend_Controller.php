@@ -1741,35 +1741,32 @@ Array
 
 
 
+	
+	/**
+	 * 撈取 指定停車位棟別+樓層 的有效車位
+	 */
+	function ajaxGetAvailableParking()
+	{
+		$p_part_01 = $this->input->get('p_part_01', true);
+		$p_part_02 = $this->input->get('p_part_02', true);
 
+		$prefix = $p_part_01.'_'.$p_part_02.'_';
+		$condition = 'sn NOT IN ( SELECT parking_sn FROM user_parking ) '
+					.' AND parking_id LIKE "'.$prefix.'%" '
+					;
+		$pk_result = $this->it_model->listData('parking', $condition, NULL, NULL, array('parking_id'=>'asc') );
+		$available_parking = array();
+		if ( $pk_result['count'] > 0 ) {
+			foreach ( $pk_result['data'] as $parking) {
+				$sn = $parking['sn'];
+				$parking_id = $parking['parking_id'];
+				$parking_id = str_replace($prefix,'', $parking_id);
+				$available_parking[$sn] = $parking_id;
+			}
+		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		echo json_encode($available_parking);
+	}
 
 
 
