@@ -48,7 +48,7 @@
 											
 											</div>
 										</td>
-										<td>'.showDateFormat($item["created"]).'</td>
+										<td>'.showDateFormat($item["post_date"]).'</td>
 									</tr>
 									';
 								}

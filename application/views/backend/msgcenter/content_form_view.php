@@ -56,7 +56,19 @@
 	</div>
 	
 	
-	
+	<div class="form-group ">
+		<label for="end_date" class="col-xs-12 col-sm-2 control-label no-padding-right">發送日期</label>
+		<div class="col-xs-12 col-sm-4">
+			<input type="text" onclick="WdatePicker()"  class="width-30" name="post_date" id="post_date" value="<?php echo tryGetData("post_date", $edit_data) ?>">					
+			<span class="width-30">
+				<label class="middle">
+					<input type="checkbox"  value="1" id="forever" name="realtime" class="ace">
+					<span class="lbl">即時發送</span>
+				</label>
+			</span>
+		</div>
+		<div class="help-block col-xs-12 col-sm-reset inline"></div>
+	</div>
 
 	
 

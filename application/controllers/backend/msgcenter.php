@@ -51,7 +51,7 @@ class Msgcenter extends Backend_Controller {
 		
 		$data["edit_data"] = array
 		(			
-			'meeting_date' => date( "Y-m-d 09:00" ),			
+			'post_date' => date( "Y-m-d" ),			
 			'target' => 1,			
 		);
 		$this->display("content_form_view",$data);
@@ -120,9 +120,17 @@ class Msgcenter extends Backend_Controller {
 					, "to_user_name" => mb_substr($user_info["name"],0,1).tryGetData($user_info["gender"],$this->config->item("gender_array"),"君") 
 					, "title" => tryGetData("title", $edit_data)
 					, "msg_content" => tryGetData("msg_content", $edit_data)
+					, "post_date" => tryGetData("post_date", $edit_data)
 					, "updated" => date( "Y-m-d H:i:s" )
 					, "created" => date( "Y-m-d H:i:s" )
 				);	
+				
+				if(tryGetData("realtime", $edit_data) == '1')
+				{
+					$arr_data["post_date"] = date( "Y-m-d H:i:s" );
+				}
+				
+				
 								
 				$content_sn = $this->it_model->addData( "user_message" , $arr_data );
 				
@@ -159,9 +167,16 @@ class Msgcenter extends Backend_Controller {
 				, "to_user_count" => count($to_user_sn_ary)
 				, "title" => tryGetData("title", $edit_data)
 				, "msg_content" => tryGetData("msg_content", $edit_data)
+				, "post_date" => tryGetData("post_date", $edit_data)
 				, "updated" => date( "Y-m-d H:i:s" )
 				, "created" => date( "Y-m-d H:i:s" )
 			);	
+			
+			if(tryGetData("realtime", $edit_data) == '1')
+			{
+				$arr_data["post_date"] = date( "Y-m-d H:i:s" );
+			}
+			
 							
 			$content_sn = $this->it_model->addData( "user_message_assign" , $arr_data );
 			
