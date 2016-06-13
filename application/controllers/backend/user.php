@@ -177,7 +177,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("owners_list_view",$data);
 	}
 
 
@@ -258,7 +258,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("mgrs_list_view",$data);
 	}
 
 
@@ -334,7 +334,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("user_list_view",$data);
+		$this->display("contacts_list_view",$data);
 	}
 
 
@@ -456,6 +456,12 @@ class User extends Backend_Controller
 		//取得分頁
 		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
 
+		// 從片語設定取得管委職稱
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
 
 		$data['b_part_01'] = $b_part_01;
 		$data['b_part_02'] = $b_part_02;
@@ -795,6 +801,7 @@ class User extends Backend_Controller
 		$this->addCss("css/chosen.css");
 		$this->addJs("js/chosen.jquery.min.js");
 		
+		// 從片語設定取得管委職稱
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
 			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
@@ -878,6 +885,24 @@ class User extends Backend_Controller
 	}
 	
 
+
+	private function _getNextBpartNumber($b_part_01, $b_part_02)
+	{
+		$prefix = $b_part_01.'_'.$b_part_02.'_';
+
+		$result = $this->it_model->listData( "sys_user" , 'building_id like "'.$prefix.'%"', 1, 0, array('building_id'=>'desc'));
+		
+		if ($result['count'] > 0) {
+			$data = $result['data'][0];
+			$building_id = $data['building_id'];
+			$building_id_part3 = intval( str_replace($prefix, '', $building_id) );
+			$new_building_id_part3 = $building_id_part3 + 1;
+			return $new_building_id_part3;
+		} else {
+			return 1;
+		}
+	}
+
 	public function updateUser()
 	{
 		$this->addCss("css/chosen.css");
@@ -889,8 +914,7 @@ class User extends Backend_Controller
 		{
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		
-		
+		//dprint($edit_data['group_sn'] );
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
 			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
@@ -905,28 +929,44 @@ class User extends Backend_Controller
 
 		if ( ! $this->_validateUser())
 		{
+			if ( tryGetData('building_id', $edit_data, NULL) ) {
+				$building_id = explode('_', $edit_data["building_id"]);
+				
+				$edit_data['b_part_01'] = $building_id[0];
+				$edit_data['b_part_02'] = $building_id[1];
+				$edit_data['b_part_03'] = $building_id[2];
+			}
+
 			//權組list
 			//---------------------------------------------------------------------------------------------------------------		
-			$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1" , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
-			$data["group_list"] = count($group_list["data"])>0?$group_list["data"]:array();
+			$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
+			$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1 ".$condi, NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
+			$data["group_list"] = count($group_list["data"]) > 0 ? $group_list["data"] : array();
 			//---------------------------------------------------------------------------------------------------------------
 			
 			$role = $this->input->get("role", TRUE);
 
+			if (tryGetData("manager_title", $edit_data) > 0) {
+				$edit_data['is_manager'] = 1;
+			}
 			$data["edit_data"] = $edit_data;
 			$data['role'] = tryGetData('role', $edit_data, $role);
 			
 			$data["sys_user_group"] = array();
 			
-			$this->display("user_edit_view",$data);
-		}
-        else 
-        {
+			$this->display("user_edit_view", $data);
+
+		} else {
+			$is_manager = 0;
+			if (tryGetData("manager_title", $edit_data) > 0) {
+				$is_manager = 1;
+			}
+			
+
         	$arr_data = array(
-				 "comm_id"		=>	tryGetData("comm_id", $edit_data)
-				, "id"			=>	tryGetData("id", $edit_data)
-				, "role"		=>	'I'
-				, "building_id"	=>	$edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$edit_data['b_part_03']
+				 "comm_id"		=>	$this->getCommId()
+				, "id"			=>	tryGetData("id", $edit_data, NULL)
+				, "role"		=>	'I'	
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "tel"			=>	tryGetData("tel", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
@@ -936,7 +976,7 @@ class User extends Backend_Controller
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
 				, "voting_right"	=>	tryGetData("voting_right", $edit_data)
 				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
-				, "is_manager"		=>	tryGetData("is_manager", $edit_data)
+				, "is_manager"		=>	$is_manager
 				, "manager_title"	=>	tryGetData("manager_title", $edit_data)
 				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
 				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
@@ -948,6 +988,12 @@ class User extends Backend_Controller
 				, "is_sync" =>  0
 			);
 			
+			if ( isNull(tryGetData('building_id', $edit_data, NULL)) or  tryGetData("chg_b_id", $edit_data) > 0 ) {
+				// 戶別編號，只需先選定 b_part_01 & b_part_02 之後，系統自動編號
+				$next_number = $this->_getNextBpartNumber($edit_data['b_part_01'], $edit_data['b_part_02']);
+				$arr_data['building_id'] = $edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$next_number;
+			}
+
 			if($edit_data["sn"] != FALSE)
 			{
 				//dprint($arr_data);
@@ -1065,6 +1111,7 @@ class User extends Backend_Controller
 		$gas_right = tryGetValue($this->input->post('gas_right',TRUE), 0);
 		$end_date = tryGetValue($this->input->post('end_date',TRUE), 0);
 		$forever = tryGetValue($this->input->post('forever',TRUE), 0);
+		$chg_b_id = tryGetValue($this->input->post('chg_b_id',TRUE), 0);
 
 
 		$this->form_validation->set_message('checkAdminAccountExist', 'Error Message');
@@ -1077,8 +1124,18 @@ class User extends Backend_Controller
 				$this->form_validation->set_rules('account', $this->lang->line("field_account"), 'trim|required|checkAdminAccountExist' );
 				$this->form_validation->set_rules('password', $this->lang->line("field_password"), 'trim|required|min_length[4]|max_length[10]' );
 			}
+			$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'required|greater_than[0]' );
+			$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'required|greater_than[0]' );
+		} else {
+		
+			if ($chg_b_id == 1) {
+				$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'greater_than[0]' );
+				$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'greater_than[0]' );
+			}
 		}
 		
+		$this->form_validation->set_rules( 'group_sn', '權限', 'required' );
+
 		/*	
 		if ($role == 'I') {
 		$forever = tryGetValue($this->input->post('forever',TRUE),0);
@@ -1091,12 +1148,9 @@ class User extends Backend_Controller
 		*/
 
 		
-		$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'required|greater_than[0]' );
-		$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'required|greater_than[0]' );
-		$this->form_validation->set_rules( 'b_part_03', $this->building_part_03, 'required|greater_than[0]' );
 
 		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'tel', '電話', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'tel', '電話', 'min_length[9]|max_length[20]' );
 		$this->form_validation->set_rules( 'phone', '行動電話', 'required|max_length[20]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );

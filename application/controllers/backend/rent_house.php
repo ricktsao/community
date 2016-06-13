@@ -15,8 +15,9 @@ class Rent_House extends Backend_Controller {
 	{
 		$condition = '';
 
-		// 指定客戶姓名
+		// 指定關鍵字
 		$keyword = $this->input->get('keyword', true);
+		$keyword = trim($keyword);
 		$given_keyword = '';
 		if(isNotNull($keyword)) {
 			$given_keyword = $keyword;
@@ -29,6 +30,7 @@ class Rent_House extends Backend_Controller {
 						;
 		}
 
+		// 指定格局
 		$room = $this->input->get('room', true);
 		$given_room = '';
 		if(isNotNull($room)) {
@@ -57,7 +59,7 @@ class Rent_House extends Backend_Controller {
 
 		$query = 'SELECT SQL_CALC_FOUND_ROWS *
 					FROM house_to_rent
-					WHERE ( 1 = 1 ) '.$condition
+					WHERE del = 0 '.$condition
 				;
 		$dataset = $this->it_model->runSql( $query , NULL , NULL , array("sn"=>"desc","rent_price"=>"asc"));
 
@@ -424,6 +426,42 @@ class Rent_House extends Backend_Controller {
 
 		redirect(bUrl("photoSetting"));
 	}
+
+
+
+
+	/**
+	 * 刪除訊息
+	 */
+	function deleteHouse()
+	{
+		$del_array = $this->input->post("del",TRUE);
+
+		foreach( $del_array as $sn ) {
+
+			$comm_id = $this->getCommId();
+
+			$del = $this->it_model->updateDB( "house_to_rent" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
+
+			if ($del) {
+			echo $this->db->last_query();
+				/* 同步 同步 同步 同步 同步 */
+				$arr_data = array("sn" => $sn
+								, "comm_id" => $comm_id 
+								, "del" => 1 );
+				$this->sync_item_to_server($arr_data, 'updateRentHouse', 'house_to_rent');
+
+			}
+		}
+
+		$this->showSuccessMessage('您指定的租屋資訊已刪除成功');
+
+
+		//redirect(bUrl("index"));
+	}
+
+
+
 
 	/**
 	 * 刪除照片

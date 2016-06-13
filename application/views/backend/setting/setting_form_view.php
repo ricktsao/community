@@ -1,8 +1,12 @@
 ﻿<form action="<?php echo bUrl("updateSetting")?>" method="post"  id="update_form" class="form-horizontal" role="form">
 	<?php 
+
+	$users_limit_array = array('building_part_01', 'building_part_02', 'building_part_03', 'building_part_01_value', 'building_part_02_value', 'manager_title', 'mail_box_type');
+	$parking_limit_array = array('parking_part_01', 'parking_part_02', 'parking_part_03', 'parking_part_01_value', 'parking_part_02_value');
+		
 		foreach ($setting_list as $key => $item) 
 		{
-			if ($item["key"] == 'building_part_01' || $item["key"] == 'parking_part_01' || $item["key"] == 'mail_box_type' || $item["key"] == 'bulletin_cycle_sec') {
+			if ($item["key"] == 'manager_title' || $item["key"] == 'parking_part_01' || $item["key"] == 'bulletin_cycle_sec') {
 				echo '<div class="hr hr-16 hr-dotted"></div>';
 			}
 
@@ -13,9 +17,20 @@
 					echo
 					'<div class="form-group ">
 						<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="'.$item["key"].'">'.$item["title"].'</label>
-						<div class="col-xs-12 col-sm-4">
-							<input type="text" id="'.$item["key"].'" name="'.$item["key"].'"  class="width-100" value="'.$item["value"].'"  />					
-						</div>			
+						<div class="col-xs-12 col-sm-4">';
+
+					if ( in_array($item["key"], $users_limit_array) && $users_flag===true) {
+						echo $item["value"];
+
+					} elseif ( in_array($item["key"], $parking_limit_array ) && $parking_flag===true) {
+						echo $item["value"];
+
+					} else { 
+
+						echo '		<input type="text" id="'.$item["key"].'" name="'.$item["key"].'"  class="width-100" value="'.$item["value"].'"  />';
+					}
+					echo
+					'</div>			
 						'.$item["memo"].'		
 					</div>';
 					break;		

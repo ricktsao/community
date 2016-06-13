@@ -55,6 +55,7 @@
 										<th>類別</th>
 										<th style="width:120px">日期</th>
 										<th>操作</th>
+										<th>刪除</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -89,7 +90,7 @@
 										<?php echo tryGetData(tryGetData('house_type', $item), config_item('house_type_array'));?>
 										</td>
 										<td>
-										<?php echo tryGetData(tryGetData('rent_type', $item), config_item('rent_sale_type_array'));?>
+										<?php echo tryGetData(tryGetData('sale_type', $item), config_item('rent_sale_type_array'));?>
 										</td>
 										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
@@ -99,6 +100,12 @@
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("photoSetting",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>物件照片
 											</a>
+										</td>
+										<td class="center">
+											<label>
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo tryGetData('sn', $item);?>" />
+												<span class="lbl"></span>
+											</label>
 										</td>
 										<?php
 										/*
@@ -121,6 +128,16 @@
 										
 									
 								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="9"></td>
+										<td class="center">
+											<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteHouse');?>');">
+												<i class="icon-trash bigger-120"></i>刪除
+											</a>
+										</td>
+									</tr>
+								</tfoot>
 								
 							</table>
 							

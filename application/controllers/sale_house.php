@@ -55,6 +55,51 @@ class Sale_house extends Frontend_Controller {
 			}*/
 
 
+			// 指定關鍵字
+			$keyword = $this->input->get('keyword', true);
+			$keyword = trim($keyword);
+			$given_keyword = '';
+			if(isNotNull($keyword)) {
+				$given_keyword = $keyword;
+				$condition .= " AND ( `title` like '%".$keyword."%' "
+							."      OR `addr` like '%".$keyword."%' "
+							."      OR `living` like '%".$keyword."%' "
+							."      OR `traffic` like '%".$keyword."%' "
+							."      OR `desc` like '%".$keyword."%' "
+							."      OR `unit_price` = '".$keyword."' "
+							."      OR `total_price` = '".$keyword."'  ) "
+							;
+			}
+
+			// 指定格局
+			$room = $this->input->get('room', true);
+			$given_room = '';
+			if(isNotNull($room)) {
+				$given_room = $room;
+				$condition .= " AND `room` = '".$room."' ";
+			}
+
+			$livingroom = $this->input->get('livingroom', true);
+			$given_livingroom = '';
+			if(isNotNull($livingroom)) {
+				$given_livingroom = $livingroom;
+				$condition .= " AND `livingroom` = '".$livingroom."' ";
+			}
+
+			$bathroom = $this->input->get('bathroom', true);
+			$given_bathroom = '';
+			if(isNotNull($bathroom)) {
+				$given_bathroom = $bathroom;
+				$condition .= " AND `bathroom` = '".$bathroom."' ";
+			}
+
+			$balcony = $this->input->get('balcony', true);
+			$given_balcony = '';
+			if(isNotNull($balcony)) {
+				$given_balcony = $balcony;
+				$condition .= " AND balcony = '".$balcony."' ";
+			}
+
 			$result = $this->it_model->listData('house_to_sale', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
 			
 			// Check if the rents data store contains rents (in case the database result returns NULL)
@@ -150,7 +195,13 @@ class Sale_house extends Frontend_Controller {
 		//}
 		$data['houses'] = $houses;
 
-		$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
+		$data['given_keyword'] = $given_keyword;
+		$data['given_room'] = $given_room;
+		$data['given_livingroom'] = $given_livingroom;
+		$data['given_bathroom'] = $given_bathroom;
+		$data['given_balcony'] = $given_balcony;
+
+		$data["pager"] = $this->getPager($result['count'],$this->page,$this->per_page_rows,"index");
 
 		if ( $result['count'] == 1 ) {
 			$this->display("house_detail_view", $data);

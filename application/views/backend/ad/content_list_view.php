@@ -48,19 +48,8 @@
 								<tbody>
 									<?php for($i=0;$i<sizeof($list);$i++){ ?>
 									<tr>
-										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
-										<td>
-											<?php
-												if($list[$i]["hot"]==1)
-												{
-													echo '<span class="label label-sm label-warning">Hot</span>';
-												}
-											
-												echo '<img src="'.$list[$i]["img_filename"].'" style="height:150px">';  ;
-											 
-											 ?>
-										</td>
-										
+										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>		
+										<td><?php echo '<a href="'.$list[$i]["img_filename"].'" title="檢視大圖" target=_blank><img border="0" style="height:150px" src="'.$list[$i]["img_filename"].'?"></a>'; ?></td>
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
 											<?php if($list[$i]["is_edoma"]==1){?>

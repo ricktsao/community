@@ -134,6 +134,7 @@ class Collect extends Backend_Controller
 									, 'tel' => tryGetData('tel', $item)
 									, 'phone' => tryGetData('phone', $item)
 									, 'id' => ''
+									, 'act_code' => tryGetData('act_code', $item)		// APP開通碼
 									);
 				}
 			}

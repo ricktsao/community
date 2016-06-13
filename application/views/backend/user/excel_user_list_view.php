@@ -8,6 +8,7 @@ header("Cache-Control: cache, must-revalidate");
 header("Pragma: public");
 header("Pragma: no-cache");
 header("Expires: 0");
+
 ?>
 <HTML xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"></head>
@@ -23,16 +24,15 @@ header("Expires: 0");
 		<table border="0">
 			<thead>
 				<tr>
-					<th>序號</th>
 					<th><?php echo $building_part_01;?></th>
 					<th><?php echo $building_part_02;?></th>
 					<th><?php echo $building_part_03;?></th>
-					<th style='text-align: center'>姓名</th>
+					<th style='text-align: center'>住戶姓名</th>
 					<th>性別</th>
-					<th style='text-align: center'>磁卡</th>
 					<th>電話</th>
 					<th>手機</th>
 					<th>所有權人</th>
+					<th>所有權人地址</th>
 					<th>緊急聯絡人</th>
 					<th>管委</th>
 					
@@ -53,7 +53,7 @@ header("Expires: 0");
 					}
 				?>
 				<tr style="background-color: <?php echo $bg;?>">
-					<td style='text-align: center'><?php echo $i +(($this->page-1) * 10);?></td>
+					<!-- <td style='text-align: center'><?php echo $i +(($this->page-1) * 10);?></td> -->
 
 					<td style='text-align: center'><?php echo $building_parts[0];?></td>
 					<td style='text-align: center'><?php echo $building_parts[1];?></td>
@@ -63,13 +63,10 @@ header("Expires: 0");
 					<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
 					</td>
 					<td>
-					<?php echo '<span style="color:#069">'.tryGetData('id', $item).'</span>';?>
+					<?php echo '<span style="color:#000">'.tryGetData('tel', $item).'</span>';?>
 					</td>
 					<td>
-					<?php echo '<span style="color:#069">'.tryGetData('tel', $item).'</span>';?>
-					</td>
-					<td>
-					<?php echo '<span style="color:#069">'.tryGetData('phone', $item).'</span>';?>
+					<?php echo '<span style="color:#000">'.tryGetData('phone', $item).'</span>';?>
 					</td>
 					<td>
 					<?php
@@ -77,6 +74,13 @@ header("Expires: 0");
 						echo '是';
 					} else {
 						echo '否';
+					}
+					?>
+					</td>
+					<td>
+					<?php
+					if (tryGetData("is_owner", $item) == 1) {
+						echo tryGetData('owner_addr', $item);
 					}
 					?>
 					</td>
@@ -91,8 +95,10 @@ header("Expires: 0");
 					</td>
 					<td>
 					<?php
+					//dprint(config_item('manager_title_array'));
 					if (tryGetData("is_manager", $item) == 1) {
-						echo tryGetData("manager_title", $item);
+						$manager_title =  tryGetData("manager_title", $item);
+						echo tryGetData($manager_title, $manager_title_array);
 					} else {
 						echo '否';
 					}

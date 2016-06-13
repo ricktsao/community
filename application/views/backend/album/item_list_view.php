@@ -32,7 +32,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width:100px">序號</th>
-                                        <th>標題</th>
+                                        <th>圖片解說</th>
                                      
                                         <th style="width:120px">照片</th>
                                         <th style="width:120px">編輯</th>

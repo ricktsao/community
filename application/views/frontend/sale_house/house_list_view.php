@@ -1,45 +1,35 @@
     <div class="primary rent">
-        <div class="row" style="display:none">
+        <div class="row">
             <form action="<?php fUrl('index');?>" class="searchArea">
-                
-                <table>
+
+				<table>
                     <tr class="borderLine">
                         <td colspan="2">
-                          <span>房屋型態</span> <label ><input type="checkbox">公寓 </label>
-                          <label ><input name='given_sale_type' type="checkbox">電梯大樓 </label>
-                          <label ><input name='given_sale_type' type="checkbox"> 透天厝  </label>  
-                          <label ><input name='given_sale_type' type="checkbox">別墅 </label>  
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2"><span>坪數</span>
-                            <input type="text" name='given_area_ping_start' class="input_style inline" placeholder="坪"> ~ 
-                            <input type="text" name='given_area_ping_end' class="input_style inline" placeholder="坪">
+                          <span>售屋房源搜尋</span> 
                         </td>
                     </tr>
                      <tr>
-                        <td colspan="2"><span>總價範圍</span>  
-                            <input type="text" name='given_total_price_start' class="input_style inline" placeholder="元"> ~ 
-                            <input type="text" name='given_total_price_end' class="input_style inline" placeholder="元">
+                        <td colspan="2"><span>關鍵字：</span>  
+                            <input type='text' name='keyword' value='<?php echo $given_keyword;?>'> 
+							<!-- 
+							<input type="text" name='given_total_price_start' class="input_style inline" placeholder="元"> ~ 
+                            <input type="text" name='given_total_price_end' class="input_style inline" placeholder="元"> 
+							-->
                         </td>
                     </tr>
                      <tr>
-                        <td><span>格局</span>  
-                            <input type="text" name='given_room' class="input_style inline" placeholder="坪">
+                        <td><span>格局</span> 
+						<input type='text' size='1' name='room' value='<?php echo $given_room;?>'>房
+						<input type='text' size='1' name='livingroom' value='<?php echo $given_livingroom;?>'>廳
+						<input type='text' size='1' name='bathroom' value='<?php echo $given_bathroom;?>'>衛
+						<input type='text' size='1' name='balcony' value='<?php echo $given_balcony;?>'>陽台
                         </td>
                         <td>
                             <button class="btn block">送出 <i class="fa fa-chevron-right"></i></button>
 
                         </td>
                     </tr>
-
-
                 </table>
-                
-
-
-
 
             </form>
 
@@ -50,7 +40,7 @@
             <thead>
                 <div>
                     <tr>
-                        <td class="text_left">房源列表</td>
+                        <td class="text_left">售屋房源列表</td>
                         <td style="width:15%;">坪數
 							<?php
 							/*
@@ -98,7 +88,7 @@
 									</div>
 									<div class="rent_list_info">
 										<div class="p_title"><a href="%s">%s</a></div>
-										<div class="p_style1">%s　｜　%d/%d層</div>
+										<div class="p_style1">單價： %.02f 萬元/坪 ｜ 位於 %d 樓 / 總共 %d 樓</div>
 										<div class="p_style2">%s</div>
 										<div class="p_style3">%d房 %d廳 %d衛 %d陽台</div>
 									</div>
@@ -109,7 +99,7 @@
 							, $photo
 							, fUrl('index/?sn='.$house['sn'])
 							, $house['title']
-							, $house['sale_type']
+							, $house['unit_price']
 							, $house['locate_level']
 							, $house['total_level']
 							, $house['addr']

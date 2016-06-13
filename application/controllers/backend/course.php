@@ -173,11 +173,29 @@ class Course extends Backend_Controller {
 			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
 			$item_info = $item_info["data"][0];			
 			
-			$img_str = "";
-			if(isNotNull($item_info["img_filename"]))
+			//多圖處理
+			//------------------------------------------------------------------------------
+			$img_str = "";			
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+			
+			foreach( $photo_list["data"] as $key => $photo ) 
 			{
-				$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+				$img_url = base_url('upload/content_photo/'.$content_sn.'/'.$photo["img_filename"]);
+				
+				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
 			}
+			//------------------------------------------------------------------------------
+			
+			if($img_str == "")
+			{
+				if(isNotNull($item_info["img_filename"]))
+				{
+					$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+				}
+				
+			}
+			
+			
 						
 			$html = "<h1 style='text-align:center'>課程專區</h1>";
 			$html .= "<h3>".$item_info["title"]."</h3>";

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class News extends Backend_Controller {
+class Marquee extends Backend_Controller {
 	
 	function __construct() 
 	{
@@ -11,32 +11,23 @@ class News extends Backend_Controller {
 
 
 	/**
-	 * news list page
+	 * marquee list page
 	 */
 	public function contentList()
 	{				
-		
-		$cat_sn = $this->input->get('cat_sn');		
-		
-		$cat_list = $this->c_model->GetList( "newscat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
+	
 		
 		
 		$condition = "";
-		if(isNotNull($cat_sn))
-		{
-			$condition = "web_menu_content.parent_sn = '".$cat_sn."'";
-		}
 		
-		$list = $this->c_model->GetList2( "news" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+		$list = $this->c_model->GetList( "marquee" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		//img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
 		
 		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
-		$data["cat_sn"] = $cat_sn;
 		//dprint($data["pager"]);
 		
 		
@@ -47,10 +38,12 @@ class News extends Backend_Controller {
 	 * category edit page
 	 */
 	public function editContent()
-	{		
+	{
+		
+		
 		$content_sn = $this->input->get('sn');
 			
-		$cat_list = $this->c_model->GetList( "newscat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
+		$cat_list = $this->c_model->GetList( "marqueecat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
 		$data["cat_list"] = $cat_list["data"];
 				
 		if($content_sn == "")
@@ -59,7 +52,7 @@ class News extends Backend_Controller {
 			(
 				'sort' =>500,
 				'start_date' => date( "Y-m-d" ),
-				'content_type' => "news",
+				'content_type' => "marquee",
 				'target' => 0,
 				'forever' => 1,
 				'launch' =>1
@@ -68,13 +61,13 @@ class News extends Backend_Controller {
 		}
 		else 
 		{		
-			$news_info = $this->c_model->GetList( "news" , "sn =".$content_sn);
+			$marquee_info = $this->c_model->GetList( "marquee" , "sn =".$content_sn);
 			
-			if(count($news_info["data"])>0)
+			if(count($marquee_info["data"])>0)
 			{
-				img_show_list($news_info["data"],'img_filename',$this->router->fetch_class());			
+				img_show_list($marquee_info["data"],'img_filename',$this->router->fetch_class());			
 				
-				$data["edit_data"] = $news_info["data"][0];			
+				$data["edit_data"] = $marquee_info["data"][0];			
 
 				$this->display("content_form_view",$data);
 			}
@@ -83,28 +76,33 @@ class News extends Backend_Controller {
 				redirect(bUrl("contentList"));	
 			}
 		}
-	}	
+	}
+	
 	
 	public function updateContent()
 	{	
 		$edit_data = $this->dealPost();
-		//dprint($edit_data);exit;
-		$edit_data["is_sync"] = 0;
-		
+						
 		if ( ! $this->_validateContent())
 		{
 			$data["edit_data"] = $edit_data;		
 			$this->display("content_form_view",$data);
 		}
         else 
-        {			
+        {
+			
+			deal_img($edit_data ,"img_filename",$this->router->fetch_class());			
+			
 						
 			if(isNotNull($edit_data["sn"]))
 			{				
 				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
 				{					
-					$img_filename = $this->uploadImage($edit_data["sn"]);					
-					$edit_data["img_filename"] = $img_filename;
+					//$img_filename = $this->uploadImage($edit_data["sn"]);					
+					//$edit_data["img_filename"] = $img_filename;
+					
+					$edit_data["is_sync"] = 0;
+					
 					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
@@ -121,8 +119,9 @@ class News extends Backend_Controller {
 				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
 				if($content_sn > 0)
 				{
-					$img_filename =$this->uploadImage($content_sn);
-					$edit_data["img_filename"] = $img_filename;
+					//$img_filename =$this->uploadImage($content_sn);
+					//$edit_data["img_filename"] = $img_filename;
+					$edit_data["is_sync"] = 0;
 					$edit_data["sn"] = $content_sn;
 					$this->sync_to_server($edit_data);
 				
@@ -133,91 +132,18 @@ class News extends Backend_Controller {
 				{
 					$this->showFailMessage();					
 				}	
-			}			
+			}
+			
+			$sync_data = array(
+			
+			);			
+			
 			
 			redirect(bUrl("contentList"));	
         }	
-	}
-
-
-	public function showPdf_bak()
-	{
-		$time = time();
-		$pdf_file_name = $time .".pdf";
-		
-		$file_url = fUrl("downloadPdf",TRUE);
-		header('Content-Type: application/pdf');
-		header("Content-Transfer-Encoding: Binary"); 
-		header("Content-disposition: attachment; filename=\"" . $pdf_file_name . "\""); 
-		readfile($file_url);
-
-	}
+	}	
 	
-	/**
-	 * pdf下載頁面
-	 */
-	public function showPdf()
-	{
-		$content_sn = $this->input->get('sn');
-		$item_info = $this->c_model->GetList( "news" , "sn =".$content_sn);
-			
-		if(count($item_info["data"])>0)
-		{
-			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
-			$item_info = $item_info["data"][0];			
-			
-			//多圖處理
-			//------------------------------------------------------------------------------
-			$img_str = "";			
-			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
-			
-			foreach( $photo_list["data"] as $key => $photo ) 
-			{
-				$img_url = base_url('upload/content_photo/'.$content_sn.'/'.$photo["img_filename"]);
-				
-				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
-			}
-			//------------------------------------------------------------------------------
-			//dprint($photo_list["data"]);exit;
-			
-			$html = "<h1 style='text-align:center'>社區公告</h1>";
-			$html .= "<h3>".$item_info["title"]."</h3>";
-			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";
-	
-			$this->load->library('pdf');
-			$mpdf = new Pdf();
-			$mpdf = $this->pdf->load();
-			$mpdf->useAdobeCJK = true;
-			$mpdf->autoScriptToLang = true;
-			
-			
-			
-			$water_info = $this->c_model->GetList( "watermark");			
-			if(count($water_info["data"])>0)
-			{
-				img_show_list($water_info["data"],'img_filename',"watermark");
-				$water_info = $water_info["data"][0];			
-		
-				$mpdf->SetWatermarkImage($water_info["img_filename"]);
-				$mpdf->watermarkImageAlpha = 0.081;
-				$mpdf->showWatermarkImage = true;				
-			}
-			
-			
-			
-			$mpdf->WriteHTML($html);			
-			
-			$time = time();
-			$pdfFilePath = "社區公告_".$time .".pdf";
-			$mpdf->Output($pdfFilePath,'I');
-		}
-		else
-		{
-			$this->closebrowser();
-		}
-		
-	}
-	
+
 	//圖片處理
 	private function uploadImage($content_sn)
 	{
@@ -260,14 +186,14 @@ class News extends Backend_Controller {
 	
 	
 	/**
-	 * 驗證newsedit 欄位是否正確
+	 * 驗證marqueeedit 欄位是否正確
 	 */
 	function _validateContent()
 	{
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
+		$this->form_validation->set_rules( 'content', '內容', 'required' );	
 		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
@@ -319,72 +245,12 @@ class News extends Backend_Controller {
 		redirect(bUrl("contentList", FALSE));	
 	}
 
-
 	public function launchContent()
 	{		
 		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
-
 	
 
-	public function hotContent()
-    {
-		$sn = $this->input->post("content_sn", TRUE);
-		$table_name = 'web_menu_content';
-        $field_name = 'hot';
-        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
-        {
-            echo json_encode(array());
-        }
-        else 
-        {		
-
-            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
-			if($data_info["count"]==0)
-			{
-				echo json_encode(array());
-				return;
-			}			  
-			
-			$data_info = $data_info["data"][0];
-			
-			$change_value = 1;
-			if($data_info[$field_name] == 0)
-			{
-				$change_value = 1;
-			}
-			else
-			{
-				$change_value = 0;
-			}
-			
-			
-			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
-			if($result)
-			{
-				//社區主機同步
-				//----------------------------------------------------------------------------------------------------
-				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
-				$content_info = $this->it_model->runSql($query);
-				if($content_info["count"] > 0)
-				{
-					$content_info = $content_info["data"][0]; 					
-					$this->sync_to_server($content_info);									
-				}			
-				//----------------------------------------------------------------------------------------------------
-				echo json_encode($change_value);
-			}
-			else
-			{
-				echo json_encode($data_info[$field_name]);
-			}
-			                      
-        }
-    }
-	
-	
-	
-	
 	
 	public function GenerateTopMenu()
 	{

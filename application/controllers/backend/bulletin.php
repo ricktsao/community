@@ -28,7 +28,7 @@ class Bulletin extends Backend_Controller {
 			$condition = "web_menu_content.parent_sn = '".$cat_sn."'";
 		}
 		
-		$list = $this->c_model->GetList2( "bulletin" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$list = $this->c_model->GetList2( "bulletin" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		//img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
@@ -164,11 +164,18 @@ class Bulletin extends Backend_Controller {
 			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
 			$item_info = $item_info["data"][0];			
 			
-			$img_str = "";
-			if(isNotNull($item_info["img_filename"]))
+			//多圖處理
+			//------------------------------------------------------------------------------
+			$img_str = "";			
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+			
+			foreach( $photo_list["data"] as $key => $photo ) 
 			{
-				$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+				$img_url = base_url('upload/content_photo/'.$content_sn.'/'.$photo["img_filename"]);
+				
+				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
 			}
+			//------------------------------------------------------------------------------
 			
 						
 	
@@ -316,7 +323,60 @@ class Bulletin extends Backend_Controller {
 		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
 	
+	public function hotContent()
+    {
+		$sn = $this->input->post("content_sn", TRUE);
+		$table_name = 'web_menu_content';
+        $field_name = 'hot';
+        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
+        {
+            echo json_encode(array());
+        }
+        else 
+        {		
 
+            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
+			if($data_info["count"]==0)
+			{
+				echo json_encode(array());
+				return;
+			}			  
+			
+			$data_info = $data_info["data"][0];
+			
+			$change_value = 1;
+			if($data_info[$field_name] == 0)
+			{
+				$change_value = 1;
+			}
+			else
+			{
+				$change_value = 0;
+			}
+			
+			
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
+			if($result)
+			{
+				//社區主機同步
+				//----------------------------------------------------------------------------------------------------
+				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
+				$content_info = $this->it_model->runSql($query);
+				if($content_info["count"] > 0)
+				{
+					$content_info = $content_info["data"][0]; 					
+					$this->sync_to_server($content_info);									
+				}			
+				//----------------------------------------------------------------------------------------------------
+				echo json_encode($change_value);
+			}
+			else
+			{
+				echo json_encode($data_info[$field_name]);
+			}
+			                      
+        }
+    }
 	
 	public function GenerateTopMenu()
 	{

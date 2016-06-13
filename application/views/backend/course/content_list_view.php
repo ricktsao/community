@@ -34,7 +34,7 @@
 										<th>收費標示</th>									
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>課程日期</th>
 
-										<th style="width:120px">操作</th>
+										<th style="width:180px">操作</th>
 										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
 											<label>
@@ -84,7 +84,14 @@
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editContent",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
+											
+											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("contentPhoto",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
+												<i class="icon-edit bigger-120"></i>圖片
+											</a>
 											<?php } ?>
+											
+											
+											
 											
 											
 											<a class="btn  btn-minier btn-danger" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">

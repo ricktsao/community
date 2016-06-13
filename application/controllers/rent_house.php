@@ -23,12 +23,11 @@ class Rent_house extends Frontend_Controller {
 		$houses = array();
 		$sn = tryGetData('sn', $_GET, NULL);
 
-		
+/*		
 		$given_sale_type = tryGetData('given_sale_type', $_GET, NULL);
-
 		$given_room = tryGetData('given_room', $_GET, NULL);
 
-/*
+
 		$comm_id = $this->getCommid();
         if ( isNotNull($sn) ) {
             $this->set_response([
@@ -40,22 +39,68 @@ class Rent_house extends Frontend_Controller {
 			$condition = 'comm_id="'.$comm_id.'" AND '.$this->it_model->getEffectedSQL('house_to_rent');
 */
 			$condition = ' ';
-			$condition = ' '. $this->it_model->getEffectedSQL('house_to_rent') ;
+			$condition = ' del=0 AND '. $this->it_model->getEffectedSQL('house_to_rent') ;
+
+
+
+
 			if ( isNotNull($sn) ) {
 				// If the sn parameter doesn't exist return all the rents
 				$condition .= ' AND sn = '.$sn;
 			}
-			/*if ( isNotNull($given_sale_type) ) {
+			/*
+			if ( isNotNull($given_sale_type) ) {
 				// If the sn parameter doesn't exist return all the rents
 				$condition .= ' AND sale_type = '.$given_sale_type;
 			}
 			if ( isNotNull($given_room) ) {
 				// If the sn parameter doesn't exist return all the rents
 				$condition .= ' AND room = '.$given_room;
-			}*/
+			}
+			*/
 
-$this->per_page_rows = 1;
-$this->page = 1;
+
+			// 指定關鍵字
+			$keyword = $this->input->get('keyword', true);
+			$keyword = trim($keyword);
+			$given_keyword = '';
+			if(isNotNull($keyword)) {
+				$given_keyword = $keyword;
+				$condition .= " AND ( `title` like '%".$keyword."%' "
+							."      OR `addr` like '%".$keyword."%' "
+							."      OR `living` like '%".$keyword."%' "
+							."      OR `traffic` like '%".$keyword."%' "
+							."      OR `desc` like '%".$keyword."%' "
+							."      OR `rent_price` = '".$keyword."'  ) "
+							;
+			}
+
+			// 指定格局
+			$room = $this->input->get('room', true);
+			$given_room = '';
+			if(isNotNull($room)) {
+				$given_room = $room;
+				$condition .= " AND `room` = '".$room."' ";
+			}
+			$livingroom = $this->input->get('livingroom', true);
+			$given_livingroom = '';
+			if(isNotNull($livingroom)) {
+				$given_livingroom = $livingroom;
+				$condition .= " AND `livingroom` = '".$livingroom."' ";
+			}
+			$bathroom = $this->input->get('bathroom', true);
+			$given_bathroom = '';
+			if(isNotNull($bathroom)) {
+				$given_bathroom = $bathroom;
+				$condition .= " AND `bathroom` = '".$bathroom."' ";
+			}
+			$balcony = $this->input->get('balcony', true);
+			$given_balcony = '';
+			if(isNotNull($balcony)) {
+				$given_balcony = $balcony;
+				$condition .= " AND balcony = '".$balcony."' ";
+			}
+
 			$result = $this->it_model->listData('house_to_rent', $condition, $this->per_page_rows , $this->page , array('sn'=>'desc'));
 			
 			// Check if the rents data store contains rents (in case the database result returns NULL)
@@ -162,7 +207,13 @@ $this->page = 1;
 		//}
 		$data['houses'] = $houses;
 
-		$data["pager"] = $this->getPager(sizeof($houses),$this->page,$this->per_page_rows,"index");
+		$data['given_keyword'] = $given_keyword;
+		$data['given_room'] = $given_room;
+		$data['given_livingroom'] = $given_livingroom;
+		$data['given_bathroom'] = $given_bathroom;
+		$data['given_balcony'] = $given_balcony;
+
+		$data["pager"] = $this->getPager($result['count'], $this->page, $this->per_page_rows,"index");
 
 		if ( $result['count'] == 1 ) {
 			$this->display("house_detail_view", $data);

@@ -459,7 +459,7 @@ class Auth extends Backend_Controller
 		}
 		*/
 		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'phone', '電話', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'phone', '電話', 'max_length[20]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
 		}

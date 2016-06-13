@@ -59,7 +59,7 @@ class Home extends Frontend_Controller {
 		
 		$houses = array();
 		$condition = ' ';
-		$condition = ' '. $this->it_model->getEffectedSQL('house_to_rent') ;
+		$condition = ' del=0 AND '. $this->it_model->getEffectedSQL('house_to_rent') ;
 		$result = $this->it_model->listData('house_to_rent', $condition, 3, 0, array('sn'=>'desc'));
 		
 		// Check if the rents data store contains rents (in case the database result returns NULL)
@@ -79,7 +79,7 @@ class Home extends Frontend_Controller {
 
 				// 照片
 				//$condition = 'comm_id="'.$comm_id.'" AND house_to_rent_sn='.$item['sn'];
-				$condition = 'house_to_rent_sn='.$item['sn'];
+				$condition = 'del=0 AND house_to_rent_sn='.$item['sn'];
 				$phoresult = $this->it_model->listData('house_to_rent_photo', $condition);
 				$photos = array();
 				foreach ($phoresult['data'] as $photo) {
