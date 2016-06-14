@@ -191,16 +191,18 @@ class Bulletin extends Backend_Controller {
 			
 			
 			
+			$water_img = base_url('template/backend/images/watermark.png');
 			$water_info = $this->c_model->GetList( "watermark");			
 			if(count($water_info["data"])>0)
 			{
 				img_show_list($water_info["data"],'img_filename',"watermark");
 				$water_info = $water_info["data"][0];			
-		
-				$mpdf->SetWatermarkImage($water_info["img_filename"]);
-				$mpdf->watermarkImageAlpha = 0.081;
-				$mpdf->showWatermarkImage = true;				
-			}
+				$water_img = $water_info["img_filename"];
+						
+			}			
+			$mpdf->SetWatermarkImage($water_img);
+			$mpdf->watermarkImageAlpha = 0.081;
+			$mpdf->showWatermarkImage = true;	
 			
 			
 			

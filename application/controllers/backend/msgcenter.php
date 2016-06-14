@@ -10,8 +10,9 @@ class Msgcenter extends Backend_Controller {
 	
 
 	public function contentList()
-	{				
-		$msg_list = $this->it_model->listData("user_message_assign","",$this->per_page_rows,$this->page,array("created" => "desc"));		
+	{
+		$condition = "now() <=  DATE_ADD(post_date, INTERVAL +30 DAY)";				
+		$msg_list = $this->it_model->listData("user_message_assign",$condition,$this->per_page_rows,$this->page,array("created" => "desc"));		
 		$data["msg_list"] = $msg_list["data"];
 		
 		//取得分頁
