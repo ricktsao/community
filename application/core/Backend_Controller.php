@@ -1761,7 +1761,8 @@ Array
 				$sn = $parking['sn'];
 				$parking_id = $parking['parking_id'];
 				$parking_id = str_replace($prefix,'', $parking_id);
-				$available_parking[$sn] = $parking_id;
+				// $available_parking[$sn] = $parking_id;
+				$available_parking[$parking_id] = $parking_id;
 			}
 		}
 
