@@ -165,7 +165,7 @@ class Cycle_img extends Backend_Controller {
 			$folder_name = $this->router->fetch_class();
 			
 			//圖片處理 img_filename				
-			$img_config['resize_setting'] =array($folder_name=>array(1080,1920));					
+			$img_config['resize_setting'] =array($folder_name=>array(0,0));					
 			$uploadedUrl = './upload/tmp/' . $_FILES['img_filename']['name'];
 			move_uploaded_file( $_FILES['img_filename']['tmp_name'], $uploadedUrl);
 			
