@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body,
     html {
         margin: 0;
@@ -18,7 +22,7 @@
     }
     
     #block {
-        height: 260px;
+        height: 230px;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -34,9 +38,12 @@
     }
     
     #slide {
-        width: 900px;
-        height: 1008px;
+        width: 1007px;
+        height: 1237px;
         margin: 0 auto;
+        
+
+        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_content_bg.png) center center no-repeat;
     }
     
     #slide > div {
@@ -44,11 +51,12 @@
         height: 1008px;
         overflow: hidden;
         font-size: 20px;
+        padding: 40px 0 0 40px;
     }
-
-     #slide > div > h1{
+    
+    #slide > div > h1 {
         text-align: center;
-     }
+    }
     
     #slide > div img {
         max-width: 100%;
@@ -56,6 +64,7 @@
     }
     
     #dates {
+        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center no-repeat;
         position: absolute;
         left: 0;
         right: 0;
@@ -64,16 +73,29 @@
         font-weight: bold;
         font-size: 50px;
         padding-top: 20px;
+        height: 172px;
+        line-height: 142px;
     }
     
     #marquee {
+        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center no-repeat;
         position: absolute;
         left: 0;
         right: 0;
         bottom: 40px;
         font-size: 50px;
         font-weight: bold;
+        height: 172px;
     }
+
+     #marquee > marquee {
+        position: absolute;
+        top: 40px;
+        width: 668px;
+        left: 50%;
+        margin-left: -334px;
+     }
+
     </style>
 </head>
 
@@ -81,9 +103,11 @@
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
-	
-	
-    <marquee id="marquee" direction="left"><?php echo $marquee_str;?></marquee>
+    <div id="marquee" >
+        <marquee direction="left">
+            <?php echo $marquee_str;?>
+        </marquee>
+    </div>
     <div id="dates">
     </div>
     <div id="slide" class="slideshow">
@@ -171,11 +195,11 @@
 
                     _title = "";
 
-                    if(data[i].title!=undefined){
-                        _title =data[i].title;
+                    if (data[i].title != undefined) {
+                        _title = data[i].title;
                     }
                     var subPage = pText(data[i].content);
-                    if(subPage){
+                    if (subPage) {
 
                         for (var j = 0; j < subPage.length; j++) {
                             mainPage.push({
@@ -243,7 +267,7 @@
 
     function pText(_txt) {
 
-        if(!_txt){
+        if (!_txt) {
             return false;
         }
 
@@ -255,7 +279,7 @@
 
         for (var i = 0; i < arr_t.length; i++) {
 
-            pageTemp += arr_t[i]+"<br/>";
+            pageTemp += arr_t[i] + "<br/>";
 
             if (i + 1 < arr_t.length) {
                 if ((pageTemp.length + arr_t[i + 1].length) > pageFontLimit) {
