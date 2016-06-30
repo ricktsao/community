@@ -17,7 +17,7 @@
     }
     
     body {
-        background: url(<?php echo $bg_img;?>) top center no-repeat #aac9eb;
+        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;
         height: 1920px;
     }
     
@@ -68,32 +68,48 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: 0;
-        text-align: center;
+        top: 0;     
         font-weight: bold;
-        font-size: 50px;
+        font-size: 40px;
         padding-top: 20px;
         height: 172px;
-        line-height: 142px;
+      
+    }
+
+    #dates > div {
+       margin: 0 auto;
+       position: relative;
+       height: 172px;      
+        width: 600px;
     }
     
+    #d1{
+        padding-top: 10px;
+    }
+    #d3 {
+        position: absolute;
+        right: 0;
+        top: 30px;
+    }
+
     #marquee {
         background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center no-repeat;
         position: absolute;
         left: 0;
         right: 0;
         bottom: 40px;
-        font-size: 50px;
+        font-size: 30px;
         font-weight: bold;
         height: 172px;
     }
 
      #marquee > marquee {
         position: absolute;
-        top: 40px;
+        top: 60px;
         width: 668px;
         left: 50%;
         margin-left: -334px;
+        color:red;
      }
 
     </style>
@@ -109,6 +125,12 @@
         </marquee>
     </div>
     <div id="dates">
+        <div>
+            <div id="d1"></div>
+            <div id="d2"></div>
+            <div id="d3"></div>
+        </div>
+       
     </div>
     <div id="slide" class="slideshow">
         <?php
@@ -153,17 +175,36 @@
     </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
+    <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/lunar.js"></script>
     <script>
     var baseUrl = "<?php echo base_url('upload/content_photo/');?>";
 
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
-    var date = new Date();
-    var day = date.getDay();
+   
 
-    var today = date.getFullYear() + " 年 " + (date.getMonth() + 1) + " 月 " + date.getDate() + " 日 星期" + day_list[day];
+    
+    function renderDate(){
 
-    // console.log(today);
+        var date = new Date();
+        var day = date.getDay();
+        var ty = date.getFullYear();
+        var tm = date.getMonth() + 1;
+        var td = date.getDate();
+        var thour = date.getHours();
+        var tmin = date.getMinutes();
+
+        console.log(mainx(ty,tm,td,0));
+        var d2 = mainx(ty,tm,td,0)
+        var d1 = "國曆" + ty + "年" + tm + "月" + td + "日";//" 星期" + day_list[day];
+        var d3 = "星期" + day_list[day] + " " + thour + " : " + tmin;
+
+
+        $('#d1').html(d1);
+        $('#d2').html(d2);
+        $('#d3').html(d3);
+    }
+
 
 
     //day_list[day]
@@ -171,8 +212,12 @@
         /*
      
         */
+        renderDate();
 
-        $('#dates').html(today);
+        setInterval(renderDate,1000*60);
+
+        
+     //   $('#dates').html(today);
 
 
         $('#fc').click(function() {
