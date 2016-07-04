@@ -70,8 +70,8 @@
         right: 0;
         top: 0;     
         font-weight: bold;
-        font-size: 40px;
-        padding-top: 20px;
+        font-size: 36px;
+        padding-top: 22px;
         height: 172px;
       
     }
@@ -80,7 +80,7 @@
        margin: 0 auto;
        position: relative;
        height: 172px;      
-        width: 600px;
+        width: 660px;
     }
     
     #d1{
@@ -88,8 +88,15 @@
     }
     #d3 {
         position: absolute;
-        right: 0;
+        right: 230px;
+		font-size: 40px;
         top: 30px;
+    }
+	#d4 {
+        position: absolute;
+        right: 0;
+		font-size: 80px;
+        top: 10px;
     }
 
     #marquee {
@@ -98,14 +105,14 @@
         left: 0;
         right: 0;
         bottom: 40px;
-        font-size: 30px;
+        font-size: 50px;
         font-weight: bold;
         height: 172px;
     }
 
      #marquee > marquee {
         position: absolute;
-        top: 60px;
+        top: 50px;
         width: 668px;
         left: 50%;
         margin-left: -334px;
@@ -129,6 +136,7 @@
             <div id="d1"></div>
             <div id="d2"></div>
             <div id="d3"></div>
+			<div id="d4"></div>
         </div>
        
     </div>
@@ -196,13 +204,15 @@
 
         console.log(mainx(ty,tm,td,0));
         var d2 = mainx(ty,tm,td,0)
-        var d1 = "國曆" + ty + "年" + tm + "月" + td + "日";//" 星期" + day_list[day];
-        var d3 = "星期" + day_list[day] + " " + thour + " : " + tmin;
+        var d1 = "西元" + ty + "年" + tm + "月" + td + "日";//" 星期" + day_list[day];
+        var d3 = "星期" + day_list[day] ;
+		var d4 =  thour + " : " + tmin;
 
 
         $('#d1').html(d1);
         $('#d2').html(d2);
         $('#d3').html(d3);
+		$('#d4').html(d4);
     }
 
 
