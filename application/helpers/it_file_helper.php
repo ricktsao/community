@@ -388,7 +388,12 @@ if ( ! function_exists('get_resize_img'))
 				//dprint($destInfo);exit;
 				$srcSize   = getimagesize($filename); //圖檔大小 
 				$srcRatio  = $srcSize[0]/$srcSize[1]; // 計算寬/高 
-				$destRatio = $maxWidth/$maxHeight; 
+				$destRatio = 1;
+				if($maxWidth != 0 && $maxHeight != 0)
+				{
+					$destRatio = $maxWidth/$maxHeight; 
+				}
+				
 				if ($destRatio > $srcRatio) 
 				{ 
 					$ih = $maxHeight; 
