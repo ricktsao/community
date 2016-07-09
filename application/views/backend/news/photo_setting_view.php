@@ -28,8 +28,7 @@
 	<h1>
 		圖片設定
 		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-			
+			<i class="ace-icon fa fa-angle-double-right"></i>			
 		</small>
 	</h1>
 </div>
@@ -43,11 +42,11 @@
 		
 		<div class="hr hr-16 hr-dotted"></div>	
 		
-		<form action="<?php echo bUrl("updateContentPhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
+		<form action="<?php echo bUrl("updateContentPhoto")?>" method="post"  id="add_form" name="add_form" role="form" enctype="multipart/form-data">
 		<input type='hidden' name='content_sn' value='<?php echo tryGetData('sn', $content_info); ?>'>		
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
-				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='img_filename' size=20></div>
+				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔</span></div>				
 			</div>
 			<div class="form-group" style="display:none">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">說明：</label>
@@ -61,7 +60,7 @@
 						<i class="icon-warning bigger-110"></i>
 						重設
 				</button>
-				<button class="btn btn-success" type="Submit">
+				<button class="btn btn-success" type="button" onclick="checkFile();">
 						<i class="icon-ok bigger-110"></i>
 						確定新增
 				</button>
@@ -241,5 +240,17 @@ $(function(){
 	});
 	*/
 });
+
+function checkFile() { 
+	var f = document.add_form; 
+	var re = /\.(jpg|gif|png)$/i;  //允許的圖片副檔名 
+	if (!re.test(f.img_filename.value)) { 
+		alert("只允許上傳jpg,png,gif圖檔"); 
+	}
+	else
+	{
+		f.submit();
+	}
+} 
 
 </script>

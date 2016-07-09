@@ -1449,6 +1449,10 @@ abstract class Backend_Controller extends IT_Controller
 		$content_info = $content_info["data"][0];
 		
 		$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+		if($photo_list["count"]==0)
+		{
+			return;
+		}
 		$source = array();
 		
 		$dest_width = 0;
