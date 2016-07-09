@@ -17,7 +17,8 @@
     }
     
     body {
-        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;
+        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;        
+        background-size:100% 100%;
         height: 1920px;
     }
     
@@ -64,23 +65,26 @@
     }
     
     #dates {
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center no-repeat;
+       
         position: absolute;
         left: 0;
         right: 0;
         top: 0;     
         font-weight: bold;
         font-size: 36px;
-        padding-top: 22px;
+       
         height: 172px;
       
     }
 
     #dates > div {
+    	background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
        margin: 0 auto;
        position: relative;
+      
        height: 172px;      
-        width: 660px;
+        width: 1007px;
+        padding: 22px 40px 0; 
     }
     
     #d1{
@@ -88,34 +92,36 @@
     }
     #d3 {
         position: absolute;
-        right: 230px;
+        right: 330px;
 		font-size: 40px;
-        top: 30px;
+        top: 55px;
     }
 	#d4 {
         position: absolute;
-        right: 0;
+        right: 40px;
 		font-size: 80px;
-        top: 10px;
+        top: 35px;
     }
 
     #marquee {
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center no-repeat;
+       
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 40px;
+        top: 1520px;
         font-size: 50px;
         font-weight: bold;
-        height: 172px;
+        
     }
 
      #marquee > marquee {
+     	 background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
         position: absolute;
-        top: 50px;
-        width: 668px;
+        height: 172px;
+      	line-height: 162px;
+        width: 1007px;
         left: 50%;
-        margin-left: -334px;
+        margin-left: -503px;
         color:red;
      }
 
@@ -215,34 +221,28 @@
 		$('#d4').html(d4);
     }
 
+    function renderSlide(){
+    	
+    	 ajaxData(true);
+    }
+
+    function ajaxData(loop){
 
 
-    //day_list[day]
-    $(function() {
-        /*
-     
-        */
-        renderDate();
 
-        setInterval(renderDate,1000*60);
-
-        
-     //   $('#dates').html(today);
-
-
-        $('#fc').click(function() {
-            launchIntoFullscreen(document.documentElement);
-        })
-
-
-        $.ajax({
+    	 $.ajax({
             url: "<?php echo frontendUrl("cycle","ajaxGetNews");?>",
             dataType: "JSON",
             cache: false,
             success: function(data) {
-                console.log(data);
-
-
+               
+            	if(loop){
+            		//numSlides = $('.slideshow').data('cycle.opts').slideCount
+            		//console.log(numSlides);
+            		$('.slideshow').cycle('destroy');
+            		 $('#slide').html("");
+            		console.log("timer");
+            	}
 
                 var mainPage = [];
 
@@ -282,7 +282,7 @@
 
                 for (var i = 0; i < mainPage.length; i++) {
                     var m = mainPage[i];
-                    innerCon += "<div><h1>" + m.title + "</h1>";
+                    innerCon += "<div>";
                     if (m.type == "image") {
                         innerCon += "<img src='" + m.content + "'/>";
                     } else {
@@ -307,17 +307,31 @@
             error: function() {
                 console.log("A");
             }
+        })	
+    }
+
+    //day_list[day]
+    $(function() {
+        /*
+     
+        */
+        renderDate();
+
+        setInterval(renderDate,1000*60);
+
+        
+     //   $('#dates').html(today);
 
 
+        $('#fc').click(function() {
+            launchIntoFullscreen(document.documentElement);
         })
 
+        ajaxData(false);
+       
+        setInterval(renderSlide,1000*600);
 
     })
-
-
-
-
-
 
 
     function pText(_txt) {
