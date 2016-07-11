@@ -205,8 +205,11 @@
         var ty = date.getFullYear();
         var tm = date.getMonth() + 1;
         var td = date.getDate();
-        var thour = date.getHours();
-        var tmin = date.getMinutes();
+        var thour = "0"+date.getHours();
+        var tmin = "0"+date.getMinutes();
+
+        thour = thour.substr(-2);
+        tmin = tmin.substr(-2);
 
         console.log(mainx(ty,tm,td,0));
         var d2 = mainx(ty,tm,td,0)
