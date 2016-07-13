@@ -272,12 +272,12 @@ function report(type) {
   if(type==0) { //陽->陰
     var taiwan_year = lunar.y - 1911;
    // answer="陰曆"+lunar.y+"("+GanGB[gan.y]+ZhiGB[zhi.y]+")年"+(lunar.l?"閏":"")+lunar.m+"月"+lunar.d+"日,生肖屬"+ShengXiaoGB[zhi.y]; 
-    answer="農曆"+taiwan_year+"年"+lunar.m+"月"+lunar.d+"日"; 
+    answer="農曆<span id='date_2'>"+taiwan_year+"年"+lunar.m+"月"+lunar.d+"日<span>"; 
 //    answer2="干支:"+GanGB[gan.y]+ZhiGB[zhi.y]+"年"+
 //        GanGB[gan.m]+ZhiGB[zhi.m]+"月"+GanGB[gan.d]+ZhiGB[zhi.d]+"日"; 
   }
   else {
-    answer="陽曆"+solar.y+"年"+solar.m+"月"+solar.d+"日,星期"+weekdayGB[solar.w]; 
+    answer="陽曆 "+solar.y+"年"+solar.m+"月"+solar.d+"日,星期"+weekdayGB[solar.w]; 
 //    answer2="干支:"+GanGB[gan.y]+ZhiGB[zhi.y]+"年"+
 //        GanGB[gan.m]+ZhiGB[zhi.m]+"月"+GanGB[gan.d]+ZhiGB[zhi.d]+"日"; 
   }
