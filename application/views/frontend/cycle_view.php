@@ -234,7 +234,7 @@
 
 
     	 $.ajax({
-            url: "<?php echo frontendUrl("cycle","ajaxGetNews");?>",
+            url: "<?php echo frontendUrl("cmsys","ajaxGetNews");?>",
             dataType: "JSON",
             cache: false,
             success: function(data) {
