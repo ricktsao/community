@@ -92,7 +92,7 @@
     }
     #d3 {
         position: absolute;
-        right: 330px;
+        right: 400px;
 		font-size: 40px;
         top: 55px;
     }
@@ -123,6 +123,13 @@
         left: 50%;
         margin-left: -503px;
         color:red;
+     }
+
+     #date_2 {
+
+        display: inline-block;
+        width: 236px;
+        text-align: right;
      }
 
     </style>
