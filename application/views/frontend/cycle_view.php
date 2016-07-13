@@ -103,6 +103,15 @@
         top: 35px;
     }
 
+    #dd {
+        position: absolute;
+        top: 30px;
+    }
+
+    #dd tr > td:last-child{
+        text-align: right;
+    }
+
     #marquee {
        
         position: absolute;
@@ -146,8 +155,10 @@
     </div>
     <div id="dates">
         <div>
-            <div id="d1"></div>
-            <div id="d2"></div>
+           
+            <table id="dd">
+                
+            </table>
             <div id="d3"></div>
 			<div id="d4"></div>
         </div>
@@ -220,13 +231,16 @@
 
         console.log(mainx(ty,tm,td,0));
         var d2 = mainx(ty,tm,td,0)
-        var d1 = "西元" + ty + "年" + tm + "月" + td + "日";//" 星期" + day_list[day];
+        var d1 = "<tr><td>西元</td><td>" + ty + "年" + tm + "月" + td + "日</td></tr>";//" 星期" + day_list[day];
         var d3 = "星期" + day_list[day] ;
 		var d4 =  thour + " : " + tmin;
 
+        $('#dd').html("");
+        $('#dd').append(d1);
+        $('#dd').append(d2);
 
-        $('#d1').html(d1);
-        $('#d2').html(d2);
+        /*$('#d1').html(d1);
+        $('#d2').html(d2);*/
         $('#d3').html(d3);
 		$('#d4').html(d4);
     }
