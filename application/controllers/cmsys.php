@@ -78,7 +78,7 @@ class cmsys extends Frontend_Controller {
 	
 	public function index()
 	{
-		$this->redirect()
+		
 	}
 	
 	public function informer()
