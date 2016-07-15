@@ -142,7 +142,7 @@ class Gas_company extends Backend_Controller {
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'content', '瓦斯公司資訊', 'required' );	
+		$this->form_validation->set_rules( 'title', '公司名稱', 'required' );	
 		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;

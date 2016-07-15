@@ -1,19 +1,23 @@
+<style type="text/css">	.note {color: #993300; font-size:12px; padding: 5px;}
 
+</style>
 
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
 	
 	<div class="form-group ">
-        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">浮水印</label>
+
+				
+        <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">浮水印：</label>
         <div class="col-xs-12 col-sm-6">
-            <input type="file" name="img_filename" size="20" /><br /><br />
+            <input type="file" name="img_filename" size="20" />
 				<input type="hidden" name="orig_img_filename" value="<?php echo tryGetData('orig_img_filename',$edit_data)?>"  />
 				<?php if(isNotNull(tryGetData('img_filename',$edit_data))){ ?>
 				<img  border="0" style="width:200px;" src="<?php echo tryGetData('img_filename',$edit_data); ?>"><br />		
 				
             	<?php } ?>
-
+			<span class="note">只允許上傳jpg,png,gif 格式圖檔，檔案請勿超過1MB</span>
         </div>
     </div>
 	
