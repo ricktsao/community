@@ -92,7 +92,7 @@
     }
     #d3 {
         position: absolute;
-        right: 330px;
+        right: 400px;
 		font-size: 40px;
         top: 55px;
     }
@@ -101,6 +101,15 @@
         right: 40px;
 		font-size: 80px;
         top: 35px;
+    }
+
+    #dd {
+        position: absolute;
+        top: 30px;
+    }
+
+    #dd tr > td:last-child{
+        text-align: right;
     }
 
     #marquee {
@@ -125,6 +134,13 @@
         color:red;
      }
 
+     #date_2 {
+
+        display: inline-block;
+        width: 236px;
+        text-align: right;
+     }
+
     </style>
 </head>
 
@@ -139,8 +155,10 @@
     </div>
     <div id="dates">
         <div>
-            <div id="d1"></div>
-            <div id="d2"></div>
+           
+            <table id="dd">
+                
+            </table>
             <div id="d3"></div>
 			<div id="d4"></div>
         </div>
@@ -205,18 +223,24 @@
         var ty = date.getFullYear();
         var tm = date.getMonth() + 1;
         var td = date.getDate();
-        var thour = date.getHours();
-        var tmin = date.getMinutes();
+        var thour = "0"+date.getHours();
+        var tmin = "0"+date.getMinutes();
+
+        thour = thour.substr(-2);
+        tmin = tmin.substr(-2);
 
         console.log(mainx(ty,tm,td,0));
         var d2 = mainx(ty,tm,td,0)
-        var d1 = "西元" + ty + "年" + tm + "月" + td + "日";//" 星期" + day_list[day];
+        var d1 = "<tr><td>西元</td><td>" + ty + "年" + tm + "月" + td + "日</td></tr>";//" 星期" + day_list[day];
         var d3 = "星期" + day_list[day] ;
 		var d4 =  thour + " : " + tmin;
 
+        $('#dd').html("");
+        $('#dd').append(d1);
+        $('#dd').append(d2);
 
-        $('#d1').html(d1);
-        $('#d2').html(d2);
+        /*$('#d1').html(d1);
+        $('#d2').html(d2);*/
         $('#d3').html(d3);
 		$('#d4').html(d4);
     }
@@ -231,7 +255,7 @@
 
 
     	 $.ajax({
-            url: "<?php echo frontendUrl("cycle","ajaxGetNews");?>",
+            url: "<?php echo frontendUrl("cmsys","ajaxGetNews");?>",
             dataType: "JSON",
             cache: false,
             success: function(data) {
