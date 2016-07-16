@@ -161,7 +161,7 @@
 
 							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 								<li>
-									<a href="<?php echo backendUrl("authEdit");?>"">
+									<a href="<?php echo backendUrl("authEdit");?>">
 										<i class="icon-cog"></i>
 										更改密碼	
 									</a>
@@ -340,9 +340,20 @@
 						$(this).closest('tr').toggleClass('selected');
 					});						
 				});
+
+
+				$('form').submit(function(){
+					$('#super_blocks').show();
+
+
+				})
 	
 			})	
 		</script>
+
+		<div id='super_blocks' style="display:none;">			
+			<img src="<?php echo site_url()."/".$templateUrl?>/images/loading2.gif"/>
+		</div>
 
 </body>
 </html>

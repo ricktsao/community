@@ -10,10 +10,30 @@
         </label>
         <div class="col-xs-12 col-sm-6">
             <button class="btn btn-primary btn-sm" id="add_option">新增一筆</button>
+             <?php 
+            $error_css = '';
+            $error_msg = ''; 
+            $option_name = 'voting_option';   
+        
+            if(isNotNull(form_error($option_name)))
+            {
+                $error_css = 'has-error';
+                $error_msg = 
+                '<div style="color:red">'.form_error($option_name).'</div>';
+
+                echo $error_msg;
+            }
+
+        ?>
         </div>
     </div>
+
+
     <div id="voting_list">
-    	<?php for($i=0;$i<count($edit_data['voting_option']);$i++):?>
+    	<?php 
+        if(isset($edit_data['voting_option'])):
+            for($i=0;$i<count($edit_data['voting_option']);$i++):
+        ?>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 control-label no-padding-right" for="subject"></label>
             <div class="col-xs-12 col-sm-6">
@@ -21,8 +41,14 @@
                 <button class="btn btn-danger btn-xs">X</button>
             </div>
         </div>
-    	<?php endfor;?>
+    	<?php 
+
+            endfor;
+        endif;
+        ?>
+       
     </div>
+    
     <input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
     <div class="clearfix form-actions">
         <div class="col-md-offset-3 col-md-9">
