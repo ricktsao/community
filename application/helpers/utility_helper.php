@@ -13,6 +13,24 @@
 		return $str;
 	}
 
+
+	## 將地址門牌轉成文字
+	function addr_part_to_text($addr_part_01, $addr_part_02)
+	{
+		// Get the CodeIgniter super object
+		$CI =& get_instance();
+		$addr_part_to_text = '';
+		if ( isNotNull($addr_part_01) && isNotNull($addr_part_02) ) {
+
+			$addr_part_to_text = tryGetData($addr_part_01, $CI->addr_part_01_array);
+			$addr_part_to_text .= tryGetData($addr_part_02, $CI->addr_part_02_array);
+			$addr_part_to_text .= '樓';
+			return $addr_part_to_text;
+
+		}
+		return false;
+	}
+
 	## 將戶別代號轉成文字
 	function building_id_to_text($building_id, $separate=false)
 	{
@@ -36,9 +54,9 @@
 				return $parts;
 			}
 		}
-		var_dump($building_id);
 		return false;
 	}
+
 
 	## 將車位代號轉成文字
 	function parking_id_to_text($parking_id, $separate=false)
@@ -65,6 +83,7 @@
 		}
 		return false;
 	}
+
 
 
 	function image_thumb($folder_name, $image_name, $width, $height)

@@ -8,11 +8,10 @@
 	</h1>
 </div>
 <?php
-//if (validation_errors() != false) {
-//	echo "<div class='error'>" . validation_errors() . "</div>" ;
-//}
-?>
-<?php
+if (validation_errors() != false) {
+	echo "<div class='error'>" . validation_errors() . "</div>" ;
+}
+
 if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 ?>
 <article class="well">
@@ -175,15 +174,14 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 	<?php echo textOption("電　話","tel",$edit_data);?>
 	<?php echo textOption("＊行動電話","phone",$edit_data);?>
 
-
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
 	<?php
 	$error = '';
 	if (form_error('b_part_01') || form_error('b_part_02') || form_error('b_part_03')) {
 		$error = 'has-error';
 	}
-	?>
 
-	<?php
 	$b_part_01 = tryGetData('b_part_01', $edit_data);
 	$b_part_02 = tryGetData('b_part_02', $edit_data);
 
@@ -246,7 +244,76 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			echo '</div>';
 			?>
 	</div>
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<?php
+	$error = '';
+	if (form_error('addr_part_01') || form_error('addr_part_02') ) {
+		$error = 'has-error';
+	}
 
+	$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+	$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+
+	if(tryGetData('sn', $edit_data) > 0) {
+		echo form_hidden('addr_part_01', tryGetData('addr_part_01', $edit_data, NULL));
+		echo form_hidden('addr_part_02', tryGetData('addr_part_02', $edit_data, NULL));
+		$addr_field = '';	
+	?>
+	<div class="form-group <?php echo $error?>">
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">＊地址門牌</label>
+		<div class="col-xs-12 col-sm-6">
+			<label class="middle"> 
+			<?php
+			echo '<input type="radio" name="chg_a_id" value=0 checked> 維持－';
+			echo '<span style="color:#00c;">';
+			$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+			$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+			echo addr_part_to_text($addr_part_01, $addr_part_02);
+			echo '</span>';
+			?>
+			</label>
+		</div>
+	</div>
+	<?php
+	} else {
+		$addr_field = '＊地址門牌';
+	}
+	?>
+
+	<div class="form-group <?php echo $error?>">
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right"><?php echo $addr_field;?></label>
+		<div class="col-xs-12 col-sm-6">
+			<label class="middle" >
+			<?php
+			if(tryGetData('sn', $edit_data) > 0) {
+				echo '<input type="radio" name="chg_a_id" value=1> 變更－';
+			}
+			//echo '地址門牌：';
+			$js = 'id="addr_part_01"';
+			echo form_dropdown('addr_part_01', $addr_part_01_array, 0, $js);
+			echo '&nbsp;&nbsp;樓層：';
+			$js = 'id="addr_part_02"';
+			echo form_dropdown('addr_part_02', $addr_part_02_array, 0, $js);
+			echo '樓';
+			//echo '<input type="text" name="tmp_b_part_03" value="'.tryGetData('b_part_03', $edit_data).'" size="1" id="b_part_03">';
+			//echo "<input type='hidden' id='b_part_03' value='".tryGetData('b_part_03', $edit_data)."' size='1'>";
+			?>
+			</label>
+		</div>
+			<?php
+			echo '<div class="help-block col-xs-12 col-sm-4 col-sm-reset inline">';
+			echo '<div class="error">';
+			echo form_error('addr_part_01');
+			echo form_error('addr_part_02');
+			echo '</div>';
+			echo '</div>';
+			?>
+	</div>
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
+	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
 	
 	<div class="form-group ">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">性 別</label>
@@ -293,9 +360,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 		</div>
 	</div>
 
-	<?php echo textOption("門牌號碼","addr",$edit_data,'若有瓦斯登記權限，請一併填寫門牌號碼');?>
-	
-
+	<!-- 
 	<?php
 	$error = '';
 	if (form_error('group_sn')) {
@@ -342,6 +407,10 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			echo '</div>';
 			?>
 	</div>
+	-->
+
+	<?php echo checkBoxOption("啟　用", "launch", $edit_data); ?>
+
 	<div class="hr hr-16 hr-dotted"></div>
 
 	<div class="form-group ">
@@ -389,7 +458,6 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 
 	<?php echo pickDateOption($edit_data);?>
 
-	<?php echo checkBoxOption("啟　用", "launch", $edit_data);?>
 	
 	
 	
@@ -398,9 +466,9 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 	
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
-			<a class="btn" href="<?php echo bUrl("admin",TRUE,array("sn")) ?>">
+			<a class="btn" href="<?php echo bUrl("index",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				Back
+				返回
 			</a>		
 		
 
@@ -408,7 +476,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				確定送出
 			</button>
 			
 		</div>

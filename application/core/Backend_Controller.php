@@ -28,6 +28,8 @@ abstract class Backend_Controller extends IT_Controller
 	public $building_part_02 = "";	
 	public $building_part_01_array = array();
 	public $building_part_02_array = array();
+	public $addr_part_01_array = array();
+	public $addr_part_02_array = array();
 
 	function __construct() 
 	{
@@ -61,6 +63,8 @@ abstract class Backend_Controller extends IT_Controller
 		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
 		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
 		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+		$addr_part_01 = $this->auth_model->getWebSetting('addr_part_01');
+		$addr_part_02 = $this->auth_model->getWebSetting('addr_part_02');
 
 		if (isNotNull($building_part_01_value)) {
 			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
@@ -70,6 +74,8 @@ abstract class Backend_Controller extends IT_Controller
 			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
 		}
 
+		$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
+		$this->addr_part_02_array = array_merge(array(0=>' -- '), explode(',', $addr_part_02));
 
 		
 		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');

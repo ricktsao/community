@@ -1,6 +1,7 @@
 
 <style type="text/css">
 	th, td {text-align:center}
+	.invalid {color:#f00}
 </style>
 
 <div class="page-header">
@@ -131,7 +132,7 @@
 										if (isNotNull(tryGetData('id', $item, NULL)) ) {
 											echo mask($item['id'] , 2, 4);
 										} else {
-											echo '（未登錄）';
+											echo '尚未開通';
 										}
 										?>
 										</td>
@@ -184,8 +185,7 @@
 											</a>
 										</td>
 										<td style='text-align: center'>
-											<input name="switch-field-1" class="ace ace-switch" type="checkbox"  <?php echo tryGetData('launch', $item)==1?"checked":"" ?> value="<?php echo tryGetData('sn', $item) ?>" onClick='javascript:launch(this);' />
-											<span class="lbl"></span>
+											<?php echo tryGetData('launch', $item)==1?"啟用":"<span class='invalid'>停用</span>" ?>
 										</td>
 										
 									</tr>

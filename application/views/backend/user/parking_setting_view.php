@@ -227,17 +227,8 @@ $(function(){
 
 					pPart3.html(options);
 
-					/*for(var i=0;i<data.length;i++){
-						options+="<option ></option>";
-					}
-					*/
-
 				}
-			
-
-			})
-
-
+			});
 		}
 	}
 

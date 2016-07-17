@@ -1,7 +1,11 @@
-﻿<form action="<?php echo bUrl("updateSetting")?>" method="post"  id="update_form" class="form-horizontal" role="form">
-	<?php 
+﻿<style type="text/css">
+	.note {color: #808040; font-size:12px}
+</style>
 
-	$users_limit_array = array('building_part_01', 'building_part_02', 'building_part_03', 'building_part_01_value', 'building_part_02_value', 'manager_title', 'mail_box_type');
+<form action="<?php echo bUrl("updateSetting")?>" method="post"  id="update_form" class="form-horizontal" role="form">
+	<?php 
+	// 5.	 [片語管理] ，<管委職稱>、<郵件類型>、<公告輪播停留秒數>設定為可以修改增。其餘的第一次設定後不得修改。
+	$users_limit_array = array('building_part_01', 'building_part_02', 'building_part_03', 'building_part_01_value', 'building_part_02_value'); //, 'manager_title', 'mail_box_type'
 	$parking_limit_array = array('parking_part_01', 'parking_part_02', 'parking_part_03', 'parking_part_01_value', 'parking_part_02_value');
 		
 		foreach ($setting_list as $key => $item) 
@@ -31,7 +35,7 @@
 					}
 					echo
 					'</div>			
-						'.$item["memo"].'		
+						<span class="note">'.$item["memo"].'</span>		
 					</div>';
 					break;		
 								
