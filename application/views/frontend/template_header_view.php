@@ -17,7 +17,7 @@
                     <li><a href="<?php echo frontendUrl("voting")?>">社區議題調查<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("repair")?>">社區環境報修<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("repair_log")?>">社區環境報修紀錄<span></span></a></li>
-                    <li><a href="<?php echo frontendUrl("suggestion")?>">社區意見箱<span></span></a></li>	
+                    <li><a href="<?php echo frontendUrl("suggestion")?>">住戶意見箱<span></span></a></li>	
 					<li><a href="<?php echo frontendUrl("suggestion_log")?>">意見箱回覆查詢<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("rent_house")?>">租屋資訊<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("sale_house")?>">售屋資訊<span></span></a></li>

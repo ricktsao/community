@@ -1,6 +1,6 @@
 <div class="primary">
 	<div class="form_group">
-		<div class="form_page_title">意見箱</div>
+		<div class="form_page_title">住戶意見箱</div>
 
 		<form action="<?php echo fUrl("postSuggestion");?>" method="post" class="form_style">
 			<table>

@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body,
     html {
         margin: 0;
@@ -13,12 +17,13 @@
     }
     
     body {
-        background: url(<?php echo $bg_img;?>) top center no-repeat #aac9eb;
+        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;        
+        background-size:100% 100%;
         height: 1920px;
     }
     
     #block {
-        height: 260px;
+        height: 230px;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -34,9 +39,12 @@
     }
     
     #slide {
-        width: 900px;
-        height: 1008px;
+        width: 1007px;
+        height: 1237px;
         margin: 0 auto;
+        
+
+        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_content_bg.png) center center no-repeat;
     }
     
     #slide > div {
@@ -44,11 +52,12 @@
         height: 1008px;
         overflow: hidden;
         font-size: 20px;
+        padding: 40px 0 0 40px;
     }
-
-     #slide > div > h1{
+    
+    #slide > div > h1 {
         text-align: center;
-     }
+    }
     
     #slide > div img {
         max-width: 100%;
@@ -56,24 +65,82 @@
     }
     
     #dates {
+       
         position: absolute;
         left: 0;
         right: 0;
-        top: 0;
-        text-align: center;
+        top: 0;     
         font-weight: bold;
-        font-size: 50px;
-        padding-top: 20px;
+        font-size: 36px;
+       
+        height: 172px;
+      
+    }
+
+    #dates > div {
+    	background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+       margin: 0 auto;
+       position: relative;
+      
+       height: 172px;      
+        width: 1007px;
+        padding: 22px 40px 0; 
     }
     
+    #d1{
+        padding-top: 10px;
+    }
+    #d3 {
+        position: absolute;
+        right: 400px;
+		font-size: 40px;
+        top: 55px;
+    }
+	#d4 {
+        position: absolute;
+        right: 40px;
+		font-size: 80px;
+        top: 35px;
+    }
+
+    #dd {
+        position: absolute;
+        top: 30px;
+    }
+
+    #dd tr > td:last-child{
+        text-align: right;
+    }
+
     #marquee {
+       
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 40px;
+        top: 1520px;
         font-size: 50px;
         font-weight: bold;
+        
     }
+
+     #marquee > marquee {
+     	 background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+        position: absolute;
+        height: 172px;
+      	line-height: 162px;
+        width: 1007px;
+        left: 50%;
+        margin-left: -503px;
+        color:red;
+     }
+
+     #date_2 {
+
+        display: inline-block;
+        width: 236px;
+        text-align: right;
+     }
+
     </style>
 </head>
 
@@ -81,10 +148,21 @@
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
-	
-	
-    <marquee id="marquee" direction="left"><?php echo $marquee_str;?></marquee>
+    <div id="marquee" >
+        <marquee direction="left">
+            <?php echo $marquee_str;?>
+        </marquee>
+    </div>
     <div id="dates">
+        <div>
+           
+            <table id="dd">
+                
+            </table>
+            <div id="d3"></div>
+			<div id="d4"></div>
+        </div>
+       
     </div>
     <div id="slide" class="slideshow">
         <?php
@@ -129,41 +207,66 @@
     </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
+    <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/lunar.js"></script>
     <script>
     var baseUrl = "<?php echo base_url('upload/content_photo/');?>";
 
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
-    var date = new Date();
-    var day = date.getDay();
+   
 
-    var today = date.getFullYear() + " 年 " + (date.getMonth() + 1) + " 月 " + date.getDate() + " 日 星期" + day_list[day];
+    
+    function renderDate(){
 
-    // console.log(today);
+        var date = new Date();
+        var day = date.getDay();
+        var ty = date.getFullYear();
+        var tm = date.getMonth() + 1;
+        var td = date.getDate();
+        var thour = "0"+date.getHours();
+        var tmin = "0"+date.getMinutes();
+
+        thour = thour.substr(-2);
+        tmin = tmin.substr(-2);
+
+        console.log(mainx(ty,tm,td,0));
+        var d2 = mainx(ty,tm,td,0)
+        var d1 = "<tr><td>西元</td><td>" + ty + "年" + tm + "月" + td + "日</td></tr>";//" 星期" + day_list[day];
+        var d3 = "星期" + day_list[day] ;
+		var d4 =  thour + " : " + tmin;
+
+        $('#dd').html("");
+        $('#dd').append(d1);
+        $('#dd').append(d2);
+
+        /*$('#d1').html(d1);
+        $('#d2').html(d2);*/
+        $('#d3').html(d3);
+		$('#d4').html(d4);
+    }
+
+    function renderSlide(){
+    	
+    	 ajaxData(true);
+    }
+
+    function ajaxData(loop){
 
 
-    //day_list[day]
-    $(function() {
-        /*
-     
-        */
 
-        $('#dates').html(today);
-
-
-        $('#fc').click(function() {
-            launchIntoFullscreen(document.documentElement);
-        })
-
-
-        $.ajax({
-            url: "<?php echo frontendUrl("cycle","ajaxGetNews");?>",
+    	 $.ajax({
+            url: "<?php echo frontendUrl("cmsys","ajaxGetNews");?>",
             dataType: "JSON",
             cache: false,
             success: function(data) {
-                console.log(data);
-
-
+               
+            	if(loop){
+            		//numSlides = $('.slideshow').data('cycle.opts').slideCount
+            		//console.log(numSlides);
+            		$('.slideshow').cycle('destroy');
+            		 $('#slide').html("");
+            		console.log("timer");
+            	}
 
                 var mainPage = [];
 
@@ -171,11 +274,11 @@
 
                     _title = "";
 
-                    if(data[i].title!=undefined){
-                        _title =data[i].title;
+                    if (data[i].title != undefined) {
+                        _title = data[i].title;
                     }
                     var subPage = pText(data[i].content);
-                    if(subPage){
+                    if (subPage) {
 
                         for (var j = 0; j < subPage.length; j++) {
                             mainPage.push({
@@ -203,7 +306,7 @@
 
                 for (var i = 0; i < mainPage.length; i++) {
                     var m = mainPage[i];
-                    innerCon += "<div><h1>" + m.title + "</h1>";
+                    innerCon += "<div>";
                     if (m.type == "image") {
                         innerCon += "<img src='" + m.content + "'/>";
                     } else {
@@ -228,22 +331,36 @@
             error: function() {
                 console.log("A");
             }
+        })	
+    }
+
+    //day_list[day]
+    $(function() {
+        /*
+     
+        */
+        renderDate();
+
+        setInterval(renderDate,1000*60);
+
+        
+     //   $('#dates').html(today);
 
 
+        $('#fc').click(function() {
+            launchIntoFullscreen(document.documentElement);
         })
 
+        ajaxData(false);
+       
+        setInterval(renderSlide,1000*600);
 
     })
 
 
-
-
-
-
-
     function pText(_txt) {
 
-        if(!_txt){
+        if (!_txt) {
             return false;
         }
 
@@ -255,7 +372,7 @@
 
         for (var i = 0; i < arr_t.length; i++) {
 
-            pageTemp += arr_t[i]+"<br/>";
+            pageTemp += arr_t[i] + "<br/>";
 
             if (i + 1 < arr_t.length) {
                 if ((pageTemp.length + arr_t[i + 1].length) > pageFontLimit) {
