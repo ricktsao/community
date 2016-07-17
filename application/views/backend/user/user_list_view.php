@@ -138,8 +138,8 @@
 										<td>
 										<?php
 										if (isNotNull(tryGetData("app_id", $item, NULL))) {
-											echo '******'.mb_substr(tryGetData("app_id", $item), 6);
-											//echo '已開通';
+											//echo '******'.mb_substr(tryGetData("app_id", $item), 6);
+											echo '已開通';
 										?>
 										
 											
@@ -147,9 +147,9 @@
 										} else {
 
 											if (isNotNull(tryGetData("act_code", $item, NULL))) {
-												echo '（待開通）';
+												echo '待開通';
 											} else {
-												echo '（尚未開通）';
+												echo '尚未開通';
 											}
 										}
 										?>
@@ -180,7 +180,7 @@
 										 -->
 										<td>
 											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>編輯
+												<i class="icon-edit bigger-120"></i>資料編輯
 											</a>
 										</td>
 										<td style='text-align: center'>

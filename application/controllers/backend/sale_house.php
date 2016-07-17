@@ -4,10 +4,23 @@ class Sale_House extends Backend_Controller {
 	
 	function __construct() 
 	{
-		parent::__construct();		
-		
+		parent::__construct();
+
+
+
+		// waitting for test
+		//$this->getEdomaHouseToSale();
 	}
 	
+
+	function test() 
+	{
+	//	echo '@ api_server_url : '.$this->config->item("api_server_url");
+		$this->getEdomaHouseToSale();
+	}
+
+
+
 	/**
 	 * faq list page
 	 */
