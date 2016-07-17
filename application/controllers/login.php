@@ -51,6 +51,55 @@ class Login extends Frontend_Controller {
 		{
 			$user_info = $user_info["data"][0];
 			
+				$this->load->Model("auth_model");
+
+
+			//查詢所屬群組&所屬權限(後台權限)
+			//------------------------------------------------------------------------------------------------------------------					
+			$sys_user_groups = array();
+			$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group", "sys_user_sn = ".$user_info["sn"]." and launch = 1" );				
+			foreach($sys_user_belong_group["data"] as $item)
+			{
+				array_push($sys_user_groups,$item["sys_user_group_sn"]);	
+			}
+			
+			$sys_func_auth = NULL;//特殊權限
+			$sys_admin_auth = NULL;//後台權限
+			
+			if(count($sys_user_groups)>0)
+			{
+				//後台單元權限
+				//************************************************************************************************						
+				$sys_user_group_b_auth = $this->auth_model->GetGroupAuthorityList("sys_user_group_sn IN (".implode($sys_user_groups, ",").") AND sys_user_group_b_auth.launch = 1 AND sys_module.launch = 1" );		
+				
+				if ( $sys_user_group_b_auth["count"] > 0) {
+					foreach($sys_user_group_b_auth["data"] as $item)
+					{
+						array_push($sys_admin_auth,$item["id"]);	
+					}
+				}
+				//************************************************************************************************
+				
+				//特殊權限
+				//************************************************************************************************	
+				$query = "
+						SELECT * ,sys_function.id
+						FROM sys_user_func_auth
+						LEFT JOIN sys_function on sys_user_func_auth.sys_function_sn = sys_function.sn
+						WHERE sys_user_group_sn IN (".implode($sys_user_groups, ",").") AND launch = 1
+				";
+
+				$sys_user_func_auth = $this->it_model->runSql( $query );
+				if ( $sys_user_func_auth["count"] > 0) {
+					foreach($sys_user_func_auth["data"] as $item)
+					{
+						array_push($sys_func_auth,$item["id"]);	
+					}
+				}
+				//************************************************************************************************
+			}							
+			//------------------------------------------------------------------------------------------------------------------
+					
 
 			//取得comm_id
 			//----------------------------------------------------------------------					
@@ -83,15 +132,19 @@ class Login extends Frontend_Controller {
 			
 			$this->session->set_userdata('f_user_name', $user_info["name"]);
 			$this->session->set_userdata('f_user_sn', $user_info["sn"]);
-			$this->session->set_userdata('f_user_id', $user_info["id"]);	
+			$this->session->set_userdata('f_user_id', $user_info["id"]);
 			$this->session->set_userdata('f_building_id', $user_info["building_id"]);			
 			$this->session->set_userdata('f_user_app_id', $user_info["app_id"]);
-			$this->session->set_userdata('f_is_manager', $user_info["is_manager"]);
 			$this->session->set_userdata('f_comm_id', $comm_id);
+			$this->session->set_userdata('f_is_manager', $user_info["is_manager"]);
 
-			
-			
-			
+			if ( isNotNull($sys_func_auth) && isNotNull($sys_func_auth) ) {
+				// 管委人員 後台使用
+				$this->session->set_userdata('user_auth', $sys_admin_auth);
+				$this->session->set_userdata('user_name', $user_info["name"]);
+				$this->session->set_userdata('user_group', $sys_user_groups);
+			}
+
 			//紀錄Keycode使用紀錄
 			//----------------------------------------------------------------------
 			$use_cnt = $user_info["use_cnt"] + 1;

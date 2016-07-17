@@ -32,7 +32,7 @@
 
 <script>
 
-var min = 0.5;//分鐘
+var min = 5;//分鐘
 var coundownTime = 1000*60*min;
 
 

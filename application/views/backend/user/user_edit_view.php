@@ -194,7 +194,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 		<div class="col-xs-12 col-sm-6">
 			<label class="middle"> 
 			<?php
-			echo '<input type="radio" name="chg_b_id" value=0 checked> 維持－';
+			echo '<input type="radio" name="chg_b_id" value=0 checked> 維持 &raquo; ';
 			echo '<span style="color:#00c;">';
 			echo $building_part_01 .'：'. tryGetData($b_part_01, $building_part_01_array);
 			echo '&nbsp;&nbsp;';
@@ -218,7 +218,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			<label class="middle" >
 			<?php
 			if(tryGetData('sn', $edit_data) > 0) {
-				echo '<input type="radio" name="chg_b_id" value=1> 變更－';
+				echo '<input type="radio" name="chg_b_id" value=1> 變更 &raquo; ';
 			}
 			echo $building_part_01 .'：';
 			$js = 'id="b_part_01"';
@@ -267,7 +267,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 		<div class="col-xs-12 col-sm-6">
 			<label class="middle"> 
 			<?php
-			echo '<input type="radio" name="chg_a_id" value=0 checked> 維持－';
+			echo '<input type="radio" name="chg_a_id" value=0 checked> 維持 &raquo; ';
 			echo '<span style="color:#00c;">';
 			$addr_part_01 = tryGetData('addr_part_01', $edit_data);
 			$addr_part_02 = tryGetData('addr_part_02', $edit_data);
@@ -289,7 +289,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			<label class="middle" >
 			<?php
 			if(tryGetData('sn', $edit_data) > 0) {
-				echo '<input type="radio" name="chg_a_id" value=1> 變更－';
+				echo '<input type="radio" name="chg_a_id" value=1> 變更 &raquo; ';
 			}
 			//echo '地址門牌：';
 			$js = 'id="addr_part_01"';

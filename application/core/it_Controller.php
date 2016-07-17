@@ -22,20 +22,40 @@ class IT_Controller extends CI_Controller
 	
 	public function sysLogout()
 	{
+		// 後台
 		$this->session->unset_userdata('user_sn');
 		$this->session->unset_userdata('user_id');
 		$this->session->unset_userdata('user_name');
+		$this->session->unset_userdata('user_auth');
 		$this->session->unset_userdata('user_email');
 		$this->session->unset_userdata('supper_admin');
 		$this->session->unset_userdata('user_login_time');
-		$this->session->unset_userdata('user_auth');
 		$this->session->unset_userdata('frontend_auth');
 		$this->session->unset_userdata('func_auth');
 		$this->session->unset_userdata('user_group');
 		$this->session->unset_userdata('comm_id');
 		$this->session->unset_userdata('user_app_id');
 		
-		$this->redirectHome();
+		if ($this->session->userdata("f_user_id") !== FALSE 
+				&& $this->session->userdata("f_is_manager") !== FALSE) {
+			$redirect = 'f';
+		} else {
+			$redirect = 'b';
+		}
+		// 前台
+		$this->session->unset_userdata('f_user_name');
+		$this->session->unset_userdata('f_user_sn');
+		$this->session->unset_userdata('f_user_id');
+		$this->session->unset_userdata('f_user_app_id');
+		$this->session->unset_userdata('f_comm_id');
+		$this->session->unset_userdata('f_building_id');
+		
+		if ($redirect == 'b') {
+			$this->redirectHome();
+		} else {
+			header("Location:".base_url()."home");
+		}
+		
 	}	
 	
 

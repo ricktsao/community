@@ -9,18 +9,18 @@
 	{
 		$CI	=& get_instance();
 		
-		if(
-			$CI->session->userdata("user_sn") !== FALSE 
-			&& $CI->session->userdata("user_id") !== FALSE 			
-			&& $CI->session->userdata("supper_admin") !== FALSE 
-			&& $CI->session->userdata("user_login_time") !== FALSE 
-			&& $CI->session->userdata("user_auth") !== FALSE 		
-		)
-		{
+		if ( ( $CI->session->userdata("user_sn") !== FALSE 
+				&& $CI->session->userdata("user_id") !== FALSE 			
+				&& $CI->session->userdata("supper_admin") !== FALSE 
+				&& $CI->session->userdata("user_login_time") !== FALSE 
+				&& $CI->session->userdata("user_auth") !== FALSE )
+		   OR ($CI->session->userdata("f_user_id") !== FALSE 
+				&& $CI->session->userdata("f_is_manager") !== FALSE
+				&& $CI->session->userdata("user_auth") !== FALSE) ) {
+
 			return TRUE;
-		}
-		else 
-		{
+		} else {
+
 			return FALSE;
 		}
 

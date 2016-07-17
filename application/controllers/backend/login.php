@@ -253,9 +253,7 @@ class Login extends CI_Controller {
 		//$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 
 		
-		$this->form_validation->set_rules('id', '帳號', 'trim|required');	
-
-		
+		$this->form_validation->set_rules('id', '帳號', 'trim|required');
 		$this->form_validation->set_rules('password', '密碼', 'trim|required');
 		$this->form_validation->set_rules('vcode', '驗證碼', 'trim|required');
 		

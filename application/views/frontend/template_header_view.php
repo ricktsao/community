@@ -3,7 +3,7 @@
         <a href="<?php echo frontendUrl();?>"><img src="<?php echo base_url().$templateUrl;?>images/logo.png" alt=""></a>
         <ul id="navi" class="ul_unstyle">
             <li>
-                <a href="#"><img src="<?php echo base_url().$templateUrl;?>images/btn1.png" alt=""></a>
+                <a href="#" title="住戶專屬服務"><img src="<?php echo base_url().$templateUrl;?>images/btn1.png" alt=""></a>
                 <ul class="ul_unstyle">
                     <li><a href="<?php echo frontendUrl("message")?>">個人訊息通知<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("mailbox")?>">郵件物品通知<span></span></a></li>
@@ -12,7 +12,7 @@
                 </ul>
             </li>
             <li>
-                <a href="#"><img src="<?php echo base_url().$templateUrl;?>images/btn2.png" alt=""></a>
+                <a href="#" title="社區服務"><img src="<?php echo base_url().$templateUrl;?>images/btn2.png" alt=""></a>
 				<ul class="ul_unstyle">
                     <li><a href="<?php echo frontendUrl("voting")?>">社區議題調查<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("repair")?>">社區環境報修<span></span></a></li>
@@ -24,10 +24,15 @@
                 </ul>
             </li>
             <li>
-                <a href="<?php echo frontendUrl("about")?>"><img src="<?php echo base_url().$templateUrl;?>images/btn3.png" alt=""></a>
+                <a href="<?php echo frontendUrl("about")?>" title="關於社區"><img src="<?php echo base_url().$templateUrl;?>images/btn3.png" alt=""></a>
             </li>
             <li>
-                <a href="<?php echo backendUrl()?>"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>				
+			
+			<?php if($this->session->userdata("user_auth")!== FALSE ){ ?>
+			<a href="<?php echo backendUrl()?>" title="物業管理"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>	
+			<?php } else { ?>
+			<a href="#" title="物業管理"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>	
+			<?php } ?>
             </li>
         </ul>
     </div>
