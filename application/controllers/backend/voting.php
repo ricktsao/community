@@ -98,13 +98,27 @@ class Voting extends Backend_Controller {
 			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
 
+	
+
 		$edit_data["allow_anony"] = tryGetArrayValue("allow_anony",$edit_data,0);
 		$edit_data["is_multiple"] = tryGetArrayValue("is_multiple",$edit_data,0);	
 		
 
 					
 		if ( ! $this->_validateContent())
-		{
+		{	
+				$voting_option = array();
+				
+				if(isset($edit_data['voting_option'])){
+
+					foreach ($edit_data['voting_option'] as  $value) {
+						array_push($voting_option,array("text"=>$value));
+					}
+				}
+
+				$edit_data['voting_option'] = $voting_option;
+				
+
 			$data["edit_data"] = $edit_data;		
 			$this->display("content_form_view",$data);
 		}
@@ -168,11 +182,26 @@ class Voting extends Backend_Controller {
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
 		$this->form_validation->set_rules( 'subject', '投票主題', 'required' );	
+		$this->form_validation->set_rules( 'end_date', '截止日期', 'required' );	
+		$this->form_validation->set_rules('voting_option', '投票項目', 'callback_option_check');
 		
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
 
+	public function option_check($str)
+	{	
+		
+		if (count($str) == '0')
+		{
+			$this->form_validation->set_message('option_check', '請輸入投票項目');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+	}
 
 
 

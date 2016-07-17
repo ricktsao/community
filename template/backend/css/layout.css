@@ -125,3 +125,23 @@
   position: absolute;
   width: 0;
 }
+
+#super_blocks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999999;
+  background: #999;
+  opacity: 0.2;
+}
+
+#super_blocks > img {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -100px;
+}
