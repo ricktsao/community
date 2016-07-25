@@ -23,7 +23,7 @@
     }
     
     #dates > div {
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+        background: url('<?php echo $bg_img;?>') center center repeat-x;
         margin: 0 auto;
         position: relative;
         height: 172px;
