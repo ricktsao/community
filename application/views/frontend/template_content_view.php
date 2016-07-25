@@ -2,10 +2,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<META content="<? echo tryGetData("website_title",$webSetting);?>" name="Author"> 
-<meta name="keywords" lang="zh-TW" content="<? echo tryGetData("meta_keyword",$webSetting);?>"/>
-<meta name="description" content="<? echo tryGetData("meta_description",$webSetting);?>">
-<title><? echo tryGetData("website_title",$webSetting);?></title>
+<META content="<?php echo tryGetData("website_title",$webSetting);?>" name="Author"> 
+<meta name="keywords" lang="zh-TW" content="<?php echo tryGetData("meta_keyword",$webSetting);?>"/>
+<meta name="description" content="<?php echo tryGetData("meta_description",$webSetting);?>">
+<title><?php echo tryGetData("website_title",$webSetting);?></title>
 
 <link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>css/default.css">

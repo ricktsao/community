@@ -18,7 +18,7 @@
 
 
 		<!--tiny mce-->
-		<script type="text/javascript" src="<? echo site_url()?>template/backend/js/tinymce/tinymce.js"></script>
+		<script type="text/javascript" src="<?php echo site_url()?>template/backend/js/tinymce/tinymce.js"></script>
 
 
 
