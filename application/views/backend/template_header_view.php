@@ -1,3 +1,7 @@
+<!-- 
+以下沒用到，有需要請見 views\backend\template_index_view.php
+-->
+
 <div id="logo"><a href="<?php echo backendUrl();?>" title="logo"><img src="<?php echo base_url();?>template/<?php echo $this->config->item('backend_name');?>/images/logo.png" alt="logo" title="logo" border="0" /></a></div>
 <div id="stay">
 	<table border="0" cellspacing="0" cellpadding="0">
@@ -11,6 +15,3 @@
    </table>
     
 </div>
-
-
-        

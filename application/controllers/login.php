@@ -56,15 +56,16 @@ class Login extends Frontend_Controller {
 
 			//查詢所屬群組&所屬權限(後台權限)
 			//------------------------------------------------------------------------------------------------------------------					
-			$sys_user_groups = array();
+			$tmp_sys_user_groups = array();
 			$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group", "sys_user_sn = ".$user_info["sn"]." and launch = 1" );				
 			foreach($sys_user_belong_group["data"] as $item)
 			{
-				array_push($sys_user_groups,$item["sys_user_group_sn"]);	
+				array_push($tmp_sys_user_groups,$item["sys_user_group_sn"]);	
 			}
-			
-			$sys_func_auth = NULL;//特殊權限
-			$sys_admin_auth = NULL;//後台權限
+			$sys_user_groups = array_unique($tmp_sys_user_groups);
+
+			$sys_func_auth = array();//特殊權限
+			$sys_admin_auth = array();//後台權限
 			
 			if(count($sys_user_groups)>0)
 			{
@@ -138,7 +139,8 @@ class Login extends Frontend_Controller {
 			$this->session->set_userdata('f_comm_id', $comm_id);
 			$this->session->set_userdata('f_is_manager', $user_info["is_manager"]);
 
-			if ( isNotNull($sys_func_auth) && isNotNull($sys_func_auth) ) {
+
+			if ( sizeof($sys_admin_auth) > 0 ) {
 				// 管委人員 後台使用
 				$this->session->set_userdata('user_auth', $sys_admin_auth);
 				$this->session->set_userdata('user_name', $user_info["name"]);
@@ -156,7 +158,6 @@ class Login extends Frontend_Controller {
 			);
 			$this->it_model->updateData( "sys_user" , $update_data,"sn = '".$user_info["sn"]."'" );
 			//----------------------------------------------------------------------	
-			
 			
 			if( $this->session->userdata("pre_login_url") !== FALSE) 
 			{
