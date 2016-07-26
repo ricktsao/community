@@ -58,7 +58,7 @@
 	
 	
 	
-		<div class="clearfix form-actions">
+	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
 			
 			<button class="btn btn-info" type="Submit">
@@ -67,6 +67,154 @@
 			</button>
 			
 		</div>
+	</div>	
+	</form>   
+	
+	<BR>
+	
+	<div class="page-header">
+		<h1>
+			社區圖片設定
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>			
+			</small>
+		</h1>
 	</div>
 
-</form>        
+<div class="row">
+	<div class="col-xs-12 form-horizontal">
+	
+	<form action="<?php echo bUrl("uploadPhoto")?>" method="post"  id="add_form" name="add_form" role="form" enctype="multipart/form-data">			
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
+			<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔</span></div>				
+		</div>
+		<div class="form-group" style="display:none">
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">說明：</label>
+			<div class="col-xs-12 col-sm-6"><input type='text' id='title' name='title' size=50></div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url"></label>
+			<div class="col-xs-12 col-sm-6">
+			<button class="btn" type="button" id="search-reset" >
+					<i class="icon-warning bigger-110"></i>
+					重設
+			</button>
+			<button class="btn btn-success" type="button" onclick="checkFile();">
+					<i class="icon-ok bigger-110"></i>
+					確定新增
+			</button>
+		</div>
+		</div>
+	</form>
+
+	
+	<div class="form-group">
+		<div class="table-responsive">
+			<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">圖片：</label>
+			<div class="col-xs-12 col-sm-8">
+				<!-- <div style="float:right;" id="click_add_cust">
+					<button class="btn btn-success">新增圖片</button>
+				</div> -->
+				<form method="post"  id="photo_form" role="form" action="<?php echo bUrl('deletePhoto');?>" >				
+				<table id="sample-table-2" class="table table-striped table-bordered table-hover">
+					<thead>
+						<tr>										
+							<th class="center" style="width:80px">
+								<label>
+									<input id="checkDelAll_custs" type="checkbox" class="ace"  />
+									<span class="lbl"></span>
+								</label>
+							</th>
+							<th>圖片</th>									
+							<th>上傳日期</th>
+							<th>上傳者</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php
+					if (sizeof($photo_list) < 1) 
+					{
+						echo '<tr><td colspan="4"><span class="note">查無任何圖片，請由【新增圖片】功能上傳圖片</span></td></tr>';
+					} 
+					else 
+					{							
+						foreach ($photo_list as $key=>$photo) 
+						{
+							$sn = tryGetData('sn', $photo, NULL);							
+							$img_filename = tryGetData('img_filename', $photo, NULL);
+
+							if ( isNull($img_filename) ) continue;
+
+							$url = base_url('upload/website/setting/'.$img_filename);
+						?>
+						<tr>
+							<td class="center">
+								<?php
+								//if ( sizeof($exist_lands_array) < 1 && sizeof($exists_custs_array) > 0) {
+								?>
+								<label>
+									<input type="checkbox" class="ace" name="del[]" value="<?php echo $sn.'!@'.$img_filename;?>" />
+									<span class="lbl"></span>
+								</label>
+							</td>
+							<td><?php echo '<a href="'.$url.'" title="檢視大圖" target=_blank><img border="0" width="150" src="'.$url.'?"></a>'; ?></td>
+							
+							
+							<td><?php echo tryGetData('updated', $photo, '-');?></td>
+							<td><?php echo tryGetData('updated_by', $photo, '-');?></td>
+						</tr>
+						<?php
+						}
+						?>
+					</tbody>
+					<?php
+					}
+					?>
+						<tfoot>
+							<tr>
+								<td class="center">
+									<button class="btn  btn-minier btn-inverse" type="button" onclick="checkSubmit();">
+										<i class="icon-trash bigger-120"></i>刪除
+									</button>
+								</td>
+								<td colspan="7"></td>
+							</tr>
+						</tfoot>
+				</table>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	</div>
+</div>
+
+<script type="text/javascript"> 
+function checkFile() { 
+	var f = document.add_form; 
+	var re = /\.(jpg|gif|png)$/i;  //允許的圖片副檔名 
+	if (!re.test(f.img_filename.value)) { 
+		alert("只允許上傳jpg,png,gif圖檔"); 
+	}
+	else
+	{
+		f.submit();
+	}
+} 
+
+function checkSubmit()
+{
+	result = confirm('是否確定刪除?')
+	if(result)
+	{
+		$('#photo_form').submit();
+	}
+	
+}
+
+
+</script>
