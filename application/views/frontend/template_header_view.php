@@ -29,8 +29,8 @@
             </li>
             <li>
 			
-			<?php if($this->session->userdata("user_auth")!== FALSE ){ ?>
-			<a href="<?php echo backendUrl()?>" title="物業管理"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>	
+			<?php if ($this->session->userdata("user_auth")!== FALSE ){ ?>
+			<a href="<?php echo backendUrl()?>" title="物業管理"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>
 			<?php } else { ?>
 			<a href="#" title="物業管理"><img src="<?php echo base_url().$templateUrl;?>images/btn4.png" alt=""></a>	
 			<?php } ?>
@@ -38,7 +38,7 @@
         </ul>
     </div>
 </div>
-<div id="banner" style="display:<?php if( ! $show_banner){echo "none";} ?>">
+<div id="banner" style="display:<?php if( ! $show_banner) {echo 'none';} ?>">
     <div>
         <img src="<?php echo base_url().$templateUrl;?>images/index_banner_title.png" alt="">
         <div id="banner_news"><?php echo tryGetData("title", $latest_bulletin_info) ?><br><?php echo showMoreStringSimple(tryGetData("content", $latest_bulletin_info),150) ?></div>
