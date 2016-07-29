@@ -24,7 +24,7 @@
     }
     
     #block {
-        height: 400px;
+        height: 330px;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -122,7 +122,7 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: 200px;     
+        top: 170px;     
         font-weight: bold;
         font-size: 36px;
        
@@ -146,7 +146,7 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: 1720px;
+        top: 1650px;
         font-size: 72px;
         font-weight: bold;
          background: url(<?php echo base_url().$templateUrl;?>/images/bg4.png) center center no-repeat;
@@ -198,7 +198,7 @@
         <div> <?php echo $comm_name; ?></div>
     </div>
     <div id="slide" class="slideshow">
-   
+
         <?php
 
       
