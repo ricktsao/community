@@ -73,18 +73,6 @@ abstract class Backend_Controller extends IT_Controller
 		if (isNotNull($building_part_02_value)) {
 			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
 		}
-<<<<<<< HEAD
-
-		if ( $addr_part_01 !== false ) 
-			$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
-		else 
-			$this->addr_part_01_array = array(0=>' -- ');
-
-		if ( $addr_part_02 !== false ) 
-			$this->addr_part_02_array = array_merge(array(0=>' -- '), explode(',', $addr_part_02));
-		else 
-			$this->addr_part_02_array = array(0=>' -- ');
-=======
 		
 		if ($addr_part_01 !== false) {
 			$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
@@ -97,7 +85,7 @@ abstract class Backend_Controller extends IT_Controller
 		} else {
 			$this->addr_part_02_array = array(0=>' -- ');
 		}
->>>>>>> a6a90385ddf710c3afdb8b59d1a1a5e2c5e29bda
+
 
 		
 		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
