@@ -18,13 +18,13 @@
     }
     
     body {
-        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;        
+        background: url(<?php echo $bg_img;?>) center center no-repeat #aac9eb;        
         background-size:100% 100%;
         height: 1920px;
     }
     
     #block {
-        height: 330px;
+      
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -67,14 +67,14 @@
     
     #dates {
        
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;     
+        position: relative;
+    
         font-weight: bold;
         font-size: 36px;
-       
-        height: 172px;
+        margin: 0 auto -20px;
+        
+      
+        width: 1075px;
       
     }
 
@@ -119,14 +119,13 @@
  
 
     #comm_title {       
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 170px;     
+        position: relative;
+     
         font-weight: bold;
         font-size: 36px;
        
-        height: 172px;
+        width: 1075px;
+        margin: 0 auto -20px;
       
     }
 
@@ -143,10 +142,10 @@
 
     #marquee {
        
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 1650px;
+        position: relative;
+          width: 1075px;
+          margin: 0 auto;
+      
         font-size: 72px;
         font-weight: bold;
          background: url(<?php echo base_url().$templateUrl;?>/images/bg4.png) center center no-repeat;
@@ -177,11 +176,7 @@
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
-    <div id="marquee" >
-        <marquee direction="left">
-            <?php echo $marquee_str;?>
-        </marquee>
-    </div>
+  
     <div id="dates">
         <div>
            
@@ -238,6 +233,11 @@
 
         */  
     ?>
+    </div>
+      <div id="marquee" >
+        <marquee direction="left">
+            <?php echo $marquee_str;?>
+        </marquee>
     </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
