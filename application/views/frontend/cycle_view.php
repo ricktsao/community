@@ -7,6 +7,7 @@
     <style>
     * {
         box-sizing: border-box;
+        font-family: "Microsoft JhengHei";
     }
 
     body,
@@ -23,7 +24,7 @@
     }
     
     #block {
-        height: 230px;
+        height: 400px;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -39,12 +40,12 @@
     }
     
     #slide {
-        width: 1007px;
-        height: 1237px;
+        width: 1075px;
+        height: 1351px;
         margin: 0 auto;
         
 
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_content_bg.png) center center no-repeat;
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg3.png) center center no-repeat;
     }
     
     #slide > div {
@@ -52,7 +53,7 @@
         height: 1008px;
         overflow: hidden;
         font-size: 20px;
-        padding: 40px 0 0 40px;
+        padding: 70px 0 0 40px;
     }
     
     #slide > div > h1 {
@@ -78,12 +79,12 @@
     }
 
     #dates > div {
-    	background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg1.png) center center repeat-x;
        margin: 0 auto;
        position: relative;
       
-       height: 172px;      
-        width: 1007px;
+       height: 186px;      
+        width: 1042px;
         padding: 22px 40px 0; 
     }
     
@@ -92,24 +93,52 @@
     }
     #d3 {
         position: absolute;
-        right: 400px;
-		font-size: 40px;
+        right: 410px;
+		font-size: 48px;
         top: 55px;
     }
 	#d4 {
         position: absolute;
-        right: 40px;
-		font-size: 80px;
-        top: 35px;
+        right: 20px;
+		font-size: 120px;
+        top: 5px;
+        color:#F15A24;
     }
 
     #dd {
         position: absolute;
-        top: 30px;
+        top: 18px;
+        left:20px;
+        font-size: 48px;
     }
 
     #dd tr > td:last-child{
         text-align: right;
+    }
+
+ 
+
+    #comm_title {       
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 200px;     
+        font-weight: bold;
+        font-size: 36px;
+       
+        height: 172px;
+      
+    }
+
+    #comm_title > div {
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg2.png) center center repeat-x;
+       margin: 0 auto;
+       position: relative;
+        font-size: 72px;
+        text-align: center;
+        height: 186px;      
+        width: 1042px;
+        padding: 35px 40px 0; 
     }
 
     #marquee {
@@ -117,20 +146,20 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: 1520px;
-        font-size: 50px;
+        top: 1720px;
+        font-size: 72px;
         font-weight: bold;
-        
+         background: url(<?php echo base_url().$templateUrl;?>/images/bg4.png) center center no-repeat;
+          height: 185px;
     }
 
      #marquee > marquee {
-     	 background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
-        position: absolute;
-        height: 172px;
-      	line-height: 162px;
-        width: 1007px;
+     	
+        position: absolute;   
+      top: 60px;
+        width: 940px;
         left: 50%;
-        margin-left: -503px;
+        margin-left: -470px;
         color:red;
      }
 
@@ -164,7 +193,12 @@
         </div>
        
     </div>
+
+    <div id="comm_title">
+        <div> <?php echo $comm_name; ?></div>
+    </div>
     <div id="slide" class="slideshow">
+   
         <?php
 
       
