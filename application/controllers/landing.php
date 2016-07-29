@@ -13,6 +13,8 @@ class Landing extends Frontend_Controller {
 	{
 		$data = array();
 		
+		$setting_info = $this->loadWebSetting();		
+		$data["comm_name"] =  tryGetData("comm_name",$setting_info);		
 
 		$bg_img = base_url().'template/'.$this->config->item('frontend_name').'/images/cycle_title_bg.png';
 		

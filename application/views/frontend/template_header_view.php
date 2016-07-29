@@ -21,7 +21,7 @@
 					<li><a href="<?php echo frontendUrl("suggestion_log")?>">意見箱回覆查詢<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("rent_house")?>">租屋資訊<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("sale_house")?>">售屋資訊<span></span></a></li>
-					<li><a href="<?php echo frontendUrl("mailmgr")?>">郵件管理<span></span></a></li>
+					<!--<li><a href="<?php echo frontendUrl("mailmgr")?>">郵件管理<span></span></a></li>-->
                 </ul>
             </li>
             <li>

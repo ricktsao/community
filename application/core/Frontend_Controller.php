@@ -774,8 +774,8 @@ abstract class Frontend_Controller extends IT_Controller
 				//代表為新社區,新增一筆admin
 				$admin_data = array(
 				"comm_id" => $comm_id,
-				"name" => '富網通',
-				"title" => '富網通',
+				"name" => '管理者',
+				"title" => '管理者',
 				"role" => 'F',				
 				"password" => 'c4983d36fb195428c9e8c79dfa9bcb0eb20f74e0',
 				"is_manager" => 1,
@@ -842,7 +842,7 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
-		//dprint($post_data);
+		dprint($post_data);
 		//exit;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -853,6 +853,8 @@ abstract class Frontend_Controller extends IT_Controller
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
 		
+		dprint($is_sync);
+		die;
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------
