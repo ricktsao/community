@@ -224,7 +224,7 @@ class Setting extends Backend_Controller{
 				$sn = $tmp[0];				
 				$filename = $tmp[1];
 
-				unlink('./upload/setting/'.$filename);
+				unlink('./upload/website/setting/'.$filename);
 
 				$del = $this->it_model->deleteData('web_setting_photo',  array('sn' => $sn));
 				
