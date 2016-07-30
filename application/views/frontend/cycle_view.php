@@ -42,15 +42,15 @@
     #slide {
         width: 1075px;
         height: 1351px;
-        margin: 0 auto;
+        margin: 0 auto -20px;
         
 
         background: url(<?php echo base_url().$templateUrl;?>/images/bg3.png) center center no-repeat;
     }
     
     #slide > div {
-        width: 900px;
-        height: 1008px;
+        width: 1030px;
+        height: 1250px;
         overflow: hidden;
         font-size: 20px;
         padding: 70px 0 0 40px;
@@ -62,6 +62,8 @@
     
     #slide > div img {
         max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
         display: block;
     }
     
