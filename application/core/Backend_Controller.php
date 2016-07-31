@@ -1020,7 +1020,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function sync_item_to_server($post_data,$func_name,$table_name)
 	{
-		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		$url = $this->config->item("api_server_url")."Sync_file/".$func_name;
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -1066,7 +1066,8 @@ abstract class Backend_Controller extends IT_Controller
 		{
 			$this->sync_item_to_server($item,"updateSaleHousePhoto","house_to_sale_photo");
 
-			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');			
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');	
+			echo '#$'.$item['house_to_sale_sn'];
 		}
 
 	}
