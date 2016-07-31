@@ -13,9 +13,9 @@ class Home extends Backend_Controller{
 		
 		// Claire
 		$this->check_user_sync();	//user 離線同步	 
-		$this->check_house_to_rent_sync();	// 租屋離線同步	 
 		$this->check_house_to_sale_sync();	// 售屋離線同步	
 		$this->check_house_to_sale_photo_sync();	// 售屋照片離線同步
+		$this->check_house_to_rent_sync();	// 租屋離線同步	 
 		$this->check_house_to_rent_photo_sync();	// 租屋照片離線同步
 
 		$this->display("index_view");
