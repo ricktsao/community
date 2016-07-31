@@ -905,7 +905,7 @@ abstract class Backend_Controller extends IT_Controller
 			curl_close ($ch);
 
 //dprint('##1 curl_close = = = ');
-			dprint($result);
+//			dprint($result);
 		}	
 	}
 
@@ -1066,8 +1066,7 @@ abstract class Backend_Controller extends IT_Controller
 		{
 			$this->sync_item_to_server($item,"updateSaleHousePhoto","house_to_sale_photo");
 
-			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');	
-			echo '#$'.$item['house_to_sale_sn'];
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');
 		}
 
 	}
