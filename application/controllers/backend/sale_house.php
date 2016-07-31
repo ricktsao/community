@@ -347,6 +347,15 @@ class Sale_House extends Backend_Controller {
 	}
 
 
+	public function syncPhoto()
+	{
+		//$this->check_house_to_sale_photo_sync();	// 售屋照片離線同步
+		//$this->check_house_to_rent_photo_sync();	// 租屋照片離線同步
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */
+			$this->sync_file('house_to_rent/2/');
+			//dprint('sync_file');
+	}
 
 	/**
 	 * 設定照片

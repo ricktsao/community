@@ -844,8 +844,9 @@ abstract class Backend_Controller extends IT_Controller
 		$post_data["file_string"] = $file_string;
 		$post_data["comm_id"] = $this->getCommId();
 		$post_data["folder"] = $folder;
-		
-		$url = $this->config->item("api_server_url")."sync/askFile";
+//dprint('##2 ask_server_file = = = ');
+		$url = $this->config->item("api_server_url")."Sync_file/askFile";
+//dprint($url);
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
@@ -854,6 +855,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$file_list = curl_exec($ch);
 		curl_close ($ch);
+//dprint($file_list);
 
 		return $file_list;
 	}
@@ -868,11 +870,14 @@ abstract class Backend_Controller extends IT_Controller
 		{
 			return;
 		}
-		
+
+//dprint('##1 sync_file 1 = = = ');
 		//$folder = "news";
 		$sync_folder = set_realpath("upload/".$this->getCommId()."/".$folder);
 		$files = glob($sync_folder . '*');
 		
+//dprint($sync_folder);
+//dprint($files);
 		$filename_ary = array();
 		foreach( $files as $key => $file_name_with_full_path )
 		{
@@ -881,7 +886,9 @@ abstract class Backend_Controller extends IT_Controller
 
 		$upload_file_list = $this->ask_server_file(implode(",",$filename_ary),$folder);
 		$upload_file_ary = explode(",",$upload_file_list);
-		
+
+//dprint('##1 sync_file 2 = = = ');
+//dprint($upload_file_ary);
 		foreach( $upload_file_ary as $key => $file_name )
 		{		
 			$file_name_with_full_path = set_realpath("upload/".$this->getCommId()."/".$folder).$file_name;
@@ -889,7 +896,7 @@ abstract class Backend_Controller extends IT_Controller
 			$cfile = new CURLFile($file_name_with_full_path);			
 			$params = array($this->getCommId().'<#-#>'.$folder => $cfile );			
 
-			$target_url = $this->config->item("api_server_url")."sync/fileUpload";
+			$target_url = $this->config->item("api_server_url")."Sync_file/fileUpload";
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$target_url);
 			curl_setopt($ch, CURLOPT_POST,1);
@@ -897,8 +904,9 @@ abstract class Backend_Controller extends IT_Controller
 			$result = curl_exec($ch);
 			curl_close ($ch);
 
+//dprint('##1 curl_close = = = ');
+			dprint($result);
 		}	
-		//	dprint($result);die;
 	}
 
 	//ajax 取得
@@ -1024,11 +1032,12 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='house_to_rent_photo') {
+		if ($table_name =='house_to_sale_photo') {
+			dprint('- - sync_item_to_server debug - - - - - - - ');
 			dprint($url);
 			dprint($post_data);
-			dprint($is_sync);
-			die;
+			echo('#'.$is_sync);
+			//die;
 		}
 		*/
 		
@@ -1045,6 +1054,45 @@ abstract class Backend_Controller extends IT_Controller
 		//------------------------------------------------------------------------------
 	}
 	
+
+
+	/**
+	 * House to Sale Photo 離線同步
+	 */
+	function check_house_to_sale_photo_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_sale_photo","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSaleHousePhoto","house_to_sale_photo");
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');			
+		}
+
+	}
+
+
+
+	/**
+	 * House to Rent Photo 離線同步
+	 */
+	function check_house_to_rent_photo_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_rent_photo","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRentHousePhoto","house_to_rent_photo");
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */
+			$this->sync_file('house_to_rent/'.$item['house_to_rent_sn'].'/');			
+		}
+
+	}
+
+
+
+
+
 	/**
 	 * mailbox 離線同步
 	 */
@@ -1140,6 +1188,14 @@ abstract class Backend_Controller extends IT_Controller
 		}
 	}
 	
+
+
+
+
+
+
+
+
 
 
 
