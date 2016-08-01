@@ -21,6 +21,8 @@
         background: url(<?php echo $bg_img;?>) center center no-repeat #aac9eb;        
         background-size:100% 100%;
         height: 1920px;
+        width: 100%;
+        min-width: 1075px;
     }
     
     #block {
@@ -249,7 +251,7 @@
 
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
-   
+
 
     
     function renderDate(){
