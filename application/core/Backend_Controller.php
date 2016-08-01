@@ -1695,7 +1695,7 @@ $edoma_photo_ary = array();
 		$content_sn = tryGetData('content_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
-		$config['allowed_types'] = 'jpg|png';
+		$config['allowed_types'] = 'jpg|png|gif';
 		
 		
 		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
