@@ -24,9 +24,9 @@ class cmsys extends Frontend_Controller {
 			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
 			$photo_list = $photo_list["data"];
 			
-			foreach ($photo_list as $key => $photo) 
+			foreach ($photo_list as $pkey => $photo) 
 			{
-				$photo_list[$key]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				$photo_list[$pkey]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
 				
 			}			
 			
