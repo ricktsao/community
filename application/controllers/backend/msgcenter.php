@@ -52,7 +52,7 @@ class Msgcenter extends Backend_Controller {
 		
 		$data["edit_data"] = array
 		(			
-			'post_date' => date( "Y-m-d" ),			
+			'post_date' => date( "Y-m-d H:i:s" ),			
 			'target' => 1,			
 		);
 		$this->display("content_form_view",$data);

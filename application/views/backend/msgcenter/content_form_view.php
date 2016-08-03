@@ -5,7 +5,7 @@
 	<?php echo textOption("標題","title",$edit_data); ?>
 	
 	
-	<div class="form-group ">
+	<div class="form-group " style="display:none">
 		<label for="parent_sn" class="col-xs-12 col-sm-3 control-label no-padding-right">使用罐頭訊息 </label>
 		<div class="col-xs-12 col-sm-4">
 			<div class="btn-group">
@@ -59,7 +59,9 @@
 	<div class="form-group ">
 		<label for="end_date" class="col-xs-12 col-sm-2 control-label no-padding-right">發送日期</label>
 		<div class="col-xs-12 col-sm-4">
-			<input type="text" onclick="WdatePicker()"  class="width-30" name="post_date" id="post_date" value="<?php echo tryGetData("post_date", $edit_data) ?>">					
+				
+			<input type="text" id="post_date" class="width-30" name="post_date" value="<?php echo tryGetData("post_date", $edit_data) ?>" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',disabledDates:['%y-%M-%d {%H-1}\:..\:..','%y-%M-%d {%H+1}\:..\:..']})"/> 
+			
 			<span class="width-30">
 				<label class="middle">
 					<input type="checkbox"  value="1" id="forever" name="realtime" class="ace">
