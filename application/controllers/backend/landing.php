@@ -9,24 +9,41 @@ class Landing extends Backend_Controller {
 	}
 	
 
+	/**
+	 * landing list page
+	 */
+	public function contentList()
+	{	
+		$cat_sn = $this->input->get('cat_sn');		
+						
+		
+		$condition = "";
+
+		
+		$list = $this->c_model->GetList( "landing" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+		
+		$data["list"] = $list["data"];
+		
+		//dprint($data);
+		//取得分頁
+		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
+		
+		
+		$this->display("content_list_view",$data);
+	}
 	
 	/**
 	 * category edit page
 	 */
 	public function editContent()
 	{		
-		
-		$water_info = $this->c_model->GetList( "landing");
+		$content_sn = $this->input->get('sn');
 			
-		if(count($water_info["data"])>0)
-		{
-			img_show_list($water_info["data"],'img_filename',$this->router->fetch_class());			
-			
-			$data["edit_data"] = $water_info["data"][0];			
-
-			
-		}
-		else
+		$cat_list = $this->c_model->GetList( "landingcat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
+		$data["cat_list"] = $cat_list["data"];
+				
+		if($content_sn == "")
 		{
 			$data["edit_data"] = array
 			(
@@ -37,64 +54,103 @@ class Landing extends Backend_Controller {
 				'forever' => 1,
 				'launch' =>1
 			);
-		}	
-		
-		
-		$this->display("content_form_view",$data);
-		
-	}
-	
+			$this->display("content_form_view",$data);
+		}
+		else 
+		{		
+			$landing_info = $this->c_model->GetList( "landing" , "sn =".$content_sn);
+			
+			if(count($landing_info["data"])>0)
+			{
+				img_show_list($landing_info["data"],'img_filename',$this->router->fetch_class());			
+				
+				$data["edit_data"] = $landing_info["data"][0];			
+
+				$this->display("content_form_view",$data);
+			}
+			else
+			{
+				redirect(bUrl("contentList"));	
+			}
+		}
+	}	
 	
 	public function updateContent()
 	{	
 		$edit_data = $this->dealPost();
-		$edit_data["is_sync"] =1;				
-						
-		if(isNotNull($edit_data["sn"]))
-		{				
-			if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
-			{					
-				$img_filename = $this->uploadImage($edit_data["sn"]);					
-				$edit_data["img_filename"] = $img_filename;
-				
-				//$this->sync_to_server($edit_data);
-				$this->showSuccessMessage();					
-			}
-			else 
-			{
-				$this->showFailMessage();
-			}				
-		}
-		else 
+		//dprint($edit_data);exit;
+		$edit_data["is_sync"] = 0;
+		
+		if ( ! $this->_validateContent())
 		{
-								
-			$edit_data["create_date"] =   date( "Y-m-d H:i:s" );
-			
-			$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
-			if($content_sn > 0)
-			{
-				$img_filename =$this->uploadImage($content_sn);
-				$edit_data["img_filename"] = $img_filename;
-				
-				$edit_data["sn"] = $content_sn;
-				//$this->sync_to_server($edit_data);
-			
-				
-				$this->showSuccessMessage();							
+			$data["edit_data"] = $edit_data;		
+			$this->display("content_form_view",$data);
+		}
+        else 
+        {		
+						
+			if(isNotNull($edit_data["sn"]))
+			{				
+				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
+				{					
+					$img_filename = $this->uploadImage($edit_data["sn"]);					
+					$edit_data["img_filename"] = $img_filename;
+					//$this->sync_to_server($edit_data);
+					$this->showSuccessMessage();					
+				}
+				else 
+				{
+					$this->showFailMessage();
+				}				
 			}
 			else 
 			{
-				$this->showFailMessage();					
-			}	
+									
+				$edit_data["create_date"] =   date( "Y-m-d H:i:s" );
+				
+				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
+				if($content_sn > 0)
+				{
+					$img_filename =$this->uploadImage($content_sn);
+					$edit_data["img_filename"] = $img_filename;
+					$edit_data["sn"] = $content_sn;
+					//$this->sync_to_server($edit_data);
+				
+					
+					$this->showSuccessMessage();							
+				}
+				else 
+				{
+					$this->showFailMessage();					
+				}	
+			}			
+			
+			redirect(bUrl("contentList"));	
+        }	
+	}
+	
+	function changeBg()
+	{
+		$content_sn = $this->input->post('hot');
 		
+		if(isNotNull($content_sn))
+		{
+			$this->it_model->updateData("web_menu_content",array("hot"=>1,"update_date"=>date("Y-m-d H:i:s")),"content_type = 'landing' and sn = ".$content_sn);
+			$this->it_model->updateData("web_menu_content",array("hot"=>0,"update_date"=>date("Y-m-d H:i:s")),"content_type = 'landing' and sn != ".$content_sn);
 		
+			$this->showSuccessMessage();
 		}
-			redirect(bUrl("editContent"));	
-        	
+		else
+		{
+			$this->showFailMessage();
+		}
+		
+		
+		redirect(bUrl("contentList"));	
 	}
 	
 	
-	
+		
 	//圖片處理
 	private function uploadImage($content_sn)
 	{
@@ -115,21 +171,16 @@ class Landing extends Backend_Controller {
 			
 			$img_filename = resize_img($uploadedUrl,$img_config['resize_setting']);					
 				
-			//社區同步資料夾
-			//$img_config['resize_setting'] =array($folder_name=>array(500,500));
-			//resize_img($uploadedUrl,$img_config['resize_setting'],$this->getCommId(),$img_filename);
 			
-			@unlink($uploadedUrl);	
-
-			$this->it_model->updateData( "web_menu_content" , array("img_filename"=> $img_filename), "sn = '".$content_sn."'" );
-			
+			$this->it_model->updateData( "web_menu_content" , array("img_filename"=> $img_filename), "sn = '".$content_sn."'" );			
 			$orig_img_filename = $this->input->post('orig_img_filename');
 			
+			
+			@unlink($uploadedUrl);	
 			@unlink(set_realpath("upload/website/".$folder_name).$orig_img_filename);	
 			@unlink(set_realpath("upload/".$this->getCommId()."/".$folder_name).$orig_img_filename);	
 			
-			//檔案同步至server
-			//$this->sync_file($folder_name);
+			
 		}
 		return $img_filename;
 	}
@@ -137,14 +188,14 @@ class Landing extends Backend_Controller {
 	
 	
 	/**
-	 * 驗證bulletinedit 欄位是否正確
+	 * 驗證landingedit 欄位是否正確
 	 */
 	function _validateContent()
 	{
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
+		//$this->form_validation->set_rules( 'title', '名稱', 'required' );	
 		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
@@ -152,62 +203,91 @@ class Landing extends Backend_Controller {
 
 
 
-
 	public function deleteContent()
 	{
+		$del_ary =array('sn'=> $this->input->post('del',TRUE));		
 		
-		$del_ary = tryGetData("del",$_POST,array());				
-
-		//社區主機刪除
-		//----------------------------------------------------------------------------------------------------
-		$sync_sn_ary = array();//待同步至雲端主機 array
-		foreach ($del_ary as  $content_sn) 
+		if($del_ary!= FALSE && count($del_ary)>0)
 		{
-			$result = $this->it_model->updateData( "web_menu_content" , array("del"=>1,"is_sync"=>0,"update_date"=>date("Y-m-d H:i:s")), "sn ='".$content_sn."'" );
-			if($result)
-			{
-				array_push($sync_sn_ary,$content_sn);
-			}						
+			$this->it_model->deleteDB( "web_menu_content",NULL,$del_ary );				
 		}
-		//----------------------------------------------------------------------------------------------------
-				
-		//社區主機同步
-		//----------------------------------------------------------------------------------------------------
-		foreach ($sync_sn_ary as  $content_sn) 
-		{			
-			$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$content_sn."'";			
-			$content_info = $this->it_model->runSql($query);
-			if($content_info["count"] > 0)
-			{
-				$content_info = $content_info["data"][0]; 
-				
-				
-				$this->sync_to_server($content_info);
-				
-				//dprint($content_info);exit;
-								
-			}			
-		}		
-		//----------------------------------------------------------------------------------------------------
-
-		
 		$this->showSuccessMessage();
-		
 		redirect(bUrl("contentList", FALSE));	
 	}
 
-	public function launchContent()
-	{		
-		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
-	}
 	
 
+	public function launchContent()
+	{
+		$this->ajaxChangeStatus("web_menu_content","launch",$this->input->post("content_sn", TRUE));		
+	}
+
+	
+
+	public function hotContent()
+    {
+		$sn = $this->input->post("content_sn", TRUE);
+		$table_name = 'web_menu_content';
+        $field_name = 'hot';
+        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
+        {
+            echo json_encode(array());
+        }
+        else 
+        {		
+
+            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
+			if($data_info["count"]==0)
+			{
+				echo json_encode(array());
+				return;
+			}			  
+			
+			$data_info = $data_info["data"][0];
+			
+			$change_value = 1;
+			if($data_info[$field_name] == 0)
+			{
+				$change_value = 1;
+			}
+			else
+			{
+				$change_value = 0;
+			}
+			
+			
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
+			if($result)
+			{
+				//社區主機同步
+				//----------------------------------------------------------------------------------------------------
+				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
+				$content_info = $this->it_model->runSql($query);
+				if($content_info["count"] > 0)
+				{
+					$content_info = $content_info["data"][0]; 					
+					$this->sync_to_server($content_info);									
+				}			
+				//----------------------------------------------------------------------------------------------------
+				echo json_encode($change_value);
+			}
+			else
+			{
+				echo json_encode($data_info[$field_name]);
+			}
+			                      
+        }
+    }
+	
+	
+	
+	
 	
 	public function GenerateTopMenu()
 	{
 		//addTopMenu 參數1:子項目名稱 ,參數2:相關action  
 
-		$this->addTopMenu(array("editContent","updateContent"));
+		$this->addTopMenu(array("contentList","editContent","updateContent"));
 	}
 	
 }
