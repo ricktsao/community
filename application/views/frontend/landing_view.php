@@ -81,7 +81,7 @@
         bottom: 0;
         right: 0;
         z-index:100;
-        display: none;
+        display: block;
     }
     
     #slide > img {
@@ -129,8 +129,9 @@
         </div>
     </div>
     <div id="slide">
-        <img src="<?php echo base_url();?>template/frontend/images/film.png" alt="">
-        <img src="<?php echo base_url();?>template/frontend/images/qr.png" alt="">
+        <?php foreach ($img_list as $value):?>
+        <img src="<?php echo $value;?>" alt="">        
+        <?php endforeach;?> 
     </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
@@ -158,8 +159,8 @@
         var d4 = thour + " : " + tmin;
 
       
-        $('#block2').append(d1);
-        $('#block3').append(d2);
+        $('#block2').html(d1);
+        $('#block3').html(d2);
 
         /*$('#d1').html(d1);
         $('#d2').html(d2);*/
@@ -172,7 +173,7 @@
     $(function() {
     	renderDate();
         $('#slide').cycle();
-         setInterval(renderDate,1000*60);
+         setInterval(renderDate,1000*20);
 
     })
     </script>
