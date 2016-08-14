@@ -499,7 +499,7 @@ class Parkuser extends Backend_Controller
 			$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
 
 		$this->form_validation->set_rules( 'name', $this->lang->line("field_name"), 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'tel', '電話', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'tel', '電話', 'min_length[8]|max_length[20]' );
 		$this->form_validation->set_rules( 'phone', '手機號碼', 'required|max_length[20]' );
 		$this->form_validation->set_rules( 'addr', '住址', 'required|max_length[20]' );
 

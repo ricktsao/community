@@ -31,14 +31,29 @@
 <?php echo $footer;?>
 
 <script>
+
+var min = 5;//分鐘
+var coundownTime = 1000*60*min;
+
+
 $(function() {
 
-$("#member_login_btn").fancybox({
+	$("#member_login_btn").fancybox({
 
     	afterShow:function(){
     		$('#member_login_form input[type=password]').focus();
     	}
     });
+
+	setInterval(function(){
+		coundownTime -= 1000;
+		console.log(coundownTime);
+		if(coundownTime<=0){
+			self.location="<?php echo frontendUrl('landing');?>";
+		}
+
+	},1000);
+
 
 })
 </script>

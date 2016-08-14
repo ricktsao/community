@@ -111,7 +111,7 @@ class User extends Backend_Controller
 		$headline = '所有權人列表'; 
 		$data['headline'] = $headline;
  
-		$condition = ' AND role = "I"';
+		$condition = ' AND launch=1 AND role = "I"';
 		$condition .= ' AND is_owner = 1 ' ;
 
 		$query_key = array();
@@ -187,7 +187,7 @@ class User extends Backend_Controller
 		$headline = '管委人員列表'; 
 		$data['headline'] = $headline;
  
-		$condition = ' AND role = "I"';
+		$condition = ' AND launch=1 AND role = "I"';
 		$condition .= ' AND is_manager = 1 ' ;
 
 		$query_key = array();
@@ -268,7 +268,7 @@ class User extends Backend_Controller
 		$headline = '緊急聯絡人員列表';
 		$data['headline'] = $headline;
  
-		$condition = ' AND role = "I"';
+		$condition = ' AND launch=1 AND role = "I"';
 		$condition .= ' AND is_contact = 1 ' ;
 
 		$query_key = array();
@@ -814,6 +814,9 @@ class User extends Backend_Controller
 		$data['building_part_03'] = $this->building_part_03;
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
+		// 地址門牌參數
+		$data['addr_part_01_array'] = $this->addr_part_01_array;
+		$data['addr_part_02_array'] = $this->addr_part_02_array;
 
 		$user_sn = $this->input->get("sn", TRUE);
 		$role = $this->input->get("role", TRUE);
@@ -910,11 +913,19 @@ class User extends Backend_Controller
 
 		$this->load->library('encrypt');
 		
-		foreach( $_POST as $key => $value )
-		{
+		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
-		//dprint($edit_data['group_sn'] );
+
+		// 取消"權限群組"欄位，改由此判定所屬的群組，
+		// 若不為管委身分，則只有"住戶"群組，
+		// 若有管委身分，則有"住戶"與"管委會"群組
+		if (tryGetData('is_manager', $edit_data, 0) == 1 ) {
+			$edit_data['group_sn'] = array(1, 2);
+		} else {
+			$edit_data['group_sn'] = array(1);
+		}
+
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
 			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
@@ -926,6 +937,9 @@ class User extends Backend_Controller
 		$data['building_part_03'] = $this->building_part_03;
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
+		// 地址門牌參數
+		$data['addr_part_01_array'] = $this->addr_part_01_array;
+		$data['addr_part_02_array'] = $this->addr_part_02_array;
 
 		if ( ! $this->_validateUser())
 		{
@@ -961,7 +975,6 @@ class User extends Backend_Controller
 			if (tryGetData("manager_title", $edit_data) > 0) {
 				$is_manager = 1;
 			}
-			
 
         	$arr_data = array(
 				 "comm_id"		=>	$this->getCommId()
@@ -970,7 +983,6 @@ class User extends Backend_Controller
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "tel"			=>	tryGetData("tel", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
-				, "addr"		=>	tryGetData("addr", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
@@ -992,6 +1004,19 @@ class User extends Backend_Controller
 				// 戶別編號，只需先選定 b_part_01 & b_part_02 之後，系統自動編號
 				$next_number = $this->_getNextBpartNumber($edit_data['b_part_01'], $edit_data['b_part_02']);
 				$arr_data['building_id'] = $edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$next_number;
+			} else {
+				$arr_data['building_id'] = tryGetData('building_id', $edit_data);
+			}
+
+			if ( tryGetData("chg_a_id", $edit_data, 1) == 1 ) {
+				// 地址轉文字
+				$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+				$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+				$addr = addr_part_to_text($addr_part_01, $addr_part_02);
+
+				$arr_data['addr_part_01'] = $addr_part_01;
+				$arr_data['addr_part_02'] = $addr_part_02;
+				$arr_data['addr'] = $addr;
 			}
 
 			if($edit_data["sn"] != FALSE)
@@ -1025,6 +1050,16 @@ class User extends Backend_Controller
 					$arr_data["account"] = $edit_data["account"];
 					$arr_data["password"] = prepPassword($edit_data["password"]);	
 				}
+
+				// 地址轉文字
+				$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+				$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+				$addr = addr_part_to_text($addr_part_01, $addr_part_02);
+
+				$arr_data['addr_part_01'] = $addr_part_01;
+				$arr_data['addr_part_02'] = $addr_part_02;
+				$arr_data['addr'] = $addr;
+
 
 				$arr_data["act_code"] = random_string('numeric',12);
 				$arr_data["created"] = date( "Y-m-d H:i:s" );
@@ -1112,6 +1147,7 @@ class User extends Backend_Controller
 		$end_date = tryGetValue($this->input->post('end_date',TRUE), 0);
 		$forever = tryGetValue($this->input->post('forever',TRUE), 0);
 		$chg_b_id = tryGetValue($this->input->post('chg_b_id',TRUE), 0);
+		$chg_a_id = tryGetValue($this->input->post('chg_a_id',TRUE), 0);
 
 
 		$this->form_validation->set_message('checkAdminAccountExist', 'Error Message');
@@ -1126,15 +1162,21 @@ class User extends Backend_Controller
 			}
 			$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'required|greater_than[0]' );
 			$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'required|greater_than[0]' );
+			$this->form_validation->set_rules( 'addr_part_01', '地址門號', 'required|greater_than[0]' );
+			$this->form_validation->set_rules( 'addr_part_02', '地址樓層', 'required|greater_than[0]' );
 		} else {
 		
 			if ($chg_b_id == 1) {
 				$this->form_validation->set_rules( 'b_part_01', $this->building_part_01, 'greater_than[0]' );
 				$this->form_validation->set_rules( 'b_part_02', $this->building_part_02, 'greater_than[0]' );
 			}
+			if ($chg_a_id == 1) {
+				$this->form_validation->set_rules( 'addr_part_01', '地址門號', 'greater_than[0]' );
+				$this->form_validation->set_rules( 'addr_part_02', '地址樓層', 'greater_than[0]' );
+			}
 		}
 		
-		$this->form_validation->set_rules( 'group_sn', '權限', 'required' );
+		// $this->form_validation->set_rules( 'group_sn', '權限', 'required' );
 
 		/*	
 		if ($role == 'I') {
@@ -1147,17 +1189,11 @@ class User extends Backend_Controller
 		}
 		*/
 
-		
-
 		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
 		$this->form_validation->set_rules( 'tel', '電話', 'min_length[9]|max_length[20]' );
 		$this->form_validation->set_rules( 'phone', '行動電話', 'required|max_length[20]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
-		}
-
-		if ($gas_right == 1) {
-			$this->form_validation->set_rules( 'addr', '門牌號碼', 'required|min_length[1]' );
 		}
 
 		if ($is_manager == 1) {

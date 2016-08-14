@@ -318,8 +318,6 @@ class Userimport extends Backend_Controller {
 						}
 
 					} else {
-						dprint( $this->db->last_query());
-						dprint( $this->db->_error_message()); 
 							$building_id = $building_id_1.'_'.$building_id_2.'_'.$building_id_3;
 							$building_id_text = building_id_to_text($building_id);
 							$errorr_msg .= '第'.$i.'列　住戶'.$name.'之戶別編號（'.$building_id_text.'）已存在，因此不予新增'."\n";

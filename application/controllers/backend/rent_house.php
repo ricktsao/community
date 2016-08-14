@@ -13,6 +13,9 @@ class Rent_House extends Backend_Controller {
 	 */
 	public function index()
 	{
+		$this->check_house_to_rent_sync();	// 租屋離線同步	 
+		$this->check_house_to_rent_photo_sync();	// 租屋照片離線同步
+
 		$condition = '';
 
 		// 指定關鍵字
@@ -408,16 +411,14 @@ class Rent_House extends Backend_Controller {
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
 				$this->showSuccessMessage('物件照片上傳成功');
 
-
-
-				/* 同步 同步 同步 同步 同步 */
+				/*
+				// 同步 同步 同步 同步 同步 
 				$arr_data["sn"] = $rent_photo_sn;
 				$this->sync_item_to_server($arr_data, 'updateRentHousePhoto', 'house_to_rent_photo');
 
-				/* 檔案同步至server 檔案同步至server 檔案同步至server */
+				// 檔案同步至server 檔案同步至server 檔案同步至server
 				$this->sync_file('house_to_rent/'.$edit_data['house_to_rent_sn'].'/');
-
-
+				*/
 
 			} else {
 				$this->showFailMessage('物件照片上傳失敗，請稍後再試');

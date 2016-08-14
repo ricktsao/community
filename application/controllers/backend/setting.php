@@ -30,6 +30,11 @@ class Setting extends Backend_Controller{
 		}
 		$data["users_flag"] = $users_flag;
 
+		
+		## 既有照片list
+		$photo_list = $this->it_model->listData( "web_setting_photo");
+		$data["photo_list"] = $photo_list["data"];
+		
 		$this->display("setting_form_view",$data);
 	}
 	
@@ -130,6 +135,118 @@ class Setting extends Backend_Controller{
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 照片上傳
+	 */
+	public function uploadPhoto()
+	{
+		$edit_data = array();
+		foreach( $_POST as $key => $value ) 
+		{
+			$edit_data[$key] = $this->input->post($key,TRUE);			
+		}		
+	
+		$config['upload_path'] = './upload/website/setting/';
+		$config['allowed_types'] = 'jpg|png';
+		
+		
+		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
+		$config['file_name'] = $filename;
+		$config['overwrite'] = false;
+		
+		
+		//$config['max_size']	= '1000';
+		//$config['max_width']  = '1200';
+		//$config['max_height']  = '1000';
+		$config['overwrite']  = true;
+
+		$this->load->library('upload', $config);
+
+		if (!is_dir('./upload/website/setting/')) 
+		{
+			mkdir('./upload/website/setting/', 0777, true);
+		}
+		
+		
+
+		if ( ! $this->upload->do_upload('img_filename'))
+		{
+			$error = array('error' => $this->upload->display_errors());
+
+			$this->showFailMessage('圖片上傳失敗，請稍後再試　' .$error['error'] );
+		} 
+		else 
+		{
+
+			$upload = $this->upload->data();
+			$img_filename = tryGetData('file_name', $upload);
+			
+			$arr_data = array(														  
+							  'img_filename'			=>	$img_filename
+							, 'title'				=>	tryGetData('title', $edit_data)
+							, 'updated'				=>	date('Y-m-d H:i:s')
+							, 'updated_by'			=>	$this->session->userdata('user_name')
+							, 'created'				=>	date('Y-m-d H:i:s')
+							);
+
+			$photo_sn = $this->it_model->addData('web_setting_photo', $arr_data);
+			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') 
+			{				
+				$this->showSuccessMessage('圖片上傳成功');
+			} else {
+				$this->showFailMessage('圖片上傳失敗，請稍後再試');
+			}
+		}
+
+		redirect(bUrl("index"));
+	}
+
+	/**
+	 * 刪除web_menu_photo照片
+	 */
+	function deletePhoto()
+	{
+		$del_array = $this->input->post("del",TRUE);
+		if(count($del_array)>0)
+		{			
+			$content_sn = 0;
+			foreach( $del_array as $item ) 
+			{
+
+				$tmp = explode('!@', $item);
+				$sn = $tmp[0];				
+				$filename = $tmp[1];
+
+				unlink('./upload/website/setting/'.$filename);
+
+				$del = $this->it_model->deleteData('web_setting_photo',  array('sn' => $sn));
+				
+				if ($del) 
+				{			
+					
+				}
+			}
+			
+			$this->pingConentPhoto($content_sn);
+		}
+		$this->showSuccessMessage('圖片刪除成功');
+
+
+		redirect(bUrl("index"));
+	}
+	
+	
+	
+	
+	
+	
 	
 	public function generateTopMenu()
 	{

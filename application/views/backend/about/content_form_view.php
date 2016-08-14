@@ -22,9 +22,9 @@
 	
 	
 	<input type="hidden" name="launch" value="1" />
-	<input type="hidden" name="forever" value="<? echo tryGetData('forever', $edit_data)?>" />
-	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
-	<input type="hidden" name="content_type" value="<? echo tryGetData('content_type', $edit_data)?>" />
+	<input type="hidden" name="forever" value="<?php echo tryGetData('forever', $edit_data)?>" />
+	<input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
+	<input type="hidden" name="content_type" value="<?php echo tryGetData('content_type', $edit_data)?>" />
 		
 
 	
@@ -33,7 +33,7 @@
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				送出
+				確定送出
 			</button>
 			
 		</div>

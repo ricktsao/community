@@ -28,6 +28,8 @@ abstract class Backend_Controller extends IT_Controller
 	public $building_part_02 = "";	
 	public $building_part_01_array = array();
 	public $building_part_02_array = array();
+	public $addr_part_01_array = array();
+	public $addr_part_02_array = array();
 
 	function __construct() 
 	{
@@ -61,6 +63,8 @@ abstract class Backend_Controller extends IT_Controller
 		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
 		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
 		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
+		$addr_part_01 = $this->auth_model->getWebSetting('addr_part_01');
+		$addr_part_02 = $this->auth_model->getWebSetting('addr_part_02');
 
 		if (isNotNull($building_part_01_value)) {
 			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
@@ -68,6 +72,18 @@ abstract class Backend_Controller extends IT_Controller
 
 		if (isNotNull($building_part_02_value)) {
 			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
+		}
+		
+		if ($addr_part_01 !== false) {
+			$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
+		} else {
+			$this->addr_part_01_array = array(0=>' -- ');
+		}
+		
+		if ($addr_part_02 !== false) {
+			$this->addr_part_02_array = array_merge(array(0=>' -- '), explode(',', $addr_part_02));
+		} else {
+			$this->addr_part_02_array = array(0=>' -- ');
 		}
 
 
@@ -828,8 +844,9 @@ abstract class Backend_Controller extends IT_Controller
 		$post_data["file_string"] = $file_string;
 		$post_data["comm_id"] = $this->getCommId();
 		$post_data["folder"] = $folder;
-		
-		$url = $this->config->item("api_server_url")."sync/askFile";
+//dprint('##2 ask_server_file = = = ');
+		$url = $this->config->item("api_server_url")."Sync_file/askFile";
+//dprint($url);
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		//curl_setopt($ch, CURLOPT_POST,1);
@@ -838,6 +855,7 @@ abstract class Backend_Controller extends IT_Controller
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		$file_list = curl_exec($ch);
 		curl_close ($ch);
+//dprint($file_list);
 
 		return $file_list;
 	}
@@ -852,11 +870,14 @@ abstract class Backend_Controller extends IT_Controller
 		{
 			return;
 		}
-		
+
+//dprint('##1 sync_file 1 = = = ');
 		//$folder = "news";
 		$sync_folder = set_realpath("upload/".$this->getCommId()."/".$folder);
 		$files = glob($sync_folder . '*');
 		
+//dprint($sync_folder);
+//dprint($files);
 		$filename_ary = array();
 		foreach( $files as $key => $file_name_with_full_path )
 		{
@@ -865,7 +886,9 @@ abstract class Backend_Controller extends IT_Controller
 
 		$upload_file_list = $this->ask_server_file(implode(",",$filename_ary),$folder);
 		$upload_file_ary = explode(",",$upload_file_list);
-		
+
+//dprint('##1 sync_file 2 = = = ');
+//dprint($upload_file_ary);
 		foreach( $upload_file_ary as $key => $file_name )
 		{		
 			$file_name_with_full_path = set_realpath("upload/".$this->getCommId()."/".$folder).$file_name;
@@ -873,7 +896,7 @@ abstract class Backend_Controller extends IT_Controller
 			$cfile = new CURLFile($file_name_with_full_path);			
 			$params = array($this->getCommId().'<#-#>'.$folder => $cfile );			
 
-			$target_url = $this->config->item("api_server_url")."sync/fileUpload";
+			$target_url = $this->config->item("api_server_url")."Sync_file/fileUpload";
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL,$target_url);
 			curl_setopt($ch, CURLOPT_POST,1);
@@ -881,8 +904,9 @@ abstract class Backend_Controller extends IT_Controller
 			$result = curl_exec($ch);
 			curl_close ($ch);
 
+//dprint('##1 curl_close = = = ');
+//			dprint($result);
 		}	
-		//	dprint($result);die;
 	}
 
 	//ajax 取得
@@ -996,7 +1020,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function sync_item_to_server($post_data,$func_name,$table_name)
 	{
-		$url = $this->config->item("api_server_url")."sync/".$func_name;
+		$url = $this->config->item("api_server_url")."Sync_file/".$func_name;
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -1008,11 +1032,12 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='house_to_rent_photo') {
+		if ($table_name =='house_to_sale_photo') {
+			dprint('- - sync_item_to_server debug - - - - - - - ');
 			dprint($url);
 			dprint($post_data);
-			dprint($is_sync);
-			die;
+			echo('#'.$is_sync);
+			//die;
 		}
 		*/
 		
@@ -1029,6 +1054,45 @@ abstract class Backend_Controller extends IT_Controller
 		//------------------------------------------------------------------------------
 	}
 	
+
+
+	/**
+	 * House to Sale Photo 離線同步
+	 */
+	function check_house_to_sale_photo_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_sale_photo","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateSaleHousePhoto","house_to_sale_photo");
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */			$this->sync_file('house_to_sale/'.$item['house_to_sale_sn'].'/');
+		}
+
+	}
+
+
+
+	/**
+	 * House to Rent Photo 離線同步
+	 */
+	function check_house_to_rent_photo_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("house_to_rent_photo","is_sync =0");
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateRentHousePhoto","house_to_rent_photo");
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */
+			$this->sync_file('house_to_rent/'.$item['house_to_rent_sn'].'/');			
+		}
+
+	}
+
+
+
+
+
 	/**
 	 * mailbox 離線同步
 	 */
@@ -1124,6 +1188,297 @@ abstract class Backend_Controller extends IT_Controller
 		}
 	}
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaHouseToSale()
+	{
+			//$ddd = $this->it_model->listData( "house_to_sale");
+			//dprint($ddd);
+			//die;
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSale";
+
+		// dprint($url);
+		// dprint($post_data);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+
+//dprint( $edoma_data_ary );
+//die;
+
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+			$ok_flag = false;
+
+			$server_sn = $server_info["sn"];
+			$edoma_sn = tryGetData("edoma_sn",$server_info);
+			$arr_data = array
+			(
+				 "comm_id"		=>	$this->getCommId()	
+				, "del"			=>	tryGetData("del",$server_info,0)
+				, "is_edoma"	=>	1
+				, "edoma_sn"	=>	$edoma_sn
+				, "title"		=>	tryGetData("title",$server_info)
+
+				, "sale_type"	=>	tryGetData("sale_type",$server_info)
+				, "house_type"	=>	tryGetData("house_type",$server_info)
+				, "direction"	=>	tryGetData("direction",$server_info)
+				, "name"		=>	tryGetData("name",$server_info)
+				, "phone"		=>	tryGetData("phone",$server_info)
+				, "area_desc"	=>	tryGetData("area_desc",$server_info)
+
+				, "total_price"	=>	tryGetData("total_price",$server_info)
+				, "unit_price"	=>	tryGetData("unit_price",$server_info)
+				, "manage_fee"	=>	tryGetData("manage_fee",$server_info)
+				, "area_ping"	=>	tryGetData("area_ping",$server_info)
+				, "house_age"	=>	tryGetData("house_age",$server_info)
+				, "pub_ratio"	=>	tryGetData("pub_ratio",$server_info)
+				, "room"	=>	tryGetData("room",$server_info)
+				, "livingroom"	=>	tryGetData("livingroom",$server_info)
+				, "bathroom"	=>	tryGetData("bathroom",$server_info)
+				, "balcony"	=>	tryGetData("balcony",$server_info)
+				, "locate_level"	=>	tryGetData("locate_level",$server_info)
+				, "total_level"	=>	tryGetData("total_level",$server_info)
+				, "usage"	=>	tryGetData("usage",$server_info)
+				, "current"	=>	tryGetData("current",$server_info)
+				, "flag_rent"	=>	tryGetData("flag_rent",$server_info)
+				, "flag_parking"	=>	tryGetData("flag_parking",$server_info)
+				, "addr"	=>	tryGetData("addr",$server_info)
+				, "decoration"	=>	tryGetData("decoration",$server_info)
+				, "start_date" => tryGetData("start_date",$server_info,NULL)
+				, "end_date" => tryGetData("end_date",$server_info,NULL)
+				, "forever" => tryGetData("forever",$server_info,0)
+				, "launch" => tryGetData("launch",$server_info,0)
+				, "living"	=>	tryGetData("living",$server_info)
+				, "traffic"	=>	tryGetData("traffic",$server_info)
+				, "desc"	=>	tryGetData("desc",$server_info)
+				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "created" =>  date( "Y-m-d H:i:s" )
+			);
+
+			$upd = $this->it_model->updateData( "house_to_sale" , $arr_data, "server_sn =".$server_sn );
+			
+			if ($upd === false) {
+				$arr_data['server_sn'] = $server_sn;
+				$arr_data['created'] = date( "Y-m-d H:i:s" );
+				$house_to_sale_sn = $this->it_model->addData( "house_to_sale" , $arr_data );
+
+				//		dprint( $this->db->last_query());
+				//		dprint( $this->db->_error_message()); 
+				//		dprint( $int);
+				//      echo 'add ok';
+
+				$ok_flag = true;
+
+				       echo 'house_to_sale_sn : '. $house_to_sale_sn;
+
+			} else {
+
+				$ok_flag = true;
+				       echo 'updated ok';
+				 		dprint( $this->db->last_query());
+				//		dprint( $this->db->_error_message()); 
+						dprint( $upd);
+
+				$tmp = $this->it_model->listData( "house_to_sale" , "server_sn =".$server_sn );
+				$house_to_sale_sn = $tmp['data'][0]['sn'];
+				       echo 'house_to_sale_sn = '. $house_to_sale_sn;
+			}
+
+
+			//edoma_sn
+			$post_data = array();
+			$post_data["comm_id"] = $this->getCommId();
+			$post_data["edoma_house_to_sale_sn"] = $edoma_sn;
+			$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSalePhoto";
+
+
+			// dprint($url);
+			// dprint($post_data);
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_POST,1);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+			$json_photo = curl_exec($ch);
+			curl_close ($ch);
+
+			$edoma_photo_ary =  json_decode($json_photo, true);
+dprint('<hr color=red>');
+dprint($edoma_photo_ary);
+/*
+Array
+(
+    [sn] => 8
+    [client_house_to_sale_sn] => 
+    [client_sn] => 
+    [edoma_house_to_sale_sn] => 1
+    [edoma_sn] => 1
+    [client_sync] => 0
+    [del] => 0
+    [filename] => 20160627013812_628277.jpg
+    [title] => tooth gray
+    [updated] => 2016-06-27 01:38:12
+    [updated_by] => 管理者
+)
+*/
+dprint('<hr color=blue>');
+			if( ! is_array($edoma_photo_ary))
+			{
+				$edoma_photo_ary = array();
+			}
+$edoma_photo_ary = array();
+			foreach( $edoma_photo_ary as $key => $server_photo_info ) 
+			{	
+				$ok_flag = false;
+				$server_sn = tryGetData("sn",$server_photo_info);
+				$arr_data = array
+				(	"is_edoma"	=>	1
+					//, "edoma_house_to_sale_sn"	=>	tryGetData("edoma_house_to_sale_sn",$server_photo_info)
+					, "title"		=>	tryGetData("title",$server_photo_info)
+					, "del"			=>	tryGetData("del",$server_photo_info,0)
+					, "filename"	=>	tryGetData("filename",$server_photo_info)
+					, "updated"		=>  tryGetData("updated",$server_photo_info)
+					, "updated_by"	=>  tryGetData("updated_by",$server_photo_info)
+				);
+
+				$upd = $this->it_model->updateData( "house_to_sale_photo" , $arr_data, "server_sn =".$server_sn );
+				
+				if ($upd === false) {
+					$arr_data['server_sn'] = $server_sn;
+					$arr_data['edoma_house_to_sale_sn'] = $edoma_house_to_sale_sn;
+					$arr_data['created'] = date( "Y-m-d H:i:s" );
+					$int = $this->it_model->addData( "house_to_sale_photo" , $arr_data );
+
+							dprint( $this->db->last_query());
+					//		dprint( $this->db->_error_message()); 
+					//		dprint( $int);
+					      echo 'add OOok';
+
+
+
+
+				} else {
+					      echo 'updated OOok';
+							dprint( $this->db->last_query());
+					//		dprint( $this->db->_error_message()); 
+					//		dprint( $upd);
+				}
+			
+			}
+
+		}
+	}
+
+
+
+
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaHouseToSalePhoto()
+	{
+			//$ddd = $this->it_model->listData( "house_to_sale");
+			//dprint($ddd);
+			//die;
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSalePhoto";
+
+		// dprint($url);
+		// dprint($post_data);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+//echo $json_data;
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+
+// dprint($edoma_data_ary);exit;
+
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+			$server_sn = $server_info["sn"];
+			$arr_data = array
+			(
+				 "comm_id"		=>	$this->getCommId()	
+				, "del"			=>	tryGetData("del",$server_info,0)
+				, "is_edoma"	=>	1
+				, "title"		=>	tryGetData("title",$server_info)
+				, "traffic"	=>	tryGetData("traffic",$server_info)
+				, "desc"	=>	tryGetData("desc",$server_info)
+				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "created" =>  date( "Y-m-d H:i:s" )
+			);
+
+			$upd = $this->it_model->updateData( "house_to_sale_photo" , $arr_data, "server_sn =".$server_sn );
+			
+			if ($upd === false) {
+				$arr_data['server_sn'] = $server_sn;
+				$arr_data['created'] = date( "Y-m-d H:i:s" );
+				$int = $this->it_model->addData( "house_to_sale_photo" , $arr_data );
+
+				//		dprint( $this->db->last_query());
+				//		dprint( $this->db->_error_message()); 
+				//		dprint( $int);
+				//      echo 'add ok';
+
+
+
+
+			} else {
+				//      echo 'updated ok';
+				//		dprint( $this->db->last_query());
+				//		dprint( $this->db->_error_message()); 
+				//		dprint( $upd);
+			}
+		}
+	}
+
 	
 	
 	/**
@@ -1340,7 +1695,7 @@ abstract class Backend_Controller extends IT_Controller
 		$content_sn = tryGetData('content_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
-		$config['allowed_types'] = 'jpg|png';
+		$config['allowed_types'] = 'jpg|png|gif';
 		
 		
 		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
