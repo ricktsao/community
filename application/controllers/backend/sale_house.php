@@ -278,24 +278,29 @@ class Sale_House extends Backend_Controller {
 		$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
 
 		$this->form_validation->set_rules( 'total_price', '總價 ', 'required' );
-		$this->form_validation->set_rules( 'unit_price', '每坪單價 ', 'required' );
-		$this->form_validation->set_rules( 'manage_fee', '管理費', 'required|max_length[20]' );
 		$this->form_validation->set_rules( 'area_ping', '面積', 'required|less_than[1000]|greater_than[0]' );
 		$this->form_validation->set_rules( 'area_desc', '坪數說明', 'required' );
-		$this->form_validation->set_rules( 'pub_ratio', '公設比', 'required' );
-		$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
-		$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
-		$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 
+
+		// 判斷是否為車位
+		$house_type = tryGetValue($this->input->post('house_type',TRUE));
+		if ( $house_type !== 'f') {
+			$this->form_validation->set_rules( 'unit_price', '每坪單價 ', 'required' );
+			$this->form_validation->set_rules( 'manage_fee', '管理費', 'required|max_length[20]' );
+			$this->form_validation->set_rules( 'pub_ratio', '公設比', 'required' );
+			$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
+			$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
+			$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
+			$this->form_validation->set_rules( 'house_age', '屋齡', 'required' );
+		$this->form_validation->set_rules( 'decoration', '裝潢程度', 'required' );
+		}
 		$this->form_validation->set_rules( 'title', '售屋標題', 'required|max_length[50]' );
 		$this->form_validation->set_rules( 'name', '聯絡人', 'required|max_length[50]' );
 		$this->form_validation->set_rules( 'phone', '聯絡電話', 'required|max_length[50]' );
-		$this->form_validation->set_rules( 'house_age', '屋齡', 'required' );
 		$this->form_validation->set_rules( 'addr', '地址', 'required|max_length[100]' );
-		$this->form_validation->set_rules( 'decoration', '裝潢程度', 'required' );
 		$this->form_validation->set_rules( 'current', '現況', 'required|max_length[60]' );
 		$this->form_validation->set_rules( 'desc', '特色說明', 'required|max_length[500]' );
 

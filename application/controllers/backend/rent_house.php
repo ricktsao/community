@@ -280,13 +280,18 @@ class Rent_House extends Backend_Controller {
 		$this->form_validation->set_rules( 'rent_price', '租金 ', 'required|less_than[300000]|greater_than[1000]' );
 		$this->form_validation->set_rules( 'deposit', '押金', 'required|max_length[20]' );
 		$this->form_validation->set_rules( 'area_ping', '面積', 'required|less_than[1000]|greater_than[0]' );
-		$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
-		$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
-		$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
-		$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 
+
+		// 判斷是否為車位
+		$house_type = tryGetValue($this->input->post('house_type',TRUE));
+		if ( $house_type !== 'f') {
+			$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'bathroom', '格局-衛', 'required|less_than[10]|greater_than[0]' );
+			$this->form_validation->set_rules( 'balcony', '格局-陽台', 'less_than[10]' );
+			$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
+			$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
+		}
 
 		$this->form_validation->set_rules( 'title', '租屋標題', 'required|max_length[50]' );
 		$this->form_validation->set_rules( 'name', '聯絡人', 'required|max_length[50]' );
