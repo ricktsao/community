@@ -103,6 +103,7 @@
 										<th>緊急<br />聯絡人</th>
 										<th>管委</th>
 										-->
+										<th>編輯</th>
 										<th>操作</th>
 										<th>啟用/停用</th>
 										
@@ -180,9 +181,69 @@
 										</td>
 										 -->
 										<td>
-											<a class="btn  btn-minier btn-info" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+											<a class="btn  btn-minier btn-success" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>資料編輯
 											</a>
+										</td>
+										<td style='text-align: center'>
+
+
+										<?php
+										if (isNotNull(tryGetData('id', $item, NULL)) ){
+										?>
+											<a class="btn btn-minier btn-info" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>" >
+												<i class="icon-edit bigger-120"></i>變更磁卡
+											</a>
+											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>設定車位
+											</a>
+										<?php
+										} else {
+										?>
+											<a class="btn btn-minier btn-primary" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>" >
+												<i class="icon-edit bigger-120"></i>設定磁卡
+											</a>
+											<a class="btn btn-minier btn-gray" href="#" onclick='return alert("請先設定住戶磁卡")'>
+												<i class="icon-edit bigger-120"></i>設定車位
+											</a>
+										<?php
+										}
+
+										$building_id = tryGetData('building_id', $item);
+										$tmp_array = array("sn" => tryGetData('sn', $item)
+														,  "id" => tryGetData('id', $item)
+														,  "b_id" => base64_encode($building_id)
+														,  "n" => tryGetData('name', $item)
+														,  "g" => tryGetData('gender', $item)
+														,  "role"=>tryGetData('role', $item)
+														) ;
+										if ( isNotNull(tryGetData('app_id', $item , NULL)) || isNotNull(tryGetData('act_code', $item , NULL))) {
+										?>
+											<a class="btn btn-minier btn-pink" href="<?php echo bUrl("resetActCode",TRUE,NULL, $tmp_array); ?>" onclick='return confirm("重設APP開通碼，必須請住戶重新執行APP啟用程序，\n\n請再次確認是否重設??")'>
+												<i class="icon-edit bigger-120"></i>重設APP開通碼
+											</a>
+										<?php
+										} else {
+
+											if (isNotNull(tryGetData('id', $item, NULL)) ){
+											?>
+												<a class="btn btn-minier btn-pink" href="<?php echo bUrl("resetActCode", TRUE, NULL, $tmp_array); ?>" onclick='return confirm("設定APP開通碼，須請住戶執行APP啟用程序，\n\n請確認??")'>
+													<i class="icon-edit bigger-120"></i>設定APP開通碼
+												</a>
+											<?php
+											} else {
+											?>
+												<a class="btn btn-minier btn-gray" href="#" onclick='return alert("請先設定住戶磁卡")'>
+													<i class="icon-edit bigger-120"></i>設定APP開通碼
+												</a>
+											<?php
+											}
+										}
+										?>
+
+
+
+
 										</td>
 										<td style='text-align: center'>
 											<?php echo tryGetData('launch', $item)==1?"啟用":"<span class='invalid'>停用</span>" ?>
