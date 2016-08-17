@@ -73,9 +73,18 @@ abstract class Backend_Controller extends IT_Controller
 		if (isNotNull($building_part_02_value)) {
 			$this->building_part_02_array = array_merge(array(0=>' -- '), explode(',', $building_part_02_value));
 		}
-
-		$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
-		$this->addr_part_02_array = array_merge(array(0=>' -- '), explode(',', $addr_part_02));
+		
+		if ($addr_part_01 !== false) {
+			$this->addr_part_01_array = array_merge(array(0=>' -- '), explode(',', $addr_part_01));
+		} else {
+			$this->addr_part_01_array = array(0=>' -- ');
+		}
+		
+		if ($addr_part_02 !== false) {
+			$this->addr_part_02_array = array_merge(array(0=>' -- '), explode(',', $addr_part_02));
+		} else {
+			$this->addr_part_02_array = array(0=>' -- ');
+		}
 
 		
 		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
