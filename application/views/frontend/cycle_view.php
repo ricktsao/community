@@ -7,6 +7,7 @@
     <style>
     * {
         box-sizing: border-box;
+        font-family: "Microsoft JhengHei";
     }
 
     body,
@@ -17,13 +18,30 @@
     }
     
     body {
-        background: url(<?php echo $bg_img;?>) center bottom no-repeat #aac9eb;        
+        /*
+        background: url(<?php echo $bg_img;?>) center center no-repeat #aac9eb;        
         background-size:100% 100%;
         height: 1920px;
+        width: 100%;
+        min-width: 1075px;
+        */
     }
     
+    #bg {
+        z-index:1;
+        min-width:1075px;
+        width: 100%;
+        height: 1920px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: url(<?php echo $bg_img;?>) center center no-repeat;        
+       background-size: 100% 100%;
+
+    }
+
     #block {
-        height: 230px;
+        z-index:40;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -39,20 +57,22 @@
     }
     
     #slide {
-        width: 1007px;
-        height: 1237px;
-        margin: 0 auto;
+        z-index: 20;
+        position: relative;
+        width: 1075px;
+        height: 1351px;
+        margin: 0 auto -20px;
         
 
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_content_bg.png) center center no-repeat;
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg3.png) center center no-repeat;
     }
     
     #slide > div {
-        width: 900px;
-        height: 1008px;
+        width: 1030px;
+        height: 1250px;
         overflow: hidden;
         font-size: 20px;
-        padding: 40px 0 0 40px;
+        padding: 70px 0 0 40px;
     }
     
     #slide > div > h1 {
@@ -61,29 +81,31 @@
     
     #slide > div img {
         max-width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
         display: block;
     }
     
     #dates {
-       
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;     
+          z-index: 20;
+        position: relative;
+    
         font-weight: bold;
         font-size: 36px;
-       
-        height: 172px;
+        margin: 0 auto -20px;
+        
+      
+        width: 1075px;
       
     }
 
     #dates > div {
-    	background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg1.png) center center repeat-x;
        margin: 0 auto;
        position: relative;
       
-       height: 172px;      
-        width: 1007px;
+       height: 186px;      
+        width: 1042px;
         padding: 22px 40px 0; 
     }
     
@@ -92,45 +114,73 @@
     }
     #d3 {
         position: absolute;
-        right: 400px;
-		font-size: 40px;
+        right: 410px;
+		font-size: 48px;
         top: 55px;
     }
 	#d4 {
         position: absolute;
-        right: 40px;
-		font-size: 80px;
-        top: 35px;
+        right: 20px;
+		font-size: 120px;
+        top: 5px;
+        color:#F15A24;
     }
 
     #dd {
         position: absolute;
-        top: 30px;
+        top: 18px;
+        left:20px;
+        font-size: 48px;
     }
 
     #dd tr > td:last-child{
         text-align: right;
     }
 
-    #marquee {
-       
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 1520px;
-        font-size: 50px;
+ 
+
+    #comm_title {  
+      z-index: 20;     
+        position: relative;
+     
         font-weight: bold;
-        
+        font-size: 36px;
+       
+        width: 1075px;
+        margin: 0 auto -20px;
+      
+    }
+
+    #comm_title > div {
+        background: url(<?php echo base_url().$templateUrl;?>/images/bg2.png) center center repeat-x;
+       margin: 0 auto;
+       position: relative;
+        font-size: 72px;
+        text-align: center;
+        height: 186px;      
+        width: 1042px;
+        padding: 35px 40px 0; 
+    }
+
+    #marquee {
+         z-index: 20;
+        position: relative;
+          width: 1075px;
+          margin: 0 auto;
+      
+        font-size: 72px;
+        font-weight: bold;
+         background: url(<?php echo base_url().$templateUrl;?>/images/bg4.png) center center no-repeat;
+          height: 185px;
     }
 
      #marquee > marquee {
-     	 background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
-        position: absolute;
-        height: 172px;
-      	line-height: 162px;
-        width: 1007px;
+     	
+        position: absolute;   
+      top: 60px;
+        width: 940px;
         left: 50%;
-        margin-left: -503px;
+        margin-left: -470px;
         color:red;
      }
 
@@ -145,14 +195,11 @@
 </head>
 
 <body>
+<div id="bg"></div>
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
-    <div id="marquee" >
-        <marquee direction="left">
-            <?php echo $marquee_str;?>
-        </marquee>
-    </div>
+  
     <div id="dates">
         <div>
            
@@ -164,7 +211,12 @@
         </div>
        
     </div>
+
+    <div id="comm_title">
+        <div> <?php echo $comm_name; ?></div>
+    </div>
     <div id="slide" class="slideshow">
+
         <?php
 
       
@@ -205,6 +257,11 @@
         */  
     ?>
     </div>
+      <div id="marquee" >
+        <marquee direction="left">
+            <?php echo $marquee_str;?>
+        </marquee>
+    </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/lunar.js"></script>
@@ -213,7 +270,6 @@
 
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
-   
 
     
     function renderDate(){
@@ -259,7 +315,7 @@
             dataType: "JSON",
             cache: false,
             success: function(data) {
-               
+               console.log(data);
             	if(loop){
             		//numSlides = $('.slideshow').data('cycle.opts').slideCount
             		//console.log(numSlides);
@@ -302,6 +358,8 @@
                     }
                 }
 
+                console.log(mainPage);
+
                 var innerCon = "";
 
                 for (var i = 0; i < mainPage.length; i++) {
@@ -324,7 +382,7 @@
                 $('#slide').html(innerCon);
                 $('.slideshow').cycle({
                     slides: "> div",
-                    speed: <?php echo $cycle_sec;?> //速度
+                    timeout: <?php echo $cycle_sec;?> //速度
                 });
 
             },

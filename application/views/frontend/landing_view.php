@@ -9,54 +9,70 @@
     body {
         margin: 0;
         padding: 0;
+        font-family: "微軟正黑體";
     }
     
-    #dates {
-        position: absolute;
+    .bg {
+        background: url(<?php echo base_url();?>template/frontend/images/landing_bg.png) center center no-repeat;
+        height: 196px;
+        z-index:500;
+        position: fixed;
         left: 0;
         right: 0;
-        top: 0;
-        font-weight: bold;
-        font-size: 36px;
-        height: 172px;
-        z-index:500;
     }
-    
-    #dates > div {
-        background: url(<?php echo base_url().$templateUrl;?>/images/cycle_title_bg.png) center center repeat-x;
+
+     .s1,.s2{        
+        color:#FFF;
+        line-height: 166px;
+        text-align: center;
+     }
+
+    .s1 {
+         background: url(<?php echo base_url();?>template/frontend/images/landing_2.png) center center no-repeat;
+        width: 165px;
+        height: 166px;
+        display: inline-block;
+        font-size:36px;
+     }
+
+     .s2 {
+         background: url(<?php echo base_url();?>template/frontend/images/landing_3.png) center center no-repeat;
+        width: 308px;
+        height: 166px;
+        display: inline-block;
+         font-size:24px;
+     }
+
+    #topL {       
+        top: 0;      
+      
+    }
+
+    #topL > div {
+        background: url(<?php echo base_url();?>template/frontend/images/landing_1.png) center center no-repeat;
+        width: 549px;
+        height: 196px;
         margin: 0 auto;
-        position: relative;
-        height: 172px;
-        width: 1007px;
-        padding: 22px 40px 0;
+        color:#FFF;
+        font-size: 42px;
+        line-height: 196px;
+        text-align: center;
     }
+
+    #bottomL{
+
+        bottom: 0;
+    }
+
+    #bottomL > div { 
+        padding-top: 15px;
+        width: 1024px;
+        margin: 0 auto;
+        text-align: center;
+    }
+  
     
-    #d1 {
-        padding-top: 10px;
-    }
-    
-    #d3 {
-        position: absolute;
-        right: 400px;
-        font-size: 40px;
-        top: 55px;
-    }
-    
-    #d4 {
-        position: absolute;
-        right: 40px;
-        font-size: 80px;
-        top: 35px;
-    }
-    
-    #dd {
-        position: absolute;
-        top: 30px;
-    }
-    
-    #dd tr > td:last-child {
-        text-align: right;
-    }
+  
     
     #slide {
         position: absolute;
@@ -65,7 +81,7 @@
         bottom: 0;
         right: 0;
         z-index:100;
-        display: none;
+        display: block;
     }
     
     #slide > img {
@@ -88,6 +104,21 @@
 </head>
 
 <body>
+    <div id="topL" class="bg">
+        <div> <?php echo $comm_name; ?></div>
+
+    </div>
+    <div id="bottomL" class="bg">
+        <div>
+            <div class="s1" id="block1"></div>
+            <div class="s2" id="block2"></div>
+            <div class="s2" id="block3"></div>
+            <div class="s1" id="block4"></div>
+
+
+        </div>
+
+    </div>
 	<a href="<?php echo frontendUrl("login")?>" id="blocks"></a>
     <div id="dates">
         <div>
@@ -98,12 +129,13 @@
         </div>
     </div>
     <div id="slide">
-        <img src="<?php echo base_url();?>template/frontend/images/film.png" alt="">
-        <img src="<?php echo base_url();?>template/frontend/images/qr.png" alt="">
+        <?php foreach ($img_list as $value):?>
+        <img src="<?php echo $value;?>" alt="">        
+        <?php endforeach;?> 
     </div>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery-1.12.4.min.js"></script>
     <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/jquery.cycle2.min.js"></script>
-    <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/lunar.js"></script>
+    <script src="<?php echo base_url();?>template/<?php echo $this->config->item('frontend_name');?>/js/lunar_l.js"></script>
     <script>
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -122,18 +154,18 @@
 
         console.log(mainx(ty, tm, td, 0));
         var d2 = mainx(ty, tm, td, 0)
-        var d1 = "<tr><td>西元</td><td>" + ty + "年" + tm + "月" + td + "日</td></tr>"; //" 星期" + day_list[day];
+        var d1 = "西元" + ty + "年" + tm + "月" + td + "日"; //" 星期" + day_list[day];
         var d3 = "星期" + day_list[day];
         var d4 = thour + " : " + tmin;
 
-        $('#dd').html("");
-        $('#dd').append(d1);
-        $('#dd').append(d2);
+      
+        $('#block2').html(d1);
+        $('#block3').html(d2);
 
         /*$('#d1').html(d1);
         $('#d2').html(d2);*/
-        $('#d3').html(d3);
-        $('#d4').html(d4);
+        $('#block1').html(d3);
+        $('#block4').html(d4);
     }
 
 
@@ -141,7 +173,7 @@
     $(function() {
     	renderDate();
         $('#slide').cycle();
-         setInterval(renderDate,1000*60);
+         setInterval(renderDate,1000*20);
 
     })
     </script>

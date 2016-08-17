@@ -26,6 +26,9 @@ class Sale_House extends Backend_Controller {
 	 */
 	public function index()
 	{
+		$this->check_house_to_sale_sync();	// 售屋離線同步	
+		$this->check_house_to_sale_photo_sync();	// 售屋照片離線同步
+
 		$condition = '';
 
 		// 指定關鍵字
@@ -347,6 +350,15 @@ class Sale_House extends Backend_Controller {
 	}
 
 
+	public function syncPhoto()
+	{
+		//$this->check_house_to_sale_photo_sync();	// 售屋照片離線同步
+		$this->check_house_to_rent_photo_sync();	// 租屋照片離線同步
+
+			/* 檔案同步至server 檔案同步至server 檔案同步至server */
+			//$this->sync_file('house_to_rent/2/');
+			//dprint('sync_file');
+	}
 
 	/**
 	 * 設定照片
@@ -406,12 +418,14 @@ class Sale_House extends Backend_Controller {
 			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '') {
 				$this->showSuccessMessage('物件照片上傳成功');
 
-				/* 同步 同步 同步 同步 同步 */
+				/*
+				// 同步 同步 同步 同步 同步 
 				$arr_data["sn"] = $sale_photo_sn;
 				$this->sync_item_to_server($arr_data, 'updateSaleHousePhoto', 'house_to_sale_photo');
 
-				/* 檔案同步至server 檔案同步至server 檔案同步至server */
+				// 檔案同步至server 檔案同步至server 檔案同步至server
 				$this->sync_file('house_to_sale/'.$edit_data['house_to_sale_sn'].'/');
+				*/
 
 			} else {
 				$this->showFailMessage('物件照片上傳失敗，請稍後再試');
