@@ -85,8 +85,6 @@ abstract class Backend_Controller extends IT_Controller
 		} else {
 			$this->addr_part_02_array = array(0=>' -- ');
 		}
-
-
 		
 		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
 		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
