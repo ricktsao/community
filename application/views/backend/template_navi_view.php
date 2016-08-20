@@ -2,9 +2,12 @@
 $admin_auth = $this->session->userdata("user_auth");
 
 if ( $admin_auth !== false) {
+	$c = 0;
 ?>
 	<ul class="nav nav-list">
-		<?php foreach ($left_menu_list as $key => $module_item):  ?>
+		<?php foreach ($left_menu_list as $key => $module_item):
+			$c++;
+		  ?>
 			
 			<?php if (isNotNull(tryGetData('id', $module_item,NULL)) 
 					&& isNotNull(tryGetData('dir', $module_item,NULL)) 
@@ -13,8 +16,10 @@ if ( $admin_auth !== false) {
 				
 				<li <?php echo  $module_sn == $module_item["sn"]?'class="open"':''  ?>>	
 					<a href="#" class="dropdown-toggle">
-						<i class="<?php echo $module_item["icon_text"]?>"></i>
-						<span class="menu-text"> <?php echo $module_item["title"]; ?>  </span>	
+						
+						
+						
+						<span class="menu-text"> <?php echo $c.".".$module_item["title"]; ?>  </span>	
 						<b class="arrow icon-angle-down"></b>
 					</a>
 					
@@ -22,13 +27,15 @@ if ( $admin_auth !== false) {
 						
 					
 					<?php 
+						$cc = 0;
 						foreach($module_item_map[$module_item["sn"]]["item_list"] as $item): 	
 						if(in_array($item["id"], $admin_auth)){
+							$cc++
 					?>
 						<li <?php echo  $module_id== $item["id"]?'class="active"':''  ?>>
 							<a href="<?php echo $item["url"]?>">
 								<i class="icon-double-angle-right"></i>						
-								<?php echo $item["title"]?>
+								<?php echo $cc.".".$item["title"]?>
 							</a>
 						</li>			
 					<?php 
@@ -43,8 +50,8 @@ if ( $admin_auth !== false) {
 				
 				<li <?php echo  $module_id== $module_item["id"]?'class="active"':''  ?>>
 					<a href="<?php echo $module_item["url"]?>">
-						<i class="<?php echo $module_item["icon_text"]?>"></i>
-						<span class="menu-text"> <?php echo $module_item["title"]?> </span>
+						
+						<span class="menu-text"> <?php echo $c.".".$module_item["title"]?> </span>
 					</a>
 				</li>
 			
