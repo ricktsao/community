@@ -85,8 +85,6 @@ abstract class Backend_Controller extends IT_Controller
 		} else {
 			$this->addr_part_02_array = array(0=>' -- ');
 		}
-
-
 		
 		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
 		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
@@ -1695,7 +1693,7 @@ $edoma_photo_ary = array();
 		$content_sn = tryGetData('content_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
-		$config['allowed_types'] = 'jpg|png';
+		$config['allowed_types'] = 'jpg|png|gif';
 		
 		
 		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	

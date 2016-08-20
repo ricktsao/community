@@ -18,13 +18,30 @@
     }
     
     body {
+        /*
         background: url(<?php echo $bg_img;?>) center center no-repeat #aac9eb;        
         background-size:100% 100%;
         height: 1920px;
+        width: 100%;
+        min-width: 1075px;
+        */
     }
     
+    #bg {
+        z-index:1;
+        min-width:1075px;
+        width: 100%;
+        height: 1920px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: url(<?php echo $bg_img;?>) center center no-repeat;        
+       background-size: 100% 100%;
+
+    }
+
     #block {
-      
+        z-index:40;
         width: 900px;
         margin: 0 auto;
         position: relative;
@@ -40,6 +57,8 @@
     }
     
     #slide {
+        z-index: 20;
+        position: relative;
         width: 1075px;
         height: 1351px;
         margin: 0 auto -20px;
@@ -68,7 +87,7 @@
     }
     
     #dates {
-       
+          z-index: 20;
         position: relative;
     
         font-weight: bold;
@@ -120,7 +139,8 @@
 
  
 
-    #comm_title {       
+    #comm_title {  
+      z-index: 20;     
         position: relative;
      
         font-weight: bold;
@@ -143,7 +163,7 @@
     }
 
     #marquee {
-       
+         z-index: 20;
         position: relative;
           width: 1075px;
           margin: 0 auto;
@@ -175,6 +195,7 @@
 </head>
 
 <body>
+<div id="bg"></div>
     <div id="block">
         <a href="#" id="fc"></a>
     </div>
@@ -249,7 +270,6 @@
 
     var day_list = ['日', '一', '二', '三', '四', '五', '六'];
 
-   
 
     
     function renderDate(){
@@ -295,7 +315,7 @@
             dataType: "JSON",
             cache: false,
             success: function(data) {
-               
+               console.log(data);
             	if(loop){
             		//numSlides = $('.slideshow').data('cycle.opts').slideCount
             		//console.log(numSlides);
@@ -338,6 +358,8 @@
                     }
                 }
 
+                console.log(mainPage);
+
                 var innerCon = "";
 
                 for (var i = 0; i < mainPage.length; i++) {
@@ -360,7 +382,7 @@
                 $('#slide').html(innerCon);
                 $('.slideshow').cycle({
                     slides: "> div",
-                    speed: <?php echo $cycle_sec;?> //速度
+                    timeout: <?php echo $cycle_sec;?> //速度
                 });
 
             },

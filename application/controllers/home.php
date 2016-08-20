@@ -93,7 +93,7 @@ class Home extends Frontend_Controller {
 		}
 		$data["houses"] = $houses;
 
-		$this->display("homepage_view",$data);
+		$this->displayHome("homepage_view",$data);
 	}		
 }
 

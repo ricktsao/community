@@ -26,7 +26,20 @@
 
 <?php echo $header;?>
 
-<?php echo $content;?>
+<?php
+if($show_left_menu==1)
+{
+	echo 
+	'<div class="primary">
+		<div id="left_content">'.$left_menu.'</div>
+		<div id="right_content">'.$content.'</div>
+	</div>';
+}
+else
+{
+	echo '<div class="primary">'.$content.'</div>';
+}	
+?>
 
 <?php echo $footer;?>
 
