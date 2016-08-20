@@ -57,6 +57,7 @@ class Home extends Frontend_Controller {
 		$data["ad_list"] = $ad_list["data"];
 		//-----------------------------------------
 		
+		// 租屋
 		$houses = array();
 		$condition = ' ';
 		$condition = ' del=0 AND '. $this->it_model->getEffectedSQL('house_to_rent') ;
@@ -83,7 +84,7 @@ class Home extends Frontend_Controller {
 				$phoresult = $this->it_model->listData('house_to_rent_photo', $condition);
 				$photos = array();
 				foreach ($phoresult['data'] as $photo) {
-					$img = base_url('upload/website/house_to_rent/'.$item['comm_id'].'/'.$item['sn'].'/'.$photo['filename']);
+					$img = base_url('upload/'.$item['comm_id'].'/house_to_rent/'.$item['sn'].'/'.$photo['filename']);
 					$photos[] = array('photo' => $img
 									, 'title' => $photo['title'] );
 				}
