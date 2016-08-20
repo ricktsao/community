@@ -36,7 +36,7 @@ abstract class Frontend_Controller extends IT_Controller
 	public $show_footer = TRUE;
 	public $show_banner = TRUE;
 	
-	public $web_access = 0;
+	public $show_left_menu = 1;
 	
 	
 	function __construct() 
@@ -484,10 +484,6 @@ abstract class Frontend_Controller extends IT_Controller
 		);		
 		
 		$condition = "";
-		if($this->web_access == 1 && $this->config->item("web_access_enable") == 1)
-		{
-			$condition = " AND allow_internet = 1";
-		}
 		
 		$l1_list = $this->it_model->listData("web_menu","level=1 AND (launch=1 or launch=2 or launch=3) ".$condition,NULL,NULL,$sort);
 		$this->web_menu_list = $l1_list["data"];
@@ -595,7 +591,14 @@ abstract class Frontend_Controller extends IT_Controller
 		$data['show_banner'] = $this->show_banner;
 		
 		$data['header'] = $this->load->view('frontend/template_header_view', $data, TRUE);
-		//$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
+		
+		//左側選單是否顯示
+		$data['show_left_menu'] = $this->show_left_menu;
+		$data['left_menu'] = '';
+		if($this->show_left_menu == 1)
+		{
+			$data['left_menu'] = $this->load->view('frontend/template_left_view', $data, TRUE);
+		}
 		
 		$data['content_js'] = '';
 		if(file_exists(APPPATH.'views/'.$view.'_js.php'))
@@ -610,6 +613,7 @@ abstract class Frontend_Controller extends IT_Controller
 				
 		
 		
+		
 		//dprint($data['frontend_auth']);
 		
 		$this->_bulidJsCss($data);	
@@ -617,6 +621,16 @@ abstract class Frontend_Controller extends IT_Controller
 	}
 	
 
+	
+	/**
+	 * output home view
+	 */
+	function displayHome($view, $data = array())
+	{
+		$this->show_left_menu = 0;
+		$this->display($view,$data);
+	}
+	
 	/**
 	 * output view
 	 */
