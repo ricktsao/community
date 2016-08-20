@@ -30,14 +30,14 @@
 if($show_left_menu==1)
 {
 	echo 
-	'<div class="primary">
+	'<div class="mPrimary">
 		<div id="left_content">'.$left_menu.'</div>
 		<div id="right_content">'.$content.'</div>
 	</div>';
 }
 else
 {
-	echo '<div class="primary">'.$content.'</div>';
+	echo '<div class="mPrimary">'.$content.'</div>';
 }	
 ?>
 

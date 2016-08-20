@@ -203,7 +203,7 @@ class Album extends Backend_Controller {
 		//album list
 		//---------------------------------------------------------------------
 		$album_sn = $this->input->get("album_sn",TRUE);	
-		$album_list = $this->it_model->listData( "album" , NULL, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
+		$album_list = $this->it_model->listData( "album" , "is_del=0", NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
 
 		
 		//dprint($album_list["data"]);

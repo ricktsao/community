@@ -47,7 +47,7 @@ class Home extends Frontend_Controller {
 		//相簿
 		//-----------------------------------------
 		$this->load->Model("album_model");			
-		$data["album_list"] = $this->album_model->GetHomeAlbumList();
+		$data["album_list"] = $this->album_model->GetHomeAlbumList2();
 		//-----------------------------------------
 
 		//廣告

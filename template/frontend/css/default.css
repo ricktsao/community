@@ -1,5 +1,5 @@
 * {
-    font-family: "Arial", "微軟正黑體";
+    font-family: "Arial", "Microsoft JhengHei";
     box-sizing: border-box;
 }
 
@@ -23,7 +23,7 @@ a:hover {
 }
 
 body {
-    border-top: 13px solid #0094da;
+    border-top: 13px solid #00B4DC;
 }
 
 .ul_unstyle {
@@ -32,7 +32,7 @@ body {
     list-style-type: none;
 }
 
-.primary {
+.mPrimary {
     width: 1024px;
     margin: 0 auto;
 }
@@ -40,9 +40,7 @@ body {
 .primary > .row {
     width: 100%;
     margin: 0 auto 20px auto;
-
 }
-
 
 #header {
     position: relative;
@@ -53,17 +51,66 @@ body {
     position: relative;
     width: 1024px;
     margin: 0 auto;
+    height: 105px;
+}
+
+#c_title {
+    font-weight: bold;
+    font-size: 32px;
+    color: #036EB8;
+    position: absolute;
+    top: 30px;
+}
+
+#c_title:hover {
+    text-decoration: none;
 }
 
 #navi {
     position: absolute;
-    top: 10px;
+    top: 0;
     right: 0;
 }
 
 #navi > li {
     float: left;
     position: relative;
+}
+
+#navi > li > a {
+    display: block;
+    height: 105px;
+    width: 147px;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+#navi > li > a:hover {
+    text-decoration: none;
+}
+
+#navi > li > a > img {
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.naviBgStyle1 {
+    background-color: #FFB91E;
+}
+
+.naviBgStyle2 {
+    background-color: #FAEE00;
+}
+
+.naviBgStyle3 {
+    background-color: #D9E021;
+}
+
+.naviBgStyle4 {
+    background-color: #00C7E8;
 }
 
 #navi ul {
@@ -138,7 +185,7 @@ body {
 
 #member_bar {
     margin-bottom: 20px;
-    background: #EDEDED;
+    background: #00B4DC;
 }
 
 #member_bar > div {
@@ -147,8 +194,7 @@ body {
 
 .login_status {
     float: right;
-    padding: 0.5em 1em 0.5em 2.5em;
-    background: #036EB8;
+    padding: 0.5em 0em 0.5em 2.5em;
     color: #FFF;
     position: relative;
 }
@@ -159,26 +205,47 @@ body {
 
 .login_status > img {
     position: absolute;
-    top: 4px;
+    top: 12px;
     left: 8px;
+}
+
+.login_status button {
+    padding: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    width: 120px;
 }
 
 .clear {
     clear: both;
 }
 
-#footer >.primary {
-    position: relative;
-    height: 130px;
+#footer {
+    background: #036EB8;
 }
 
-#footer >.primary > img {
+#footer >.mPrimary {
+    position: relative;
+    height: 130px;
+    color: #FFF;
+}
+
+#footer >.mPrimary a {
+    color: #FFF;
+}
+
+#footer >.mPrimary > img {
     position: absolute;
     right: 0;
     top: 10px;
 }
 
-#footer >.primary > div {
+#footer >.mPrimary > div {
     position: absolute;
     font-size: 15px;
     top: 60px;
@@ -391,25 +458,20 @@ label {
 }
 
 .voting_result_table {
-    border-collapse:inherit;
-    border-spacing:0;
+    border-collapse: inherit;
+    border-spacing: 0;
 }
-
-
 
 .voting_result_table td {
     border-bottom: 1px dashed #aaa;
     padding: 10px;
 }
 
-
-
-.voting_result_table  td {
+.voting_result_table td {
     text-align: center;
 }
 
-
-.voting_result_table  thead td {
+.voting_result_table thead td {
     border-bottom: 2px solid #aaa;
 }
 
