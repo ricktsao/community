@@ -33,6 +33,7 @@ if($show_left_menu==1)
 	'<div class="mPrimary">
 		<div id="left_content">'.$left_menu.'</div>
 		<div id="right_content">'.$content.'</div>
+		<div style="clear:both"></div>
 	</div>';
 }
 else

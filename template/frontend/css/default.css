@@ -37,6 +37,17 @@ body {
     margin: 0 auto;
 }
 
+#left_content {
+    float: left;
+    width: 265px;
+}
+
+#right_content {
+    float: right;
+    width: 720px;
+    min-height: 600px;
+}
+
 .primary > .row {
     width: 100%;
     margin: 0 auto 20px auto;
@@ -300,7 +311,7 @@ label {
 .table_style {
     border-collapse: inherit;
     border-spacing: 0;
-    width: 90%;
+    width: 100%;
     margin: 0 auto 20px auto;
 }
 
@@ -401,7 +412,7 @@ label {
 }
 
 .form_group {
-    width: 70%;
+    width: 100%;
     margin: 0 auto;
     padding-bottom: 20px;
 }
@@ -485,4 +496,105 @@ label {
     max-width: 100%;
     max-height: 100%;
     display: block;
+}
+
+#left_navi,
+#left_navi > ul {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+#left_navi.navi_type1 {
+    background-color: #FFB91E;
+}
+
+#left_navi.navi_type2 {
+    background-color: #FAEE00;
+}
+
+#left_navi.navi_type3 {
+    background-color: #00C7E8;
+}
+
+#left_navi {
+    
+    padding: 10px;
+}
+
+#left_navi > ul {
+    background-color: #FFF;
+    padding: 10px;
+}
+
+#left_navi > ul > li {
+    border-bottom: 1px solid #DCDDDD;
+}
+#left_navi > ul > li:last-child{
+    border-bottom: none;
+}
+
+#left_navi > ul a {
+    display: block;
+    position: relative;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 19px;
+    color:#595757;
+}
+
+#left_navi > ul a:hover{
+    text-decoration: none;
+}
+
+#left_navi > ul a > i {
+    position: absolute;   
+    top: 13px;
+    color: #00C7E8;
+}
+
+
+
+#left_navi > ul a > i.icon1{
+    left: 0;
+}
+
+#left_navi > ul a > i.icon2{
+    right: 0;
+    display: none;
+}
+
+#left_navi > ul a:hover > i.icon2,
+#left_navi > ul a.active > i.icon2
+{
+    display: block;
+
+}
+
+#left_navi_title {
+    position: relative;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 18px 0 18px 60px;
+}
+
+#left_navi_title > div {
+    position: absolute;
+  
+    width: 51px;
+    height: 51px;
+    top: 0;
+    left: 0;
+}
+
+#left_navi.navi_type1 #left_navi_title > div {
+      background: url(../images/navi_1.png);  
+}
+
+#left_navi.navi_type2 #left_navi_title > div {
+      background: url(../images/navi_2.png);  
+}
+
+#left_navi.navi_type3 #left_navi_title > div {
+      background: url(../images/navi_4.png);  
 }

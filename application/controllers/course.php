@@ -22,7 +22,7 @@ class Course extends Frontend_Controller {
 		
 		
 		
-		$this->display("course_list_view",$data);
+		$this->displayHome("course_list_view",$data);
 	}
 	
 	
@@ -43,7 +43,7 @@ class Course extends Frontend_Controller {
 			img_show_list($course_info["data"],'img_filename',"course");
 			$data["course_info"] = $course_info["data"][0];			
 
-			$this->display("course_detail_view",$data);
+			$this->displayHome("course_detail_view",$data);
 		}
 		else
 		{

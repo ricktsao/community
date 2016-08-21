@@ -6,7 +6,7 @@
 			<table>
 				<tr>
 					<td colspan="2">
-						<input id="account" type="input" name="account" class="input_style" placeholder="帳號">
+						<input id="account" type="text" name="account" class="input_style" placeholder="帳號">
 						<div class="error_msg"><?php echo tryGetData("error_message",$edit_data);?></div>
 					</td>
 				</tr>
