@@ -17,7 +17,7 @@ class Message extends Frontend_Controller {
 		$message_list = $this->it_model->listData("user_message","to_user_sn = '".$this->session->userdata("f_user_sn")."'",10,1,array("created"=>"desc"));
 		
 		$data["message_list"] = $message_list["data"];		
-		$this->display("message_list_view",$data);
+		$this->displayHome("message_list_view",$data);
 	}
 	
 	
@@ -37,7 +37,7 @@ class Message extends Frontend_Controller {
 			
 			$data["message_info"] = $message_info["data"][0];			
 
-			$this->display("message_detail_view",$data);
+			$this->displayHome("message_detail_view",$data);
 		}
 		else
 		{
