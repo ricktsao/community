@@ -57,7 +57,7 @@
 				if ( isNotNull($photos) ) {
 					foreach($photos as $photo) {
 						$cur_photo = $photo['photo'];
-						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="!!!'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
                     ';
 					}
 				} else {

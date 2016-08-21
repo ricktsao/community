@@ -1,6 +1,6 @@
 <div id="header">
     <div>
-        <a href="<?php echo frontendUrl();?>" id="c_title">社區名稱</a>
+        <a href="<?php echo frontendUrl();?>" id="c_title"><?php echo tryGetData("comm_name",$webSetting);?></a>
         <ul id="navi" class="ul_unstyle">
             <li>
                 <a href="#" title="住戶專屬服務" class="naviBgStyle1">
