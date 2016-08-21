@@ -74,6 +74,8 @@
                     <a href="#" class="slide_ctrl_btn next"><i class="fa fa-chevron-right fa-2x" aria-hidden="true"></i></a>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div id="rent_info">
                 <table>
                     <thead>
@@ -131,6 +133,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
             <br clear="all" />
         </div>
 <?php

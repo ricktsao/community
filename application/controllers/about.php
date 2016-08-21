@@ -30,7 +30,7 @@ class About extends Frontend_Controller {
 		
 		
 		
-		$this->display("detail_view",$data);
+		$this->displayHome("detail_view",$data);
 	}
 }
 

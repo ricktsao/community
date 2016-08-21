@@ -21,7 +21,7 @@ class Album extends Frontend_Controller {
 		
 		$data["album_list"] = $album_list["data"];
 		
-		$this->display("album_list_view",$data);
+		$this->displayHome("album_list_view",$data);
 	}
 
 	public function album_detail($sn=null)
@@ -40,7 +40,7 @@ class Album extends Frontend_Controller {
 
 		$data['photo_list'] =  $photo;
 
-		$this->display("album_photo_view",$data);
+		$this->displayHome("album_photo_view",$data);
 
 	}	
 }
