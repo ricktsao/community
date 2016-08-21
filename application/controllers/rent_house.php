@@ -216,9 +216,9 @@ class Rent_house extends Frontend_Controller {
 		$data["pager"] = $this->getPager($result['count'], $this->page, $this->per_page_rows,"index");
 
 		if ( $result['count'] == 1 ) {
-			$this->displayHome("house_detail_view", $data);
+			$this->display("house_detail_view", $data);
 		} else {
-			$this->displayHome("house_list_view", $data);
+			$this->display("house_list_view", $data);
 		}
 	}
 	
