@@ -11,8 +11,15 @@ class Mailmgr extends Frontend_Controller {
 	}
 	
 	
-	//登錄郵件	
 	public function index()
+	{
+		$this->checkGuardLogin();
+		$data = array();
+		$this->displayHome("mail_index_view",$data);
+	}
+	
+	//登錄郵件	
+	public function reg()
 	{
 		$this->checkGuardLogin();		
 		$condition = ' AND role = "I"';
@@ -88,8 +95,6 @@ class Mailmgr extends Frontend_Controller {
 		$data['b_part_03'] = $b_part_03;
 
 		$this->getBuildInfo($data);
-		
-
 
 		$this->display("reg_list_view",$data);
 	}	
