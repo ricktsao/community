@@ -8,6 +8,7 @@ class Mailmgr extends Frontend_Controller {
 		parent::__construct();
 		$this->displayBanner(FALSE);		
 		$this->load->model('auth_model');
+		$this->addCss("css/rent.css");
 	}
 	
 	

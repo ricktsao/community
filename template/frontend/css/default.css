@@ -48,6 +48,10 @@ body {
     min-height: 600px;
 }
 
+.primary {
+    min-height: 680px;
+}
+
 .primary > .row {
     width: 100%;
     margin: 0 auto 20px auto;
@@ -91,7 +95,7 @@ body {
 #navi > li > a {
     display: block;
     height: 105px;
-    width: 147px;
+    width: 138px;
     text-align: center;
     padding-top: 10px;
     font-size: 18px;
@@ -123,6 +127,11 @@ body {
 .naviBgStyle4 {
     background-color: #00C7E8;
 }
+
+.naviBgStyle5 {
+    background-color: #64E2E2;
+}
+
 
 #navi ul {
     position: absolute;
@@ -282,6 +291,7 @@ select {
     border-radius: 5px;
     border: 1px solid #999;
     padding: 10px;
+    font-size: 15px;
 }
 
 .btn {
@@ -514,7 +524,7 @@ label {
 }
 
 #left_navi.navi_type3 {
-    background-color: #00C7E8;
+    background-color: #64E2E2;
 }
 
 #left_navi {
@@ -596,5 +606,26 @@ label {
 }
 
 #left_navi.navi_type3 #left_navi_title > div {
-      background: url(../images/navi_4.png);  
+      background: url(../images/navi_5.png);  
 }
+
+#mail_index {
+    padding-top: 100px;
+}
+
+#mail_index > div {
+    float: left;
+    width: 33.33%;
+    padding: 15px;
+}
+
+
+#mail_index > div > a {
+    display: block;
+}
+
+
+#mail_index > div > a >img {
+    width: 100%;
+}
+
