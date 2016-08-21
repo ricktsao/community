@@ -404,7 +404,7 @@ class Mailmgr extends Frontend_Controller {
 					$data["edit_data"] = $edit_data;
 					
 					$this->displayBanner(FALSE);
-					$this-> displayHome("login_view",$data);
+					$this->display("login_view",$data);
 				}
 			}
 			else 
@@ -413,7 +413,7 @@ class Mailmgr extends Frontend_Controller {
 				$data["edit_data"] = $edit_data;
 				
 				$this->displayBanner(FALSE);
-				$this->displayHome("login_view",$data);
+				$this->display("login_view",$data);
 			}
 		
 		
@@ -425,7 +425,7 @@ class Mailmgr extends Frontend_Controller {
 			$data["edit_data"] = $edit_data;
 			
 			$this->displayBanner(FALSE);
-			$this->displayHome("login_view",$data);
+			$this->display("login_view",$data);
 		}
 		
 	}
