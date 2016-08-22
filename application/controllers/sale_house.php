@@ -173,11 +173,11 @@ class Sale_house extends Frontend_Controller {
 
 					// 照片
 					//$condition = 'comm_id="'.$comm_id.'" AND house_to_sale_sn='.$item['sn'];
-					$condition = 'house_to_sale_sn='.$item['sn'];
+					$condition = 'del=0 and house_to_sale_sn='.$item['sn'];
 					$phoresult = $this->it_model->listData('house_to_sale_photo', $condition);
 					$photos = array();
 					foreach ($phoresult['data'] as $photo) {
-						$img = base_url('upload/website/house_to_sale/'.$item['comm_id'].'/'.$item['sn'].'/'.$photo['filename']);
+						$img = base_url('upload/'.$item['comm_id'].'/house_to_sale/'.$item['sn'].'/'.$photo['filename']);
 						$photos[] = array('photo' => $img
 										, 'title' => $photo['title'] );
 					}

@@ -57,7 +57,7 @@
 				if ( isNotNull($photos) ) {
 					foreach($photos as $photo) {
 						$cur_photo = $photo['photo'];
-						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="!!!'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
                     ';
 					}
 				} else {
@@ -74,6 +74,8 @@
                     <a href="#" class="slide_ctrl_btn next"><i class="fa fa-chevron-right fa-2x" aria-hidden="true"></i></a>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div id="rent_info">
                 <table>
                     <thead>
@@ -131,6 +133,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
             <br clear="all" />
         </div>
 <?php

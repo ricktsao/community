@@ -22,7 +22,7 @@ class Daily_good extends Frontend_Controller {
 		
 		
 		
-		$this->display("daily_good_list_view",$data);
+		$this->displayHome("daily_good_list_view",$data);
 	}
 	
 	
@@ -43,7 +43,7 @@ class Daily_good extends Frontend_Controller {
 			img_show_list($item_info["data"],'img_filename',"daily_good");
 			$data["item_info"] = $item_info["data"][0];			
 
-			$this->display("detail_view",$data);
+			$this->displayHome("detail_view",$data);
 		}
 		else
 		{

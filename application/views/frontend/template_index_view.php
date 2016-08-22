@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-	<title><?php echo tryGetData("website_title",$webSetting);?></title>
+	<title><?php echo tryGetData("website_title",$webSetting).' - '.tryGetData("comm_name",$webSetting);?></title>
     <!-- 全站 -->
 	<link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>css/default.css">
 	<link rel="stylesheet" href="<?php echo base_url().$templateUrl;?>js/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
@@ -26,7 +26,21 @@
 
 <?php echo $header;?>
 
-<?php echo $content;?>
+<?php
+if($show_left_menu==1)
+{
+	echo 
+	'<div class="mPrimary">
+		<div id="left_content">'.$left_menu.'</div>
+		<div id="right_content">'.$content.'</div>
+		<div style="clear:both"></div>
+	</div>';
+}
+else
+{
+	echo '<div class="mPrimary">'.$content.'</div>';
+}	
+?>
 
 <?php echo $footer;?>
 
