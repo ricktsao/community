@@ -75,6 +75,8 @@ body {
     color: #036EB8;
     position: absolute;
     top: 30px;
+    width: 320px;
+    text-align: center;
 }
 
 #c_title:hover {
