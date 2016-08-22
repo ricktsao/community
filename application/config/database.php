@@ -48,11 +48,11 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'edoma.acsite.org';
+$db['default']['hostname'] = 'localhost';
 $db['default']['port'] = 3306;
-$db['default']['username'] = 'edoma_community';
-$db['default']['password'] = 'B-L?[}Hhdv1-';
-$db['default']['database'] = 'edoma_community';
+$db['default']['username'] = 'root';
+$db['default']['password'] = 'admin';
+$db['default']['database'] = 'edoma';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
