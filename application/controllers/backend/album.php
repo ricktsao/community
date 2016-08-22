@@ -101,7 +101,7 @@ class Album extends Backend_Controller {
         	(				
         		"title" => tryGetValue($edit_data["title"])  				
 				, "description" => tryGetArrayValue("description",$edit_data)	
-        		, "sort" => tryGetArrayValue("sort",$edit_data,500)	
+        		, "sort" => 500	
 				, "launch" => tryGetArrayValue("launch",$edit_data,0)	
 				, "start_date" => tryGetArrayValue("start_date",$edit_data)					
 				, "update_date" =>  date( "Y-m-d H:i:s" )
@@ -161,7 +161,7 @@ class Album extends Backend_Controller {
 			
 		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
 		//$this->form_validation->set_rules( 'album_category_sn', '作品賞析分類', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
+		//$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
