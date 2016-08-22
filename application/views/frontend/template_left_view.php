@@ -3,20 +3,32 @@
 	navi_type2 社區服務
 	navi_type3 郵件管理
 -->
-
-<div id="left_navi" class="navi_type3">
-	<div id="left_navi_title">
-		<div></div>
-		社區服務
-	</div>
-	<?php
-	## [社區服務] 與 [住戶服務] 底下的次選單不同，
+<?php
+	## [社區服務] 與 [住戶專屬服務] 底下的次選單不同，
 	## 依據 controller 來區分要顯示哪一組 ；而 [郵件管理] 不需次選單
 	$current_class = $this->router->fetch_class();
-	$sub_menu_a = array('voting', 'repair', 'repair_log', 'suggestion', 'suggestion_log', 'rent_house', 'sale_house' );
-	$sub_menu_b = array('message', 'mailbox', 'gas', 'keycode' );
+	$sub_menu_1 = array('message', 'mailbox', 'gas', 'keycode' );
+	$sub_menu_2 = array('voting', 'repair', 'repair_log', 'suggestion', 'suggestion_log', 'rent_house', 'sale_house' );
 
-	if ( in_array($current_class, $sub_menu_a) ) {
+	if ( in_array($current_class, $sub_menu_1) ) {
+		$class = 'navi_type1';
+		$head_line = '住戶專屬服務';
+	} elseif ( in_array($current_class, $sub_menu_2) ) {
+		$class = 'navi_type2';
+		$head_line = '社區服務';
+	} else {
+		$class = 'navi_type3';
+		$head_line = '郵務管理';
+	}
+?>
+<div id="left_navi" class="<?php echo $class;?>">
+	<div id="left_navi_title">
+		<div></div>
+		<?php echo $head_line;?>
+	</div>
+	<?php
+
+	if ( $class == 'navi_type1' ) {
 		// [社區服務]次選單
 	?>
 		<ul class="ul_unstyle">
@@ -78,8 +90,8 @@
 		</ul>
 
 	<?php
-	} elseif ( in_array($current_class, $sub_menu_b) ) {
-		// [住戶服務]次選單
+	} elseif ( $class == 'navi_type2' ) {
+		// [住戶專屬服務]次選單
 	?>
 		<ul class="ul_unstyle">
 			<li>
@@ -115,6 +127,36 @@
 			</li>
 		</ul>
 
+	<?php
+	} else {
+		// [郵件服務]次選單
+	?>
+		<ul class="ul_unstyle">
+			<li>
+				<a href="<?php echo frontendUrl("mailmgr", "reg")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					郵件登錄
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("mailmgr", "user_keycode")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					郵件領取
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("mailmgr", "log")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					郵件物品記錄
+				</a>
+			</li>
+
+		</ul>
 	<?php
 	}
 	?>

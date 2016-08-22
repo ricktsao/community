@@ -2,7 +2,7 @@
 	<div class="form_group">
 		<div class="form_page_title">郵件登錄</div>
 
-		<form action="<? echo fUrl("updateRegMail")?>" method="post" class="form_style">
+		<form action="<?php echo fUrl("updateRegMail")?>" method="post" class="form_style">
 			<table>
 				<tr>
 					<td colspan="2">						
@@ -26,7 +26,7 @@
 				
 				<tr>
 					<td colspan="2">		
-						<textarea name="desc" placeholder="郵件敘述說明"></textarea>
+						<textarea name="desc" class="input_style" placeholder="郵件敘述說明"></textarea>
 					</td>					
 				</tr>
 				

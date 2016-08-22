@@ -3,23 +3,26 @@
         <a href="<?php echo frontendUrl();?>" id="c_title"><?php echo tryGetData("comm_name",$webSetting);?></a>
         <ul id="navi" class="ul_unstyle">
             <li>
-                <a href="#" title="住戶專屬服務" class="naviBgStyle1">
+                <a href="<?php echo frontendUrl("message")?>" title="住戶專屬服務" class="naviBgStyle1">
                     <img src="<?php echo base_url().$templateUrl;?>images/navi_1.png" alt="">
                     住戶專屬服務</a>
+                    <!--
                 <ul class="ul_unstyle">
                     <li><a href="<?php echo frontendUrl("message")?>">個人訊息通知<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("mailbox")?>">郵件物品通知<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("gas")?>">瓦斯度數登記<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("keycode")?>">磁扣使用查詢<span></span></a></li>
                 </ul>
+            -->
             </li>
             <li>
-                <a href="#" title="社區服務"  class="naviBgStyle2">
+                <a href="<?php echo frontendUrl("voting")?>" title="社區服務"  class="naviBgStyle2">
                      <img src="<?php echo base_url().$templateUrl;?>images/navi_2.png" alt="">
                     社區服務</a>
+                    <!--
 				<ul class="ul_unstyle">
-                    <li><a href="<?php echo frontendUrl("voting")?>">社區議題調查<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("repair")?>">社區環境報修<span></span></a></li>
+                    <li><a href="<?php echo frontendUrl("voting")?>">社區議題調查<span></span></a></li>                  
 					<li><a href="<?php echo frontendUrl("repair_log")?>">社區環境報修紀錄<span></span></a></li>
                     <li><a href="<?php echo frontendUrl("suggestion")?>">住戶意見箱<span></span></a></li>	
 					<li><a href="<?php echo frontendUrl("suggestion_log")?>">意見箱回覆查詢<span></span></a></li>
@@ -27,6 +30,7 @@
 					<li><a href="<?php echo frontendUrl("sale_house")?>">售屋資訊<span></span></a></li>
 					<li><a href="<?php echo frontendUrl("mailmgr")?>">郵件管理<span></span></a></li>
                 </ul>
+                -->
             </li>
             <li >
                 <a href="<?php echo frontendUrl("about")?>" title="關於社區" class="naviBgStyle3">
@@ -44,6 +48,12 @@
                  <img src="<?php echo base_url().$templateUrl;?>images/navi_4.png" alt="">
                 物業管理</a>	
 			<?php } ?>
+            </li>
+
+              <li>
+                <a href="<?php echo frontendUrl("mailmgr")?>" title="郵務管理" class="naviBgStyle5">
+                     <img src="<?php echo base_url().$templateUrl;?>images/navi_5.png" alt="">
+                    郵務管理</a>
             </li>
         </ul>
     </div>
