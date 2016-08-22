@@ -1,6 +1,6 @@
 <div class="primary">
 	<div class="form_group">
-		<div class="form_page_title">住戶登入111(LOG-IN)</div>
+		<div class="form_page_title">警衛登入(LOG-IN)</div>
 		
 		<form action="<?php echo fUrl("checkLogin");?>" method="post" class="form_style">
 			<table>

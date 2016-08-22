@@ -867,8 +867,8 @@ abstract class Frontend_Controller extends IT_Controller
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
 		
-		dprint($is_sync);
-		die;
+		//dprint($is_sync);
+		//die;
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------
