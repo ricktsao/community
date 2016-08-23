@@ -96,6 +96,7 @@
 										<th><?php echo $building_part_02;?></th>
 										<th width="80"><?php echo $building_part_03;?></th>
 										<th style='text-align: center'>住戶姓名</th>
+										<th style='text-align: center'>行動電話</th>
 										<th style='text-align: center'>磁　卡</th>
 										<th>APP開通</th>
 										<!-- 
@@ -127,6 +128,9 @@
 										<td>
 										<?php echo tryGetData('name', $item);?>
 										<?php echo tryGetData($item['gender'], config_item('gender_array'), '-'); ?>
+										</td>
+										<td>
+										<?php echo tryGetData('phone', $item);?>
 										</td>
 										<td>
 										<?php

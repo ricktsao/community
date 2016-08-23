@@ -4,19 +4,19 @@
             <thead>
                 <div>
 					<tr>
-                        <td style="width:20%">用戶 : </td>	
+                        <td style="width:20%">住戶 : </td>	
                         <td ><?php echo $user_info["name"] ?></td>
                     </tr>
                     <tr>
                         <td style="width:20%">磁扣使用次數 : </td>	
-                        <td ><?php echo $user_info["use_cnt"] ?></td>
+                        <td ><?php echo $user_info["use_cnt"] ?> 次</td>
                     </tr>
 					<tr>
-                        <td style="width:20%">登入時間 :　</td>	
+                        <td style="width:30%">登入時間 :　</td>	
                         <td ><?php echo $user_info["login_time"] ?></td>
                     </tr>
 					<tr>
-                        <td style="width:20%">上次登入時間　: </td>	
+                        <td style="width:30%">上次登入時間　: </td>	
                         <td ><?php echo $user_info["last_login_time"] ?></td>
                     </tr>
                 </div>
