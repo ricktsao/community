@@ -5,7 +5,7 @@
                 <table>
                     <tr class="borderLine">
                         <td colspan="2">
-                          <span>房屋型態</span> <label ><input type="checkbox">公寓 </label>
+                          <span>房屋型態1</span> <label ><input type="checkbox">公寓 </label>
                           <label ><input name='given_sale_type' type="checkbox">電梯大樓 </label>
                           <label ><input name='given_sale_type' type="checkbox"> 透天厝  </label>  
                           <label ><input name='given_sale_type' type="checkbox">別墅 </label>  
@@ -48,7 +48,7 @@
 		<?php
 			foreach ($houses as $house) {
 		?>
-        <div id="rent_title"><span>住家出租</span><?php echo $house['title'];?></div>
+        <div id="rent_title"><span>住家出租1</span><?php echo $house['title'];?></div>
         <div class="row">
             <div id="slide_area">
                 <div id="slide">
