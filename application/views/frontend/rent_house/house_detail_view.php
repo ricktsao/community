@@ -5,7 +5,7 @@
                 <table>
                     <tr class="borderLine">
                         <td colspan="2">
-                          <span>房屋型態</span> <label ><input type="checkbox">公寓 </label>
+                          <span>房屋型態1</span> <label ><input type="checkbox">公寓 </label>
                           <label ><input name='given_sale_type' type="checkbox">電梯大樓 </label>
                           <label ><input name='given_sale_type' type="checkbox"> 透天厝  </label>  
                           <label ><input name='given_sale_type' type="checkbox">別墅 </label>  
@@ -48,7 +48,7 @@
 		<?php
 			foreach ($houses as $house) {
 		?>
-        <div id="rent_title"><span>住家出租</span><?php echo $house['title'];?></div>
+        <div id="rent_title"><span>住家出租1</span><?php echo $house['title'];?></div>
         <div class="row">
             <div id="slide_area">
                 <div id="slide">
@@ -57,7 +57,7 @@
 				if ( isNotNull($photos) ) {
 					foreach($photos as $photo) {
 						$cur_photo = $photo['photo'];
-						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
+						echo '<img src="'.$cur_photo.'" width="599" height="447" alt="!!!'.$cur_photo.'" onerror="if (this.src != \''.base_url('/upload/rent.jpg').'\') this.src = \''.base_url('/upload/rent.jpg').'\';">
                     ';
 					}
 				} else {
@@ -74,6 +74,8 @@
                     <a href="#" class="slide_ctrl_btn next"><i class="fa fa-chevron-right fa-2x" aria-hidden="true"></i></a>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div id="rent_info">
                 <table>
                     <thead>
@@ -131,6 +133,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
             <br clear="all" />
         </div>
 <?php

@@ -13,8 +13,9 @@
  }
  
  #slide_area {
-     float: left;
+    
      width: 600px;
+     margin: 0 auto;
  }
  
  #slide_pager_area {
@@ -72,8 +73,8 @@
  }
  
  #rent_info {
-     float: right;
-     width: 380px;
+    
+     width: 100%;
  }
  
  #rent_info table {

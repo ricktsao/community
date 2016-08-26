@@ -13,7 +13,7 @@ class About extends Frontend_Controller {
 	
 	public function index()
 	{
-		
+		$this->addCss("css/rent.css");
 		$item_info = $this->c_model->GetList( "about");			
 
 			
@@ -30,7 +30,13 @@ class About extends Frontend_Controller {
 		
 		
 		
-		$this->display("detail_view",$data);
+		## 既有照片list
+		$photo_list = $this->it_model->listData( "web_setting_photo");
+		$data["photo_list"] = $photo_list["data"];
+		
+		
+		
+		$this->displayHome("detail_view",$data);
 	}
 }
 

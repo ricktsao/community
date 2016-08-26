@@ -20,7 +20,7 @@ class Ad extends Frontend_Controller {
 		img_show_list($ad_list["data"],'img_filename',"ad");
 		$data["ad_list"] = $ad_list["data"];
 		
-		$this->display("ad_list_view",$data);
+		$this->displayHome("ad_list_view",$data);
 	}
 
 

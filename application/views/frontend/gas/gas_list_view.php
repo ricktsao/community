@@ -83,6 +83,47 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 		?>
 		</tbody>
 	</table>
-	<?php echo $gas_company_info["content"];?>	
+	
+	
+	
+	<div class="row">
+		<div class="form_group"><div class="form_page_title">瓦斯公司</div></div>
+		<div id="rent_info">
+			<table>
+				<tbody>
+					<tr>
+						<td>公司名稱</td>
+						<td><?php echo tryGetData("title",$gas_company_info);?></td>
+					</tr>
+					<tr>
+						<td>地址</td>
+						<td><?php echo nl2br(tryGetData("content",$gas_company_info));?></td>
+					</tr>
+					<tr>
+						<td>電話</td>
+						<td><?php echo tryGetData("brief",$gas_company_info);?></td>
+					</tr>
+					<tr>
+						<td>手機</td>
+						<td><?php echo tryGetData("brief2",$gas_company_info);?></td>
+					</tr>
+					<tr>
+						<td>網址</td>
+						<td><?php echo tryGetData("url",$gas_company_info);?></td>
+					</tr>
+					<tr>
+						<td>圖片</td>
+						<td>
+							<img src="<?php echo tryGetData("img_filename",$gas_company_info);?>" width="599" height="447"  >
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<br clear="all" />
+	
+	
 </div>
 

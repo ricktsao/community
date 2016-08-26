@@ -1,12 +1,12 @@
 <div class="primary">
 	<div class="form_group">
-		<div class="form_page_title">住戶登入111(LOG-IN)</div>
+		<div class="form_page_title">警衛登入(LOG-IN)</div>
 		
 		<form action="<?php echo fUrl("checkLogin");?>" method="post" class="form_style">
 			<table>
 				<tr>
 					<td colspan="2">
-						<input id="account" type="input" name="account" class="input_style" placeholder="帳號">
+						<input id="account" type="text" name="account" class="input_style" placeholder="帳號">
 						<div class="error_msg"><?php echo tryGetData("error_message",$edit_data);?></div>
 					</td>
 				</tr>

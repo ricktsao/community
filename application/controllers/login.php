@@ -22,7 +22,7 @@ class Login extends Frontend_Controller {
 		
 		
 		
-		$this->display("login_view",$data);
+		$this->displayHome("login_view",$data);
 	}	
 
 	
@@ -178,7 +178,7 @@ class Login extends Frontend_Controller {
 			$data["edit_data"] = $edit_data;
 			
 			$this->displayBanner(FALSE);
-			$this->display("login_view",$data);
+			$this->displayHome("login_view",$data);
 		}
 		
 	}

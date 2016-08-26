@@ -19,6 +19,7 @@
         position: fixed;
         left: 0;
         right: 0;
+        background-size: 100% 100%;
     }
 
      .s1,.s2{        

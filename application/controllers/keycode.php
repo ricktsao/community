@@ -29,5 +29,23 @@ class Keycode extends Frontend_Controller {
 	}
 	
 	
+
+	public function app()
+	{
+		$data = array();
+		$user_sn = $this->session->userdata('f_user_sn');
+		$user_info = $this->it_model->listData("sys_user","sn='".$user_sn."'");
+		if($user_info["count"]>0)
+		{
+			$user_info = $user_info["data"][0];
+		}
+		else
+		{
+			$this->redirectHome();
+		}		
+		$data["user_info"] = $user_info;
+		$this->display("app_view",$data);
+	}
+	
 }
 

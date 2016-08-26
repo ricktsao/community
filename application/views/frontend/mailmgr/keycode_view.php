@@ -1,8 +1,9 @@
 <div class="primary">
+	<!--
 	<div><a href="<?php echo fUrl("index")?>">郵件登錄</a></div>
 	<div><a href="<?php echo fUrl("user_keycode")?>">郵件領取</a></div>
 	<div><a href="<?php echo fUrl("log")?>" >郵件物品記錄</a></div>
-	
+	-->
 	<div class="form_group">
 		<div class="form_page_title">領收人請使用磁扣感應</div>
 		

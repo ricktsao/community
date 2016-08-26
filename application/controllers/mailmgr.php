@@ -8,11 +8,19 @@ class Mailmgr extends Frontend_Controller {
 		parent::__construct();
 		$this->displayBanner(FALSE);		
 		$this->load->model('auth_model');
+		$this->addCss("css/rent.css");
 	}
 	
 	
-	//登錄郵件	
 	public function index()
+	{
+		$this->checkGuardLogin();
+		$data = array();
+		$this->displayHome("mail_index_view",$data);
+	}
+	
+	//登錄郵件	
+	public function reg()
 	{
 		$this->checkGuardLogin();		
 		$condition = ' AND role = "I"';
@@ -88,8 +96,6 @@ class Mailmgr extends Frontend_Controller {
 		$data['b_part_03'] = $b_part_03;
 
 		$this->getBuildInfo($data);
-		
-
 
 		$this->display("reg_list_view",$data);
 	}	
@@ -129,6 +135,7 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function regMail()
 	{
+		$this->checkGuardLogin();
 		
 		$user_sn = $this->input->get('user_sn');
 		$user_info = $this->it_model->listData("sys_user","sn='".$user_sn."'");	
@@ -230,6 +237,7 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function receiveList()
 	{
+		$this->checkGuardLogin();
 		$keycode_id = $this->input->post('keycode');
 		
 		$user_info = $this->it_model->listData("sys_user","id ='".$keycode_id."'");
@@ -314,6 +322,7 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function log()
 	{
+		$this->checkGuardLogin();
 		$mailbox_list = $this->it_model->listData("mailbox","", 500 , 1, array("booked"=>'desc'));
 		$data["mailbox_list"] = $mailbox_list["data"];	
 		

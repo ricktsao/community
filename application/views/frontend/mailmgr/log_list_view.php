@@ -1,35 +1,44 @@
 <style type="text/css">
-	.spec {font-size:16px; color:#f00; font-weight:bold;}
-	.normal {font-size:16px; color:#004080; font-weight:bold;}
-	.red-font {color: #ff0080;}
-	input[type="number"] {width: 80px; text-align:center; color: #369;}
+table.dataTable thead th, table.dataTable thead td {
+	border-bottom:1px solid #DCDDDD !important;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+	padding: 1em !important;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+	border-bottom:1px solid #DCDDDD !important;	
+}
+
+#entry_filter {
+	margin-bottom: 20px;
+}
+
 
 </style>
 
-<div class="primary">
+<div class="primary" style="margin-bottom: 30px;">
+	<!--
 	<div><a href="<?php echo fUrl("index")?>">郵件登錄</a></div>
 	<div><a href="<?php echo fUrl("user_keycode")?>">郵件領取</a></div>
 	<div><a href="<?php echo fUrl("log")?>" >郵件物品記錄</a></div>
-	
+	-->
 	<div class="form_group">
 		<div class="form_page_title">郵件物品記錄</div>
 	</div>
-	<div class="col-xs-12">
-
-		<div class="col-xs-12">
-			<div class="table-responsive">
-				<table id="entry" class="table table-striped table-bordered table-hover">
+	<table id="entry" class="table_style">
 					<thead>
 						<tr>							
-							<th style="width:100px">狀態</th>
-							<th style="width:100px"><i class="icon-time bigger-110 hidden-480"></i>登錄時間</th>
-							<th style="width:100px">代收編號</th>							
-							<th style="width:100px">郵件類型</th>
-							<th style="width:200px">郵件敘述說明</th>
-							<th style="width:120px">收件人</th>
-							<th style="width:120px">領收人</th>		
-							<th style="width:120px">代收郵件警衛</th>
-							<th style="width:120px">領收作業警衛</th>							
+							<td style="width:100px">狀態</td>
+							<td style="width:100px"><i class="icon-time bigger-110 hidden-480"></i>登錄時間</td>
+							<td style="width:100px">代收編號</td>							
+							<td style="width:100px">郵件類型</td>
+							<td style="width:200px">郵件敘述說明</td>
+							<td style="width:120px">收件人</td>
+							<td style="width:120px">領收人</td>		
+							<td style="width:120px">代收郵件警衛</td>
+							<td style="width:120px">領收作業警衛</td>							
 						</tr>
 					</thead>
 
@@ -65,9 +74,7 @@
 					?>
 					</tbody>
 				</table>
-			</div>
-		</div>
-	</div>
+
 	
 
 	</div>

@@ -60,6 +60,48 @@ Class Album_model extends IT_Model
 	 	return $data;
 	}
 
+	public function GetHomeAlbumList2(){
+		//$path = base_url()."upload/website/album/";
+
+		$subQuery = "SELECT album_sn,
+						CONCAT('{$this->path}',img_filename) as img_filename
+					 FROM album_item 
+					 WHERE img_filename <>'' AND is_del=0 
+					 GROUP BY album_sn
+					 ORDER BY sort DESC";
+
+		$sql = "SELECT 
+				album.title,
+				album.sn,
+				album.start_date,
+				ai.img_filename
+				FROM album INNER JOIN ({$subQuery}) AS ai ON album.sn = ai.album_sn
+				WHERE album.is_del = 0
+				ORDER BY album.start_date DESC  LIMIT 0,5";
+
+		
+
+		$data =  $this->readQuery( $sql );
+
+		//dprint($data);
+		/*
+		for($i=0;$i<count($data);$i++){
+
+			$itemSql = "SELECT 
+			CONCAT('".$this->path ."',img_filename) as img_filename,
+			title FROM album_item WHERE album_sn =".$data[$i]['sn']." and img_filename <>''  ORDER BY sort DESC   LIMIT 0,3";
+
+			$item_result = $this->readQuery( $itemSql );
+
+			$data[$i]['imgs']=$item_result;
+
+		}
+*/
+	 	return $data;
+	}
+
+
+
 	public function GetPhoto($sn){
 		$itemSql = "SELECT 
 		CONCAT('".$this->path ."',img_filename) as img_filename,
