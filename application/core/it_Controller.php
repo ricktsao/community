@@ -50,6 +50,11 @@ class IT_Controller extends CI_Controller
 		$this->session->unset_userdata('f_comm_id');
 		$this->session->unset_userdata('f_building_id');
 		
+		// 警衛
+		$this->session->unset_userdata('guard_name');
+		$this->session->unset_userdata('guard_sn');		
+		
+		
 		if ($redirect == 'b') {
 			$this->redirectHome();
 		} else {
