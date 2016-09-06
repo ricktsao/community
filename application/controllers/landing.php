@@ -11,6 +11,16 @@ class Landing extends Frontend_Controller {
 
 	public function index()
 	{
+		//登出
+		//---------------------------------------------
+		$this->session->unset_userdata('f_user_name');
+		$this->session->unset_userdata('f_user_sn');
+		$this->session->unset_userdata('f_user_id');
+		$this->session->unset_userdata('f_user_app_id');
+		$this->session->unset_userdata('f_comm_id');
+		$this->session->unset_userdata('f_building_id');
+		//---------------------------------------------
+		
 		$data = array();
 		
 		$setting_info = $this->loadWebSetting();		
