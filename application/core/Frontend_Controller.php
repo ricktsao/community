@@ -754,6 +754,7 @@ abstract class Frontend_Controller extends IT_Controller
 		$this->session->unset_userdata('f_user_app_id');
 		$this->session->unset_userdata('f_comm_id');
 		$this->session->unset_userdata('f_building_id');
+		$this->session->unset_userdata('user_auth');
 		
 		$this->redirectHome();
 	}	

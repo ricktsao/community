@@ -53,7 +53,7 @@ class IT_Controller extends CI_Controller
 		if ($redirect == 'b') {
 			$this->redirectHome();
 		} else {
-			header("Location:".base_url()."home");
+			header("Location:".base_url()."home/?".time());
 		}
 		
 	}	

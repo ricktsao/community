@@ -287,12 +287,18 @@ class Auth extends Backend_Controller
 			$edit_data[$key] = $this->input->post($key,TRUE);			
 		}
 		
+		$role = $this->input->get("role", TRUE);
 		if ( ! $this->_validateAdmin())
 		{
 			//權組list
 			//---------------------------------------------------------------------------------------------------------------		
-			$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1" , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
-			$data["group_list"] = count($group_list["data"])>0?$group_list["data"]:array();
+			if ( $role == 'I') {
+				$condi = ' AND title IN ("住戶", "管委會") AND title != "富網通" ';
+			} else {
+				$condi = ' AND title NOT IN ("住戶", "管委會") AND title != "富網通" ';
+			}
+			$group_list = $this->it_model->listData( "sys_user_group" , "launch = 1".$condi , NULL , NULL , array("sort"=>"asc","sn"=>"desc"));		
+			$data["group_list"] = count($group_list["data"])>0 ? $group_list["data"] : array();
 			//---------------------------------------------------------------------------------------------------------------
 			
 			$role = $this->input->get("role", TRUE);
