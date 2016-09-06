@@ -124,7 +124,8 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			} else {
 				
 				if (isNotNull(tryGetData('act_code', $edit_data , NULL)) ){
-					echo '（APP 開通碼：'.tryGetData('act_code', $edit_data).'）';
+					echo '（APP 開通碼：'.tryGetData('act_code', $edit_data).'）';					
+					echo form_hidden('act_code', tryGetData('act_code', $edit_data));
 				} else {
 					echo '（待開通）';
 				}
