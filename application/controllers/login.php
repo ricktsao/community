@@ -66,13 +66,14 @@ class Login extends Frontend_Controller {
 
 			$sys_func_auth = array();//特殊權限
 			$sys_admin_auth = array();//後台權限
-			
+//dprint($sys_user_groups);
 			if(count($sys_user_groups)>0)
 			{
 				//後台單元權限
 				//************************************************************************************************						
 				$sys_user_group_b_auth = $this->auth_model->GetGroupAuthorityList("sys_user_group_sn IN (".implode($sys_user_groups, ",").") AND sys_user_group_b_auth.launch = 1 AND sys_module.launch = 1" );		
 				
+//dprint($sys_user_group_b_auth);
 				if ( $sys_user_group_b_auth["count"] > 0) {
 					foreach($sys_user_group_b_auth["data"] as $item)
 					{
@@ -145,6 +146,8 @@ class Login extends Frontend_Controller {
 				$this->session->set_userdata('user_auth', $sys_admin_auth);
 				$this->session->set_userdata('user_name', $user_info["name"]);
 				$this->session->set_userdata('user_group', $sys_user_groups);
+			} else {
+				$this->session->set_userdata('user_auth', false);
 			}
 
 			//紀錄Keycode使用紀錄
