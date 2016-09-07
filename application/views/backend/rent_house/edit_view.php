@@ -47,7 +47,7 @@
 		echo textNumberOption("<span class='red'>＊</span>位於幾樓", "locate_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>總樓層", "total_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>面積", "area_ping", $edit_data, 0, 300, 0.01, '坪');
-		echo textNumberOption("<span class='red'>＊</span>月租金", "rent_price", $edit_data, 0, 100000, 1000, '元');
+		echo textNumberOption("<span class='red'>＊</span>月租金", "rent_price", $edit_data, 0, 100000, 100, '元');
 		echo textOption("<span class='red'>＊</span>押金", "deposit", $edit_data, 'ex.兩個月');
 		echo textOption("<span class='red'>＊</span>地址", "addr", $edit_data);
 		?>
