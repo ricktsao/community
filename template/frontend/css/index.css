@@ -117,7 +117,9 @@
      margin: 0 auto;
  }
  
- #album_slide > img {
+ #album_slide  img,
+ #album_slide  a {
+     display: block;
      width: 100%;
  }
  
