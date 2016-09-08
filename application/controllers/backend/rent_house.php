@@ -442,28 +442,28 @@ class Rent_House extends Backend_Controller {
 	function deleteHouse()
 	{
 		$del_array = $this->input->post("del",TRUE);
+		if ( is_array($del_array) && sizeof($del_array) > 0 ) {
+			foreach( $del_array as $sn ) {
 
-		foreach( $del_array as $sn ) {
+				$comm_id = $this->getCommId();
 
-			$comm_id = $this->getCommId();
+				$del = $this->it_model->updateDB( "house_to_rent" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
 
-			$del = $this->it_model->updateDB( "house_to_rent" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
+				if ($del) {
+					//echo $this->db->last_query();
+					/* 同步 同步 同步 同步 同步 */
+					$arr_data = array("sn" => $sn
+									, "comm_id" => $comm_id 
+									, "del" => 1 );
+					$this->sync_item_to_server($arr_data, 'updateRentHouse', 'house_to_rent');
 
-			if ($del) {
-			echo $this->db->last_query();
-				/* 同步 同步 同步 同步 同步 */
-				$arr_data = array("sn" => $sn
-								, "comm_id" => $comm_id 
-								, "del" => 1 );
-				$this->sync_item_to_server($arr_data, 'updateRentHouse', 'house_to_rent');
-
+				}
 			}
+
+			$this->showSuccessMessage('您指定的租屋資訊已刪除成功');
 		}
 
-		$this->showSuccessMessage('您指定的租屋資訊已刪除成功');
-
-
-		//redirect(bUrl("index"));
+		redirect(bUrl("index"));
 	}
 
 

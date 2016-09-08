@@ -279,14 +279,14 @@ class Sale_House extends Backend_Controller {
 
 		$this->form_validation->set_rules( 'total_price', '總價 ', 'required' );
 		$this->form_validation->set_rules( 'area_ping', '面積', 'required|less_than[1000]|greater_than[0]' );
-		$this->form_validation->set_rules( 'area_desc', '坪數說明', 'required' );
+		$this->form_validation->set_rules( 'area_desc', '坪數說明', 'required|max_length[60]' );
 
 
 		// 判斷是否為車位
 		$house_type = tryGetValue($this->input->post('house_type',TRUE));
 		if ( $house_type !== 'f') {
 			$this->form_validation->set_rules( 'unit_price', '每坪單價 ', 'required' );
-			$this->form_validation->set_rules( 'manage_fee', '管理費', 'required|max_length[20]' );
+			$this->form_validation->set_rules( 'manage_fee', '管理費!', 'greater_than[0]|max_length[20]' );
 			$this->form_validation->set_rules( 'pub_ratio', '公設比', 'required' );
 			$this->form_validation->set_rules( 'room', '格局-房', 'required|less_than[10]|greater_than[0]' );
 			$this->form_validation->set_rules( 'livingroom', '格局-廳', 'required|less_than[10]|greater_than[0]' );
@@ -295,7 +295,7 @@ class Sale_House extends Backend_Controller {
 			$this->form_validation->set_rules( 'locate_level', '位於幾樓', 'required|less_than[30]|greater_than[0]' );
 			$this->form_validation->set_rules( 'total_level', '總樓層', 'required|less_than[30]|greater_than[0]' );
 			$this->form_validation->set_rules( 'house_age', '屋齡', 'required' );
-		$this->form_validation->set_rules( 'decoration', '裝潢程度', 'required' );
+			$this->form_validation->set_rules( 'decoration', '裝潢程度', 'max_length[20]' );
 		}
 		$this->form_validation->set_rules( 'title', '售屋標題', 'required|max_length[50]' );
 		$this->form_validation->set_rules( 'name', '聯絡人', 'required|max_length[50]' );
@@ -450,27 +450,28 @@ class Sale_House extends Backend_Controller {
 	{
 		$del_array = $this->input->post("del",TRUE);
 
-		foreach( $del_array as $sn ) {
+		if ( is_array($del_array) && sizeof($del_array) > 0 ) {
+			foreach( $del_array as $sn ) {
 
-			$comm_id = $this->getCommId();
+				$comm_id = $this->getCommId();
 
-			$del = $this->it_model->updateDB( "house_to_sale" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
+				$del = $this->it_model->updateDB( "house_to_sale" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
 
-			if ($del) {
-			echo $this->db->last_query();
-				/* 同步 同步 同步 同步 同步 */
-				$arr_data = array("sn" => $sn
-								, "comm_id" => $comm_id 
-								, "del" => 1 );
-				$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
+				if ($del) {
+					//echo $this->db->last_query();
+					/* 同步 同步 同步 同步 同步 */
+					$arr_data = array("sn" => $sn
+									, "comm_id" => $comm_id 
+									, "del" => 1 );
+					$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 
+				}
 			}
 		}
-
 		$this->showSuccessMessage('您指定的售屋資訊已刪除成功');
 
 
-		//redirect(bUrl("index"));
+		redirect(bUrl("index"));
 	}
 
 
