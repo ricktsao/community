@@ -16,6 +16,8 @@ class Mailmgr extends Frontend_Controller {
 	{
 		$this->checkGuardLogin();
 		$data = array();
+		
+		$this->check_mailbox_offline_sync();
 		$this->displayHome("mail_index_view",$data);
 	}
 	
@@ -23,6 +25,9 @@ class Mailmgr extends Frontend_Controller {
 	public function reg()
 	{
 		$this->checkGuardLogin();		
+		
+		$this->check_mailbox_offline_sync();
+		
 		$condition = ' AND role = "I"';
 
 		$query_key = array();
@@ -320,6 +325,8 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function log()
 	{
+		$this->checkGuardLogin();
+		$this->check_mailbox_offline_sync();
 		$mailbox_list = $this->it_model->listData("mailbox","", 500 , 1, array("booked"=>'desc'));
 		$data["mailbox_list"] = $mailbox_list["data"];	
 		
@@ -466,6 +473,14 @@ class Mailmgr extends Frontend_Controller {
 	    return $randomString;
 	}
 
-
+	function check_mailbox_offline_sync()
+	{
+		$wait_sync_list = $this->it_model->listData("mailbox","is_sync =0");
+		//dprint($wait_sync_list);exit;
+		foreach( $wait_sync_list["data"] as $key => $item )
+		{
+			$this->sync_item_to_server($item,"updateMailbox","mailbox");
+		}
+	}
 	
 }
