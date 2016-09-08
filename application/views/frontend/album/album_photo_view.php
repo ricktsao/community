@@ -1,4 +1,7 @@
 <div class="primary">
+  <a class="btn" style="display:inline-block;" href='<?php echo fUrl("index")?>'><i class="fa fa-chevron-left"></i> 返回相簿列表 </a>
+ 
+ 
     <ul class="ul_unstyle" id="photo">
         <?php  for ($i=0;$i<count($photo_list);$i++) :?>
         <li>
@@ -9,7 +12,7 @@
         <?php endfor;?>
     </ul>
 
-    <a class="btn" ><i class="fa fa-chevron-left"></i> 返回相簿列表 </a>
+  
 </div>
 <script>
 $(function() {

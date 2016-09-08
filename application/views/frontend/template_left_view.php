@@ -29,7 +29,52 @@
 	<?php
 
 	if ( $class == 'navi_type1' ) {
-		// [社區服務]次選單
+		// [住戶專屬服務]次選單
+	?>
+		<ul class="ul_unstyle">
+			<li>
+				<a href="<?php echo frontendUrl("message")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					個人訊息通知
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("mailbox")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					郵件物品通知
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("gas")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					瓦斯度數登記
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("keycode")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					磁扣使用查詢
+				</a>
+			</li>
+			<li>
+				<a href="<?php echo frontendUrl("keycode", "app")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					APP開通碼查詢
+				</a>
+			</li>
+		</ul>
+
+	<?php
+	} elseif ( $class == 'navi_type2' ) {
+		// [住戶專屬服務]次選單
 	?>
 		<ul class="ul_unstyle">
 			<li>
@@ -85,44 +130,6 @@
 					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
 					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
 					售屋資訊
-				</a>
-			</li>
-		</ul>
-
-	<?php
-	} elseif ( $class == 'navi_type2' ) {
-		// [住戶專屬服務]次選單
-	?>
-		<ul class="ul_unstyle">
-			<li>
-				<a href="<?php echo frontendUrl("message")?>">
-					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
-					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
-					個人訊息通知
-				</a>
-			</li>
-
-			<li>
-				<a href="<?php echo frontendUrl("mailbox")?>">
-					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
-					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
-					郵件物品通知
-				</a>
-			</li>
-
-			<li>
-				<a href="<?php echo frontendUrl("gas")?>">
-					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
-					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
-					瓦斯度數登記
-				</a>
-			</li>
-
-			<li>
-				<a href="<?php echo frontendUrl("keycode")?>">
-					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
-					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
-					磁扣使用查詢
 				</a>
 			</li>
 		</ul>

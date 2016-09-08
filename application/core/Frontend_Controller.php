@@ -754,6 +754,7 @@ abstract class Frontend_Controller extends IT_Controller
 		$this->session->unset_userdata('f_user_app_id');
 		$this->session->unset_userdata('f_comm_id');
 		$this->session->unset_userdata('f_building_id');
+		$this->session->unset_userdata('user_auth');
 		
 		$this->redirectHome();
 	}	
@@ -856,7 +857,7 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$url = $this->config->item("api_server_url")."sync/".$func_name;
 		
-		dprint($post_data);
+		//dprint($post_data);
 		//exit;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -867,8 +868,8 @@ abstract class Frontend_Controller extends IT_Controller
 		$is_sync = curl_exec($ch);
 		curl_close ($ch);
 		
-		dprint($is_sync);
-		die;
+		//dprint($is_sync);
+		//die;
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------

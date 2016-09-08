@@ -140,6 +140,7 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function regMail()
 	{
+		$this->checkGuardLogin();
 		
 		$user_sn = $this->input->get('user_sn');
 		$user_info = $this->it_model->listData("sys_user","sn='".$user_sn."'");	
@@ -241,6 +242,7 @@ class Mailmgr extends Frontend_Controller {
 	
 	public function receiveList()
 	{
+		$this->checkGuardLogin();
 		$keycode_id = $this->input->post('keycode');
 		
 		$user_info = $this->it_model->listData("sys_user","id ='".$keycode_id."'");

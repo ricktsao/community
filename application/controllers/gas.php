@@ -13,6 +13,7 @@ class Gas extends Frontend_Controller {
 
 	public function index()
 	{		
+		$this->addCss("css/rent.css");
 		$this->getAppData();//至server查詢有無app新增資料,並同步
 		
 		$data = array();
@@ -92,9 +93,11 @@ class Gas extends Frontend_Controller {
 			
 			//瓦斯公司資訊
 			//-----------------------------------------------------------------------------------
-			$gas_company_info = $this->c_model->GetList( "gas_company" );		
+			$gas_company_info = $this->c_model->GetList( "gas_company" );	
+						
 			if($gas_company_info["count"]>0)
 			{		
+				img_show_list($gas_company_info["data"],'img_filename','gas_company');	
 				$gas_company_info = $gas_company_info["data"][0];
 			}		
 			else
@@ -102,6 +105,7 @@ class Gas extends Frontend_Controller {
 				$gas_company_info = array();
 			}
 			$data["gas_company_info"] = $gas_company_info;
+			//dprint($gas_company_info);
 			//-----------------------------------------------------------------------------------
 			
 			$this->display("gas_list_view",$data);

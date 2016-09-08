@@ -5,7 +5,7 @@ class Suggestion extends Backend_Controller {
 	function __construct() 
 	{
 		parent::__construct();		
-		
+		$this->check_suggestion_offline_sync();//社區意見箱
 	}
 	
 
@@ -199,6 +199,15 @@ class Suggestion extends Backend_Controller {
 				if($suggestion_info["count"]>0)
 				{	
 					$suggestion_info = $suggestion_info["data"][0];		
+					
+					$user_sn = $suggestion_info["user_sn"];
+					$user_info = $this->it_model->listData("sys_user","sn='".$user_sn."'");
+					if($user_info["count"]>0)
+					{
+						$user_info = $user_info["data"][0];
+						$suggestion_info["app_id"] = $user_info["app_id"];
+					}
+					
 					$this->sync_suggestion_to_server($suggestion_info);
 				}
 				

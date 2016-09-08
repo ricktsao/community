@@ -569,6 +569,9 @@ class User extends Backend_Controller
 		}			
         else 
         {
+        	$arr_data["name"] = $edit_data["name"];
+        	$arr_data["gender"] = $edit_data["gender"];
+        	$arr_data["building_id"] = $edit_data["building_id"];
         	$arr_data["id"] = $edit_data["new_id"];
         	$arr_data["updated"] = date("Y-m-d H:i:s");
         	$arr_data["is_sync"] = 0;
@@ -866,8 +869,8 @@ class User extends Backend_Controller
 				$edit_data['b_part_02'] = $building_id[1];
 				$edit_data['b_part_03'] = $building_id[2];
 
-				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
-				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
+				$edit_data["start_date"] = isNull(tryGetData("start_date",$edit_data,NULL)) ? "": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
+				$edit_data["end_date"] = isNull(tryGetData("end_date",$edit_data,NULL)) ? "": date( "Y-m-d" , strtotime( $edit_data["end_date"] ) );
 				
 						
 				$sys_user_belong_group = $this->it_model->listData("sys_user_belong_group","sys_user_sn = ".$edit_data["sn"]." and launch = 1" );				
@@ -1032,6 +1035,7 @@ class User extends Backend_Controller
 						/* 同步 同步 同步 同步 同步 */
 						$arr_data["sn"] = $edit_data['sn'];
 						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+
 				}
 				else 
 				{
@@ -1075,6 +1079,7 @@ class User extends Backend_Controller
 						/* 同步 同步 同步 同步 同步 */
 						$arr_data["sn"] = $sys_user_sn;
 						$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+						
 				}
 				else 
 				{

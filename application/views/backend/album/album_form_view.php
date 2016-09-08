@@ -10,7 +10,7 @@
         </div>
         </div>
     </div>
-    <?php echo textOption("排序","sort",$edit_data); ?>   
+    <?php //echo textOption("排序","sort",$edit_data); ?>   
     <input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
     <div class="clearfix form-actions">
         <div class="col-md-offset-3 col-md-9">

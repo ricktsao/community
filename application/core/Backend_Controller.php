@@ -1018,7 +1018,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function sync_item_to_server($post_data,$func_name,$table_name)
 	{
-		$url = $this->config->item("api_server_url")."Sync_file/".$func_name;
+		$url = $this->config->item("api_server_url")."Sync/".$func_name;
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -1030,12 +1030,11 @@ abstract class Backend_Controller extends IT_Controller
 		curl_close ($ch);
 
 		/* debug
-		if ($table_name =='house_to_sale_photo') {
+		if ($table_name =='sys_user') {
 			dprint('- - sync_item_to_server debug - - - - - - - ');
 			dprint($url);
 			dprint($post_data);
 			echo('#'.$is_sync);
-			//die;
 		}
 		*/
 		
@@ -1047,7 +1046,8 @@ abstract class Backend_Controller extends IT_Controller
 		}			
 		
 		$this->it_model->updateData( $table_name , array("is_sync"=>$is_sync,"updated"=>date("Y-m-d H:i:s")), "sn =".$post_data["sn"] );
-
+		//dprint($this->db->last_query());
+		//	die;
 
 		//------------------------------------------------------------------------------
 	}

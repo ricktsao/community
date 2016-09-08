@@ -70,6 +70,9 @@
 			<form action="<?php echo bUrl("updateId")?>" method="post"  id="add_formx" role="form">
 			<input type='hidden' name='user_sn' value='<?php echo tryGetData('sn', $user_data); ?>'>
 			<input type='hidden' name='user_id' value='<?php echo tryGetData('id', $user_data); ?>'>
+			<input type='hidden' name='name' value='<?php echo tryGetData('name', $user_data); ?>'>
+			<input type='hidden' name='gender' value='<?php echo tryGetData('gender', $user_data); ?>'>
+			<input type='hidden' name='building_id' value='<?php echo tryGetData('building_id', $user_data); ?>'>
 
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新磁卡：</label>

@@ -153,8 +153,10 @@ var album = <?php echo json_encode($album_list);?>;
 var ads = <?php echo json_encode($ad_list);?>;
 var albumContent = '';
 var adsContent = '';
+var albumUrl = '<?php echo frontendUrl("album","album_detail")?>';
+
 for(var i=0;i<album.length;i++){    
-	albumContent+="<img src='"+album[i].img_filename+"' data-cycle-title='"+album[i].title+"'/>";
+	albumContent+="<a href='"+albumUrl+"/"+album[i].sn+"' data-cycle-title='"+album[i].title+"'><img src='"+album[i].img_filename+"' /></a>";
 }
 
 for(var i=0;i<ads.length;i++){   
@@ -175,7 +177,8 @@ $(function() {
 		caption:"#album_slide_title",
 		captionTemplate:"{{cycleTitle}}",
 		pager: "#album_pager",
-        pagerTemplate : "<a href='#'></a>"
+        pagerTemplate : "<a href='#'></a>",
+        slides: ">a"
 
       //  slides: " > img",
       //  fx: "carousel"
