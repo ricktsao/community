@@ -30,7 +30,7 @@
 				
 				<tr>
 					<td>
-                        <div class="text_center"><img src="'.base_url().$templateUrl.'images/mailbox_'.$mail_info["type"].'.png" alt=""></div>
+                        <div class="text_center"><img src="'.base_url().$templateUrl.'images/mailbox_'.tryGetData("type",$mail_info,'0').'.png" alt=""></div>
                     </td>
                     <td>'.$mail_type_string.'</td>
                     
