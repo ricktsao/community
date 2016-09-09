@@ -16,7 +16,7 @@
             -->
             </li>
             <li>
-                <a href="<?php echo frontendUrl("voting")?>" title="社區服務"  class="naviBgStyle2">
+                <a href="<?php echo frontendUrl("bulletin")?>" title="社區服務"  class="naviBgStyle2">
                      <img src="<?php echo base_url().$templateUrl;?>images/navi_2.png" alt="">
                     社區服務</a>
                     <!--
