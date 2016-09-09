@@ -569,6 +569,7 @@ class User extends Backend_Controller
 		}			
         else 
         {
+        	$arr_data["comm_id"] = $this->getCommId();
         	$arr_data["name"] = $edit_data["name"];
         	$arr_data["gender"] = $edit_data["gender"];
         	$arr_data["building_id"] = $edit_data["building_id"];

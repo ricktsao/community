@@ -94,7 +94,7 @@
 										</td>
 										<td><?php echo showEffectiveDate($item["start_date"], $item["end_date"], $item["forever"]) ?></td>
 										<td>
-											<?php if ($item['is_edoma'] == 0 ) {?>
+											<?php if ( tryGetData('is_edoma', $item, 0) == 0 ) {?>
 											<a class="btn  btn-minier btn-primary" href="<?php echo bUrl("edit",TRUE,NULL,array("sn"=>tryGetData('sn', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
@@ -108,7 +108,7 @@
 											</a>
 										</td>
 										<td class="center">
-										<?php if ($item['is_edoma'] == 0 ) {?>
+										<?php if ( tryGetData('is_edoma', $item, 0) == 0 ) {?>
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo tryGetData('sn', $item);?>" />
 												<span class="lbl"></span>
