@@ -8,8 +8,6 @@ class Auth extends Backend_Controller
 		parent::__construct();
 
 	}
-		
-	
 
 	public function admin()
 	{
@@ -312,7 +310,7 @@ class Auth extends Backend_Controller
 			$this->display("admin_edit_view",$data);
 		}
         else 
-        {	
+        {
         	$arr_data = array(				
         		//"email" =>$edit_data["email"]
 				  "name"		=>	tryGetData("name", $edit_data)
@@ -320,6 +318,7 @@ class Auth extends Backend_Controller
 				, "comm_id"		=>	tryGetData("comm_id", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
 				, "title"		=>	tryGetData("title", $edit_data)
+				, "tel"		=>	tryGetData("tel", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
@@ -363,6 +362,7 @@ class Auth extends Backend_Controller
 				
 				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
+				//dprint($this->db->last_query());
 				if($sys_user_sn > 0)
 				{				
 					$edit_data["sn"] = $sys_user_sn;
