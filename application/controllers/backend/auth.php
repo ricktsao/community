@@ -8,8 +8,6 @@ class Auth extends Backend_Controller
 		parent::__construct();
 
 	}
-		
-	
 
 	public function admin()
 	{
