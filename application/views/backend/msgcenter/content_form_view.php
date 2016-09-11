@@ -45,7 +45,7 @@
 			<?php 
               	foreach ($user_list as $key => $item) 
               	{
-					echo '<option value="'.$item["sn"].'">'.$item["name"].'  '.$item["owner_addr"].$item["addr"].'</option>';
+					echo '<option value="'.$item["sn"].'">'.$item["name"].'  '.$item["addr"].'</option>';
 				}
             ?>	    
 
