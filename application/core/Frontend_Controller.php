@@ -747,14 +747,31 @@ abstract class Frontend_Controller extends IT_Controller
 	 */
 	public function logout()
 	{
-
+	
 		$this->session->unset_userdata('f_user_name');
 		$this->session->unset_userdata('f_user_sn');
 		$this->session->unset_userdata('f_user_id');
 		$this->session->unset_userdata('f_user_app_id');
 		$this->session->unset_userdata('f_comm_id');
 		$this->session->unset_userdata('f_building_id');
+		
+		$this->session->unset_userdata('user_sn');
+		$this->session->unset_userdata('user_id');
+		$this->session->unset_userdata('user_name');
 		$this->session->unset_userdata('user_auth');
+		$this->session->unset_userdata('user_email');
+		$this->session->unset_userdata('supper_admin');
+		$this->session->unset_userdata('user_login_time');
+		$this->session->unset_userdata('frontend_auth');
+		$this->session->unset_userdata('func_auth');
+		$this->session->unset_userdata('user_group');
+		$this->session->unset_userdata('comm_id');
+		$this->session->unset_userdata('user_app_id');
+		
+		$this->session->unset_userdata('guard_name');
+		$this->session->unset_userdata('guard_sn');		
+		
+		
 		
 		$this->redirectHome();
 	}	
