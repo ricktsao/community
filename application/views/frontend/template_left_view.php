@@ -8,7 +8,7 @@
 	## 依據 controller 來區分要顯示哪一組 ；而 [郵件管理] 不需次選單
 	$current_class = $this->router->fetch_class();
 	$sub_menu_1 = array('message', 'mailbox', 'gas', 'keycode' );
-	$sub_menu_2 = array('voting', 'repair', 'repair_log', 'suggestion', 'suggestion_log', 'rent_house', 'sale_house' );
+	$sub_menu_2 = array('bulletin','news','voting', 'repair', 'repair_log', 'suggestion', 'suggestion_log', 'rent_house', 'sale_house' );
 
 	if ( in_array($current_class, $sub_menu_1) ) {
 		$class = 'navi_type1';
@@ -77,6 +77,23 @@
 		// [住戶專屬服務]次選單
 	?>
 		<ul class="ul_unstyle">
+			<li>
+				<a href="<?php echo frontendUrl("bulletin")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					管委公告
+				</a>
+			</li>
+
+			<li>
+				<a href="<?php echo frontendUrl("news")?>">
+					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>
+					<i class="fa fa-chevron-right icon2" aria-hidden="true" ></i>
+					社區公告
+				</a>
+			</li>
+		
+		
 			<li>
 				<a href="<?php echo frontendUrl("voting")?>">
 					<i class="fa fa-chevron-circle-right icon1" aria-hidden="true"></i>

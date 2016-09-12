@@ -2134,15 +2134,25 @@ Array
 
 
 
-/**/
-
-
 	/**
 	 * 取得社區id
 	 */
 	function getCommId()
 	{
-		$comm_id = $this->session->userdata("comm_id");
+		//取得comm_id
+		//----------------------------------------------------------------------					
+		$comm_id = $this->it_model->listData("sys_config","id='comm_id'");
+		if($comm_id["count"]>0)
+		{			
+			$comm_id = $comm_id["data"][0]["value"];
+			
+		}		
+		else
+		{
+			$comm_id = '';
+		}
+		//----------------------------------------------------------------------		
+		
 		return $comm_id;
 	}
 	

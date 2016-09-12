@@ -179,8 +179,8 @@ class Mailmgr extends Frontend_Controller {
 		"type" => tryGetData("type",$edit_data),
 		"desc" => tryGetData("desc",$edit_data),
 		"booked" => date( "Y-m-d H:i:s" ),
-		"booker" => $this->session->userdata("user_sn"),
-		"booker_id" => $this->session->userdata("user_sn"),
+		"booker" => $this->session->userdata("guard_sn"),
+		"booker_id" => $this->session->userdata("guard_sn"),
 		"user_name" => tryGetData("user_name",$edit_data),
 		"updated" => date( "Y-m-d H:i:s" )
 		);
@@ -299,7 +299,7 @@ class Mailmgr extends Frontend_Controller {
 					"receive_user_name" => $receive_user_name,
 					"receive_user_sn" => $receive_user_sn,
 					"is_sync" => 0,
-					"receive_agent_sn" => $this->session->userdata("user_sn"),
+					"receive_agent_sn" =>  $this->session->userdata("guard_sn"),
 					"received" => date("Y-m-d H:i:s"),
 					"updated" => date("Y-m-d H:i:s")
 				);

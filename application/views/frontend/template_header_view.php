@@ -16,7 +16,7 @@
             -->
             </li>
             <li>
-                <a href="<?php echo frontendUrl("voting")?>" title="社區服務"  class="naviBgStyle2">
+                <a href="<?php echo frontendUrl("bulletin")?>" title="社區服務"  class="naviBgStyle2">
                      <img src="<?php echo base_url().$templateUrl;?>images/navi_2.png" alt="">
                     社區服務</a>
                     <!--
@@ -62,7 +62,12 @@
 <div id="member_bar">
     <div class="mPrimary">
         <div class="login_status">
-		<?php if($this->session->userdata("f_user_name")!== FALSE ){ ?>
+		
+		<?php if($this->session->userdata("guard_name")!== FALSE ){ ?>
+			<img src="<?php echo base_url().$templateUrl;?>images/login_icon.png" alt=""> <?php echo $this->session->userdata("guard_name");?> 您好
+			
+             <button type="button" onclick='self.location="<?php echo fUrl("logout"); ?>"' >登出</button>
+		<?php }else if($this->session->userdata("f_user_name")!== FALSE ){ ?>
 			<img src="<?php echo base_url().$templateUrl;?>images/login_icon.png" alt=""> <?php echo $this->session->userdata("f_user_name");?> 您好
 			
              <button type="button" onclick='self.location="<?php echo fUrl("logout"); ?>"' >登出</button>

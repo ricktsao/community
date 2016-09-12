@@ -120,7 +120,7 @@
         </div>
 
     </div>
-	<a href="<?php echo frontendUrl("login")?>" id="blocks"></a>
+	<a href="<?php echo frontendUrl()?>" id="blocks"></a>
     <div id="dates">
         <div>
             <table id="dd">
