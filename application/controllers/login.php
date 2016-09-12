@@ -146,6 +146,7 @@ class Login extends Frontend_Controller {
 				$this->session->set_userdata('user_auth', $sys_admin_auth);
 				$this->session->set_userdata('user_name', $user_info["name"]);
 				$this->session->set_userdata('user_group', $sys_user_groups);
+				$this->session->set_userdata('user_sn', $user_info["sn"]);
 			} else {
 				$this->session->set_userdata('user_auth', false);
 			}

@@ -186,6 +186,7 @@ Class Voting_model extends IT_Model
 		$query = "SELECT * FROM voting WHERE is_sync=0";
 		$re = $this->runSql($query);
 		$data = $re['data'];
+		
 		for($i=0;$i<$re['count'];$i++){
 			unset($data[$i]['is_sync']);
 			$sync_result = $this->sync_to_server($data[$i],"sync_voting/updateContent");
@@ -253,6 +254,13 @@ Class Voting_model extends IT_Model
 		curl_close ($ch);
 		
 
+		/* debug
+			dprint('- - sync_to_server debug - - - - - - - ');
+			dprint($url);
+			dprint($post_data);
+			echo('#'.$is_sync);
+			//die;
+		*/
 		
 		//更新同步狀況
 		//------------------------------------------------------------------------------

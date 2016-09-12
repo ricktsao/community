@@ -18,9 +18,9 @@ class Voting extends Backend_Controller {
 	 * bulletin list page
 	 */
 	public function contentList()
-	{	
+	{
 		$this->Voting_model->all_sync();
-
+		
 		$list = $this->it_model->listData( "voting","is_del=0",$this->per_page_rows , $this->page );
 		$data["list"] = $list['data'];
 		$list["count"] =  $list['count'];
@@ -134,6 +134,7 @@ class Voting extends Backend_Controller {
 			{
 				$this->Voting_model->change_option($edit_data["sn"],$voting_option);
 					
+				$edit_data['user_name'] = $this->session->userdata('user_name');
 				if($this->it_model->updateData( "voting" , $edit_data, "sn =".$edit_data["sn"] ))
 				{
 					$sync_result = $this->Voting_model->sync_to_server($edit_data,"sync_voting/updateContent");
@@ -150,6 +151,8 @@ class Voting extends Backend_Controller {
 			else 
 			{			
 				$edit_data['user_sn'] = $this->session->userdata('user_sn');
+				$edit_data['user_name'] = $this->session->userdata('user_name');
+				
 				$content_sn = $this->it_model->addData( "voting" , $edit_data );
 				if($content_sn > 0)
 				{				
