@@ -58,7 +58,7 @@ Class Voting_model extends IT_Model
 		//runSql
 		$today = date("Y-m-d");
 
-		$sql_date  = " AND  '".$today."' >= voting.end_date ";
+		$sql_date  = " AND  '".$today."' > voting.end_date ";
 
 		
 
