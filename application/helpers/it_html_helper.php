@@ -124,7 +124,7 @@
 	 * @param bool 
 	 * @return string
 	 */
-	function frontendUrl($controller ='home', $action = 'index', $has_query_string = FALSE, $ignore_var = array(), $add_var = array())
+	function frontendUrl($controller ='master', $action = 'index', $has_query_string = FALSE, $ignore_var = array(), $add_var = array())
 	{
 		$CI	=& get_instance();		
 		$frontend_name = $CI->config->item('frontend_name');

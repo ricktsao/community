@@ -144,7 +144,8 @@ abstract class Frontend_Controller extends IT_Controller
 	 */	
 	public function redirectHome()
 	{
-		header("Location:".base_url()."home");
+		//header("Location:".base_url()."home");
+		header("Location:".base_url()."master");
 	}
 	
 	/**
