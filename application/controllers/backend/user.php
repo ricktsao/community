@@ -8,7 +8,130 @@ class User extends Backend_Controller
 		parent::__construct();
 
 	}
+	public function editHouseUser()
+	{
+		dprint($_GET);
+		
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);
+		}
 
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+		
+		// 管委職稱
+		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_value)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
+		}
+		$data['manager_title_array'] = $manager_title_array;
+		
+		$condition = '';
+		// 搜尋戶別
+		$building_id = NULL;
+		if (isNotNull($b_part_01) && $b_part_01 > 0) {
+			$building_id = $b_part_01.'_';
+		}
+		if (isNotNull($b_part_01) && isNotNull($b_part_02) && $b_part_01 > 0 && $b_part_02 > 0) {
+			$building_id .= $b_part_02.'_';
+		}
+		if (isNotNull($building_id)) {
+			$condition .= ' AND building_id like "'.$building_id.'%"' ;
+		}
+		
+		// 查詢該戶別住戶
+		$query = "select SQL_CALC_FOUND_ROWS s.* "
+						."    FROM sys_user s "
+						."   where 1 ".$condition
+						;
+
+		$result = $this->it_model->runSql( $query , NULL, NULL, array('s.building_id'=>'asc', 's.name'=>'asc') );
+		//dprint( $admin_list["sql"]);
+		$data["list"] = $result["data"];
+	dprint($result) ;
+		//取得分頁
+		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
+
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		$data['b_part_03'] = $b_part_03;
+
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+
+	//	$this->display("house_user_list_view",$data);
+		
+	}
+	
+	
+	public function houseList()
+	{
+		$headline = '戶別列表';
+		$this->getAppData();//同步app登入資料
+	
+		$query_key = array();
+		foreach( $_GET as $key => $value ) {
+			$query_key[$key] = $this->input->get($key,TRUE);
+		}
+
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		
+		$query = 'SELECT SUBSTRING_INDEX(`building_id`, "_", 2) as house, addr_part_01, addr_part_02, count(*) as users '
+				.'  FROM `sys_user` '
+				.' WHERE `building_id` IS NOT NULL '
+				;
+		if (isNotNull($b_part_01) && $b_part_01 > 0) {
+			$query .= '   AND `building_id` LIKE "'.$b_part_01.'_%" ';
+		}
+		if (isNotNull($b_part_02) && $b_part_02 > 0) {
+			$query .= '   AND `building_id` LIKE "%_'.$b_part_02.'_%" ';
+		}
+		$query .= ' GROUP BY SUBSTRING_INDEX(`building_id`, "_", 2) ';
+		
+		$result = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
+
+
+		$list = array();
+		foreach( $result["data"] as $item) {
+			$house_text = building_id_to_text($item['house'], true);
+			$addr_text = addr_part_to_text($item['addr_part_01'], $item['addr_part_02']);
+			//dprint($house_text); echo '=>'.$addr_text ;
+			$list[] = array('building_01' => $house_text[0]
+							,  'building_02' => $house_text[1]
+							,  'addr' => $addr_text
+							,  'users'=> tryGetData('users', $item, 0)
+							);
+		}
+		$data['headline'] = $headline;
+		$data['list'] = $list;
+		//取得分頁
+		$data["pager"] = $this->getPager($result["count"],$this->page,$this->per_page_rows,"admin");
+
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		// 戶別相關參數
+		$data['building_part_01'] = $this->building_part_01;
+		$data['building_part_02'] = $this->building_part_02;
+		$data['building_part_03'] = $this->building_part_03;
+		$data['building_part_01_array'] = $this->building_part_01_array;
+		$data['building_part_02_array'] = $this->building_part_02_array;
+		// 地址門牌參數
+		$data['addr_part_01_array'] = $this->addr_part_01_array;
+		$data['addr_part_02_array'] = $this->addr_part_02_array;
+
+		$this->display("house_list_view",$data);
+	
+	}
+	
 	public function index()
 	{
 		$this->getAppData();//同步app登入資料
@@ -20,15 +143,16 @@ class User extends Backend_Controller
 			$query_key[$key] = $this->input->get($key,TRUE);
 		}
 
+		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
+		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
+		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
+		
+		// 管委職稱
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
 			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_value));
 		}
 		$data['manager_title_array'] = $manager_title_array;
-
-		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
-		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
-		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
 		
 		// 搜尋戶別
 		$building_id = NULL;
