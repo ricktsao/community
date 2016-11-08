@@ -10,8 +10,7 @@ class User extends Backend_Controller
 	}
 	public function editHouseUser()
 	{
-		dprint($_GET);
-		
+		$headline = '戶別住戶資料維護';
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
 			$query_key[$key] = $this->input->get($key,TRUE);
@@ -50,10 +49,8 @@ class User extends Backend_Controller
 		$result = $this->it_model->runSql( $query , NULL, NULL, array('s.building_id'=>'asc', 's.name'=>'asc') );
 		//dprint( $admin_list["sql"]);
 		$data["list"] = $result["data"];
-	dprint($result) ;
-		//取得分頁
-		//$data["pager"] = $this->getPager($admin_list["count"],$this->page,$this->per_page_rows,"admin");
 
+		$data['headline'] = $headline;
 
 		$data['b_part_01'] = $b_part_01;
 		$data['b_part_02'] = $b_part_02;
@@ -66,7 +63,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-	//	$this->display("house_user_list_view",$data);
+		$this->display("house_user_list_view",$data);
 		
 	}
 	
@@ -700,6 +697,7 @@ class User extends Backend_Controller
         	$arr_data["id"] = $edit_data["new_id"];
         	$arr_data["updated"] = date("Y-m-d H:i:s");
         	$arr_data["is_sync"] = 0;
+        	$arr_data["suggest_flag"] = $edit_data["suggest_flag"];
 
       	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' " );
 			if ($arr_return){
@@ -973,6 +971,8 @@ class User extends Backend_Controller
 										'is_contact' => 1,
 										'is_manager' => 0,
 										'gas_right' => 0,
+										'tenant_flag' => 0,
+										'suggest_flag' => 1,
 										'voting_right' => 0,
 										'start_date' => date( "Y-m-d" ),
 										'forever' => 1,
@@ -1116,6 +1116,8 @@ class User extends Backend_Controller
 				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
 				, "voting_right"	=>	tryGetData("voting_right", $edit_data)
 				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
+				, "tenant_flag"		=>	tryGetData("tenant_flag", $edit_data)
+				, "suggest_flag"		=>	tryGetData("suggest_flag", $edit_data)
 				, "is_manager"		=>	$is_manager
 				, "manager_title"	=>	tryGetData("manager_title", $edit_data)
 				, "is_owner"		=>	tryGetData("is_owner", $edit_data)

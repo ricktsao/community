@@ -361,6 +361,22 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 		</div>
 	</div>
 
+	<div class="form-group ">
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">是否為承租房客</label>
+		<div class="col-xs-12 col-sm-4">
+			<label class="middle" style="width:100%;">
+			<?php echo generate_radio('tenant_flag', $edit_data['tenant_flag']);?>
+			</label>
+		</div>
+	</div>
+	<div class="form-group ">
+		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">意見箱權限</label>
+		<div class="col-xs-12 col-sm-4">
+			<label class="middle" style="width:100%;">
+			<?php echo generate_radio('suggest_flag', $edit_data['suggest_flag']);?>
+			</label>
+		</div>
+	</div>
 	<!-- 
 	<?php
 	$error = '';
