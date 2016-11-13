@@ -1734,6 +1734,29 @@ $edoma_photo_ary = array();
 			$upload = $this->upload->data();
 			$img_filename = tryGetData('file_name', $upload);
 			
+			//浮水印
+			//------------------------------------------------------------
+			$add_water = $this->input->post('add_watermark');
+			
+			if($add_water == 1)
+			{
+				$watermark_filename = base_url('template/backend/images/watermark.png');
+				$water_info = $this->c_model->GetList( "watermark");			
+				if(count($water_info["data"])>0)
+				{
+					img_show_list($water_info["data"],'img_filename',"watermark");
+					$water_info = $water_info["data"][0];			
+					$watermark_filename = $water_info["img_filename"];						
+				}			
+				
+				$org_filename = set_realpath("upload/content_photo/".$content_sn).$img_filename;
+				$save_filename = set_realpath("upload/content_photo/".$content_sn).'w_'.$img_filename;
+				doWatermark($org_filename, $watermark_filename, $save_filename);
+				$img_filename = 'w_'.$img_filename;
+			}
+			//------------------------------------------------------------
+			
+			
 			$arr_data = array(							
 							  'content_sn'	=>	tryGetData('content_sn', $edit_data)
 							, 'img_filename'			=>	$img_filename
@@ -1897,7 +1920,7 @@ $edoma_photo_ary = array();
 		$img_filename = resize_img($img_url,$img_config['resize_setting']);	
 
 		//社區同步資料夾
-		$img_config['resize_setting'] =array($folder_name=>array(500,500));
+		$img_config['resize_setting'] =array($folder_name=>array(1024,1024));
 		resize_img($img_url,$img_config['resize_setting'],$this->getCommId(),$img_filename);
 				
 		@unlink($img_url);

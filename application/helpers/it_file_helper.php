@@ -767,6 +767,58 @@ if ( ! function_exists('get_resize_img'))
 	    }
 	    rmdir($dirPath);
 	}
+	
+	
+	
+	function doWatermark($from_filename, $watermark_filename, $save_filename)
+	{
+	    $allow_format = array('jpeg', 'png', 'gif');
+	    $sub_name = $t = '';
+	
+	    // 原圖
+	    $img_info = getimagesize($from_filename);
+	    $width    = $img_info['0'];
+	    $height   = $img_info['1'];
+	    $mime     = $img_info['mime'];
+	
+	    list($t, $sub_name) = explode('/', $mime);
+	    if ($sub_name == 'jpg')
+	        $sub_name = 'jpeg';
+	
+	    if (!in_array($sub_name, $allow_format))
+	        return false;
+	
+	    $function_name = 'imagecreatefrom' . $sub_name;
+	    $image     = $function_name($from_filename);
+	
+	    // 浮水印
+	    $img_info = getimagesize($watermark_filename);
+	    $w_width  = $img_info['0'];
+	    $w_height = $img_info['1'];
+	    $w_mime   = $img_info['mime'];
+	
+	    list($t, $sub_name) = explode('/', $w_mime);
+	    if (!in_array($sub_name, $allow_format))
+	        return false;
+	
+	    $function_name = 'imagecreatefrom' . $sub_name;
+	    $watermark = $function_name($watermark_filename);
+	
+	    $watermark_pos_x = ($width  - $w_width)/2;
+	    $watermark_pos_y = ($height - $w_height)/2;
+	
+	    imagecopymerge($image, $watermark, $watermark_pos_x, $watermark_pos_y, 0, 0, $w_width, $w_height, 20);
+		
+	    // 浮水印的圖若是透明背景、透明底圖, 需要用下述兩行
+	    //imagesetbrush($image, $watermark);
+	    //imageline($image, $watermark_pos_x, $watermark_pos_y, $watermark_pos_x, $watermark_pos_y, IMG_COLOR_BRUSHED);
+	
+	
+		unlink($from_filename);//移除原圖
+	
+	    return imagejpeg($image, $save_filename);
+	}
+	
 
 
 /* End of file MY_file_helper.php */
