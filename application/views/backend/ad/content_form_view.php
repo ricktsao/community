@@ -3,7 +3,9 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	
+	<?php echo textOption("廠商名稱","title",$edit_data); ?>
+	<?php echo textOption("廠商電話1","brief",$edit_data); ?>
+	<?php echo textOption("廠商電話2","brief2",$edit_data); ?>
 	<div class="form-group ">
         <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">廣告圖</label>
         <div class="col-xs-12 col-sm-6">

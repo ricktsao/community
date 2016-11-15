@@ -17,10 +17,10 @@
 			<i class="icon-edit bigger-120"></i>完工(<?php echo $status_4_cnt;?>)
 		</a>
     </div>   
-    <div class="btn-group" style="display:none">
-        
-          <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>
-        
+    <div class="btn-group" style="text-align:right">
+        <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("status"=>$status)); ?>">
+			<i class="icon-edit bigger-120"></i>PDF報表
+		</a>
     </div>                
 </article>	
 </form>

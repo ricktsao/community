@@ -77,13 +77,27 @@ class Suggestion_log extends Frontend_Controller {
 	
 	public function index()
 	{
-		$this->getAppData();//查詢server有無要同步的資料
+		$this->getAppData();//查詢server有無要同步的資料		
 		$data = array();
 		
-		$suggestion_list = $this->it_model->listData("suggestion","user_sn = '".$this->session->userdata("f_user_sn")."'",$this->per_page_rows , $this->page,array("created"=>"desc"));
-		$data["pager"] = $this->getPager($suggestion_list["count"],$this->page,$this->per_page_rows,"index");
-		$data["suggestion_list"] = $suggestion_list["data"];
-		$this->display("suggestion_list_view",$data);
+		if($this->checkSuggestFalg($this->session->userdata("f_user_sn")))
+		{
+			$suggestion_list = $this->it_model->listData("suggestion","user_sn = '".$this->session->userdata("f_user_sn")."'",$this->per_page_rows , $this->page,array("created"=>"desc"));
+			$data["pager"] = $this->getPager($suggestion_list["count"],$this->page,$this->per_page_rows,"index");
+			$data["suggestion_list"] = $suggestion_list["data"];
+			$this->display("suggestion_list_view",$data);
+		}
+		else 
+		{
+			$this->display("no_permission_view.php",$data);
+		}
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 	
