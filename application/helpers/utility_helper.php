@@ -48,9 +48,14 @@
 				return $building_id_to_text;
 
 			} else {
+				if ( isset($building_id_parts[2]) ) {
 				$parts = array(tryGetData($building_id_parts[0], $CI->building_part_01_array)
 								, tryGetData($building_id_parts[1], $CI->building_part_02_array)
 								, $building_id_parts[2] );
+				} else {
+				$parts = array(tryGetData($building_id_parts[0], $CI->building_part_01_array)
+								, tryGetData($building_id_parts[1], $CI->building_part_02_array));
+				}
 				return $parts;
 			}
 		}
