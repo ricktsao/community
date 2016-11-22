@@ -60,23 +60,32 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 		{
 			echo '
 			<tr>
-				<td colspan=2 style="text-align:center;font-weight:bold;" >歷史紀錄</td>
+				<td colspan=2 style="text-align:center;font-weight:bold;" ><H2>歷史紀錄</H2></td>
 			</tr>';
 		}
 		
 		foreach ($gas_list as $key => $gas_info) 
 		{
+			/*
 			if($gas_info["sn"]==$this_mon_gas_info["sn"] || $gas_info["sn"]==$last_mon_gas_info["sn"])
 			{
 				continue;
 			}
+			*/
+			
+			$degress = "無";
+			if(tryGetData("degress", $gas_info,0)>0)
+			{
+				$degress = tryGetData("degress", $gas_info)." 度";
+			}
+			
 			
 			echo '
 			<tr>
 				<td style="width:20%;">
 					<div class="date_style">'.$gas_info["year"].'/'.$gas_info["month"].'</div>
 				</td>
-				<td class="text_center">'.$gas_info["degress"].'度</td>
+				<td class="text_center">'.$degress.'</td>
 			</tr>
 			';
 		}
