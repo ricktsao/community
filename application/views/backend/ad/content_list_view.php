@@ -37,6 +37,7 @@
 								<thead>
 									<tr>										
 										<th style="width:100px">序號</th>
+										<th>主旨</th>
 										<th>廠商名稱</th>
 										<th>廣告圖</th>									
 																			
@@ -56,7 +57,8 @@
 									<?php for($i=0;$i<sizeof($list);$i++){ ?>
 									<tr>
 										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>		
-										<td><?php echo $list[$i]["title"] ?></td>
+										<td><?php echo $list[$i]["title"]; ?></td>
+										<td><?php echo $list[$i]["content"]; ?></td>
 										<td><?php echo '<a href="'.$list[$i]["img_filename"].'" title="檢視大圖" target=_blank><img border="0" style="height:150px" src="'.$list[$i]["img_filename"].'?"></a>'; ?></td>
 										<td><?php echo showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]) ?></td>
 										<td>
