@@ -3,7 +3,8 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
-	<?php echo textOption("廠商名稱","title",$edit_data); ?>
+	<?php echo textOption("主旨","title",$edit_data); ?>
+	<?php echo textOption("廠商名稱","content",$edit_data); ?>
 	<?php echo textOption("廠商電話1","brief",$edit_data); ?>
 	<?php echo textOption("廠商電話2","brief2",$edit_data); ?>
 	<div class="form-group ">

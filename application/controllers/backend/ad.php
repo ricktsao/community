@@ -45,7 +45,8 @@ class Ad extends Backend_Controller {
 			
 			$tables = 
 			'<tr>										
-				<th style="width:100px">序號</th>
+				<th style="width:60px">序號</th>
+				<th>主旨</th>
 				<th>廠商名稱</th>
 				<th>廣告圖</th>								
 				<th>有效日期</th>					
@@ -58,7 +59,7 @@ class Ad extends Backend_Controller {
 				'<tr>
 					<td>'.($i+1).'</td>
 					<td>'.$ad_list[$i]["title"].'</td>
-					
+					<td>'.$ad_list[$i]["content"].'</td>					
 					<td><img border="0" style="height:150px" src="'.$ad_list[$i]["img_filename"].'"></td>
 					<td>'.showEffectiveDate($ad_list[$i]["start_date"], $ad_list[$i]["end_date"], $ad_list[$i]["forever"]).'</td>						
 				</tr>';	

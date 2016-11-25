@@ -3,6 +3,28 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
+	
+	<?php 
+	echo textOption("廠商名稱","filename",$edit_data);
+	?> 
+	
+	<?php 
+	echo textOption("廠商電話1","brief",$edit_data);
+	?>
+	
+	<?php 
+	echo textOption("廠商電話2","brief2",$edit_data);
+	?>
+	
+
+	
+	<div class="form-group ">
+		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">收費金額</label>
+		<div class="col-xs-12 col-sm-6">
+			<input id="url" name="url" class="width-40" value="<?php echo tryGetData("url",$edit_data);?>" type="text"> 元			
+		</div>
+	</div>
+	
 	<?php echo textOption("課程主旨","title",$edit_data); ?>
 	  	
 	<?php
@@ -26,20 +48,8 @@
     </div>
 	
 	
-	<div class="form-group ">
-		<label for="start_date" class="col-xs-12 col-sm-3 control-label no-padding-right">課程日期</label>
-		<div class="col-xs-12 col-sm-4">
-			<input type="text" onclick="WdatePicker()" value="<?php echo showDateFormat(tryGetData("start_date",$edit_data),"Y-m-d")?>" class=width-30" name="start_date" id="start_date">					
-		</div>
-		<div class="help-block col-xs-12 col-sm-reset inline"></div>
-	</div>
-	
-	
-	<?php 
-	//echo textOption("排序","sort",$edit_data); 
-	?>
+	<?php echo pickDateOption($edit_data);?>
 	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
-	<input type="hidden" name="forever" value="<? echo tryGetData('forever', $edit_data)?>" />
 	<input type="hidden" name="sn" value="<? echo tryGetData('sn', $edit_data)?>" />
 	<input type="hidden" name="content_type" value="<? echo tryGetData('content_type', $edit_data)?>" />
 		
