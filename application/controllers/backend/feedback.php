@@ -1,34 +1,23 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Course extends Backend_Controller {
+class Feedback extends Backend_Controller {
 	
 	function __construct() 
 	{
 		parent::__construct();		
-		$this->getEdomaData();
+		
 	}
 	
 
 
 	/**
-	 * course list page
+	 * feedback list page
 	 */
 	public function contentList()
-	{				
-		
-		$cat_sn = $this->input->get('cat_sn');		
-		
-		$cat_list = $this->c_model->GetList( "course_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
-		
-		
+	{		
 		$condition = "";
-		if(isNotNull($cat_sn))
-		{
-			$condition = "web_menu_content.parent_sn = '".$cat_sn."'";
-		}
 		
-		$list = $this->c_model->GetList2( "course" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$list = $this->c_model->GetList( "feedback" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
@@ -36,105 +25,28 @@ class Course extends Backend_Controller {
 		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
-		$data["cat_sn"] = $cat_sn;
+		
 		//dprint($data["pager"]);
 		
 		
 		$this->display("content_list_view",$data);
 	}
 	
-	
-	/**
-	 * pdf list print
-	 */
-	public function showPdfList()
-	{
-		$condition = "";
-		$list = $this->c_model->GetList( "course" , $condition ,FALSE, NULL , NULL , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());		
-		
-		
-		if($list["count"]>0)
-		{
-			$list = $list["data"];	
-			$html = "<h1 style='text-align:center'>課程專區</h1>";
-				
-			
-			$tables = 
-			'<tr>										
-				<th style="width:60px">序號</th>
-				<th>課程主旨</th>
-				<th>廠商名稱</th>
-				<th>收費金額</th>								
-				<th>有效日期</th>					
-			</tr>';
-			
-			
-			for($i=0;$i<sizeof($list);$i++)
-			{
-				$tables .= 
-				'<tr>
-					<td>'.($i+1).'</td>
-					<td>'.$list[$i]["title"].'</td>
-					<td>'.$list[$i]["filename"].'</td>
-					<td>'.$list[$i]["url"].'</td>
-					<td>'.showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]).'</td>						
-				</tr>';	
-			}
-			
-			$html .= '<table border="1" width="100%" >'.$tables.'</table>';
-			
-			$this->load->library('pdf');
-			$mpdf = new Pdf();
-			$mpdf = $this->pdf->load();
-			$mpdf->useAdobeCJK = true;
-			$mpdf->autoScriptToLang = true;
-			
-			
-			$water_img = base_url('template/backend/images/watermark.png');
-			$water_info = $this->c_model->GetList( "watermark");			
-			if(count($water_info["data"])>0)
-			{
-				img_show_list($water_info["data"],'img_filename',"watermark");
-				$water_info = $water_info["data"][0];			
-				$water_img = $water_info["img_filename"];
-						
-			}
-			$mpdf->SetWatermarkImage($water_img);
-			$mpdf->watermarkImageAlpha = 0.081;
-			$mpdf->showWatermarkImage = true;		
-			
-			$mpdf->WriteHTML($html);			
-			
-			$time = time();
-			$pdfFilePath = "課程專區_".$time .".pdf";
-			$mpdf->Output($pdfFilePath,'I');
-		}
-		else
-		{
-			$this->closebrowser();
-		}
-		
-	}
-	
-	
 	/**
 	 * category edit page
 	 */
 	public function editContent()
-	{
+	{		
 		$content_sn = $this->input->get('sn');
 			
-		$cat_list = $this->c_model->GetList( "course_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
-				
+			
 		if($content_sn == "")
 		{
 			$data["edit_data"] = array
 			(
 				'sort' =>500,
 				'start_date' => date( "Y-m-d" ),
-				'content_type' => "course",
+				'content_type' => "feedback",
 				'target' => 0,
 				'forever' => 1,
 				'launch' =>1
@@ -143,49 +55,36 @@ class Course extends Backend_Controller {
 		}
 		else 
 		{		
-			$course_info = $this->c_model->GetList( "course" , "sn =".$content_sn);
+			$feedback_info = $this->c_model->GetList( "feedback" , "sn =".$content_sn);
 			
+			if(count($feedback_info["data"])>0)
+			{
+				img_show_list($feedback_info["data"],'img_filename',$this->router->fetch_class());			
+				
+				$data["edit_data"] = $feedback_info["data"][0];			
 
-			
-			if($course_info["count"]>0)
-			{				
-				img_show_list($course_info["data"],'img_filename',"course");
-				$course_info = $course_info["data"][0];
-				$data["edit_data"] = $course_info;			
-				
-				if($course_info["is_edoma"]==1)
-				{
-					$this->display("content_view",$data);
-				}
-				else
-				{
-					$this->display("content_form_view",$data);
-				}
-				
+				$this->display("content_form_view",$data);
 			}
 			else
 			{
 				redirect(bUrl("contentList"));	
 			}
 		}
-	}
-	
+	}	
 	
 	public function updateContent()
 	{	
 		$edit_data = $this->dealPost();
-		$edit_data["brief"] = tryGetData("brief",$_POST,0);	
-			
+		//dprint($edit_data);exit;
+		$edit_data["is_sync"] = 0;
+		
 		if ( ! $this->_validateContent())
 		{
 			$data["edit_data"] = $edit_data;		
 			$this->display("content_form_view",$data);
 		}
         else 
-        {
-			
-			deal_img($edit_data ,"img_filename",$this->router->fetch_class());			
-			
+        {			
 						
 			if(isNotNull($edit_data["sn"]))
 			{				
@@ -193,7 +92,6 @@ class Course extends Backend_Controller {
 				{					
 					$img_filename = $this->uploadImage($edit_data["sn"]);					
 					$edit_data["img_filename"] = $img_filename;
-					
 					$this->sync_to_server($edit_data);
 					$this->showSuccessMessage();					
 				}
@@ -212,7 +110,6 @@ class Course extends Backend_Controller {
 				{
 					$img_filename =$this->uploadImage($content_sn);
 					$edit_data["img_filename"] = $img_filename;
-					
 					$edit_data["sn"] = $content_sn;
 					$this->sync_to_server($edit_data);
 				
@@ -223,17 +120,25 @@ class Course extends Backend_Controller {
 				{
 					$this->showFailMessage();					
 				}	
-			}
-			
-			$sync_data = array(
-			
-			);			
-			
+			}			
 			
 			redirect(bUrl("contentList"));	
         }	
 	}
-	
+
+
+	public function showPdf_bak()
+	{
+		$time = time();
+		$pdf_file_name = $time .".pdf";
+		
+		$file_url = fUrl("downloadPdf",TRUE);
+		header('Content-Type: application/pdf');
+		header("Content-Transfer-Encoding: Binary"); 
+		header("Content-disposition: attachment; filename=\"" . $pdf_file_name . "\""); 
+		readfile($file_url);
+
+	}
 	
 	/**
 	 * pdf下載頁面
@@ -241,7 +146,7 @@ class Course extends Backend_Controller {
 	public function showPdf()
 	{
 		$content_sn = $this->input->get('sn');
-		$item_info = $this->c_model->GetList( "course" , "sn =".$content_sn);
+		$item_info = $this->c_model->GetList( "feedback" , "sn =".$content_sn);
 			
 		if(count($item_info["data"])>0)
 		{
@@ -260,19 +165,9 @@ class Course extends Backend_Controller {
 				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
 			}
 			//------------------------------------------------------------------------------
+			//dprint($photo_list["data"]);exit;
 			
-			if($img_str == "")
-			{
-				if(isNotNull($item_info["img_filename"]))
-				{
-					$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
-				}
-				
-			}
-			
-			
-						
-			$html = "<h1 style='text-align:center'>課程專區</h1>";
+			$html = "<h1 style='text-align:center'>社區公告</h1>";
 			$html .= "<h3>".$item_info["title"]."</h3>";
 			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";
 	
@@ -281,7 +176,6 @@ class Course extends Backend_Controller {
 			$mpdf = $this->pdf->load();
 			$mpdf->useAdobeCJK = true;
 			$mpdf->autoScriptToLang = true;
-			
 			
 			
 			$water_img = base_url('template/backend/images/watermark.png');
@@ -295,22 +189,20 @@ class Course extends Backend_Controller {
 			}			
 			$mpdf->SetWatermarkImage($water_img);
 			$mpdf->watermarkImageAlpha = 0.081;
-			$mpdf->showWatermarkImage = true;	
-			
-			
+			$mpdf->showWatermarkImage = true;		
 			
 			$mpdf->WriteHTML($html);			
 			
 			$time = time();
-			$pdfFilePath = "課程專區_".$time .".pdf";
+			$pdfFilePath = "社區公告_".$time .".pdf";
 			$mpdf->Output($pdfFilePath,'I');
 		}
 		else
 		{
 			$this->closebrowser();
 		}
+		
 	}
-	
 	
 	//圖片處理
 	private function uploadImage($content_sn)
@@ -352,15 +244,16 @@ class Course extends Backend_Controller {
 	}
 	
 	
+	
 	/**
-	 * 驗證daily_goodedit 欄位是否正確
+	 * 驗證feedbackedit 欄位是否正確
 	 */
 	function _validateContent()
 	{
 		
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
-		$this->form_validation->set_rules( 'title', '課程主旨', 'required' );	
+		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
 		//$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
@@ -418,7 +311,66 @@ class Course extends Backend_Controller {
 		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
 
+	
 
+	public function hotContent()
+    {
+		$sn = $this->input->post("content_sn", TRUE);
+		$table_name = 'web_menu_content';
+        $field_name = 'hot';
+        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
+        {
+            echo json_encode(array());
+        }
+        else 
+        {		
+
+            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
+			if($data_info["count"]==0)
+			{
+				echo json_encode(array());
+				return;
+			}			  
+			
+			$data_info = $data_info["data"][0];
+			
+			$change_value = 1;
+			if($data_info[$field_name] == 0)
+			{
+				$change_value = 1;
+			}
+			else
+			{
+				$change_value = 0;
+			}
+			
+			
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
+			if($result)
+			{
+				//社區主機同步
+				//----------------------------------------------------------------------------------------------------
+				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
+				$content_info = $this->it_model->runSql($query);
+				if($content_info["count"] > 0)
+				{
+					$content_info = $content_info["data"][0]; 					
+					$this->sync_to_server($content_info);									
+				}			
+				//----------------------------------------------------------------------------------------------------
+				echo json_encode($change_value);
+			}
+			else
+			{
+				echo json_encode($data_info[$field_name]);
+			}
+			                      
+        }
+    }
+	
+	
+	
+	
 	
 	public function GenerateTopMenu()
 	{
