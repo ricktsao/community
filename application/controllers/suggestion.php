@@ -14,9 +14,21 @@ class Suggestion extends Frontend_Controller {
 	public function index()
 	{
 		$data = array();
-		$edit_data["error_message"] = "";
-		$data["edit_data"] = $edit_data;		
-		$this->display("suggestion_view",$data);
+		
+		if($this->checkSuggestFalg($this->session->userdata("f_user_sn")))
+		{
+			$edit_data["error_message"] = "";
+			$data["edit_data"] = $edit_data;		
+			$this->display("suggestion_view",$data);
+		}
+		else 
+		{
+			$this->display("no_permission_view.php",$data);
+		}
+		
+		
+		
+		
 	}	
 
 		

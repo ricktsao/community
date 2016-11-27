@@ -34,7 +34,7 @@
 	<?php if(count($building_list)>0){	?>
     <div class="btn-group">        
 	    <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdf",TRUE); ?>">
-			<i class="icon-edit bigger-120"></i>瓦斯報表
+			<i class="icon-edit bigger-120"></i>PDF報表
 		</a>      
     </div>  
     <?php }	?>

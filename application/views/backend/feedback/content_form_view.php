@@ -3,34 +3,11 @@
 <?php showOutputBox("tinymce/tinymce_js_view", array('elements' => 'content'));?>
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 	
+	<?php echo textOption("主旨","title",$edit_data); ?>
 	
-	<?php 
-	echo textOption("廠商名稱","filename",$edit_data);
-	?> 
-	
-	<?php 
-	echo textOption("廠商電話1","brief",$edit_data);
-	?>
-	
-	<?php 
-	echo textOption("廠商電話2","brief2",$edit_data);
-	?>
-	
-
-	
-	<div class="form-group ">
-		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">收費金額</label>
-		<div class="col-xs-12 col-sm-6">
-			<input id="url" name="url" class="width-40" value="<?php echo tryGetData("url",$edit_data);?>" type="text"> 元			
-		</div>
-	</div>
-	
-	<?php echo textOption("課程主旨","title",$edit_data); ?>
-	  	
 	<?php
-	  echo textAreaOption("課程內容","content",$edit_data);
+	  echo textAreaOption("內容","content",$edit_data);
 	?>	
-	<?php echo checkBoxOption("收費","brief",$edit_data);?>
 	
 	<div class="form-group " style="display:none">
         <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">圖片</label>
@@ -47,19 +24,36 @@
         </div>
     </div>
 	
+	<?php
+	//echo dropdownOption("分類","parent_sn",$edit_data,$cat_list); 
+	?>
 	
-	<?php echo pickDateOption($edit_data);?>
-	<?php echo checkBoxOption("啟用","launch",$edit_data);?>
+	<?php 
+		//echo urlOption("開啟方式","url",$edit_data); 
+	?>
+	
+	
+	
+	
+	<?php
+	 //echo pickDateOption($edit_data);
+	 ?>
+	<?php 
+	//echo textOption("排序","sort",$edit_data);
+	 ?>
+	
+	
 	<input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
 	<input type="hidden" name="content_type" value="<?php echo tryGetData('content_type', $edit_data)?>" />
-		
+	<input type="hidden" name="forever" value="1" />
+	<input type="hidden" name="sort" value="500" />	
 
 	
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				回上一頁
+				回上頁
 			</a>		
 		
 

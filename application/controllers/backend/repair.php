@@ -245,6 +245,92 @@ class Repair extends Backend_Controller {
 	}
 	
 
+
+	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+		$status = $this->input->get('status');
+		
+		
+		$condition = "status = '".$status."'";
+
+		$user_map = $this->it_model->listData("sys_user","");
+		$user_map = $this->it_model->toMapValue($user_map["data"],"sn","name");
+		
+		$repair_list = $this->it_model->listData("repair",$condition, NULL , NULL,array("created"=>"asc"));
+		//echo $repair_list["sql"];exit;
+		
+		
+		
+		if($repair_list["count"]>0)
+		{
+			$repair_list = $repair_list["data"];	
+			$html = "<h1 style='text-align:center'>環境修繕-".tryGetData($status, $this->config->item('repair_status'))."</h1>";
+				
+			
+			$tables = 
+			'<tr>										
+				<th style="width:100px">序號</th>
+				<th>報修日期</th>									
+				<th>住戶姓名</th>									
+				<th>維修範圍</th>
+				<th>報修內容 </th>
+				<th>處理進度 </th>				
+			</tr>';
+			
+			
+			for($i=0;$i<sizeof($repair_list);$i++)
+			{
+				$tables .= 
+				'<tr>
+					<td>'.($i+1).'</td>
+					<td>'.showDateFormat($repair_list[$i]["created"],"Y-m-d").'</td>
+					<td>'.tryGetData($repair_list[$i]["user_sn"],$user_map).'</td>
+					<td>'.tryGetData($repair_list[$i]["type"],$this->config->item('repair_type')).'</td>
+					<td>'.nl2br($repair_list[$i]["content"]).'</td>
+					<td>'.tryGetData($repair_list[$i]["status"],$this->config->item('repair_status')).'</td>										
+				</tr>';	
+			}
+			
+			$html .= '<table border="1" width="100%" >'.$tables.'</table>';
+			
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			$water_img = base_url('template/backend/images/watermark.png');
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+				$water_img = $water_info["img_filename"];
+						
+			}
+			$mpdf->SetWatermarkImage($water_img);
+			$mpdf->watermarkImageAlpha = 0.081;
+			$mpdf->showWatermarkImage = true;		
+			
+			$mpdf->WriteHTML($html);			
+			
+			$time = time();
+			$pdfFilePath = "環境修繕_".tryGetData($status, $this->config->item('repair_status'))."_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
+		
+	}
+
+
+
 	/**
 	 * 同步至雲端server
 	 */

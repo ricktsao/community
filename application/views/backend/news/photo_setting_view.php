@@ -46,8 +46,8 @@
 		<input type='hidden' name='content_sn' value='<?php echo tryGetData('sn', $content_info); ?>'>		
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
-				<label for="watermark">加入浮水印</label><input id="watermark" type="checkbox" name="add_watermark" value="1" />
-				<div class="col-xs-12 col-sm-2">
+				<label style="display:none" for="watermark">加入浮水印</label><input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:none" />
+				<div class="col-xs-12 col-sm-3" >
 					<input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔</span>
 					<br>
 					

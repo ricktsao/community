@@ -1,20 +1,23 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Ad extends Backend_Controller {
+class Feedback extends Backend_Controller {
 	
 	function __construct() 
 	{
 		parent::__construct();		
-		$this->getEdomaData();
+		
 	}
 	
 
 
+	/**
+	 * feedback list page
+	 */
 	public function contentList()
-	{						
+	{		
 		$condition = "";
 		
-		$list = $this->c_model->GetList2( "ad" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$list = $this->c_model->GetList( "feedback" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
@@ -23,104 +26,27 @@ class Ad extends Backend_Controller {
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
 		
+		//dprint($data["pager"]);
+		
+		
 		$this->display("content_list_view",$data);
 	}
-	
-	
-	
-	/**
-	 * pdf list print
-	 */
-	public function showPdfList()
-	{
-		$ad_list = $this->c_model->GetList2( "ad" , $condition ,FALSE, NULL , NULL , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($ad_list["data"],'img_filename',$this->router->fetch_class());		
-		
-		
-		if($ad_list["count"]>0)
-		{
-			$ad_list = $ad_list["data"];	
-			$html = "<h1 style='text-align:center'>社區優惠</h1>";
-				
-			
-			$tables = 
-			'<tr>										
-				<th style="width:60px">序號</th>
-				<th>主旨</th>
-				<th>廠商名稱</th>
-				<th>廣告圖</th>								
-				<th>有效日期</th>					
-			</tr>';
-			
-			
-			for($i=0;$i<sizeof($ad_list);$i++)
-			{
-				$tables .= 
-				'<tr>
-					<td>'.($i+1).'</td>
-					<td>'.$ad_list[$i]["title"].'</td>
-					<td>'.$ad_list[$i]["content"].'</td>					
-					<td><img border="0" style="height:150px" src="'.$ad_list[$i]["img_filename"].'"></td>
-					<td>'.showEffectiveDate($ad_list[$i]["start_date"], $ad_list[$i]["end_date"], $ad_list[$i]["forever"]).'</td>						
-				</tr>';	
-			}
-			
-			$html .= '<table border="1" width="100%" >'.$tables.'</table>';
-			
-			$this->load->library('pdf');
-			$mpdf = new Pdf();
-			$mpdf = $this->pdf->load();
-			$mpdf->useAdobeCJK = true;
-			$mpdf->autoScriptToLang = true;
-			
-			
-			$water_img = base_url('template/backend/images/watermark.png');
-			$water_info = $this->c_model->GetList( "watermark");			
-			if(count($water_info["data"])>0)
-			{
-				img_show_list($water_info["data"],'img_filename',"watermark");
-				$water_info = $water_info["data"][0];			
-				$water_img = $water_info["img_filename"];
-						
-			}
-			$mpdf->SetWatermarkImage($water_img);
-			$mpdf->watermarkImageAlpha = 0.081;
-			$mpdf->showWatermarkImage = true;		
-			
-			$mpdf->WriteHTML($html);			
-			
-			$time = time();
-			$pdfFilePath = "社區優惠_".$time .".pdf";
-			$mpdf->Output($pdfFilePath,'I');
-		}
-		else
-		{
-			$this->closebrowser();
-		}
-		
-	}
-	
-	
-	
 	
 	/**
 	 * category edit page
 	 */
 	public function editContent()
 	{		
-		
 		$content_sn = $this->input->get('sn');
 			
-		$cat_list = $this->c_model->GetList( "ad" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
-				
+			
 		if($content_sn == "")
 		{
 			$data["edit_data"] = array
 			(
 				'sort' =>500,
 				'start_date' => date( "Y-m-d" ),
-				'content_type' => "ad",
+				'content_type' => "feedback",
 				'target' => 0,
 				'forever' => 1,
 				'launch' =>1
@@ -129,83 +55,90 @@ class Ad extends Backend_Controller {
 		}
 		else 
 		{		
-			$ad_info = $this->c_model->GetList( "ad" , "sn =".$content_sn);
+			$feedback_info = $this->c_model->GetList( "feedback" , "sn =".$content_sn);
 			
-			if(count($ad_info["data"])>0)
+			if(count($feedback_info["data"])>0)
 			{
-				img_show_list($ad_info["data"],'img_filename',$this->router->fetch_class());			
-				$ad_info = $ad_info["data"][0];
-				$data["edit_data"] = $ad_info;			
+				img_show_list($feedback_info["data"],'img_filename',$this->router->fetch_class());			
+				
+				$data["edit_data"] = $feedback_info["data"][0];			
 
-				if($ad_info["is_edoma"]==1)
-				{
-					$this->display("content_view",$data);
-				}
-				else
-				{
-					$this->display("content_form_view",$data);
-				}
+				$this->display("content_form_view",$data);
 			}
 			else
 			{
 				redirect(bUrl("contentList"));	
 			}
 		}
-	}
-	
+	}	
 	
 	public function updateContent()
 	{	
 		$edit_data = $this->dealPost();
-						
-						
-		if(isNotNull($edit_data["sn"]))
-		{				
-			if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
-			{					
-				$img_filename = $this->uploadImage($edit_data["sn"]);					
-				$edit_data["img_filename"] = $img_filename;
-				
-				$this->sync_to_server($edit_data);
-				$this->showSuccessMessage();					
-			}
-			else 
-			{
-				$this->showFailMessage();
-			}				
-		}
-		else 
+		//dprint($edit_data);exit;
+		$edit_data["is_sync"] = 0;
+		
+		if ( ! $this->_validateContent())
 		{
-								
-			$edit_data["create_date"] =   date( "Y-m-d H:i:s" );
-			
-			$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
-			if($content_sn > 0)
-			{
-				$img_filename =$this->uploadImage($content_sn);
-				$edit_data["img_filename"] = $img_filename;
-				
-				$edit_data["sn"] = $content_sn;
-				$this->sync_to_server($edit_data);
-			
-				
-				$this->showSuccessMessage();							
+			$data["edit_data"] = $edit_data;		
+			$this->display("content_form_view",$data);
+		}
+        else 
+        {			
+						
+			if(isNotNull($edit_data["sn"]))
+			{				
+				if($this->it_model->updateData( "web_menu_content" , $edit_data, "sn =".$edit_data["sn"] ))
+				{					
+					$img_filename = $this->uploadImage($edit_data["sn"]);					
+					$edit_data["img_filename"] = $img_filename;
+					$this->sync_to_server($edit_data);
+					$this->showSuccessMessage();					
+				}
+				else 
+				{
+					$this->showFailMessage();
+				}				
 			}
 			else 
 			{
-				$this->showFailMessage();					
-			}	
-		
-		
-		}
+									
+				$edit_data["create_date"] =   date( "Y-m-d H:i:s" );
+				
+				$content_sn = $this->it_model->addData( "web_menu_content" , $edit_data );
+				if($content_sn > 0)
+				{
+					$img_filename =$this->uploadImage($content_sn);
+					$edit_data["img_filename"] = $img_filename;
+					$edit_data["sn"] = $content_sn;
+					$this->sync_to_server($edit_data);
+				
+					
+					$this->showSuccessMessage();							
+				}
+				else 
+				{
+					$this->showFailMessage();					
+				}	
+			}			
+			
 			redirect(bUrl("contentList"));	
-        	
+        }	
 	}
-	
-	
-	
-	
-	
+
+
+	public function showPdf_bak()
+	{
+		$time = time();
+		$pdf_file_name = $time .".pdf";
+		
+		$file_url = fUrl("downloadPdf",TRUE);
+		header('Content-Type: application/pdf');
+		header("Content-Transfer-Encoding: Binary"); 
+		header("Content-disposition: attachment; filename=\"" . $pdf_file_name . "\""); 
+		readfile($file_url);
+
+	}
 	
 	/**
 	 * pdf下載頁面
@@ -213,28 +146,36 @@ class Ad extends Backend_Controller {
 	public function showPdf()
 	{
 		$content_sn = $this->input->get('sn');
-		$item_info = $this->c_model->GetList( "ad" , "sn =".$content_sn);
+		$item_info = $this->c_model->GetList( "feedback" , "sn =".$content_sn);
 			
 		if(count($item_info["data"])>0)
 		{
 			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
 			$item_info = $item_info["data"][0];			
 			
-			$img_str = "";
-			if(isNotNull($item_info["img_filename"]))
+			//多圖處理
+			//------------------------------------------------------------------------------
+			$img_str = "";			
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+			
+			foreach( $photo_list["data"] as $key => $photo ) 
 			{
-				$img_str = "<tr><td><img  src='".$item_info["img_filename"]."'></td></tr>";
+				$img_url = base_url('upload/content_photo/'.$content_sn.'/'.$photo["img_filename"]);
+				
+				$img_str .= "<tr><td><img src='".$img_url."'></td></tr>";
 			}
+			//------------------------------------------------------------------------------
+			//dprint($photo_list["data"]);exit;
 			
-			
-			$html .= "<table border=0><tr><td>".$img_str."</table>";
+			$html = "<h1 style='text-align:center'>社區公告</h1>";
+			$html .= "<h3>".$item_info["title"]."</h3>";
+			$html .= "<table border=0><tr><td>".$item_info["content"]."</td></tr>".$img_str."</table>";
 	
 			$this->load->library('pdf');
 			$mpdf = new Pdf();
 			$mpdf = $this->pdf->load();
 			$mpdf->useAdobeCJK = true;
 			$mpdf->autoScriptToLang = true;
-			
 			
 			
 			$water_img = base_url('template/backend/images/watermark.png');
@@ -248,21 +189,19 @@ class Ad extends Backend_Controller {
 			}			
 			$mpdf->SetWatermarkImage($water_img);
 			$mpdf->watermarkImageAlpha = 0.081;
-			$mpdf->showWatermarkImage = true;	
+			$mpdf->showWatermarkImage = true;		
 			
+			$mpdf->WriteHTML($html);			
 			
-			
-			$mpdf->WriteHTML($html);	
-
-
 			$time = time();
-			$pdfFilePath = "管廣告託撥_".$time .".pdf";
+			$pdfFilePath = "社區公告_".$time .".pdf";
 			$mpdf->Output($pdfFilePath,'I');
 		}
 		else
 		{
 			$this->closebrowser();
 		}
+		
 	}
 	
 	//圖片處理
@@ -307,7 +246,7 @@ class Ad extends Backend_Controller {
 	
 	
 	/**
-	 * 驗證bulletinedit 欄位是否正確
+	 * 驗證feedbackedit 欄位是否正確
 	 */
 	function _validateContent()
 	{
@@ -315,7 +254,7 @@ class Ad extends Backend_Controller {
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
 		$this->form_validation->set_rules( 'title', '名稱', 'required' );	
-		$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
+		//$this->form_validation->set_rules('sort', '排序', 'trim|required|numeric|min_length[1]');			
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
 	}
@@ -366,12 +305,72 @@ class Ad extends Backend_Controller {
 		redirect(bUrl("contentList", FALSE));	
 	}
 
+
 	public function launchContent()
 	{		
 		$this->ajaxlaunchContent($this->input->post("content_sn", TRUE));
 	}
+
 	
 
+	public function hotContent()
+    {
+		$sn = $this->input->post("content_sn", TRUE);
+		$table_name = 'web_menu_content';
+        $field_name = 'hot';
+        if(isNull($table_name) || isNull($field_name) || isNull($sn) )
+        {
+            echo json_encode(array());
+        }
+        else 
+        {		
+
+            $data_info = $this->it_model->listData($table_name," sn = '".$sn."'");
+			if($data_info["count"]==0)
+			{
+				echo json_encode(array());
+				return;
+			}			  
+			
+			$data_info = $data_info["data"][0];
+			
+			$change_value = 1;
+			if($data_info[$field_name] == 0)
+			{
+				$change_value = 1;
+			}
+			else
+			{
+				$change_value = 0;
+			}
+			
+			
+			$result = $this->it_model->updateData( $table_name , array($field_name => $change_value),"sn ='".$sn."'" );				
+			if($result)
+			{
+				//社區主機同步
+				//----------------------------------------------------------------------------------------------------
+				$query = "SELECT SQL_CALC_FOUND_ROWS * from web_menu_content where sn =	'".$sn."'";			
+				$content_info = $this->it_model->runSql($query);
+				if($content_info["count"] > 0)
+				{
+					$content_info = $content_info["data"][0]; 					
+					$this->sync_to_server($content_info);									
+				}			
+				//----------------------------------------------------------------------------------------------------
+				echo json_encode($change_value);
+			}
+			else
+			{
+				echo json_encode($data_info[$field_name]);
+			}
+			                      
+        }
+    }
+	
+	
+	
+	
 	
 	public function GenerateTopMenu()
 	{

@@ -615,7 +615,7 @@
 	 */
 	function showEffectiveDate($start_date,$end_date,$forever)
 	{
-		$effective_date = showDateFormat($start_date)." ～  ".showDateFormat($end_date);
+		$effective_date = showDateFormat($start_date)." ~  ".showDateFormat($end_date);
 		if($forever == 1)
 		{
 			$effective_date = showDateFormat($start_date)." ～  永久有效";

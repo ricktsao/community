@@ -87,8 +87,23 @@ class Gas extends Frontend_Controller {
 			//歷史瓦斯紀錄
 			//-----------------------------------------------------------------------------------
 			$condition = "building_id = '".$user_info["addr"]."' ";
-			$gas_list = $this->it_model->listData("gas",$condition,12,1,array("year"=>"desc","month"=>"desc"));
-			$data["gas_list"] = $gas_list["data"];		
+			$gas_list = $this->it_model->listData("gas",$condition,6,1,array("year"=>"desc","month"=>"desc"));
+			
+			$gas_list = $gas_list["data"];	
+			/*固定顯示6筆紀錄*/
+			for ($i=0; $i < 6 ; $i++) 
+			{ 
+				if( ! array_key_exists($i, $gas_list))
+				{
+					$time = strtotime(date("Y-m-d"));
+					$month = date("m", strtotime("-$i month", $time));
+					$year = date("Y", strtotime("-$i month", $time));
+					
+					$gas_list[$i] = array("month"=>$month,"year"=>$year);
+				}
+			}
+			
+			$data["gas_list"] = $gas_list;		
 			//-----------------------------------------------------------------------------------
 			
 			//瓦斯公司資訊

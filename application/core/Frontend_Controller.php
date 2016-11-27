@@ -87,6 +87,23 @@ abstract class Frontend_Controller extends IT_Controller
 	}
 	
 	
+	/**
+	 * 確認有無 意見箱權限
+	 */
+	function checkSuggestFalg($user_sn)
+	{
+		$user_info = $this->it_model->listData("sys_user","sn = '".$user_sn."' AND suggest_flag = 1");
+		if($user_info["count"]==0)
+		{
+			return FALSE;
+		}
+		else 
+		{
+			return TRUE;
+		}
+	}
+	
+	
 	
 	function initFrontend()
 	{		

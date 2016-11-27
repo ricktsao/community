@@ -1,4 +1,26 @@
 <form action="<?php echo bUrl("updateContent")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
+	
+<div class="form-group ">
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">廠商名稱 : </label>
+	<div class="col-xs-12 col-sm-6">
+		<?php echo tryGetData("filename",$edit_data);?>				
+	</div>
+</div>
+
+<div class="form-group ">
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">廠商電話1 : </label>
+	<div class="col-xs-12 col-sm-6">
+		<?php echo tryGetData("brief",$edit_data);?>				
+	</div>
+</div>
+
+<div class="form-group ">
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">廠商電話2 : </label>
+	<div class="col-xs-12 col-sm-6">
+		<?php echo tryGetData("brief2",$edit_data);?>				
+	</div>
+</div>
+
 <div class="form-group ">
 	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">課程主旨 : </label>
 	<div class="col-xs-12 col-sm-6">
@@ -31,7 +53,8 @@
 <div class="form-group ">
 	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">課程日期收費 : </label>
 	<div class="col-xs-12 col-sm-6">
-		<?php echo showDateFormat(tryGetData("start_date",$edit_data),"Y-m-d") ;?>				
+		
+		<?php echo showEffectiveDate($edit_data["start_date"],$edit_data["end_date"], $edit_data["forever"]) ?>		
 	</div>
 </div	
 		

@@ -22,6 +22,81 @@ class Msgcenter extends Backend_Controller {
 	
 	
 
+	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+		$condition = "now() <=  DATE_ADD(post_date, INTERVAL +30 DAY)";				
+		$msg_list = $this->it_model->listData("user_message_assign",$condition,NULL,NULL,array("created" => "desc"));
+		
+		
+		if($msg_list["count"]>0)
+		{
+			$msg_list = $msg_list["data"];	
+			$html = "<h1 style='text-align:center'>住戶訊息發佈</h1>";
+				
+			
+			$tables = 
+			'<tr>										
+				<th style="width:50px">序號</th>
+				<th>訊息標題</th>									
+				<th>訊息內容</th>									
+				<th style="width:150px">發送人員</th>
+				<th style="width:100px">發送時間 </th>			
+			</tr>';
+			
+			
+			for($i=0;$i<sizeof($msg_list);$i++)
+			{
+				$tables .= 
+				'<tr>
+					<td>'.($i+1).'</td>
+					<td>'.$msg_list[$i]["title"].'</td>
+					<td>'.nl2br($msg_list[$i]["msg_content"]).'</td>
+					<td>
+						共'.$msg_list[$i]["to_user_count"].'人:<br>'. $msg_list[$i]["to_user_name"].'
+					</td>
+					<td>'.showDateFormat($msg_list[$i]["post_date"],"Y-m-d H:i:s").'</td>									
+				</tr>';	
+			}
+			
+			$html .= '<table border="1" width="100%" >'.$tables.'</table>';
+			
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			$water_img = base_url('template/backend/images/watermark.png');
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+				$water_img = $water_info["img_filename"];
+						
+			}
+			$mpdf->SetWatermarkImage($water_img);
+			$mpdf->watermarkImageAlpha = 0.081;
+			$mpdf->showWatermarkImage = true;		
+			
+			$mpdf->WriteHTML($html);			
+			
+			$time = time();
+			$pdfFilePath = "環境修繕_".tryGetData($status, $this->config->item('repair_status'))."_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
+		
+	}
+
+
 
 	public function editContent()
 	{

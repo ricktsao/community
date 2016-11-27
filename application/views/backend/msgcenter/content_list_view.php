@@ -4,7 +4,12 @@
 		<a class="btn  btn-sm btn-purple" href="<?php echo bUrl("editContent",FALSE);?>">
 			<i class="icon-edit bigger-120"></i>編輯訊息
 		</a>	
-    </div>    
+    </div>  
+    <div class="btn-group" style="text-align:right">
+        <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdf",TRUE); ?>">
+			<i class="icon-edit bigger-120"></i>PDF報表
+		</a>
+    </div>      
                 
 </article>	
 </form>
@@ -48,7 +53,7 @@
 											
 											</div>
 										</td>
-										<td>'.showDateFormat($item["post_date"]).'</td>
+										<td>'.showDateFormat($item["post_date"],"Y-m-d H:i:s").'</td>
 									</tr>
 									';
 								}
