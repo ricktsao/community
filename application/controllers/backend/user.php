@@ -6,20 +6,103 @@ class User extends Backend_Controller
 	function __construct() 
 	{
 		parent::__construct();
-
 	}
+	
 	public function editHouseUser()
 	{
+	///////////////////////////////////////////////////////	$this->getAppData();//同步app登入資料
+		
 		$headline = '戶別住戶資料維護';
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
 			$query_key[$key] = $this->input->get($key,TRUE);
 		}
-
-		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
-		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
-		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
 		
+		
+		$b_part_01 = tryGetData('b_part_01', $query_key, 0);
+		$b_part_02 = tryGetData('b_part_02', $query_key, 0);
+		$addr_part_01 = tryGetData('addr_part_01', $query_key, 0);
+		$addr_part_02 = tryGetData('addr_part_02', $query_key, 0);
+		$act = tryGetData('act', $query_key, 'query');		// add or edit
+		
+		if ( $b_part_01==0 || $b_part_02==0 ) {
+			redirect(bUrl('houseList', false));
+		} else {
+			if ( $act=='add' && ($addr_part_01==0 || $addr_part_02==0) ) {
+				redirect(bUrl('houseList', false));
+			}
+		}
+		
+		$house_text = building_id_to_text($b_part_01.'_'.$b_part_02);
+		$addr_text = addr_part_to_text($addr_part_01,$addr_part_02);
+
+		$data['b_part_01'] = $b_part_01;
+		$data['b_part_02'] = $b_part_02;
+		$data['house_text'] = $house_text;
+		$data['addr_text'] = $addr_text;
+		
+		
+		$fm1_init = array( 'role' => 'I',
+					'comm_id' => $this->getCommID(),
+				//	'id' => NULL,
+				//	'app_id' => NULL,
+					'gender' => 1,
+					'b_part_01' => tryGetData('b_part_01', $query_key),
+					'b_part_02' => tryGetData('b_part_02', $query_key),
+					'addr_part_01' => tryGetData('addr_part_01', $query_key),
+					'addr_part_02' => tryGetData('addr_part_02', $query_key),
+					'start_date' => date( "Y-m-d" ),
+					'forever' => 1,
+					'launch' => 1);
+		$fm1 = array();
+		foreach( $_POST as $key => $value ) {
+		//	$fm1[$key] = $this->input->post($key,TRUE);
+		//	$$key = $this->input->post($key,TRUE);
+		//		array_push($fm1,   );
+				$fm1[$key] = $this->input->post($key,TRUE);
+		}
+		$fm1 = array_merge($fm1_init, $fm1);
+	
+		if ( isNotNull(tryGetData('submit1', $fm1, NULL)) 
+			|| isNotNull(tryGetData('submit2', $fm1, NULL)) 
+			|| isNotNull(tryGetData('submit3', $fm1, NULL)) ) {
+			$upd = $this->_updateUser($fm1);
+			if ( $upd === true ) {
+				//$fm1 = $fm1_init;
+				$data['fm1'] = $fm1_init;
+				$data['fm2'] = $fm1_init;
+				$data['fm3'] = $fm1_init;
+				$this->showSuccessMessage();
+				redirect(bUrl('editHouseUser'));
+		//		$msg = '住戶資料新增成功';
+			} else {
+				
+				if ( isNotNull(tryGetData('submit1', $fm1, NULL)) ) {
+					$data['fm1'] = $fm1;
+					$data['fm2'] = $fm1_init;
+					$data['fm3'] = $fm1_init;
+					$data['msg'] = '● 一般住戶新增失敗，請確認';
+				} elseif ( isNotNull(tryGetData('submit2', $fm1, NULL)) ) {
+					$data['fm2'] = $fm1;
+					$data['fm1'] = $fm1_init;
+					$data['fm3'] = $fm1_init;
+					$data['msg'] = '● 非住戶所有權人新增失敗，請確認';
+				} elseif ( isNotNull(tryGetData('submit3', $fm1, NULL)) ) {
+					$data['fm3'] = $fm1;
+					$data['fm1'] = $fm1_init;
+					$data['fm2'] = $fm1_init;
+					$data['msg'] = '● 非住戶緊急聯絡人新增失敗，請確認';
+				}
+				
+				$this->showFailMessage();
+			//	$msg = '住戶資料新增失敗';
+			}
+		//	$data['msg'] = $msg;
+		} else {
+			$data['fm1'] = $fm1_init;
+			$data['fm2'] = $fm1_init;
+			$data['fm3'] = $fm1_init;
+		}
 		// 管委職稱
 		$manager_title_value = $this->auth_model->getWebSetting('manager_title');
 		if (isNotNull($manager_title_value)) {
@@ -43,18 +126,26 @@ class User extends Backend_Controller
 		// 查詢該戶別住戶
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s "
-						."   where 1 ".$condition
+						."   where del=0 ".$condition
 						;
 
 		$result = $this->it_model->runSql( $query , NULL, NULL, array('s.building_id'=>'asc', 's.name'=>'asc') );
-		//dprint( $admin_list["sql"]);
-		$data["list"] = $result["data"];
+		
+		//var_dump( $result["data"]);
+		$dataset = array();
+		if ($result["data"] > 0) {
+			$dataset = $result["data"];
+		}
+		$data["list"] = $dataset;
 
 		$data['headline'] = $headline;
-
-		$data['b_part_01'] = $b_part_01;
-		$data['b_part_02'] = $b_part_02;
-		$data['b_part_03'] = $b_part_03;
+		
+		
+	//	$fm1 = array('tenant_flag'=>1);
+		$edit_data_02 = array();
+		$data['edit_data_02'] = $edit_data_02;
+		$edit_data_03 = array();
+		$data['edit_data_03'] = $edit_data_03;
 
 		// 戶別相關參數
 		$data['building_part_01'] = $this->building_part_01;
@@ -63,7 +154,7 @@ class User extends Backend_Controller
 		$data['building_part_01_array'] = $this->building_part_01_array;
 		$data['building_part_02_array'] = $this->building_part_02_array;
 
-		$this->display("house_user_list_view",$data);
+		$this->display("house_user_list_view", $data);
 		
 	}
 	
@@ -71,8 +162,9 @@ class User extends Backend_Controller
 	public function houseList()
 	{
 		$headline = '戶別列表';
-		$this->getAppData();//同步app登入資料
-	
+		$dataset = array();
+		$pager = NULL;
+//$this->output->enable_profiler(TRUE);
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
 			$query_key[$key] = $this->input->get($key,TRUE);
@@ -81,37 +173,49 @@ class User extends Backend_Controller
 		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
 		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
 		
-		$query = 'SELECT SUBSTRING_INDEX(`building_id`, "_", 2) as house, addr_part_01, addr_part_02, count(*) as users '
-				.'  FROM `sys_user` '
-				.' WHERE `building_id` IS NOT NULL '
-				;
-		if (isNotNull($b_part_01) && $b_part_01 > 0) {
-			$query .= '   AND `building_id` LIKE "'.$b_part_01.'_%" ';
-		}
-		if (isNotNull($b_part_02) && $b_part_02 > 0) {
-			$query .= '   AND `building_id` LIKE "%_'.$b_part_02.'_%" ';
-		}
-		$query .= ' GROUP BY SUBSTRING_INDEX(`building_id`, "_", 2) ';
+		$msg = '';
+		if ( (isNotNull($b_part_01)  ) ) {
 		
-		$result = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
-
-
-		$list = array();
-		foreach( $result["data"] as $item) {
-			$house_text = building_id_to_text($item['house'], true);
-			$addr_text = addr_part_to_text($item['addr_part_01'], $item['addr_part_02']);
-			//dprint($house_text); echo '=>'.$addr_text ;
-			$list[] = array('building_01' => $house_text[0]
-							,  'building_02' => $house_text[1]
-							,  'addr' => $addr_text
-							,  'users'=> tryGetData('users', $item, 0)
-							);
+			$query = 'SELECT SUBSTRING_INDEX(`building_id`, "_", 2) as house, addr_part_01, addr_part_02, count(*) as users '
+					.'  FROM `sys_user` '
+					.' WHERE `building_id` IS NOT NULL AND role="I" AND del=0 '
+					;
+			if (isNotNull($b_part_01) && $b_part_01 > 0) {
+				$query .= '   AND `building_id` LIKE "'.$b_part_01.'_%" ';
+			}
+			if (isNotNull($b_part_02) && $b_part_02 > 0) {
+				$query .= '   AND `building_id` LIKE "%_'.$b_part_02.'_%" ';
+			}
+			$query .= ' GROUP BY SUBSTRING_INDEX(`building_id`, "_", 2) ';
+			$result = $this->it_model->runSql( $query,  $this->per_page_rows , $this->page );
+			$dataset = array();
+			if ( $result["count"] > 0 ) {
+				foreach( $result["data"] as $item) {
+					$house_id = explode('_', $item['house']);
+					$house_text = building_id_to_text($item['house'], true);
+					$addr_text = addr_part_to_text($item['addr_part_01'], $item['addr_part_02']);
+					//dprint($house_text); echo '=>'.$addr_text ;
+					$dataset[] = array('b_part_01' => $house_id[0]
+									,  'b_part_02' => $house_id[1]
+									,  'b_part_01_text' => $house_text[0]
+									,  'b_part_02_text' => $house_text[1]
+									,  'addr_part_01' => $item['addr_part_01'] 
+									,  'addr_part_02' => $item['addr_part_02'] 
+									,  'addr' => $addr_text
+									,  'users'=> tryGetData('users', $item, 0)
+									);
+				}
+				//取得分頁
+				$pager = $this->getPager($result["count"],$this->page,$this->per_page_rows,"admin");
+			} else {
+				$msg = '您指定的戶別查無任何一位住戶資訊';
+			}
 		}
 		$data['headline'] = $headline;
-		$data['list'] = $list;
-		//取得分頁
-		$data["pager"] = $this->getPager($result["count"],$this->page,$this->per_page_rows,"admin");
+		$data['dataset'] = $dataset;
+		$data["pager"] = $pager;
 
+		$data["msg"] = $msg;
 
 		$data['b_part_01'] = $b_part_01;
 		$data['b_part_02'] = $b_part_02;
@@ -133,7 +237,7 @@ class User extends Backend_Controller
 	{
 		$this->getAppData();//同步app登入資料
 	//	die;
-		$condition = ' AND role = "I"';
+		$condition = ' AND role="I" AND del=0 ';
 
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
@@ -470,7 +574,7 @@ class User extends Backend_Controller
 
 		$query = "select SQL_CALC_FOUND_ROWS s.* "
 						."    FROM sys_user s "
-						."   where role = 'I' "
+						."   where role = 'I' and del=0 "
 						." AND id IS NULL "
 						."   order by s.building_id, s.name "
 						;
@@ -526,7 +630,7 @@ class User extends Backend_Controller
 	public function exportExcel()
 	{
 
-		$condition = ' AND role = "I"';
+		$condition = ' AND role="I" AND del=0 ';
 
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {
@@ -652,7 +756,7 @@ class User extends Backend_Controller
 						, "is_sync" =>  0
 						);
 
-		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND id ='".$id."' AND comm_id='".$this->getCommId()."' and role='I' " );
+		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND del=0 AND id ='".$id."' AND comm_id='".$this->getCommId()."' and role='I' " );
 		if ($arr_return){
 			$this->showSuccessMessage();
 
@@ -679,7 +783,7 @@ class User extends Backend_Controller
 		
 		if ( ! $this->_validate())
 		{
-			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' ");
+			$admin_info = $this->it_model->listData( "sys_user" , "sn =".$edit_data['user_sn']." AND del=0 AND comm_id='".$this->getCommId()."' and role='I' ");
 
 			if (count($admin_info["data"]) > 0) {
 				$user_data = $admin_info["data"][0];
@@ -699,7 +803,7 @@ class User extends Backend_Controller
         	$arr_data["is_sync"] = 0;
         	$arr_data["suggest_flag"] = $edit_data["suggest_flag"];
 
-      	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." and comm_id='".$this->getCommId()."' and role='I' " );
+      	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." AND del=0 AND comm_id='".$this->getCommId()."' and role='I' " );
 			if ($arr_return){
 				$this->showSuccessMessage();
 
@@ -1034,6 +1138,135 @@ class User extends Backend_Controller
 		}
 	}
 
+
+	private function _updateUser($edit_data) 
+	{
+		if ( ! $this->_validateUser() ) {
+			return false;
+			
+		} else {
+			
+			$is_manager = 0;
+			if (tryGetData("manager_title", $edit_data) > 0) {
+				$is_manager = 1;
+			}
+
+        	$arr_data = array(
+				 "comm_id"		=>	$this->getCommId()
+				, "id"			=>	tryGetData("id", $edit_data, NULL)
+				, "role"		=>	'I'	
+				, "living_here"	=>	tryGetData("living_here", $edit_data, 1)		// 目前是否為住戶（若無指定，預設為1）
+				, "name"		=>	tryGetData("name", $edit_data)
+				, "tel"			=>	tryGetData("tel", $edit_data)
+				, "phone"		=>	tryGetData("phone", $edit_data)
+
+				, "gender"		=>	tryGetData("gender", $edit_data)
+				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
+				, "voting_right"	=>	tryGetData("voting_right", $edit_data)
+				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
+				, "tenant_flag"		=>	tryGetData("tenant_flag", $edit_data)
+				, "suggest_flag"		=>	tryGetData("suggest_flag", $edit_data)
+				, "is_manager"		=>	$is_manager
+				, "manager_title"	=>	tryGetData("manager_title", $edit_data)
+				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
+				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
+				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
+				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
+				, "forever"		=>	tryGetData("forever", $edit_data, 0)
+				, "launch"		=>	tryGetData("launch", $edit_data, 0)
+				, "updated" =>  date( "Y-m-d H:i:s" )
+				, "is_sync" =>  0
+			);
+			
+			if ( isNull(tryGetData('building_id', $edit_data, NULL)) or  tryGetData("chg_b_id", $edit_data) > 0 ) {
+				// 戶別編號，只需先選定 b_part_01 & b_part_02 之後，系統自動編號
+				$next_number = $this->_getNextBpartNumber($edit_data['b_part_01'], $edit_data['b_part_02']);
+				$arr_data['building_id'] = $edit_data['b_part_01'].'_'.$edit_data['b_part_02'].'_'.$next_number;
+			} else {
+				$arr_data['building_id'] = tryGetData('building_id', $edit_data);
+			}
+
+			if ( tryGetData("chg_a_id", $edit_data, 1) == 1 ) {
+				// 地址轉文字
+				$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+				$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+				$addr = addr_part_to_text($addr_part_01, $addr_part_02);
+
+				$arr_data['addr_part_01'] = $addr_part_01;
+				$arr_data['addr_part_02'] = $addr_part_02;
+				$arr_data['addr'] = $addr;
+			}
+
+			if( isNotNull(tryGetData('sn', $edit_data, NULL)) ) {
+				//dprint($arr_data);
+				$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, "sn =".$edit_data["sn"] );
+				//dprint($this->db->last_query());
+				if ($arr_return['success']) {
+					$this->_updateWebAdminGroup($edit_data);
+					///////////////////////////////////////////////	$this->showSuccessMessage();
+					return true;
+						/* 同步 同步 同步 同步 同步 */
+					///////////////////////////////////////////////	$arr_data["sn"] = $edit_data['sn'];
+					///////////////////////////////////////////////	$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+
+				} else {
+					//$this->output->enable_profiler(TRUE
+					///////////////////////////////////////////////	$this->showFailMessage();
+					return false;
+				}
+				
+			}
+			else 
+			{
+				if ( isNotNull(tryGetData('id', $edit_data, NULL)) ) {
+					if ( $edit_data["id"] == 'I') {			//住戶用 key code
+						$arr_data["id"] = $edit_data["id"];
+
+					} elseif ( in_array($edit_data["id"], array('G','M','S')) ) {
+						$arr_data["account"] = $edit_data["account"];
+						$arr_data["password"] = prepPassword($edit_data["password"]);	
+					}
+				}
+
+				// 地址轉文字
+				$addr_part_01 = tryGetData('addr_part_01', $edit_data);
+				$addr_part_02 = tryGetData('addr_part_02', $edit_data);
+				$addr = addr_part_to_text($addr_part_01, $addr_part_02);
+
+				$arr_data['addr_part_01'] = $addr_part_01;
+				$arr_data['addr_part_02'] = $addr_part_02;
+				$arr_data['addr'] = $addr;
+
+
+				$arr_data["act_code"] = random_string('numeric',12);
+				$arr_data["created"] = date( "Y-m-d H:i:s" );
+				
+				$sys_user_sn = $this->it_model->addData( "sys_user" , $arr_data );
+				//$this->logData("新增人員[".$arr_data["id"]."]");
+				if($sys_user_sn > 0)
+				{				
+					$edit_data["sn"] = $sys_user_sn;
+					$this->_updateWebAdminGroup($edit_data);
+					///////////////////////////////////////////// $this->showSuccessMessage();
+					return true;
+
+						/* 同步 同步 同步 同步 同步 */
+						///////////////////////////////////////////// $arr_data["sn"] = $sys_user_sn;
+						///////////////////////////////////////////// $this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+						
+				}
+				else 
+				{
+					return false;
+					///////////////////////////////////////////// $this->showFailMessage();
+				}
+				
+			}
+		}
+	}
+
+
+
 	public function updateUser()
 	{
 		$this->addCss("css/chosen.css");
@@ -1108,6 +1341,7 @@ class User extends Backend_Controller
 				 "comm_id"		=>	$this->getCommId()
 				, "id"			=>	tryGetData("id", $edit_data, NULL)
 				, "role"		=>	'I'	
+				, "living_here"	=>	tryGetData("living_here", $edit_data, 1)		// 目前是否為住戶（若無指定，預設為1）
 				, "name"		=>	tryGetData("name", $edit_data)
 				, "tel"			=>	tryGetData("tel", $edit_data)
 				, "phone"		=>	tryGetData("phone", $edit_data)
@@ -1322,8 +1556,9 @@ class User extends Backend_Controller
 		*/
 
 		$this->form_validation->set_rules( 'name', '姓名', 'required|max_length[30]' );
-		$this->form_validation->set_rules( 'tel', '電話', 'min_length[9]|max_length[20]' );
-		$this->form_validation->set_rules( 'phone', '行動電話', 'required|max_length[20]' );
+		$this->form_validation->set_rules( 'tel', '電話', 'required|min_length[9]|max_length[20]' );
+		$this->form_validation->set_rules( 'phone', '行動電話', 'required|min_length[9]|max_length[20]' );
+		$this->form_validation->set_rules( 'comm_id', 'comm_id', 'required|min_length[8]|max_length[8]' );
 		if ($role != 'I') {
 			$this->form_validation->set_rules( 'title', $this->lang->line("field_title"), 'required|max_length[30]' );
 		}
@@ -1344,14 +1579,36 @@ class User extends Backend_Controller
 
 
 
-
 	public function deleteUser()
 	{
-		$del_ary =array('role'=>'I', 'sn'=> $this->input->post('del',TRUE));		
+		$del_sn = $this->input->get('sn',TRUE);
+		$role = $this->input->get('role',TRUE);
+		$name = $this->input->get('name',TRUE);
+		if ($del_sn > 0) {
+			$arr_data = array("del"=>1, "is_sync"=>0, "updated"=>date("Y-m-d H:i:s"));
+			$arr_return = $this->it_model->updateDB( "sys_user" , $arr_data, array('role'=>'I', 'sn'=>$del_sn, 'name'=>$name));
+			//dprint($this->db->last_query());
+			if($arr_return['success']) {
+				$this->showSuccessMessage();
+					/* 同步 同步 同步 同步 同步 */
+					//$arr_data["sn"] = $edit_data['sn'];
+					//$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
+			} else {
+				//$this->output->enable_profiler(TRUE);
+				$this->showFailMessage();
+			}
+		}
+		redirect(bUrl("editHouseUser"));
+	}
+
+
+	public function deleteUser__()
+	{
+		$del_ary = array('role'=>'I', 'sn'=> $this->input->post('del',TRUE));
 		
 		if($del_ary!= FALSE && count($del_ary)>0)
 		{
-			$this->it_model->deleteDB( "sys_user",NULL,$del_ary );				
+			$this->it_model->deleteDB( "sys_user", NULL, $del_ary );
 		}
 		$this->showSuccessMessage();
 		redirect(bUrl("admin", FALSE));	

@@ -39,6 +39,22 @@ class Auth_Model extends IT_Model
 		return false;
 	}
 	
+	
+	
+	public function getWebSettingList( $key = array() )
+	{
+		if (sizeof($key) > 0) {
+			$key_list = implode('","', $key);
+			$result = $this->it_model->listData('web_setting', '`key` IN ("'.$key_list.'")');
+			
+			if ( $result['data'] > 0 ) {
+				return $result['data'];
+			}
+		}
+		return false;
+	}
+	
+	
 	public function GetWebAdminList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{
 		echo $condition;

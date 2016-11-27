@@ -13,7 +13,6 @@
 		</small>
 	</h1>
 </div>
-<!-- 
 <article class="well">
     <div class="btn-group">
 		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("index/", false);?>">
@@ -40,23 +39,29 @@
     </div>
 
     <div class="btn-group">
+		<a class="btn  btn-sm btn-danger" href="<?php echo bUrl("houseList/", false);?>">
+			<i class="icon-edit bigger-120"></i>戶別列表
+		</a>
+    </div>
+
+    <div class="btn-group">
 		<a class="btn  btn-sm btn-info" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>
     </div>
 </article>
- -->
 
 <form role="search" method="get" action="<?php echo bUrl('editHouseUser/?role=I');?>">
+<input type="hidden" id="act" name="act" value="add" />
 <article class="well">
     <div class="btn-group">
 	<?php
-	// 戶別
+	## 新增指定戶別的住戶
 	echo $building_part_01 .'：';
-	echo form_dropdown('b_part_01', $building_part_01_array, $b_part_01);
+	echo form_dropdown('b_part_01', $building_part_01_array);//, $b_part_01
 	echo '&nbsp;&nbsp;';
 	echo $building_part_02 .'：';
-	echo form_dropdown('b_part_02', $building_part_02_array, $b_part_02);
+	echo form_dropdown('b_part_02', $building_part_02_array);//, $b_part_02
 	echo '&nbsp;&nbsp;門牌地址：';
 	$js = 'id="addr_part_01"';
 	echo form_dropdown('addr_part_01', $addr_part_01_array, 0, $js);
@@ -68,16 +73,21 @@
     </div>
     <div class="btn-group">
 		<button type="submit" class="btn btn-success btn-sm btn_margin">
-		<i class="icon-edit nav-search-icon"></i>新增
+		<i class="icon-edit nav-search-icon"></i>新增住戶
 		</button>
     </div>
 </article>
 </form>
 <form  role="search" >
+<input type="hidden" id="act" name="act" value="query" />
 <article class="well">
     <div class="btn-group">
 	<?php
-	// 戶別
+	## 搜尋戶別
+	// 加入"不拘"選項
+	$building_part_01_array = array_replace($building_part_01_array, array(0=>'不拘'));
+	$building_part_02_array = array_replace($building_part_02_array, array(0=>'不拘'));
+
 	echo $building_part_01 .'：';
 	echo form_dropdown('b_part_01', $building_part_01_array, $b_part_01);
 	echo '&nbsp;&nbsp;';
@@ -91,7 +101,7 @@
 
     <div class="btn-group">
 		<button type="submit" class="btn btn-primary btn-sm btn_margin">
-		<i class="icon-search nav-search-icon"></i>搜尋
+		<i class="icon-search nav-search-icon"></i>搜尋戶別
 		</button>
     </div>
     	
@@ -121,23 +131,37 @@
 									</tr>
 								</thead>
 								<tbody>
-									<?php
-									//for($i=0;$i<sizeof($list);$i++) {
+								<?php
+								if ( sizeof( $dataset) == 0 ) {
+									echo '<tr><td colspan=13>'.$msg.'</td></tr>';
+								} else {
+									
 									$i = 0;
-									foreach ( $list as $item) {
-										/*$building_id = tryGetData('building_id', $item, NULL);
+									foreach ( $dataset as $item) {
+										/*
+										dprint( $item);
+										$building_id = tryGetData('building_id', $item, NULL);
 										if ( isNotNull($building_id) ) {
 											$building_parts = building_id_to_text($building_id, true);
-										}*/
+										}
+										*/
+										
+										$edit_url = bUrl("editHouseUser", TRUE, NULL,
+														array( "b_part_01" => tryGetData("b_part_01", $item)
+															,  "b_part_02" => tryGetData("b_part_02", $item)
+															,  "addr_part_01" => tryGetData("addr_part_01", $item)
+															,  "addr_part_02" => tryGetData("addr_part_02", $item)
+															)
+														);
 									?>
 									<tr>
 										<!-- td style='text-align: center'><?php //echo ($i+1)+(($this->page-1) * 10);?></td-->
-										<td style='text-align: center'><?php echo tryGetData('building_01', $item);?></td>
-										<td style='text-align: center'><?php echo tryGetData('building_02', $item);?></td>
+										<td style='text-align: center'><?php echo tryGetData('b_part_01_text', $item);?></td>
+										<td style='text-align: center'><?php echo tryGetData('b_part_02_text', $item);?></td>
 										<td style='text-align: center'><?php echo tryGetData('addr', $item);?></td>
 										<td><?php echo tryGetData('users', $item).' 人';?></td>
-										<td>
-											<a class="btn  btn-minier btn-success" title='編輯此戶別人員' href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
+										<td><!-- editHouseUser/?b_part_01=3&b_part_02=2&addr_part_01=0&addr_part_02=0 -->
+											<a class="btn  btn-minier btn-success" title='編輯此戶別人員' href='<?php echo $edit_url ?>'>
 												<i class="icon-edit bigger-120"></i>編輯
 											</a>
 										</td>
@@ -145,13 +169,17 @@
 									<?php
 										$i++;
 									}
-									?>
-										
 									
+								}
+								?>
 								</tbody>
 								<tr>
 					              	<td colspan="13">
-									<?php echo showBackendPager($pager)?>
+									<?php
+									if ( isset($pager) ) {
+										echo showBackendPager($pager);
+									}
+									?>
 					                </td>
 								</tr>
 								

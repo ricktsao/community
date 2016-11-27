@@ -39,6 +39,12 @@
     </div>
 
     <div class="btn-group">
+		<a class="btn  btn-sm btn-danger" href="<?php echo bUrl("houseList/", false);?>">
+			<i class="icon-edit bigger-120"></i>戶別列表
+		</a>
+    </div>
+    	
+    <div class="btn-group">
 		<a class="btn  btn-sm btn-info" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
 		</a>

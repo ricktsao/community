@@ -457,7 +457,6 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			<?php
 			$js = 'id="manager_title"';
 			echo form_dropdown('manager_title', $manager_title_array, tryGetData('manager_title', $edit_data), $js);
-
 			?>
 			</label>
 		</div>

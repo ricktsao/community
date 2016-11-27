@@ -46,8 +46,7 @@ abstract class Backend_Controller extends IT_Controller
 		$this->generateTopMenu();	
 		$this->lang->load("common");
 		//$this->traceLog();
-		//$this->config->set_item('language', $this->language_value);	
-
+		//$this->config->set_item('language', $this->language_value);
 	}
 	
 	
@@ -58,13 +57,25 @@ abstract class Backend_Controller extends IT_Controller
 		
 		// 取得戶別相關參數
 		$this->load->model('auth_model');
-		$this->building_part_01 = $this->auth_model->getWebSetting('building_part_01');
-		$building_part_01_value = $this->auth_model->getWebSetting('building_part_01_value');
-		$this->building_part_02 = $this->auth_model->getWebSetting('building_part_02');
-		$building_part_02_value = $this->auth_model->getWebSetting('building_part_02_value');
-		$this->building_part_03 = $this->auth_model->getWebSetting('building_part_03');
-		$addr_part_01 = $this->auth_model->getWebSetting('addr_part_01');
-		$addr_part_02 = $this->auth_model->getWebSetting('addr_part_02');
+
+		$query_key = array('building_part_01', 'building_part_01_value'
+						,  'building_part_02', 'building_part_02_value'
+						,  'building_part_03'
+						,  'addr_part_01'
+						,  'addr_part_02'
+						,  'parking_part_01',  'parking_part_01_value'
+						,  'parking_part_02',  'parking_part_02_value'
+						,  'parking_part_03'
+						);
+		$result = $this->auth_model->getWebSettingList($query_key);
+		foreach ($result as $per) {
+			$k = $per['key'];
+			$v = $per['value'];
+			$$k = $v;
+		}
+		$this->building_part_01 = $building_part_01;
+		$this->building_part_02 = $building_part_02;
+		$this->building_part_03 = $building_part_03;
 
 		if (isNotNull($building_part_01_value)) {
 			$this->building_part_01_array = array_merge(array(0=>' -- '), explode(',', $building_part_01_value));
@@ -86,11 +97,9 @@ abstract class Backend_Controller extends IT_Controller
 			$this->addr_part_02_array = array(0=>' -- ');
 		}
 		
-		$this->parking_part_01 = $this->auth_model->getWebSetting('parking_part_01');
-		$parking_part_01_value = $this->auth_model->getWebSetting('parking_part_01_value');
-		$this->parking_part_02 = $this->auth_model->getWebSetting('parking_part_02');
-		$parking_part_02_value = $this->auth_model->getWebSetting('parking_part_02_value');
-		$this->parking_part_03 = $this->auth_model->getWebSetting('parking_part_03');
+		$this->parking_part_01 = $parking_part_01;
+		$this->parking_part_02 = $parking_part_02;
+		$this->parking_part_03 = $parking_part_03;
 		if (isNotNull($parking_part_01_value)) {
 			$this->parking_part_01_array = array_merge(array(0=>' -- '), explode(',', $parking_part_01_value));
 		}
