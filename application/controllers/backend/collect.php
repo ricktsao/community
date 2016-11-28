@@ -12,7 +12,7 @@ class Collect extends Backend_Controller
 	public function index()
 	{
 		// 列出未有磁扣ID的住戶
-		$condition = ' AND role = "I" AND ( `id` IS NULL OR TRIM(`id`) = "" ) ';
+		$condition = ' AND role = "I" AND del=0 AND ( `id` IS NULL OR TRIM(`id`) = "" ) ';
 
 		$query_key = array();
 		foreach( $_GET as $key => $value ) {

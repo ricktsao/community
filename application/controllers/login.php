@@ -40,7 +40,7 @@ class Login extends Frontend_Controller {
 		AND	launch = 1
 		";		
 		
-		$query = "SELECT SQL_CALC_FOUND_ROWS sys_user.* FROM sys_user WHERE role='I' AND ".$str_conditions	;
+		$query = "SELECT SQL_CALC_FOUND_ROWS sys_user.* FROM sys_user WHERE role='I' AND del=0 AND ".$str_conditions	;
 		
 		//echo $query ;exit;		
 				

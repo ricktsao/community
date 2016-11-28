@@ -15,6 +15,7 @@
 </div>
 
 <article class="well">
+    
     <div class="btn-group">
 		<a class="btn  btn-sm btn-yellow" href="<?php echo bUrl("index/", false);?>">
 			<i class="icon-edit bigger-120"></i>所有住戶列表
@@ -39,6 +40,12 @@
 		</a>
     </div>
 
+    <div class="btn-group">
+		<a class="btn  btn-sm btn-danger" href="<?php echo bUrl("houseList/", false);?>">
+			<i class="icon-edit bigger-120"></i>戶別列表
+		</a>
+    </div>
+    	
     <div class="btn-group">
 		<a class="btn  btn-sm btn-info" target="_blank" href="<?php echo bUrl("exportExcel", false);?>">
 			<i class="icon-edit bigger-120"></i>住戶資料匯出
@@ -104,9 +111,8 @@
 										<th>緊急<br />聯絡人</th>
 										<th>管委</th>
 										-->
-										<th>編輯</th>
-										<th>操作</th>
 										<th>啟用/停用</th>
+										<th>操作</th>
 										
 									</tr>
 								</thead>
@@ -184,20 +190,32 @@
 										?>
 										</td>
 										 -->
-										<td>
+										<td style='text-align: center'>
+											<?php echo tryGetData('launch', $item)==1?"啟用":"<span class='invalid'>停用</span>" ?>
+										</td>
+										<td style='text-align: left'>
 											<a class="btn  btn-minier btn-success" href="<?php echo bUrl("editUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
-												<i class="icon-edit bigger-120"></i>資料編輯
+												<i class="icon-edit bigger-120"></i>修改
 											</a>
+											
+											<?php
+											/* 暫時不於此列表提供刪除，要到戶別住戶列表才能刪除住戶
+											<a class="btn  btn-minier btn-danger" onclick="return confirm('您確定刪除此位住戶資料？')" href="<?php echo bUrl("deleteUser",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item), "name"=>tryGetData('name', $item))); ?>">
+												<i class="icon-edit bigger-120"></i>刪除
+											</a>
+											*/
+											?>
+										<!--
 										</td>
 										<td style='text-align: center'>
-
-
+										-->
+										
 										<?php
 										if (isNotNull(tryGetData('id', $item, NULL)) ){
 										?>
 											<a class="btn btn-minier btn-info" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>" >
 												<i class="icon-edit bigger-120"></i>變更磁卡
-											</a>
+											</a><br>
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("setParking",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>">
 												<i class="icon-edit bigger-120"></i>設定車位
 											</a>
@@ -206,7 +224,7 @@
 										?>
 											<a class="btn btn-minier btn-primary" href="<?php echo bUrl("changeId",TRUE,NULL,array("sn"=>tryGetData('sn', $item), "role"=>tryGetData('role', $item))); ?>" >
 												<i class="icon-edit bigger-120"></i>設定磁卡
-											</a>
+											</a><br>
 											<a class="btn btn-minier btn-gray" href="#" onclick='return alert("請先設定住戶磁卡")'>
 												<i class="icon-edit bigger-120"></i>設定車位
 											</a>
@@ -244,25 +262,15 @@
 											}
 										}
 										?>
-
-
-
-
 										</td>
-										<td style='text-align: center'>
-											<?php echo tryGetData('launch', $item)==1?"啟用":"<span class='invalid'>停用</span>" ?>
-										</td>
-										
 									</tr>
 									<?php
 										$i++;
 									}
 									?>
-										
-									
 								</tbody>
 								<tr>
-					              	<td colspan="13">
+					              	<td colspan="12">
 									<?php echo showBackendPager($pager)?>
 					                </td>
 								</tr>

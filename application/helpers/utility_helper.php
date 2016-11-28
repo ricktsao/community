@@ -43,8 +43,9 @@
 			if ($separate == false) {
 				$building_id_to_text = $CI->building_part_01.' '.tryGetData($building_id_parts[0], $CI->building_part_01_array);
 				$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_02.' '.tryGetData($building_id_parts[1], $CI->building_part_02_array);
-				$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_03.' '.$building_id_parts[2];
-		
+				if ( isset($building_id_parts[2]) ) {
+					$building_id_to_text .= '&nbsp;&nbsp;'.$CI->building_part_03.' '.$building_id_parts[2];
+				}
 				return $building_id_to_text;
 
 			} else {
