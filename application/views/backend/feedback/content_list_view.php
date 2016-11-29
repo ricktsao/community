@@ -6,7 +6,11 @@
 		</a>	
     </div>
     
-    
+    <div class="btn-group">        
+	    <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdfList",TRUE); ?>">
+			<i class="icon-edit bigger-120"></i>PDF報表
+		</a>      
+    </div> 
    
     <div class="btn-group" style="display:none">        
           <button type="submit" class="btn btn-primary btn-sm btn_margin"><i class="icon-search nav-search-icon"></i>搜尋</button>        
@@ -44,14 +48,28 @@
 									<tr>
 										<td><?php echo ($i+1)+(($this->page-1) * 10);?></td>
 										<td><?php echo $list[$i]["title"];?></td>
-										<td><?php echo nl2br($list[$i]["content"]);?></td>
-										<td><?php echo $list[$i]["target"]==1?"已回覆":"未回覆";?></td>
+										<td>
+											<?php echo nl2br($list[$i]["content"]);?>
+											<?php
+											if(isNotNull($list[$i]["brief2"]))
+											{
+												echo '<hr>回覆:<br>';
+												echo '<span style="color:red;">	';												
+												echo nl2br($list[$i]["brief2"]);
+												echo '<br>['.$list[$i]["update_date"].']';
+												echo '</span>'; 
+											}
+											?>		
+										</td>
+										<td><?php echo $list[$i]["target"]==1?"<span style='color:blue'>已回覆</span>":"<span style='color:red'>未回覆</span>";?></td>										
 										
 										<td class="center">
+											<?php if($list[$i]["target"]==0){ ?>
 											<label>
 												<input type="checkbox" class="ace" name="del[]" value="<?php echo $list[$i]["sn"];?>" />
 												<span class="lbl"></span>
 											</label>
+											 <?php }else{echo '-';} ?>
 										</td>
 									</tr>
 									<?php } ?>

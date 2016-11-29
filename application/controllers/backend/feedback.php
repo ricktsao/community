@@ -5,7 +5,7 @@ class Feedback extends Backend_Controller {
 	function __construct() 
 	{
 		parent::__construct();		
-		
+		$this->getEdomaFeedbackData();
 	}
 	
 
@@ -18,7 +18,7 @@ class Feedback extends Backend_Controller {
 		$condition = "";
 		
 		$list = $this->c_model->GetList( "feedback" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+		//img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
 		
@@ -31,6 +31,105 @@ class Feedback extends Backend_Controller {
 		
 		$this->display("content_list_view",$data);
 	}
+	
+	
+	/**
+	 * pdf list print
+	 */
+	public function showPdfList()
+	{
+		
+		$condition = "";		
+		$list = $this->c_model->GetList( "feedback" , $condition ,FALSE, $this->per_page_rows , $this->page , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );		
+			
+		
+		if($list["count"]>0)
+		{
+			$list = $list["data"];	
+			$html = "<h1 style='text-align:center'>課程專區</h1>";
+				
+			
+			$tables = 
+			'<tr>										
+				<th style="width:60px">序號</th>
+				<th>社區</th>
+				<th>主旨</th>
+				<th>內容</th>								
+				<th>狀態</th>					
+			</tr>';
+			
+			
+			
+			/*
+			 echo '<hr>回覆:<br>';
+												echo '<span style="color:red;">	';												
+												echo nl2br($list[$i]["brief2"]);
+												echo '<br>['.$list[$i]["update_date"].']';
+												echo '</span>'; 
+			 * */
+			
+			
+			for($i=0;$i<sizeof($list);$i++)
+			{
+				
+				$comment = $list[$i]["content"];
+				if(isNotNull($list[$i]["brief2"]))
+				{
+					$comment .= '<hr>回覆:<br>';
+					$comment .= '<span style="color:red;">	';												
+					$comment .= nl2br($list[$i]["brief2"]);
+					$comment .= '<br>['.$list[$i]["update_date"].']';
+					$comment .= '</span>'; 
+				}
+												
+				
+				
+				$tables .= 
+				'<tr>
+					<td>'.($i+1).'</td>
+					<td>'.tryGetData($list[$i]["comm_id"], $comm_map).'</td>
+					<td>'.$list[$i]["title"].'</td>
+					<td>'.$comment.'</td>
+					<td>'.($list[$i]["target"]==1?"<span style='color:blue'>已回覆</span>":"<span style='color:red'>未回覆</span>").'</td>						
+				</tr>';	
+			}
+			
+			$html .= '<table border="1" width="100%" >'.$tables.'</table>';
+			
+			$this->load->library('pdf');
+			$mpdf = new Pdf();
+			$mpdf = $this->pdf->load();
+			$mpdf->useAdobeCJK = true;
+			$mpdf->autoScriptToLang = true;
+			
+			
+			$water_img = base_url('template/backend/images/watermark.png');
+			$water_info = $this->c_model->GetList( "watermark");			
+			if(count($water_info["data"])>0)
+			{
+				img_show_list($water_info["data"],'img_filename',"watermark");
+				$water_info = $water_info["data"][0];			
+				$water_img = $water_info["img_filename"];
+						
+			}
+			$mpdf->SetWatermarkImage($water_img);
+			$mpdf->watermarkImageAlpha = 0.081;
+			$mpdf->showWatermarkImage = true;		
+			
+			$mpdf->WriteHTML($html);			
+			
+			$time = time();
+			$pdfFilePath = "課程專區_".$time .".pdf";
+			$mpdf->Output($pdfFilePath,'I');
+		}
+		else
+		{
+			$this->closebrowser();
+		}
+		
+	}
+	
+	
 	
 	/**
 	 * category edit page
@@ -369,7 +468,66 @@ class Feedback extends Backend_Controller {
     }
 	
 	
-	
+	/**
+	 * 查詢server上有無edoma資料
+	 **/
+	public function getEdomaFeedbackData()
+	{
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync_edoma/getFeedbackContent";
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+		
+		//echo $json_data;exit;
+		
+		$edoma_data_ary =  json_decode($json_data, true);
+		//dprint($edoma_data_ary);exit;
+		if( ! is_array($edoma_data_ary))
+		{
+			$edoma_data_ary = array();
+		}
+		
+		
+		foreach( $edoma_data_ary as $key => $server_info ) 
+		{	
+
+			$arr_data = array
+			(
+				 "server_sn" => $server_info["sn"]
+				, "brief2" => tryGetData("brief2",$server_info)
+				, "update_date" =>  date( "Y-m-d H:i:s" )
+				, "hot" => 1	
+				, "target" => 1			
+				, "is_edoma" => 1
+			);        	
+			
+			
+			$result = $this->it_model->updateData( "web_menu_content" , $arr_data, "sn = '".$server_info["client_sn"]."'" );
+			if($result)
+			{
+				$data_info = $this->it_model->listData("web_menu_content"," sn = '".$server_info["client_sn"]."'");
+				if($data_info["count"]>0)
+				{
+					$data_info = $data_info["data"][0];
+					//dprint($data_info);exit;	
+					
+					$this->sync_edoma_to_server($data_info);
+				}			  
+				
+			}		
+		}
+		
+		//echo '<meta charset="UTF-8">';
+		//dprint($app_data_ary);
+		
+	}
 	
 	
 	public function GenerateTopMenu()
