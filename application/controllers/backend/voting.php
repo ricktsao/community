@@ -239,8 +239,22 @@ class Voting extends Backend_Controller {
 		$sn = $this->input->get('sn');
 
 		//check is manager
+		
+		//echo $this->session->userdata('user_sn'); 
+		$showList = FALSE;
+
+		$sql ="SELECT * FROM voting WHERE user_sn={$this->session->userdata('user_sn')} AND sn={$sn}";
+
+		$re = $this->it_model->runSql($sql);
+
+		if($re['count']>0){
+			$showList = TRUE;
+		}
+
 		/*
 		$this->session->userdata('user_sn');
+
+
 
 		$sql="SELECT IF(is_manager=1,TRUE,FALSE) as is_manager FROM sys_user WHERE sn=".$this->session->userdata('user_sn');
 
@@ -251,7 +265,7 @@ class Voting extends Backend_Controller {
 
 		$data = [];
 
-		$data['list'] = $this->Voting_model->votingRecord($sn,TRUE);
+		$data['list'] = $this->Voting_model->votingRecord($sn,$showList);
 
 		
 		
