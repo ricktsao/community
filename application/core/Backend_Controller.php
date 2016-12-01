@@ -2130,7 +2130,26 @@ Array
 
 
 
-
+	function notifyLogin()
+	{
+		$post_data = array(
+		"backend_login_time" => date("Y-m-d H:i:s"),
+		"comm_id" => $this->getCommId() 
+		);		
+		
+		$url = $this->config->item("api_server_url")."sync/updateBackendLoginTimie";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$is_sync = curl_exec($ch);
+		curl_close ($ch);	
+		
+		//echo $is_sync;exit;
+		
+	}
 
 
 

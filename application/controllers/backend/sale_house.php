@@ -209,6 +209,7 @@ class Sale_House extends Backend_Controller {
 				, "end_date"		=>	tryGetData("end_date", $edit_data)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
+				, "is_post"		=>	tryGetData("is_post", $edit_data, 0)
 				, "is_sync"		=>	0
 				, "created" =>  date( "Y-m-d H:i:s" )
 				, "updated" =>  date( "Y-m-d H:i:s" )
