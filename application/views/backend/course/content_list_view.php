@@ -14,9 +14,9 @@
 
 	<div class="btn-group">
 		<select name="is_cost">
-			<option>收費篩選...</option>
-			<option value="1" <?php echo tryGetData("is_cost",$query_data)==1?"selected":""; ?> >有收費</option>
-			<option value="0" <?php echo tryGetData("is_cost",$query_data)==0?"selected":""; ?> >不收費</option>
+			<option value="" >收費篩選...</option>
+			<option value="1" <?php echo tryGetData("is_cost",$query_data)=='1'?"selected":""; ?> >有收費</option>
+			<option value="0" <?php echo tryGetData("is_cost",$query_data)=='0'?"selected":""; ?> >不收費</option>
 		</select>
 	</div>
 

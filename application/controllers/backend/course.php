@@ -15,7 +15,7 @@ class Course extends Backend_Controller {
 	 */
 	public function contentList()
 	{				
-		
+		$query_data = array();
 		foreach( $_GET as $key => $value )
 		{
 			$query_data[$key] = $this->input->get($key,TRUE);			
@@ -32,11 +32,11 @@ class Course extends Backend_Controller {
 		$condition = "";
 		$condition_ary = array();
 		
-		if($is_cost == 1)
+		if($is_cost == '1')
 		{
 			array_push($condition_ary,"url > 0");
 		}
-		else if($is_cost == 0)
+		else if($is_cost == '0')
 		{
 			array_push($condition_ary,"(url is null or url = 0)");
 		}
@@ -115,11 +115,11 @@ class Course extends Backend_Controller {
 				$cost = tryGetData("url", $list[$i]);
 				if($cost != "")
 				{
-					echo $cost." 元";
+					$cost = $cost." 元";
 				}
 				else 
 				{
-				 	echo "不收費";
+				 	$cost = "不收費";
 				}
 				
 				$tables .= 
