@@ -1,16 +1,3 @@
-<?php
-$btn_string1 = "填寫";
-$btn_string2 = "填寫";
-if(tryGetData("sn",$this_mon_gas_info)>0)
-{
-	$btn_string1 = "修改";
-}
-if(tryGetData("sn",$last_mon_gas_info)>0)
-{
-	$btn_string2 = "修改";
-}
-?>
-
 <div class="primary">
 		<div class="form_group"><div class="form_page_title">瓦斯度數登記</div></div>
 		<table class="table_style">
@@ -19,33 +6,32 @@ if(tryGetData("sn",$last_mon_gas_info)>0)
 					<tr>
 						<td colspan=3 >瓦斯抄表</td>
 					</tr>
-					<form id="gas_form" action="<?php echo fUrl("readGas"); ?>" method="post">
-					<tr>						
-						<td style="width:20%;"><?php echo $this_mon_gas_info["year"] ?> 年 <?php echo $this_mon_gas_info["month"] ?> 月 </td>
-						<td>
-							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degress",$this_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
-						</td>
-						<td style="width:20%;">									
-							<button class="btn"  ><?php echo $btn_string1;?> <i class="fa fa-chevron-right"></i></button>
-						</td>
-					</tr>
-					<input type="hidden" name="year" value="<?php echo $this_mon_gas_info["year"] ?>">
-					<input type="hidden" name="month" value="<?php echo $this_mon_gas_info["month"] ?>">
-					</form>
-					
-					<form id="gas_form" action="<?php echo fUrl("readGas"); ?>" method="post">
-					<tr>						
-						<td style="width:20%;"><?php echo $last_mon_gas_info["year"] ?> 年 <?php echo $last_mon_gas_info["month"] ?> 月 </td>
-						<td>
-							<input type="text" name="degress" class="input_style" value="<?php echo tryGetData("degress",$last_mon_gas_info) ;?>" style="display:inline-block !important;width:50px; "> 度
-						</td>
-						<td style="width:20%;">									
-							<button class="btn"  ><?php echo $btn_string2;?> <i class="fa fa-chevron-right"></i></button>
-						</td>
-					</tr>
-					<input type="hidden" name="year" value="<?php echo $last_mon_gas_info["year"] ?>">
-					<input type="hidden" name="month" value="<?php echo $last_mon_gas_info["month"] ?>">
-					</form>
+                                        <?php
+                                        foreach ($g_list as $key => $mon_gas_info) 
+                                        {
+                                            $btn_str = "填寫";
+                                            if(tryGetData("sn",$mon_gas_info)>0)
+                                            {
+                                                    $btn_str = "修改";
+                                            }
+                                            $gas_input_str = 
+                                            '<form id="gas_form" action="'.fUrl("readGas").'" method="post">
+                                             <tr>						
+                                                  <td style="width:20%;">'.$mon_gas_info["year"].' 年 '.$mon_gas_info["month"].' 月 </td>
+                                                  <td>
+                                                      <input type="text" name="degress" class="input_style" value="'.tryGetData("degress", $mon_gas_info).'" style="display:inline-block !important;width:50px; "> 度
+                                                  </td>
+                                                  <td style="width:20%;">									
+                                                          <button class="btn"  >'.$btn_str.' <i class="fa fa-chevron-right"></i></button>
+                                                  </td>
+                                              </tr>
+                                              <input type="hidden" name="year" value="'.$mon_gas_info["year"].'">
+                                              <input type="hidden" name="month" value="'.$mon_gas_info["month"].'">
+                                            </form>
+                                            ';
+                                            echo $gas_input_str;
+                                        }
+                                        ?>
 				</div>
 			</thead>
 		</table>
