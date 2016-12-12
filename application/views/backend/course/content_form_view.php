@@ -9,14 +9,19 @@
 	?> 
 	
 	<?php 
-	echo textOption("廠商電話1","brief",$edit_data);
+	echo textOption("聯絡電話一","brief",$edit_data);
 	?>
 	
 	<?php 
-	echo textOption("廠商電話2","brief2",$edit_data);
+	echo textOption("聯絡電話二","brief2",$edit_data);
 	?>
 	
-
+	
+	<?php echo textOption("課程主旨","title",$edit_data); ?>
+	  	
+	<?php
+	  echo textAreaOption("課程內容","content",$edit_data);
+	?>	
 	
 	<div class="form-group ">
 		<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">收費金額</label>
@@ -25,12 +30,9 @@
 		</div>
 	</div>
 	
-	<?php echo textOption("課程主旨","title",$edit_data); ?>
-	  	
-	<?php
-	  echo textAreaOption("課程內容","content",$edit_data);
-	?>	
-	<?php echo checkBoxOption("收費","brief",$edit_data);?>
+	<?php 
+	//echo checkBoxOption("收費","brief",$edit_data);
+	?>
 	
 	<div class="form-group " style="display:none">
         <label class="col-xs-12 col-sm-2 control-label no-padding-right" for="content">圖片</label>

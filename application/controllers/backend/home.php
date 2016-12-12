@@ -4,6 +4,10 @@ class Home extends Backend_Controller{
 
 	public function index()
 	{
+		//通知大平台已login
+		$this->notifyLogin();
+		
+		
 		// Claire
 		$this->check_user_sync();	//user 離線同步	 
 		$this->check_house_to_sale_sync();	// 售屋離線同步	

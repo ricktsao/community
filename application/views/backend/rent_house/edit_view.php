@@ -104,6 +104,7 @@
 		echo textOption("附近交通", "traffic", $edit_data);
 		echo textAreaOption("<span class='red'>＊</span>特色說明", "desc", $edit_data);
 		echo pickDateOption($edit_data);
+		echo checkBoxOption("聯　賣", "is_post", $edit_data);
 		echo checkBoxOption("啟　用", "launch", $edit_data);
 		?>
 

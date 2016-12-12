@@ -8,14 +8,14 @@
 </div>
 
 <div class="form-group ">
-	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">廠商電話1 : </label>
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">聯絡電話一 : </label>
 	<div class="col-xs-12 col-sm-6">
 		<?php echo tryGetData("brief",$edit_data);?>				
 	</div>
 </div>
 
 <div class="form-group ">
-	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">廠商電話2 : </label>
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">聯絡電話二 : </label>
 	<div class="col-xs-12 col-sm-6">
 		<?php echo tryGetData("brief2",$edit_data);?>				
 	</div>
@@ -38,7 +38,17 @@
 <div class="form-group ">
 	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">收　　費 : </label>
 	<div class="col-xs-12 col-sm-6">
-		<?php echo tryGetData("brief",$edit_data)==1?"是":"否" ;?>				
+		<?php
+		$cost = tryGetData("url",$edit_data);
+		if($cost != "")
+		{
+			echo $cost." 元";
+		}
+		else 
+		{
+		 	echo "不收費";
+		}
+		 ?>
 	</div>
 </div>
 
@@ -51,7 +61,7 @@
 	
 
 <div class="form-group ">
-	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">課程日期收費 : </label>
+	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">收費起訖日 : </label>
 	<div class="col-xs-12 col-sm-6">
 		
 		<?php echo showEffectiveDate($edit_data["start_date"],$edit_data["end_date"], $edit_data["forever"]) ?>		

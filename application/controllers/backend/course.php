@@ -15,20 +15,58 @@ class Course extends Backend_Controller {
 	 */
 	public function contentList()
 	{				
+		$query_data = array();
+		foreach( $_GET as $key => $value )
+		{
+			$query_data[$key] = $this->input->get($key,TRUE);			
+		}		
+		$data["query_data"] = $query_data;
 		
-		$cat_sn = $this->input->get('cat_sn');		
-		
-		$cat_list = $this->c_model->GetList( "course_cat" , "" ,FALSE, NULL , NULL , array("sort"=>"asc","sn"=>"desc") );
-		$data["cat_list"] = $cat_list["data"];
+		$is_cost = tryGetData("is_cost", $query_data);
+		$mname = tryGetData("mname", $query_data);
+		$tel = tryGetData("tel", $query_data);
+		$s_date = tryGetData("s_date", $query_data);
+		$e_date = tryGetData("e_date", $query_data);
 		
 		
 		$condition = "";
-		if(isNotNull($cat_sn))
+		$condition_ary = array();
+		
+		if($is_cost == '1')
 		{
-			$condition = "web_menu_content.parent_sn = '".$cat_sn."'";
+			array_push($condition_ary,"url > 0");
+		}
+		else if($is_cost == '0')
+		{
+			array_push($condition_ary,"(url is null or url = 0)");
 		}
 		
-		$list = $this->c_model->GetList2( "course" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		if($mname != "")
+		{
+			array_push($condition_ary,"filename like '%".$mname."%'");
+		}
+		
+		if($tel != "")
+		{
+			array_push($condition_ary,"(brief like '%".$tel."%' OR brief2 like '%".$tel."%')");
+		}
+		
+		if($s_date != "")
+		{
+			array_push($condition_ary,"start_date >= '".$s_date."'");
+		}
+		
+		
+		if($e_date != "")
+		{
+			array_push($condition_ary,"(end_date <= '".$e_date."' OR forever = 1 )");
+		}
+		
+		
+		$condition = implode(" AND ", $condition_ary);
+
+		
+		$list = $this->c_model->GetList( "course" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
 		
 		$data["list"] = $list["data"];
@@ -36,7 +74,7 @@ class Course extends Backend_Controller {
 		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
-		$data["cat_sn"] = $cat_sn;
+		
 		//dprint($data["pager"]);
 		
 		
@@ -65,20 +103,34 @@ class Course extends Backend_Controller {
 				<th style="width:60px">序號</th>
 				<th>課程主旨</th>
 				<th>廠商名稱</th>
-				<th>收費金額</th>								
-				<th>有效日期</th>					
+				<th>聯絡電話一</th>
+				<th>聯絡電話二</th>
+				<th>收費起訖日</th>		
+				<th>收費金額</th>
 			</tr>';
 			
 			
 			for($i=0;$i<sizeof($list);$i++)
 			{
+				$cost = tryGetData("url", $list[$i]);
+				if($cost != "")
+				{
+					$cost = $cost." 元";
+				}
+				else 
+				{
+				 	$cost = "不收費";
+				}
+				
 				$tables .= 
 				'<tr>
 					<td>'.($i+1).'</td>
 					<td>'.$list[$i]["title"].'</td>
 					<td>'.$list[$i]["filename"].'</td>
-					<td>'.$list[$i]["url"].'</td>
-					<td>'.showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]).'</td>						
+					<td>'.$list[$i]["brief"].'</td>
+					<td>'.$list[$i]["brief2"].'</td>
+					<td>'.showEffectiveDate($list[$i]["start_date"], $list[$i]["end_date"], $list[$i]["forever"]).'</td>
+					<td>'.$cost.'</td>											
 				</tr>';	
 			}
 			
