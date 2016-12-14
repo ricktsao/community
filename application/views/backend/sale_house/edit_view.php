@@ -1,3 +1,14 @@
+<?php
+if ( tryGetData('is_post', $edit_data,0) == 1) {
+?>
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".useless_form :input").prop("disabled", true);
+});
+</script>
+<?php
+}
+?>
 <?php // echo validation_errors(); ?>
 
 <div class="page-header">
@@ -5,18 +16,32 @@
 		售屋資料編輯
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			
+            <?php
+            if ( tryGetData('is_post', $edit_data,0) == 1) {
+                echo '<span style="color:#c00">此筆售屋資料已發佈聯賣，無法再進行任何編修。</span>';
+                //echo '此筆租屋資料已發佈聯賣，若再進行資料修改，不會與先前的資料同步。';
+            }
+            ?>
 		</small>
 	</h1>
 </div>
 <?php //dprint($edit_data);?>
-
+<?php
+if ( tryGetData('is_post', $edit_data,0) != 1) {
+?>
 <form action="<?php echo bUrl("update")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
+<?php
+} else {
+?>
+<form class='useless_form' action='#'>
+<?php
+}
+?>
 <div class="row">
 	<div class="col-xs-12 form-horizontal">
-	
+
 		<?php
-		
+
 		echo form_hidden('sn', tryGetData('sn', $edit_data,NULL));
 		echo textOption("<span class='red'>＊</span>售屋標題", "title", $edit_data);
 		echo textOption("<span class='red'>＊</span>聯絡人", "name", $edit_data);
@@ -94,21 +119,35 @@
 		echo textOption("附近交通", "traffic", $edit_data);
 		echo textAreaOption("<span class='red'>＊</span>特色說明", "desc", $edit_data);
 		echo pickDateOption($edit_data);
-		echo checkBoxOption("聯　賣", "is_post", $edit_data);
 		echo checkBoxOption("啟　用", "launch", $edit_data);
 		?>
 
 	<div class="clearfix form-actions">
-		<div class="col-md-offset-3 col-md-9">
-			
+        <div class="col-md-offset-1 col-md-9">
+        <?php
+        if ( tryGetData('is_post', $edit_data,0)!=1) {
+        ?>
+            <button class="btn btn-green" id="Reset" type="reset">
+                <i class="icon-ok bigger-110"></i>
+                重新填寫
+            </button>
 			<button class="btn btn-info" id="Submit" type="submit">
 				<i class="icon-ok bigger-110"></i>
 				確定送出
 			</button>
-			
+        <?php
+        } else {
+        ?>
+            <button class="btn btn-info" id="back" type="button" onclick="javascript:history.go(-1);">
+                <i class="icon-ok bigger-110"></i>
+                返回上一頁
+            </button>
+        <?php
+        }
+        ?>
 		</div>
 	</div>
 
-	</div>	
+	</div>
 </div>
 </form>

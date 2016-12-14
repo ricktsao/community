@@ -1,8 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Sale_House extends Backend_Controller {
-	
-	function __construct() 
+
+	function __construct()
 	{
 		parent::__construct();
 
@@ -11,9 +11,9 @@ class Sale_House extends Backend_Controller {
 		// waitting for test
 		//$this->getEdomaHouseToSale();
 	}
-	
 
-	function test() 
+
+	function test()
 	{
 	//	echo '@ api_server_url : '.$this->config->item("api_server_url");
 		$this->getEdomaHouseToSale();
@@ -26,7 +26,7 @@ class Sale_House extends Backend_Controller {
 	 */
 	public function index()
 	{
-		$this->check_house_to_sale_sync();	// 售屋離線同步	
+		$this->check_house_to_sale_sync();	// 售屋離線同步
 		$this->check_house_to_sale_photo_sync();	// 售屋照片離線同步
 
 		$condition = '';
@@ -98,8 +98,8 @@ class Sale_House extends Backend_Controller {
 	public function edit()
 	{
 		$this->addCss("css/chosen.css");
-		$this->addJs("js/chosen.jquery.min.js");		
-		
+		$this->addJs("js/chosen.jquery.min.js");
+
 		$sn = $this->input->get("sn", TRUE);
 		$role = $this->input->get("role", TRUE);
 
@@ -116,8 +116,8 @@ class Sale_House extends Backend_Controller {
 		$data["group_list"] = count($group_list["data"]) > 0 ? $group_list["data"] : array();
 		//---------------------------------------------------------------------------------------------------------------
 
-		$sys_user_group = array();		
-						
+		$sys_user_group = array();
+
 		if($sn == "")
 		{
 			$data["edit_data"] = array
@@ -127,51 +127,86 @@ class Sale_House extends Backend_Controller {
 				'forever' => 1,
 				'launch' => 1
 			);
-			
+
 			$data["sys_user_group"] = $sys_user_group;
 			$this->display("edit_view",$data);
 		}
-		else 
+		else
 		{
 			$result = $this->it_model->listData( "house_to_sale" , "sn =".$sn);
-			
-			if (count($result["data"]) > 0) {			
+
+			if (count($result["data"]) > 0) {
 				$edit_data = $result["data"][0];
-				
+
 				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
 				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( tryGetData('end_date',$edit_data, '+1 month' ) ) );
-				
-				
+
+
 				$data['edit_data'] = $edit_data;
 				$this->display("edit_view",$data);
 			}
 			else
 			{
-				redirect(bUrl("index"));	
+				redirect(bUrl("index"));
 			}
 		}
 	}
 
 
 
+    public function postToEdoma()
+    {
+        $sn = $this->input->get("sn", TRUE);
+        $msg = '系統忙碌中，請稍候再試。';
+        if ($sn > 0) {
+            $result = $this->it_model->listData( "house_to_sale" , "sn =".$sn);
+
+            if (count($result["data"]) == 1) {
+                $edit_data = $result["data"][0];
+
+                $arr_data = array(
+                     "sn"            =>  tryGetData("sn", $edit_data, NULL)
+                    , "is_post"      =>  1
+                    , 'comm_id' =>  tryGetData("comm_id", $edit_data, NULL)
+                    , "updated"     =>  date( "Y-m-d H:i:s" )
+                    , "is_sync"     =>  0
+                );
+
+                $arr_return = $this->it_model->updateDB( "house_to_sale" , $arr_data, "sn =".$edit_data["sn"] );
+                if($arr_return['success'])
+                {
+                    $msg = '聯賣資訊已發佈成功，Edoma將盡速處理，感謝。';
+
+                        /* 同步 同步 同步 同步 同步 */
+                        $this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
+                }
+            }
+        }
+
+        $data['msg'] = $msg;
+        $this->display("post_result_view",$data);
+    }
+
+
+
 	public function update()
 	{
 		$this->load->library('encrypt');
-		
+
 		foreach( $_POST as $key => $value )
 		{
-			$edit_data[$key] = $this->input->post($key,TRUE);			
+			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
 
 		if ( ! $this->_validateData() ) {
 
 			$data["edit_data"] = $edit_data;
-			
+
 			$data["sys_user_group"] = array();
-			
+
 			$this->display("edit_view",$data);
 		}
-        else 
+        else
         {
 
         	$arr_data = array(
@@ -206,15 +241,15 @@ class Sale_House extends Backend_Controller {
 				, "traffic"		=>	tryGetData("traffic", $edit_data)
 				, "desc"		=>	strip_tags(tryGetData("desc", $edit_data))
 				, "start_date"		=>	tryGetData("start_date", $edit_data)
-				, "end_date"		=>	tryGetData("end_date", $edit_data)
+				, "end_date"		=>	tryGetData("end_date", $edit_data, NULL)
 				, "forever"		=>	tryGetData("forever", $edit_data, 0)
 				, "launch"		=>	tryGetData("launch", $edit_data, 0)
 				, "is_post"		=>	tryGetData("is_post", $edit_data, 0)
 				, "is_sync"		=>	0
 				, "created" =>  date( "Y-m-d H:i:s" )
 				, "updated" =>  date( "Y-m-d H:i:s" )
-			);        	
-			
+			);
+
 			if($edit_data["sn"] != FALSE)
 			{
 				$arr_return = $this->it_model->updateDB( "house_to_sale" , $arr_data, "sn =".$edit_data["sn"] );
@@ -222,22 +257,22 @@ class Sale_House extends Backend_Controller {
 				if($arr_return['success'])
 				{
 					$this->showSuccessMessage();
-						
+
 						/* 同步 同步 同步 同步 同步 */
 						$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 				}
-				else 
+				else
 				{
 					//$this->output->enable_profiler(TRUE);
 					$this->showFailMessage();
 				}
-				
-				redirect(bUrl("index",TRUE,array("sn")));		
+
+				redirect(bUrl("index",TRUE,array("sn")));
 			}
-			else 
+			else
 			{
-				$arr_data["created"] = date( "Y-m-d H:i:s" ); 	
-				
+				$arr_data["created"] = date( "Y-m-d H:i:s" );
+
 				$sale_sn = $this->it_model->addData( "house_to_sale" , $arr_data );
 				//$this->logData("新增人員[".$arr_data["id"]."]");
 
@@ -249,11 +284,11 @@ class Sale_House extends Backend_Controller {
 						$arr_data["sn"] = $sale_sn;
 						$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 				}
-				else 
+				else
 				{
 					$this->showFailMessage();
 				}
-				
+
 				redirect(bUrl("index",TRUE,array("sn")));
 			}
         }
@@ -268,13 +303,13 @@ class Sale_House extends Backend_Controller {
 		$forever = tryGetValue($this->input->post('forever',TRUE), 0);
 
 		$this->form_validation->set_message('checkAdminAccountExist', 'Error Message');
-		
-		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');	
-		
-		
+
+		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');
+
+
 		$forever = tryGetValue($this->input->post('forever',TRUE),0);
 		if($forever!=1) {
-			$this->form_validation->set_rules( 'end_date', $this->lang->line("field_end_date"), 'required' );	
+			$this->form_validation->set_rules( 'end_date', $this->lang->line("field_end_date"), 'required' );
 		}
 		$this->form_validation->set_rules( 'start_date', $this->lang->line("field_start_date"), 'required' );
 
@@ -323,35 +358,35 @@ class Sale_House extends Backend_Controller {
 	public function photoSetting()
 	{
 		$this->addCss("css/chosen.css");
-		$this->addJs("js/chosen.jquery.min.js");		
-		
+		$this->addJs("js/chosen.jquery.min.js");
+
 		$house_to_sale_sn = tryGetData('sn', $_GET, NULL);
-		
+
 		if ( isNotNull($house_to_sale_sn) ) {
 			## 物件基本資料
 			$admin_info = $this->it_model->listData( "house_to_sale" , "sn =".$house_to_sale_sn);
-			
+
 			if (count($admin_info["data"]) > 0) {
 				$edit_data =$admin_info["data"][0];
-				
+
 				$data['house_data'] = $edit_data;
 
 				## 既有照片list
-				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN house_to_sale_photo p ON h.sn = p.house_to_sale_sn" 
+				$exist_parking_list = $this->it_model->listData( "house_to_sale h LEFT JOIN house_to_sale_photo p ON h.sn = p.house_to_sale_sn"
 														, "p.del=0 and house_to_sale_sn = ".$house_to_sale_sn , NULL , NULL , array("p.sn"=>"asc"));
 
 				$data["exist_photo_array"] = count($exist_parking_list["data"]) > 0 ? $exist_parking_list["data"] : array();
-				
+
 				$this->display("photo_setting_view",$data);
 			}
 			else
 			{
-				redirect(bUrl("index"));	
+				redirect(bUrl("index"));
 			}
 
 		} else {
 
-			redirect(bUrl("index"));	
+			redirect(bUrl("index"));
 		}
 	}
 
@@ -373,9 +408,9 @@ class Sale_House extends Backend_Controller {
 	{
 		$edit_data = array();
 		foreach( $_POST as $key => $value ) {
-			$edit_data[$key] = $this->input->post($key,TRUE);			
+			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
-		
+
 		$house_to_sale_sn = tryGetData('house_to_sale_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/'.$comm_id.'/house_to_sale/'.$edit_data['house_to_sale_sn'];
@@ -425,7 +460,7 @@ class Sale_House extends Backend_Controller {
 				$this->showSuccessMessage('物件照片上傳成功');
 
 				/*
-				// 同步 同步 同步 同步 同步 
+				// 同步 同步 同步 同步 同步
 				$arr_data["sn"] = $sale_photo_sn;
 				$this->sync_item_to_server($arr_data, 'updateSaleHousePhoto', 'house_to_sale_photo');
 
@@ -462,7 +497,7 @@ class Sale_House extends Backend_Controller {
 					//echo $this->db->last_query();
 					/* 同步 同步 同步 同步 同步 */
 					$arr_data = array("sn" => $sn
-									, "comm_id" => $comm_id 
+									, "comm_id" => $comm_id
 									, "del" => 1 );
 					$this->sync_item_to_server($arr_data, 'updateSaleHouse', 'house_to_sale');
 
@@ -504,10 +539,10 @@ class Sale_House extends Backend_Controller {
 			$del = $this->it_model->updateDB( "house_to_sale_photo" , array('is_sync' => 0, 'del' => 1), "sn =".$sn." and comm_id ='".$comm_id."'" );
 
 			if ($del) {
-			
+
 				/* 同步 同步 同步 同步 同步 */
 				$arr_data = array("sn" => $sn
-								, "comm_id" => $comm_id 
+								, "comm_id" => $comm_id
 								, "del" => 1 );
 				$this->sync_item_to_server($arr_data, 'updateSaleHousePhoto', 'house_to_sale_photo');
 
@@ -529,13 +564,13 @@ class Sale_House extends Backend_Controller {
 
 
 	public function GenerateTopMenu()
-	{		
+	{
 		$this->addTopMenu(array("contentList", "updateLandSummary"));
 	}
 
 
 
-	
+
 }
 
 

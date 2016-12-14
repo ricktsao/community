@@ -5,7 +5,7 @@
 | Pager Setting
 |--------------------------------------------------------------------------
 |
-| Set the default pager 
+| Set the default pager
 |
 */
 
@@ -50,7 +50,7 @@ $config['image']['upload_max_size'] = '204800';
 
 //郵件設定
 //------------------------------------------------------
-$config['mail']['host'] = 'abcde.com.tw'; 
+$config['mail']['host'] = 'abcde.com.tw';
 $config['mail']['port'] = '25';
 $config['mail']['sender_mail'] = '';
 $config['mail']['sender_name'] = '富網通 <it@abcde.com.tw>';
@@ -58,7 +58,7 @@ $config['mail']['charset'] = 'utf-8';
 $config['mail']['encoding'] = 'base64';
 $config['mail']['is_html'] = TRUE;
 $config['mail']['word_wrap'] = 50;//每50自斷行
-$config['mail']['template'] = 
+$config['mail']['template'] =
 "<!doctype html>
 <html lang='en'>
 	<head>
@@ -168,13 +168,13 @@ $config['house_direction_array'] = array( 'a'=>'坐東朝西'
 								, 'g'=>'坐西北朝東南'
 								, 'h'=>'坐東北朝西南'
 								);
-											
+
 //檔案類型
 $config['mail_box_type'] = array(
 	"A" => "掛號信",
 	"B" => "包裹",
 	"C" => "代收包裹",
-	"D" => "送洗衣物"			
+	"D" => "送洗衣物"
 );
 
 
@@ -187,13 +187,13 @@ $config['api_server_url'] = 'http://edoma.acsite.org/commapi/';
 //維修範圍
 $config['repair_type'] = array(
 	"1" => "公共區域",
-	"2" => "住家內部"		
+	"2" => "住家內部"
 );
 
 //維修處理進度  0:已報修,1:已讀 /2:勘驗/3:估價/4:完工
 $config['repair_status'] = array(
 	"0" => "報修中",
-	"1" => "已讀",	
+	"1" => "已讀",
 	"2" => "勘驗",
 	"3" => "估價",
 	"4" => "完工"
