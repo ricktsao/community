@@ -6,17 +6,17 @@ class Sale_House extends Backend_Controller {
 	{
 		parent::__construct();
 
-
-
-		// waitting for test
-		//$this->getEdomaHouseToSale();
+		// 同步Edoma發佈到社區的售屋資料
+        $this->getEdomaHouseToSale();
 	}
 
 
 	function test()
 	{
 	//	echo '@ api_server_url : '.$this->config->item("api_server_url");
-		$this->getEdomaHouseToSale();
+		//$this->getEdomaHouseToSale();
+        echo time().' here!!! getEdomaHouseToSale';
+        $this->getEdomaHouseToSale();
 	}
 
 
@@ -102,6 +102,7 @@ class Sale_House extends Backend_Controller {
 
 		$sn = $this->input->get("sn", TRUE);
 		$role = $this->input->get("role", TRUE);
+        $mode = $this->input->get("mode", TRUE);
 
 		//權組list
 		//---------------------------------------------------------------------------------------------------------------
@@ -141,8 +142,8 @@ class Sale_House extends Backend_Controller {
 				$edit_data["start_date"] = $edit_data["start_date"]==NULL?"": date( "Y-m-d" , strtotime( $edit_data["start_date"] ) );
 				$edit_data["end_date"] = $edit_data["end_date"]==NULL?"": date( "Y-m-d" , strtotime( tryGetData('end_date',$edit_data, '+1 month' ) ) );
 
-
 				$data['edit_data'] = $edit_data;
+                $data["mode"] = $mode;
 				$this->display("edit_view",$data);
 			}
 			else

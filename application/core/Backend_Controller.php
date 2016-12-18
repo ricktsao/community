@@ -1226,23 +1226,21 @@ abstract class Backend_Controller extends IT_Controller
 		$post_data["comm_id"] = $this->getCommId();
 		$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSale";
 
-		// dprint($url);
-		// dprint($post_data);
+//		 dprint('url : '.$url);
+//		 dprint($post_data);
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_POST,1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$json_data = curl_exec($ch);
 		curl_close ($ch);
 
-
 		$edoma_data_ary =  json_decode($json_data, true);
 
-//dprint( $edoma_data_ary );
-//die;
+
 
 		if( ! is_array($edoma_data_ary))
 		{
@@ -1318,26 +1316,21 @@ abstract class Backend_Controller extends IT_Controller
 			} else {
 
 				$ok_flag = true;
-				       echo 'updated ok';
-				 		dprint( $this->db->last_query());
+				//       echo 'upDated ok';
+				 //		dprint( $this->db->last_query());
 				//		dprint( $this->db->_error_message());
-						dprint( $upd);
+				//		dprint( $upd);
 
 				$tmp = $this->it_model->listData( "house_to_sale" , "server_sn =".$server_sn );
 				$house_to_sale_sn = $tmp['data'][0]['sn'];
-				       echo 'house_to_sale_sn = '. $house_to_sale_sn;
+				//       echo 'house_to_sale_sn = '. $house_to_sale_sn;
 			}
-
 
 			//edoma_sn
 			$post_data = array();
 			$post_data["comm_id"] = $this->getCommId();
 			$post_data["edoma_house_to_sale_sn"] = $edoma_sn;
 			$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSalePhoto";
-
-
-			// dprint($url);
-			// dprint($post_data);
 
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
@@ -1349,67 +1342,49 @@ abstract class Backend_Controller extends IT_Controller
 			curl_close ($ch);
 
 			$edoma_photo_ary =  json_decode($json_photo, true);
-dprint('<hr color=red>');
-dprint($edoma_photo_ary);
-/*
-Array
-(
-    [sn] => 8
-    [client_house_to_sale_sn] =>
-    [client_sn] =>
-    [edoma_house_to_sale_sn] => 1
-    [edoma_sn] => 1
-    [client_sync] => 0
-    [del] => 0
-    [filename] => 20160627013812_628277.jpg
-    [title] => tooth gray
-    [updated] => 2016-06-27 01:38:12
-    [updated_by] => 管理者
-)
-*/
-dprint('<hr color=blue>');
+
 			if( ! is_array($edoma_photo_ary))
 			{
 				$edoma_photo_ary = array();
 			}
-$edoma_photo_ary = array();
+
+            // 先刪掉原本此則售屋的，再重新新增
+            $this->db->query('delete from house_to_sale_photo '
+                            .'     where edoma_house_to_sale_sn='.$edoma_sn);
 			foreach( $edoma_photo_ary as $key => $server_photo_info )
 			{
-				$ok_flag = false;
-				$server_sn = tryGetData("sn",$server_photo_info);
+				$edoma_house_to_sale_sn = tryGetData("edoma_house_to_sale_sn", $server_photo_info);
+                $comm_id = tryGetData("comm_id", $server_photo_info);
+                $filename = tryGetData("filename", $server_photo_info);
 				$arr_data = array
-				(	"is_edoma"	=>	1
-					//, "edoma_house_to_sale_sn"	=>	tryGetData("edoma_house_to_sale_sn",$server_photo_info)
-					, "title"		=>	tryGetData("title",$server_photo_info)
+				(	"edoma_house_to_sale_sn"  =>  $edoma_house_to_sale_sn
+                    , "comm_id"     =>  $comm_id
+                    , "filename"    =>  $filename
+					, "title"		=>	tryGetData("title",$server_photo_info,'')
 					, "del"			=>	tryGetData("del",$server_photo_info,0)
-					, "filename"	=>	tryGetData("filename",$server_photo_info)
-					, "updated"		=>  tryGetData("updated",$server_photo_info)
-					, "updated_by"	=>  tryGetData("updated_by",$server_photo_info)
+					, "updated"		=>  tryGetData("updated", $server_photo_info)
+                    , "house_to_sale_sn"  =>  $house_to_sale_sn
+                    , "is_sync"     =>  1
+					, "updated_by"	=>  'sync : '.tryGetData("updated_by", $server_photo_info)
 				);
 
-				$upd = $this->it_model->updateData( "house_to_sale_photo" , $arr_data, "server_sn =".$server_sn );
-
-				if ($upd === false) {
-					$arr_data['server_sn'] = $server_sn;
-					$arr_data['edoma_house_to_sale_sn'] = $edoma_house_to_sale_sn;
-					$arr_data['created'] = date( "Y-m-d H:i:s" );
-					$int = $this->it_model->addData( "house_to_sale_photo" , $arr_data );
-
-							dprint( $this->db->last_query());
-					//		dprint( $this->db->_error_message());
-					//		dprint( $int);
-					      echo 'add OOok';
-
-
-
-
-				} else {
-					      echo 'updated OOok';
-							dprint( $this->db->last_query());
-					//		dprint( $this->db->_error_message());
-					//		dprint( $upd);
-				}
-
+				$int = $this->it_model->addData( "house_to_sale_photo" , $arr_data );
+                if ($int > 0) {
+                    //sync image
+                    //--------------------------------------------------------------------
+                    if( isNotNull(tryGetData("filename", $server_photo_info)) )
+                    {
+                        $img_url = $this->config->item("api_server_url")."upload/edoma/house_to_sale/".$edoma_house_to_sale_sn."/".$filename;
+                        $saveto = set_realpath("./upload/".$comm_id."/house_to_sale/".$house_to_sale_sn).$filename;
+                        if (!is_dir(set_realpath("./upload/".$comm_id."/house_to_sale/".$house_to_sale_sn))) {
+                            mkdir(set_realpath("./upload/".$comm_id."/house_to_sale/".$house_to_sale_sn), 0777, true);
+                        }
+                        $this->download_image($img_url, $saveto);
+                        //echo "<p>$img_url ----> $saveto";
+                    }
+                    //--------------------------------------------------------------------
+					//echo 'add ['.tryGetData("filename", $server_photo_info).'] OOok';
+                }
 			}
 
 		}
@@ -1426,11 +1401,13 @@ $edoma_photo_ary = array();
 			//$ddd = $this->it_model->listData( "house_to_sale");
 			//dprint($ddd);
 			//die;
-		$post_data["comm_id"] = $this->getCommId();
+        $comm_id = $this->getCommId();
+		$post_data["comm_id"] = $comm_id;
+
 		$url = $this->config->item("api_server_url")."sync_edoma_house/getEdomaHouseToSalePhoto";
 
-		// dprint($url);
-		// dprint($post_data);
+		 dprint('url '.$url);
+		 dprint($post_data);
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -1441,11 +1418,12 @@ $edoma_photo_ary = array();
 		$json_data = curl_exec($ch);
 		curl_close ($ch);
 
-//echo $json_data;
 
 		$edoma_data_ary =  json_decode($json_data, true);
 
-// dprint($edoma_data_ary);exit;
+  dprint($edoma_data_ary);
+
+  die;
 
 		if( ! is_array($edoma_data_ary))
 		{
@@ -1454,25 +1432,36 @@ $edoma_photo_ary = array();
 
 		foreach( $edoma_data_ary as $key => $server_info )
 		{
-			$server_sn = $server_info["sn"];
+			//$server_sn = $server_info["sn"];
+            $server_sn = $server_info["edoma_house_to_sale_sn"];
 			$arr_data = array
 			(
-				 "comm_id"		=>	$this->getCommId()
+				 "comm_id"		=>	$comm_id
 				, "del"			=>	tryGetData("del",$server_info,0)
 				, "is_edoma"	=>	1
 				, "title"		=>	tryGetData("title",$server_info)
-				, "traffic"	=>	tryGetData("traffic",$server_info)
-				, "desc"	=>	tryGetData("desc",$server_info)
+				, "edoma_house_to_sale_sn"	=>	tryGetData("edoma_house_to_sale_sn",$server_info)
+				, "filename"	=>	tryGetData("desc",$server_info)
 				, "updated" =>  date( "Y-m-d H:i:s" )
-				, "created" =>  date( "Y-m-d H:i:s" )
+				//, "created" =>  date( "Y-m-d H:i:s" )
 			);
 
-			$upd = $this->it_model->updateData( "house_to_sale_photo" , $arr_data, "server_sn =".$server_sn );
+			$upd = $this->it_model->updateData( "house_to_sale_photo" , $arr_data, "edoma_house_to_sale_sn =".$server_sn );
 
 			if ($upd === false) {
-				$arr_data['server_sn'] = $server_sn;
-				$arr_data['created'] = date( "Y-m-d H:i:s" );
+				$arr_data['edoma_house_to_sale_sn'] = $server_sn;
+				//$arr_data['created'] = date( "Y-m-d H:i:s" );
 				$int = $this->it_model->addData( "house_to_sale_photo" , $arr_data );
+
+                    //sync image
+                    //--------------------------------------------------------------------
+                    if( isNotNull(tryGetData("img_filename",$server_info)) )
+                    {
+                        $img_url = $this->config->item("api_server_url")."upload/edoma/house_to_sale/".$server_sn."/".$server_info["img_filename"];
+                        $saveto = set_realpath("upload/".$comm_id."/house_to_sale/".$server_info["content_type"]).$server_info["img_filename"];
+                        $this->download_image($img_url, $saveto);
+                    }
+                    //--------------------------------------------------------------------
 
 				//		dprint( $this->db->last_query());
 				//		dprint( $this->db->_error_message());
