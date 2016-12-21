@@ -1551,7 +1551,7 @@ abstract class Backend_Controller extends IT_Controller
 					//--------------------------------------------------------------------
 					if( isNotNull(tryGetData("img_filename",$server_info)) )
 					{
-						$img_url = $this->config->item("api_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
+						$img_url = $this->config->item("big_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
 						$saveto = set_realpath("upload/website/".$server_info["content_type"]).$server_info["img_filename"];
 						$this->download_image($img_url,$saveto);
 					}
@@ -1573,7 +1573,7 @@ abstract class Backend_Controller extends IT_Controller
 					//--------------------------------------------------------------------
 					if( isNotNull(tryGetData("img_filename",$server_info)) )
 					{
-						$img_url = $this->config->item("api_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
+						$img_url = $this->config->item("big_server_url")."upload/edoma/".$server_info["content_type"]."/".$server_info["img_filename"];
 						$saveto = set_realpath("upload/website/".$server_info["content_type"]).$server_info["img_filename"];
 						//dprint($img_url);
 						//dprint($saveto);

@@ -182,7 +182,7 @@ $config['mail_box_type'] = array(
 $config['api_server_url'] = 'http://edoma.acsite.org/commapi/';
 //$config['api_server_url'] = 'http://27.147.4.239/commapi/';
 //$config['api_server_url'] = 'http://localhost/commapi/';
-
+$config['big_server_url'] = 'http://edoma.acsite.org/edoma/';
 
 //維修範圍
 $config['repair_type'] = array(
