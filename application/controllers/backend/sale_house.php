@@ -130,6 +130,7 @@ class Sale_House extends Backend_Controller {
 			);
 
 			$data["sys_user_group"] = $sys_user_group;
+            $data["mode"] = 'edit';
 			$this->display("edit_view",$data);
 		}
 		else
