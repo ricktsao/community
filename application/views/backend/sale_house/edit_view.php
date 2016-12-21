@@ -4,6 +4,8 @@ if ( tryGetData('is_post', $edit_data,0) == 1 || $mode=='view') {
 <script type="text/javascript">
 $(document).ready(function(){
     $(".useless_form :input").prop("disabled", true);
+    $("#back").prop("disabled", false);
+
 });
 </script>
 <?php
