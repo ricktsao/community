@@ -2,10 +2,10 @@
 
 class Auth_Model extends IT_Model
 {
-	
-	function __construct() 
+
+	function __construct()
 	{
-		parent::__construct();	  
+		parent::__construct();
 	}
 
 
@@ -27,7 +27,7 @@ class Auth_Model extends IT_Model
 		}
 		return false;
 	}
-	
+
 	public function getWebSetting( $key )
 	{
 		if (isNotNull($key)) {
@@ -38,29 +38,29 @@ class Auth_Model extends IT_Model
 		}
 		return false;
 	}
-	
-	
-	
+
+
+
 	public function getWebSettingList( $key = array() )
 	{
 		if (sizeof($key) > 0) {
 			$key_list = implode('","', $key);
 			$result = $this->it_model->listData('web_setting', '`key` IN ("'.$key_list.'")');
-			
+
 			if ( $result['data'] > 0 ) {
 				return $result['data'];
 			}
 		}
 		return false;
 	}
-	
-	
+
+
 	public function GetWebAdminList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{
 		echo $condition;
 		$sql = "	SELECT 	SQL_CALC_FOUND_ROWS
 							sys_admin_group.*
-					FROM 	sys_admin_group					
+					FROM 	sys_admin_group
 					WHERE ( 1 )
 					";
 
@@ -70,7 +70,7 @@ class Auth_Model extends IT_Model
 		}
 
 		$sql .= $this->getSortSQL( $sort );
-			
+
 		$sql .= $this->getLimitSQL( $rows , $page );
 
 		$data = array
@@ -78,16 +78,18 @@ class Auth_Model extends IT_Model
 			"sql" => $sql ,
 			"data" => $this->readQuery( $sql ) ,
 			"count" => $this->getRowsCount()
-		);		
+		);
 
 		return $data;
 	}
-	
-	
+
+
 	public function GetGroupAuthorityList( $condition = NULL , $rows = NULL , $page = NULL , $sort = array() )
 	{
-		$sql = "	select sys_user_group_b_auth.*, sys_module.id from sys_user_group_b_auth
-					left join sys_module on sys_user_group_b_auth.module_sn = sys_module.sn										
+        // 處理下方 sql 有兼容錯誤的狀況  ( 將 only_full_group_by 關閉)
+        $this->db->query('SET SESSION sql_mode=""');
+		$sql = "	select sys_module.id, sys_user_group_b_auth.* From sys_user_group_b_auth
+					left join sys_module on sys_user_group_b_auth.module_sn = sys_module.sn
 					WHERE ( 1 )
 					";
 
@@ -95,12 +97,12 @@ class Auth_Model extends IT_Model
 		{
 			$sql .= " AND ( ".$condition." ) ";
 		}
-		
-		$sql .= "group by sys_module.id"; 
-		
+
+		$sql .= "group by sys_module.id";
+
 
 		$sql .= $this->getSortSQL( $sort );
-			
+
 		$sql .= $this->getLimitSQL( $rows , $page );
 
 		$data = array
@@ -108,13 +110,13 @@ class Auth_Model extends IT_Model
 			"sql" => $sql ,
 			"data" => $this->readQuery( $sql ) ,
 			"count" => $this->getRowsCount()
-		);		
+		);
 
 		return $data;
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

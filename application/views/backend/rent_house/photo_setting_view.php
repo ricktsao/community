@@ -1,4 +1,14 @@
-<?php //echo validation_errors(); ?>
+<?php
+if ( tryGetData('is_post', $house_data,0) == 1) {
+?>
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".useless_form :input").prop("disabled", true);
+});
+</script>
+<?php
+}
+?>
 
 <style type="text/css">
 	.dataTable th[class*=sorting_] { color: #808080; }
@@ -29,7 +39,12 @@
 		物件照片設定
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			
+            <?php
+            if ( tryGetData('is_post', $house_data,0) == 1) {
+                echo '<span style="color:#c00">此筆租屋資料已發佈聯賣，無法針對照片再進行任何編修。</span>';
+                //echo '此筆租屋資料已發佈聯賣，若再進行資料修改，不會與先前的資料同步。';
+            }
+            ?>
 		</small>
 	</h1>
 </div>
@@ -63,7 +78,7 @@
 				<div class="col-xs-12 col-sm-2"><span style='font-weight:bold'>
 
 				<?php
-				echo sprintf('%d 房 %d 廳 %d 衛' 
+				echo sprintf('%d 房 %d 廳 %d 衛'
 							, tryGetData('room', $house_data)
 							, tryGetData('livingroom', $house_data)
 							, tryGetData('bathroom', $house_data)
@@ -73,7 +88,7 @@
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">樓 層：</label>
 				<div class="col-xs-12 col-sm-4"><span style='font-weight:bold'>
 				<?php
-				echo sprintf('共 %d 樓，位於 %d 樓' 
+				echo sprintf('共 %d 樓，位於 %d 樓'
 							, tryGetData('total_level', $house_data)
 							, tryGetData('locate_level', $house_data)
 							);
@@ -84,9 +99,13 @@
 
 
 		<div class="hr hr-16 hr-dotted"></div>
-			
+
+        <?php
+        if ( tryGetData('is_post', $house_data,0) != 1) {
+        ?>
 		<form action="<?php echo bUrl("updatePhoto")?>" method="post"  id="add_form" role="form" enctype="multipart/form-data">
-		<input type='hidden' name='house_to_rent_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
+
+        <input type='hidden' name='house_to_rent_sn' value='<?php echo tryGetData('sn', $house_data); ?>'>
 		<input type='hidden' name='comm_id' value='<?php echo tryGetData('comm_id', $house_data); ?>'>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增照片：</label>
@@ -111,7 +130,9 @@
 			</div>
 			</div>
 		</form>
-
+        <?php
+        }
+        ?>
 			<div class="form-group">
 				<div class="table-responsive">
 					<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="id">物件照片：</label>
@@ -119,11 +140,21 @@
 						<!-- <div style="float:right;" id="click_add_cust">
 							<button class="btn btn-success">新增照片</button>
 						</div> -->
-						<form method="post"  id="update_form" role="form">
+                		<?php
+                        if ( tryGetData('is_post', $house_data,0) != 1) {
+                        ?>
+                        <form method="post"  id="update_form" role="form">
+                        <?php
+                        } else {
+                        ?>
+                        <form class="useless_form" action="#">
+                        <?php
+                        }
+                        ?>
 						<input type="hidden" name="cases_sn" value="<?php //echo $cases_sn;?>">
 						<table id="sample-table-2" class="table table-striped table-bordered table-hover">
 							<thead>
-								<tr>										
+								<tr>
 									<th class="center" style="width:80px">
 										<label>
 											<input id="checkDelAll_custs" type="checkbox" class="ace"  />
@@ -169,7 +200,7 @@
 										</td>
 										<td><?php echo '<a href="'.$url.'" title="檢視大圖" target=_blank><img border="0" width="150" src="'.$thumb.'?"></a>'; ?></td>
 										<td><?php echo tryGetData('title', $photo, '-');?></td>
-										
+
 										<td><?php echo tryGetData('updated', $photo, '-');?></td>
 										<td><?php echo tryGetData('updated_by', $photo, '-');?></td>
 									</tr>
@@ -180,6 +211,9 @@
 								<?php
 								}
 								?>
+                                <?php
+                                if ( tryGetData('is_post', $house_data,0) != 1) {
+                                ?>
 								<tfoot>
 									<tr>
 										<td class="center">
@@ -190,6 +224,9 @@
 										<td colspan="7"></td>
 									</tr>
 								</tfoot>
+                                <?php
+                                }
+                                ?>
 						</table>
 						</form>
 					</div>
@@ -200,7 +237,7 @@
 
 
 
-<script type="text/javascript"> 
+<script type="text/javascript">
 
 //To select country name
 function selectParking(parking_sn, parking_id, xlocation) {
@@ -228,7 +265,7 @@ $(function(){
 	$('#suggesstion-box').hide();
 
 	$("#search-box").click(function(){
-	    
+
 		$("#cust_sn").val('');
 
 		$("#addr").val('').attr("readonly",false);

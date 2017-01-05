@@ -39,48 +39,35 @@ class Gas extends Frontend_Controller {
 			$user_info = $user_info["data"][0];
 			
 			
-			//本月瓦斯
+			//近六個月瓦斯
 			//-----------------------------------------------------------------------------------
-			$now_condition = "building_id = '".$user_info["addr"]."' ";
-			$now_condition.= "and year = '".date("Y")."' and month = '".date("m")."'";
-			$this_mon_gas_info = $this->it_model->listData("gas",$now_condition,1,1);
-			//dprint($this_mon_gas_info);
-			
-			if($this_mon_gas_info["count"]>0)
-			{
-				$this_mon_gas_info = $this_mon_gas_info["data"][0];
+                        $g_list = array();
+                        
+			for ($mon=0; $mon < 6; $mon++) 
+			{ 
+				
+				$date_year = date("Y", strtotime('-'.$mon.' month'));
+				$date_month = date("m", strtotime('-'.$mon.' month'));
+				
+				$condition = "building_id = '".$user_info["addr"]."' ";
+				$condition.= "and year = '".$date_year."' and month = '".$date_month."'";
+				$mon_gas_info = $this->it_model->listData("gas",$condition,1,1);
+				//dprint($last_mon_gas_info);
+				
+				if($mon_gas_info["count"]>0)
+				{
+					$mon_gas_info = $mon_gas_info["data"][0];
+				}
+				else
+				{
+					$mon_gas_info = array("year"=>$date_year,"month"=>$date_month,"sn"=>0);
+				}
+				//dprint($last_mon_gas_info);
+				//$data["last_mon_gas_info"] = $mon_gas_info;
+                                array_push($g_list, $mon_gas_info);				
 			}
-			else
-			{
-				$this_mon_gas_info = array("year"=>date("Y"),"month"=>date("m"),"sn"=>0);
-			}
-			$data["this_mon_gas_info"] = $this_mon_gas_info;
+                        $data["g_list"] = $g_list;
 			//-----------------------------------------------------------------------------------
-			
-			
-			
-			//上月瓦斯
-			//-----------------------------------------------------------------------------------
-			$last_date_year = date("Y", strtotime('-1 month'));
-			$last_date_month = date("m", strtotime('-1 month'));
-			
-			$last_condition = "building_id = '".$user_info["addr"]."' ";
-			$last_condition.= "and year = '".$last_date_year."' and month = '".$last_date_month."'";
-			$last_mon_gas_info = $this->it_model->listData("gas",$last_condition,1,1);
-			//dprint($last_mon_gas_info);
-			
-			if($last_mon_gas_info["count"]>0)
-			{
-				$last_mon_gas_info = $last_mon_gas_info["data"][0];
-			}
-			else
-			{
-				$last_mon_gas_info = array("year"=>$last_date_year,"month"=>$last_date_month,"sn"=>0);
-			}
-			//dprint($last_mon_gas_info);
-			$data["last_mon_gas_info"] = $last_mon_gas_info;
-			//-----------------------------------------------------------------------------------
-			
 			
 			
 
@@ -91,7 +78,7 @@ class Gas extends Frontend_Controller {
 			
 			$gas_list = $gas_list["data"];	
 			/*固定顯示6筆紀錄*/
-			for ($i=0; $i < 6 ; $i++) 
+			for ($i=0; $i < 12 ; $i++) 
 			{ 
 				if( ! array_key_exists($i, $gas_list))
 				{
