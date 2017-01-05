@@ -74,7 +74,84 @@ class cmsys extends Frontend_Controller {
 		
 		//$this->load->view($this->config->item('frontend_name')."/cycle_view",$data);	
 	}
+	
+	
+	public function ajaxGetNewsItem()
+	{	
+		$cycle_list = array();
+		
+		//社區公告
+		//---------------------------------------------------------------
+		$news_list = $this->c_model->GetList( "news" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$news_list = $news_list["data"];
+		foreach( $news_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$photo_list = $photo_list["data"];
+			
+			$tmp_ary = array();
+			
+			$page_url = frontendUrl("page","index/".$info["sn"]);
+			array_push($tmp_ary,$page_url);
+			foreach ($photo_list as $pkey => $photo) 
+			{
+				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				//$photo_list[$pkey]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				array_push($tmp_ary,$photo_url);
+			}			
+			
+			//$news_list[$key]["photo_list"] = $photo_list;		
+			array_push($cycle_list,$tmp_ary);				
+		}
+		
+		//img_show_list($news_list["data"],'img_filename',"news");
+		//---------------------------------------------------------------
+		
+		//管委公告
+		//---------------------------------------------------------------
+		$bulletin_list = $this->c_model->GetList( "bulletin" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$bulletin_list = $bulletin_list["data"];
+		
+		$tmp_ary = array();
+		
+		$page_url = frontendUrl("page","index/".$info["sn"]);
+		array_push($tmp_ary,$page_url);
+			
+		foreach( $bulletin_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$photo_list = $photo_list["data"];
+			
+			foreach ($photo_list as $key => $photo) 
+			{
+				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);	
+				//$photo_list[$key]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);				
+				array_push($tmp_ary,$photo_url);
+			}			
+			
+			array_push($cycle_list,$tmp_ary);	
+				
+		}
+		//---------------------------------------------------------------
+		
+		//$cycle_list = array_merge($news_list, $bulletin_list);	
+		
+		//dprint($cycle_list);
+		echo json_encode($cycle_list);
+		
+		
+		//$data["list"] = $cycle_list;
 
+		
+		
+		
+		//$data["edit_data"] = array();
+		//$data["templateUrl"] = $this->templateUrl;
+		//$data['templateUrl'] = $this->config->item("template_frontend_path");
+		
+		
+		//$this->load->view($this->config->item('frontend_name')."/cycle_view",$data);	
+	}
 	
 	public function index()
 	{
