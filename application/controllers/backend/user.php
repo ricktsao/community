@@ -801,7 +801,6 @@ class User extends Backend_Controller
         	$arr_data["id"] = $edit_data["new_id"];
         	$arr_data["updated"] = date("Y-m-d H:i:s");
         	$arr_data["is_sync"] = 0;
-        	$arr_data["suggest_flag"] = $edit_data["suggest_flag"];
 
       	 	$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$edit_data['user_sn']." AND del=0 AND comm_id='".$this->getCommId()."' and role='I' " );
 			if ($arr_return){
