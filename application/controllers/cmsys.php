@@ -89,19 +89,29 @@ class cmsys extends Frontend_Controller {
 			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
 			$photo_list = $photo_list["data"];
 			
-			$tmp_ary = array();
+			
 			
 			$page_url = frontendUrl("page","index/".$info["sn"]);
-			array_push($tmp_ary,$page_url);
+			if(tryGetData("content",$info) != '')
+			{
+				$tmp_ary = array("type"=>"page","url"=>$page_url);
+				array_push($cycle_list,$tmp_ary);
+			}
+			
+			
 			foreach ($photo_list as $pkey => $photo) 
 			{
 				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
 				//$photo_list[$pkey]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
-				array_push($tmp_ary,$photo_url);
+				//array_push($tmp_ary,$photo_url);
+				
+				$tmp_ary = array("type"=>"img","url"=>$photo_url);
+				array_push($cycle_list,$tmp_ary);
+				
 			}			
 			
 			//$news_list[$key]["photo_list"] = $photo_list;		
-			array_push($cycle_list,$tmp_ary);				
+			//array_push($cycle_list,$tmp_ary);				
 		}
 		
 		//img_show_list($news_list["data"],'img_filename',"news");
@@ -115,7 +125,11 @@ class cmsys extends Frontend_Controller {
 		$tmp_ary = array();
 		
 		$page_url = frontendUrl("page","index/".$info["sn"]);
-		array_push($tmp_ary,$page_url);
+		if(tryGetData("content",$info) != '')
+		{
+			$tmp_ary = array("type"=>"page","url"=>$page_url);
+			array_push($cycle_list,$tmp_ary);
+		}
 			
 		foreach( $bulletin_list as $key => $info ) 
 		{
@@ -126,31 +140,40 @@ class cmsys extends Frontend_Controller {
 			{
 				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);	
 				//$photo_list[$key]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);				
-				array_push($tmp_ary,$photo_url);
+				$tmp_ary = array("type"=>"img","url"=>$photo_url);
+				array_push($cycle_list,$tmp_ary);
 			}			
 			
-			array_push($cycle_list,$tmp_ary);	
+			//array_push($cycle_list,$tmp_ary);	
 				
 		}
 		//---------------------------------------------------------------
 		
-		//$cycle_list = array_merge($news_list, $bulletin_list);	
+		
+		
+		//跑馬燈
+		//------------------------------------------------------------------------------
+		$marquee_list = $this->c_model->GetList( "marquee" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		//dprint($marquee_list);
+		$marquee_str = '';
+        foreach ($marquee_list["data"] as $key => $marquee) 
+        {
+			
+			$url_ary = array(
+			"sdate" => showDateFormat($marquee["start_date"]),
+			"e_date" => $marquee["forever"]==1?"forever":showDateFormat($marquee["end_date"]),
+			"txt" => $marquee["content"]
+			);
+			$tmp_ary = array("type"=>"marquee","url"=>$url_ary);			
+			array_push($cycle_list,$tmp_ary);
+		}
+		
+		//------------------------------------------------------------------------------
+		
 		
 		//dprint($cycle_list);
-		echo json_encode($cycle_list);
+		echo json_encode($cycle_list);	
 		
-		
-		//$data["list"] = $cycle_list;
-
-		
-		
-		
-		//$data["edit_data"] = array();
-		//$data["templateUrl"] = $this->templateUrl;
-		//$data['templateUrl'] = $this->config->item("template_frontend_path");
-		
-		
-		//$this->load->view($this->config->item('frontend_name')."/cycle_view",$data);	
 	}
 	
 	public function index()
