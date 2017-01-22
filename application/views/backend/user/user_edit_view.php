@@ -3,7 +3,7 @@
 		住戶資料編輯
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
-			
+
 		</small>
 	</h1>
 </div>
@@ -122,9 +122,9 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 				echo mask($edit_data['app_id'] , 2, 4).'　　　';
 
 			} else {
-				
+
 				if (isNotNull(tryGetData('act_code', $edit_data , NULL)) ){
-					echo '（APP 開通碼：'.tryGetData('act_code', $edit_data).'）';					
+					echo '（APP 開通碼：'.tryGetData('act_code', $edit_data).'）';
 					echo form_hidden('act_code', tryGetData('act_code', $edit_data));
 				} else {
 					echo '（待開通）';
@@ -166,7 +166,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 
 
 	</div>
-	
+
 	<?php
 	}
 	?>
@@ -188,12 +188,12 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 
 	if(tryGetData('sn', $edit_data) > 0) {
 		echo form_hidden('building_id', tryGetData('building_id', $edit_data, NULL));
-		$building_field = '';	
+		$building_field = '';
 	?>
 	<div class="form-group <?php echo $error?>">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">戶　別</label>
 		<div class="col-xs-12 col-sm-6">
-			<label class="middle"> 
+			<label class="middle">
 			<?php
 			echo '<input type="radio" name="chg_b_id" value=0 checked> 維持 &raquo; ';
 			echo '<span style="color:#00c;">';
@@ -261,12 +261,12 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 	if(tryGetData('sn', $edit_data) > 0) {
 		echo form_hidden('addr_part_01', tryGetData('addr_part_01', $edit_data, NULL));
 		echo form_hidden('addr_part_02', tryGetData('addr_part_02', $edit_data, NULL));
-		$addr_field = '';	
+		$addr_field = '';
 	?>
 	<div class="form-group <?php echo $error?>">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">＊地址門牌</label>
 		<div class="col-xs-12 col-sm-6">
-			<label class="middle"> 
+			<label class="middle">
 			<?php
 			echo '<input type="radio" name="chg_a_id" value=0 checked> 維持 &raquo; ';
 			echo '<span style="color:#00c;">';
@@ -315,7 +315,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 	</div>
 	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
 	<!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
-	
+
 	<div class="form-group ">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">性 別</label>
 		<div class="col-xs-12 col-sm-4">
@@ -324,7 +324,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			</label>
 		</div>
 	</div>
-	
+
 	<div class="form-group ">
 		<label for="launch" class="col-xs-12 col-sm-2 control-label no-padding-right">所有權人</label>
 		<div class="col-xs-12 col-sm-4">
@@ -377,7 +377,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			</label>
 		</div>
 	</div>
-	<!-- 
+	<!--
 	<?php
 	$error = '';
 	if (form_error('group_sn')) {
@@ -390,7 +390,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			<label class="middle" style="width:100%;">
 				<?php
 				echo '<select multiple class="chzn-select" id="group_sn" name="group_sn[]" id="form-field-select-4" data-placeholder="請選擇(可複選)..." style="width:100%;">';
-				
+
 				foreach ($group_list as $key => $item) {
 					$selected = '';
 					if ( sizeof($sys_user_group) == 0) {
@@ -406,14 +406,14 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 
 					echo '<option '.$selected.'  value="'.$item["sn"].'" />'.$item["title"];
 				}
-				?>					
+				?>
 				</select>
-				
+
 				<?php
 				foreach ($sys_user_group as $key => $value) {
 					echo '<input type="hidden" name="old_group_sn[]" value="'.$value.'">';
 				}
-				?>	
+				?>
 			</label>
 		</div>
 			<?php
@@ -426,7 +426,7 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 	</div>
 	-->
 
-	<?php echo checkBoxOption("啟　用", "launch", $edit_data); ?>
+	<?php echo checkBoxOption("啟 用", "launch", $edit_data); ?>
 
 	<div class="hr hr-16 hr-dotted"></div>
 
@@ -474,30 +474,30 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 
 	<?php echo pickDateOption($edit_data);?>
 
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("index",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
 				返回
-			</a>		
-		
+			</a>
+
 
 			&nbsp; &nbsp; &nbsp;
-			
+
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
 				確定送出
 			</button>
-			
+
 		</div>
 	</div>
-	
+
 	<input type="hidden" name="sn" value="<?php echo tryGetData('sn', $edit_data)?>" />
 </form>
 
@@ -509,25 +509,25 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 		$(".chzn-select").chosen().change(function(){
 
 			$('input[name=is_manager]').prop('checked',false);
-			
+
 			if(!$(this).val()){
 				$('input[name=is_manager][value="0"]').prop("checked",true);
-			
-				return 
+
+				return
 			}
 			var _idx = $(this).val().indexOf("2");
-		
+
 			if(_idx>-1){
 				$('input[name=is_manager][value=1]').prop("checked",true);
-				
+
 			}else{
 
 				$('input[name=is_manager][value=0]').prop("checked",true);
-				
+
 			}
 		});
 
-		
+
 
 		//chosen plugin inside a modal will have a zero width because the select element is originally hidden
 		//and its width cannot be determined.
@@ -540,4 +540,4 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			});
 		})
 	});
-</script>                                                                                                                                 
+</script>

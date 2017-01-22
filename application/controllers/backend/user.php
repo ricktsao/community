@@ -176,6 +176,8 @@ class User extends Backend_Controller
 		$msg = '';
 		if ( (isNotNull($b_part_01)  ) ) {
 
+            /* 用 SUBSTRING_INDEX() 之前，必須設定好 sql_mode */
+            $this->db->query('SET SESSION sql_mode=""');
 			$query = 'SELECT SUBSTRING_INDEX(`building_id`, "_", 2) as house, addr_part_01, addr_part_02, count(*) as users '
 					.'  FROM `sys_user` '
 					.' WHERE `building_id` IS NOT NULL AND role="I" AND del=0 '
@@ -1160,14 +1162,14 @@ class User extends Backend_Controller
 				, "phone"		=>	tryGetData("phone", $edit_data)
 
 				, "gender"		=>	tryGetData("gender", $edit_data)
-				, "is_contact"		=>	tryGetData("is_contact", $edit_data)
-				, "voting_right"	=>	tryGetData("voting_right", $edit_data)
-				, "gas_right"		=>	tryGetData("gas_right", $edit_data)
-				, "tenant_flag"		=>	tryGetData("tenant_flag", $edit_data)
-				, "suggest_flag"		=>	tryGetData("suggest_flag", $edit_data)
+				, "is_contact"		=>	tryGetData("is_contact", $edit_data, 0)
+				, "voting_right"	=>	tryGetData("voting_right", $edit_data, 0)
+				, "gas_right"		=>	tryGetData("gas_right", $edit_data, 0)
+				, "tenant_flag"		=>	tryGetData("tenant_flag", $edit_data, 0)
+				, "suggest_flag"		=>	tryGetData("suggest_flag", $edit_data, 0)
 				, "is_manager"		=>	$is_manager
 				, "manager_title"	=>	tryGetData("manager_title", $edit_data)
-				, "is_owner"		=>	tryGetData("is_owner", $edit_data)
+				, "is_owner"		=>	tryGetData("is_owner", $edit_data, 0)
 				, "owner_addr"		=>	tryGetData("owner_addr", $edit_data)
 				, "start_date"	=>	tryGetData("start_date", $edit_data, NULL)
 				, "end_date"	=>	tryGetData("end_date", $edit_data, NULL)
