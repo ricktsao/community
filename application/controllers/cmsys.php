@@ -74,7 +74,107 @@ class cmsys extends Frontend_Controller {
 		
 		//$this->load->view($this->config->item('frontend_name')."/cycle_view",$data);	
 	}
-
+	
+	
+	public function ajaxGetNewsItem()
+	{	
+		$cycle_list = array();
+		
+		//社區公告
+		//---------------------------------------------------------------
+		$news_list = $this->c_model->GetList( "news" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$news_list = $news_list["data"];
+		foreach( $news_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$photo_list = $photo_list["data"];
+			
+			
+			
+			$page_url = frontendUrl("page","index/".$info["sn"]);
+			if(tryGetData("content",$info) != '')
+			{
+				$tmp_ary = array("type"=>"page","url"=>$page_url);
+				array_push($cycle_list,$tmp_ary);
+			}
+			
+			
+			foreach ($photo_list as $pkey => $photo) 
+			{
+				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				//$photo_list[$pkey]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);
+				//array_push($tmp_ary,$photo_url);
+				
+				$tmp_ary = array("type"=>"img","url"=>$photo_url);
+				array_push($cycle_list,$tmp_ary);
+				
+			}			
+			
+			//$news_list[$key]["photo_list"] = $photo_list;		
+			//array_push($cycle_list,$tmp_ary);				
+		}
+		
+		//img_show_list($news_list["data"],'img_filename',"news");
+		//---------------------------------------------------------------
+		
+		//管委公告
+		//---------------------------------------------------------------
+		$bulletin_list = $this->c_model->GetList( "bulletin" , "hot = 1" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		$bulletin_list = $bulletin_list["data"];
+		
+		$tmp_ary = array();
+		
+		$page_url = frontendUrl("page","index/".$info["sn"]);
+		if(tryGetData("content",$info) != '')
+		{
+			$tmp_ary = array("type"=>"page","url"=>$page_url);
+			array_push($cycle_list,$tmp_ary);
+		}
+			
+		foreach( $bulletin_list as $key => $info ) 
+		{
+			$photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$info["sn"]);
+			$photo_list = $photo_list["data"];
+			
+			foreach ($photo_list as $key => $photo) 
+			{
+				$photo_url = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);	
+				//$photo_list[$key]["img_filename"] = base_url('upload/content_photo/'.$photo["content_sn"].'/'.$photo["img_filename"]);				
+				$tmp_ary = array("type"=>"img","url"=>$photo_url);
+				array_push($cycle_list,$tmp_ary);
+			}			
+			
+			//array_push($cycle_list,$tmp_ary);	
+				
+		}
+		//---------------------------------------------------------------
+		
+		
+		
+		//跑馬燈
+		//------------------------------------------------------------------------------
+		$marquee_list = $this->c_model->GetList( "marquee" , "" ,TRUE, NULL , NULL , array("sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+		//dprint($marquee_list);
+		$marquee_str = '';
+        foreach ($marquee_list["data"] as $key => $marquee) 
+        {
+			
+			$url_ary = array(
+			"sdate" => showDateFormat($marquee["start_date"]),
+			"e_date" => $marquee["forever"]==1?"forever":showDateFormat($marquee["end_date"]),
+			"txt" => $marquee["content"]
+			);
+			$tmp_ary = array("type"=>"marquee","url"=>$url_ary);			
+			array_push($cycle_list,$tmp_ary);
+		}
+		
+		//------------------------------------------------------------------------------
+		
+		
+		//dprint($cycle_list);
+		echo json_encode($cycle_list);	
+		
+	}
 	
 	public function index()
 	{

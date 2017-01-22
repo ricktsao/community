@@ -7,7 +7,8 @@ class IT_Model extends CI_Model
 	
 	 function __construct() 
 	 {
-		parent::__construct();	  
+		parent::__construct();	
+		$this->db->query("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");		
 	 }
 
 	
