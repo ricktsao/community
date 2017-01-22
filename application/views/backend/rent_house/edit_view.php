@@ -1,14 +1,17 @@
 <?php
-if ( tryGetData('is_post', $edit_data,0) == 1) {
+if ( tryGetData('is_post', $edit_data,0) == 1 || $mode=='view') {
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
     $(".useless_form :input").prop("disabled", true);
+    $("#back").prop("disabled", false);
 });
 </script>
 <?php
 }
 ?>
+<?php // echo validation_errors(); ?>
+
 <div class="page-header">
 	<h1>
 		租屋資料編輯
@@ -18,6 +21,10 @@ $(document).ready(function(){
             if ( tryGetData('is_post', $edit_data,0) == 1) {
                 echo '<span style="color:#c00">此筆租屋資料已發佈聯賣，無法再進行任何編修。</span>';
                 //echo '此筆租屋資料已發佈聯賣，若再進行資料修改，不會與先前的資料同步。';
+            } else {
+                if ($mode == 'view') {
+                    echo '<span style="color:#c00">此筆售屋資料由Edoma發佈，無法進行任何編修。</span>';
+                }
             }
             ?>
 		</small>
@@ -26,7 +33,7 @@ $(document).ready(function(){
 <?php //dprint($edit_data);?>
 
 <?php
-if ( tryGetData('is_post', $edit_data,0) != 1) {
+if ( tryGetData('is_post', $edit_data,0) != 1 && $mode!='view' ) {
 ?>
 <form action="<?php echo bUrl("update")?>" method="post"  id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
 <?php
@@ -134,7 +141,7 @@ if ( tryGetData('is_post', $edit_data,0) != 1) {
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-1 col-md-9">
         <?php
-        if ( tryGetData('is_post', $edit_data,0)!=1) {
+        if ( tryGetData('is_post', $edit_data,0)!=1 && $mode!='view') {
         ?>
             <button class="btn btn-green" id="Reset" type="reset">
                 <i class="icon-ok bigger-110"></i>

@@ -5,7 +5,6 @@ if ( tryGetData('is_post', $edit_data,0) == 1 || $mode=='view') {
 $(document).ready(function(){
     $(".useless_form :input").prop("disabled", true);
     $("#back").prop("disabled", false);
-
 });
 </script>
 <?php
@@ -17,7 +16,7 @@ $(document).ready(function(){
 	<h1>
 		售屋資料編輯
 		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
+			<i class="ace-icon fa fa-angle-double-right has-error"></i>
             <?php
             if ( tryGetData('is_post', $edit_data,0) == 1) {
                 echo '<span style="color:#c00">此筆售屋資料已發佈聯賣，無法再進行任何編修。</span>';
