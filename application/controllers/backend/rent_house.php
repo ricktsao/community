@@ -6,6 +6,8 @@ class Rent_House extends Backend_Controller {
 	{
 		parent::__construct();
 
+        // 同步Edoma發佈到社區的售屋資料
+        //$this->getEdomaHouseToRent();
 	}
 
 	/**
@@ -13,6 +15,11 @@ class Rent_House extends Backend_Controller {
 	 */
 	public function index()
 	{
+
+
+        // 同步Edoma發佈到社區的售屋資料
+        $this->getEdomaHouseToRent();
+//die;
 		$this->check_house_to_rent_sync();	// 租屋離線同步
 		$this->check_house_to_rent_photo_sync();	// 租屋照片離線同步
 
@@ -85,6 +92,7 @@ class Rent_House extends Backend_Controller {
 
 		$sn = $this->input->get("sn", TRUE);
 		$role = $this->input->get("role", TRUE);
+        $mode = $this->input->get("mode", TRUE);
 
 		//權組list
 		//---------------------------------------------------------------------------------------------------------------
@@ -116,6 +124,7 @@ class Rent_House extends Backend_Controller {
 			);
 
 			$data["sys_user_group"] = $sys_user_group;
+            $data["mode"] = 'edit';
 			$this->display("edit_view",$data);
 		}
 		else
@@ -130,6 +139,7 @@ class Rent_House extends Backend_Controller {
 
 
 				$data['edit_data'] = $edit_data;
+                $data["mode"] = $mode;
 				$this->display("edit_view",$data);
 			}
 			else
