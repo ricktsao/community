@@ -6,6 +6,8 @@ class User extends Backend_Controller
 	function __construct()
 	{
 		parent::__construct();
+		// Claire
+		$this->check_user_sync();	//user 離線同步	 
 	}
 
 	public function editHouseUser()
@@ -503,6 +505,13 @@ class User extends Backend_Controller
 			$query_key[$key] = $this->input->get($key,TRUE);
 		}
 
+		// 從片語設定取得管委職稱
+		$manager_title_list = $this->auth_model->getWebSetting('manager_title');
+		if (isNotNull($manager_title_list)) {
+			$manager_title_array = array_merge(array(0=>' -- '), explode(',', $manager_title_list));
+		}
+		$data['manager_title_array'] = $manager_title_array;
+		
 		$b_part_01 = tryGetData('b_part_01', $query_key, NULL);
 		$b_part_02 = tryGetData('b_part_02', $query_key, NULL);
 		$b_part_03 = tryGetData('b_part_03', $query_key, NULL);
@@ -756,9 +765,10 @@ class User extends Backend_Controller
 						, "building_id" => $building_id
 						, "updated" => date('Y-m-d H:i:s')
 						, "is_sync" =>  0
+						, "role"	=> 'I'
 						);
 
-		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND del=0 AND id ='".$id."' AND comm_id='".$this->getCommId()."' and role='I' " );
+		$arr_return = $this->it_model->updateData( "sys_user" , $arr_data, "sn =".$sn." AND del=0 AND (id ='".$id."' or id IS NULL) AND comm_id='".$this->getCommId()."' and role='I' " );
 		if ($arr_return){
 			$this->showSuccessMessage();
 
@@ -767,6 +777,7 @@ class User extends Backend_Controller
 			$this->sync_item_to_server($arr_data, 'updateUser', 'sys_user');
 
 		} else {
+			//dprint($this->db->last_query());
 			$this->showFailMessage();
 		}
 		redirect(bUrl("index"));
