@@ -203,7 +203,9 @@ class Sale_House extends Backend_Controller {
 		if ( ! $this->_validateData() ) {
 
 			$data["edit_data"] = $edit_data;
-
+			
+			$data['mode']='edit';
+			
 			$data["sys_user_group"] = array();
 
 			$this->display("edit_view",$data);
