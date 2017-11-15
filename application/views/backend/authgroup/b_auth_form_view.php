@@ -43,12 +43,12 @@
 		<div class="col-md-offset-3 col-md-9">
 			<a class="btn" href="<?php echo bUrl("contentList",TRUE,array("sn")) ?>">
 				<i class="icon-undo bigger-110"></i>
-				Back
+				回上一頁
 			</a>
 
 			&nbsp; &nbsp; &nbsp;
 			
-			<input class="btn btn-primary" type="submit" value="Submit" />
+			<input class="btn btn-primary" type="submit" value="送出" />
 			
 		</div>
 	</div>

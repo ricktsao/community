@@ -63,7 +63,7 @@
 			
 			<button class="btn btn-info" type="Submit">
 				<i class="icon-ok bigger-110"></i>
-				Submit
+				送出
 			</button>
 			
 		</div>

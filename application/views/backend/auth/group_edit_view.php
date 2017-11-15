@@ -21,10 +21,10 @@
           <tr>
             <td colspan="2" class='center'>
             	<button class='btn back' type="button"  onclick="history.back()">
-					<?php echo $this -> lang -> line('common_cancel'); ?>
+					回上一頁
 				</button>
 				<button type="submit" class='btn save'>
-					<?php echo $this -> lang -> line('common_save'); ?>
+					送出
 				</button>
             	</td>
           </tr>
