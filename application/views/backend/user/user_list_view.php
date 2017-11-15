@@ -113,7 +113,12 @@
 										-->
 										<th>啟用/停用</th>
 										<th>操作</th>
-										
+										<th class="center" style="width:80px">
+											<label>
+												<input type="checkbox" class="ace"  />
+												<span class="lbl"></span>
+											</label>
+										</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -263,6 +268,12 @@
 										}
 										?>
 										</td>
+										<td class="center">
+											<label>
+												<input type="checkbox" class="ace" name="del[]" value="<?php echo $item["sn"];?>" />
+												<span class="lbl"></span>
+											</label>
+										</td>
 									</tr>
 									<?php
 										$i++;
@@ -270,9 +281,14 @@
 									?>
 								</tbody>
 								<tr>
-					              	<td colspan="12">
+					              	<td colspan="9">
 									<?php echo showBackendPager($pager)?>
 					                </td>
+									<td class="center">
+										<a class="btn  btn-minier btn-inverse" href="javascript:Delete('<?php echo bUrl('deleteUser');?>');">
+											<i class="icon-trash bigger-120"></i>刪除
+										</a>
+									</td>
 								</tr>
 								
 							</table>

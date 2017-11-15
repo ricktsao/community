@@ -1591,7 +1591,7 @@ class User extends Backend_Controller
 
 
 
-	public function deleteUser()
+	public function deleteUser_bak()
 	{
 		$del_sn = $this->input->get('sn',TRUE);
 		$role = $this->input->get('role',TRUE);
@@ -1613,6 +1613,29 @@ class User extends Backend_Controller
 		redirect(bUrl("editHouseUser"));
 	}
 
+	public function deleteUser()
+	{
+		
+		$del_ary = tryGetData("del",$_POST,array());				
+
+		//社區主機刪除
+		//----------------------------------------------------------------------------------------------------
+		foreach ($del_ary as  $content_sn) 
+		{
+			$result = $this->it_model->updateData( "sys_user" , array("del"=>1,"is_sync"=>0,"updated"=>date("Y-m-d H:i:s")), "sn ='".$content_sn."'" );					
+		}
+		//----------------------------------------------------------------------------------------------------
+
+
+		$this->check_user_sync();
+		$this->showSuccessMessage();
+		
+		redirect(bUrl("index", FALSE));	
+	}
+	
+	
+	
+	
 
 	public function deleteUser__()
 	{
