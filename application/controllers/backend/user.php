@@ -980,14 +980,15 @@ class User extends Backend_Controller
 								, 'car_number'	=>	tryGetData('car_number', $edit_data)
 								, 'updated'	=>	$now
 								, 'updated_by'	=>	$this->session->userdata('user_name')
-								,
+								, 'owner'	=>	tryGetData('owner', $edit_data)
+                                                        , 'lessee'	=>	tryGetData('lessee', $edit_data)
 								);
 
 				$query = 'INSERT INTO `user_parking` '
 						.'       (`comm_id`, `parking_sn`, `user_sn`, `person_sn` '
-						.'        , `user_id`, `car_number`, `updated`, `updated_by`) '
+						.'        , `user_id`, `car_number`, `updated`, `updated_by`, `owner`, `lessee`) '
 						.'VALUES (?, ?, ?, ? '
-						.'        , ?, ?, ?, ? ) '
+						.'        , ?, ?, ?, ?, ?, ? ) '
 						.'    ON DUPLICATE KEY UPDATE  '
 						.'       `car_number` = VALUES(`car_number`) '
 						.'       , `updated` = VALUES(`updated`) '

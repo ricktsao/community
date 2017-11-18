@@ -53,7 +53,8 @@
 										<th><?php echo $parking_part_02;?></th>
 										<th><?php echo $parking_part_03;?></th>
 										<th>戶別</th>
-										<th>住戶姓名</th>
+										<th>所有人</th>
+                                                                      <th>承租人</th>
 										<th>電話</th>
 										<th>行動</th>
 										<th>車號</th>
@@ -94,8 +95,11 @@
 										?>
 										</td>
 										<td>
-										<?php echo tryGetData('name', $item);?>
+										<?php echo tryGetData('owner', $item,'-');?>
 										</td>
+                                                                      <td>
+										<?php echo tryGetData('lessee', $item,'-');?>
+										</td>          
 										<td>
 										<?php echo tryGetData('tel', $item);?>
 										</td>

@@ -37,7 +37,7 @@ class Parking extends Backend_Controller {
 			$condition .= ' AND parking_id like "'.$parking_id.'%"' ;
 		}
 
-		$query = 'SELECT SQL_CALC_FOUND_ROWS p.*, up.car_number, u.building_id, u.name, u.tel, u.phone, u.role
+		$query = 'SELECT SQL_CALC_FOUND_ROWS p.*, up.car_number, up.owner, up.lessee, u.building_id, u.name, u.tel, u.phone, u.role
 					FROM parking p left join user_parking up on p.sn = up.parking_sn
 					left join sys_user u on up.user_sn = u.sn
 					WHERE ( 1 = 1 ) '.$condition
@@ -62,7 +62,7 @@ class Parking extends Backend_Controller {
 		//$data["j"] = $j;
 
 		
-		//¨ú±o¤À­¶
+		//å–å¾—åˆ†é 
 		$data["pager"] = $this->getPager($exist_parking_list["count"],$this->page,$this->per_page_rows,"index");
 		//---------------------------------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ class Parking extends Backend_Controller {
 		$data['p_part_02'] = $p_part_02;
 		$data['p_part_03'] = $p_part_03;
 
-		// ¨®¦ì§O¬ÛÃö°Ñ¼Æ
+		// è»Šä½åˆ¥ç›¸é—œåƒæ•¸
 		$data['parking_part_01'] = $this->parking_part_01;
 		$data['parking_part_02'] = $this->parking_part_02;
 		$data['parking_part_03'] = $this->parking_part_03;

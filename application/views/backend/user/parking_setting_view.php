@@ -54,6 +54,7 @@
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">住戶姓名：</label>
 				<div class="col-xs-12 col-sm-8"><span style='font-weight:bold'><?php echo tryGetData('name',$user_data); ?></span></div>
+                                <input type="hidden" id="hide_name" value="<?php echo tryGetData('name',$user_data); ?>">
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">行動電話：</label>
@@ -87,7 +88,25 @@
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">車號：</label>
 				<div class="col-xs-12 col-sm-8"><input type='text' id='car_number' name='car_number' size=50></div>
 			</div>
-
+                     <div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">所有人：</label>
+				<div class="col-xs-12 col-sm-8"><input type='text' id='owner' name='owner' size=50>
+                                <label class="middle">
+                                    <input class="ace" id="copy_owner" name="copy_owner" value="1" type="checkbox" >
+                                    <span class="lbl">同姓名</span>
+                                </label>   
+                            </div>
+                             
+			</div>  
+                     <div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">承租人：</label>
+				<div class="col-xs-12 col-sm-8"><input type='text' id='lessee' name='lessee' size=50>
+                                <label class="middle">
+                                    <input class="ace" id="copy_lessee" name="copy_lessee" value="1" type="checkbox" >
+                                    <span class="lbl">同姓名</span>
+                                </label>  
+                            </div>
+			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url"></label>
 				<div class="col-xs-12 col-sm-6">
@@ -122,6 +141,8 @@
 									<th><?php echo $parking_part_02;?></th>
 									<th><?php echo $parking_part_03;?></th>
 									<th>車號</th>
+                                                               <th>所有人</th>
+                                                               <th>承租人</th>   
 									<th>設定日期</th>
 									<th>設定人</th>
 								</tr>
@@ -158,7 +179,8 @@
 										<td><?php echo $parking_part[1];?></td>
 										<td><?php echo $parking_part[2];?></td>
 										<td><?php echo '<span style="font-size:16px">'.tryGetData('car_number', $parking, '-').'</span>';?></td>
-										
+										<td><?php echo tryGetData('owner', $parking, '-');?></td>
+                                                                      <td><?php echo tryGetData('lessee', $parking, '-');?></td>
 										<td><?php echo tryGetData('updated', $parking, '-');?></td>
 										<td><?php echo tryGetData('updated_by', $parking, '-');?></td>
 									</tr>
@@ -176,7 +198,7 @@
 												<i class="icon-trash bigger-120"></i>刪除
 											</a>
 										</td>
-										<td colspan="7"></td>
+										<td colspan="8"></td>
 									</tr>
 								</tfoot>
 						</table>
@@ -279,6 +301,24 @@ $(function(){
 		}
 		});
 	});
+        
+        $("#copy_owner").click(function(){
+            if ( $("#copy_owner").is(':checked') ) {
+                $("#owner").val($("#hide_name").val());
+                //alert($("#hide_name").val());
+            } else {
+                $("#owner").val('');
+            }        
+        });
+        
+        $("#copy_lessee").click(function(){
+            if ( $("#copy_lessee").is(':checked') ) {
+                $("#lessee").val($("#hide_name").val());
+                //alert($("#hide_name").val());
+            } else {
+                $("#lessee").val('');
+            }        
+        });
 
 });
 
