@@ -48,7 +48,7 @@
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
 				<label style="display:none" for="watermark">加入浮水印</label><input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:none" />
 				<div class="col-xs-12 col-sm-3" >
-					<input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔</span>
+					<input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔及PDF</span>
 					<br>
 					
 				</div>				
@@ -248,9 +248,9 @@ $(function(){
 
 function checkFile() { 
 	var f = document.add_form; 
-	var re = /\.(jpg|gif|png)$/i;  //允許的圖片副檔名 
+	var re = /\.(jpg|gif|png|pdf)$/i;  //允許的圖片副檔名 
 	if (!re.test(f.img_filename.value)) { 
-		alert("只允許上傳jpg,png,gif圖檔"); 
+		alert("只允許上傳jpg,png,gif圖檔及PDF"); 
 	}
 	else
 	{

@@ -540,4 +540,12 @@ if (isNotNull(tryGetData('sn', $edit_data, NULL)) ){
 			});
 		})
 	});
+        $("#b_part_01").val('<?php echo tryGetData('b_part_01',$edit_data); ?>');
+        $("#b_part_02").val('<?php echo tryGetData('b_part_02',$edit_data); ?>');
+        
+        $("#addr_part_01").val('<?php echo tryGetData('addr_part_01',$edit_data); ?>');
+        $("#addr_part_02").val('<?php echo tryGetData('addr_part_02',$edit_data); ?>');
+        
+
+        
 </script>

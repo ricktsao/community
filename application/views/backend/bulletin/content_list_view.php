@@ -35,7 +35,7 @@
 																			
 										<th style="width:200px"><i class="icon-time bigger-110 hidden-480"></i>有效日期</th>
 
-										<th style="width:180px">操作</th>
+										<th style="width:220px">操作</th>
 										<th style="width:120px">輪播公告<br>啟用/停用</th>
 										<th style="width:120px">啟用/停用</th>										
 										<th class="center" style="width:80px">
@@ -63,7 +63,7 @@
 											</a>
 											
 											<a class="btn  btn-minier btn-purple" href="<?php echo bUrl("contentPhoto",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">
-												<i class="icon-edit bigger-120"></i>圖片
+												<i class="icon-edit bigger-120"></i>圖片/PDF上傳
 											</a>
 											 
 											<a class="btn  btn-minier btn-danger" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("sn"=>$list[$i]["sn"])); ?>">

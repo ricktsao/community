@@ -1290,6 +1290,8 @@ class User extends Backend_Controller
 		foreach( $_POST as $key => $value ) {
 			$edit_data[$key] = $this->input->post($key,TRUE);
 		}
+                
+              //dprint($_POST);exit;
 
 		// 取消"權限群組"欄位，改由此判定所屬的群組，
 		// 若不為管委身分，則只有"住戶"群組，

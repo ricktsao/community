@@ -47,7 +47,7 @@
 		<input type='hidden' name='content_sn' value='<?php echo tryGetData('sn', $content_info); ?>'>		
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
-				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔</span></div>	
+				<div class="col-xs-12 col-sm-6"><input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔及PDF</span></div>	
 			</div>
 			<div class="form-group" style="display:none">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">說明：</label>
@@ -244,9 +244,9 @@ $(function(){
 
 function checkFile() { 
 	var f = document.add_form; 
-	var re = /\.(jpg|gif|png)$/i;  //允許的圖片副檔名 
+	var re = /\.(jpg|gif|png|pdf)$/i;  //允許的圖片副檔名 
 	if (!re.test(f.img_filename.value)) { 
-		alert("只允許上傳jpg,png,gif圖檔"); 
+		alert("只允許上傳jpg,png,gif圖檔及PDF"); 
 	}
 	else
 	{

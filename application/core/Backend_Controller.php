@@ -1,5 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+
 abstract class Backend_Controller extends IT_Controller
 {
 	public $title = "";	//標題
@@ -1995,7 +1996,7 @@ abstract class Backend_Controller extends IT_Controller
 		$content_sn = tryGetData('content_sn', $edit_data, NULL);
 		$comm_id = tryGetData('comm_id', $edit_data, NULL);
 		$config['upload_path'] = './upload/content_photo/'.$edit_data['content_sn'];
-		$config['allowed_types'] = 'jpg|png|gif';
+		$config['allowed_types'] = 'jpg|png|gif|pdf';
 
 
 		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );
@@ -2024,59 +2025,145 @@ abstract class Backend_Controller extends IT_Controller
 		{
 			$error = array('error' => $this->upload->display_errors());
 
-			$this->showFailMessage('圖片上傳失敗，請稍後再試　' .$error['error'] );
+			$this->showFailMessage('上傳失敗　' .$error['error'] );
 		}
 		else
 		{
 
-			$upload = $this->upload->data();
-			$img_filename = tryGetData('file_name', $upload);
+			$upload_info = $this->upload->data();
+                     $img_filename = tryGetData('file_name', $upload_info);   
+                        
+                        
+                     if($upload_info['file_ext'] == '.pdf') {                         
+                         $ch = curl_init();
+                        //檔名英文名稱
+                        $file_path = new CURLFile($upload_info['full_path']);
 
-			//浮水印
-			//------------------------------------------------------------
-			$add_water = $this->input->post('add_watermark');
+                        curl_setopt($ch, CURLOPT_URL,"http://ben.hex.com.tw/pdf2jpg/");
 
-			if($add_water == 1)
-			{
-				$watermark_filename = base_url('template/backend/images/watermark.png');
-				$water_info = $this->c_model->GetList( "watermark");
-				if(count($water_info["data"])>0)
-				{
-					img_show_list($water_info["data"],'img_filename',"watermark");
-					$water_info = $water_info["data"][0];
-					$watermark_filename = $water_info["img_filename"];
-				}
-
-				$org_filename = set_realpath("upload/content_photo/".$content_sn).$img_filename;
-				$save_filename = set_realpath("upload/content_photo/".$content_sn).'w_'.$img_filename;
-				doWatermark($org_filename, $watermark_filename, $save_filename);
-				$img_filename = 'w_'.$img_filename;
-			}
-			//------------------------------------------------------------
-
-
-			$arr_data = array(
-							  'content_sn'	=>	tryGetData('content_sn', $edit_data)
-							, 'img_filename'			=>	$img_filename
-							, 'title'				=>	tryGetData('title', $edit_data)
-							, 'updated'				=>	date('Y-m-d H:i:s')
-							, 'updated_by'			=>	$this->session->userdata('user_name')
-							, 'created'				=>	date('Y-m-d H:i:s')
-							);
-
-			$photo_sn = $this->it_model->addData('web_menu_photo', $arr_data);
-			if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '')
-			{
-				$this->pingConentPhoto(tryGetData('content_sn', $edit_data));
-				$this->showSuccessMessage('圖片上傳成功');
-			} else {
-				$this->showFailMessage('圖片上傳失敗，請稍後再試');
-			}
+                        //curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,0);
+                        //curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS,array(
+                                              'file' => $file_path
+                                            ));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $json_content =  curl_exec ($ch);
+                        $json_info = json_decode($json_content,TRUE);
+                        curl_close ($ch);
+                         
+                        
+                        if(tryGetData('status', $json_info) == 1) {
+                            
+                            //將pdf傳至service解成images 
+                            $file_url = "http://ben.hex.com.tw/pdf2jpg/{$json_info['url']}";
+                            //echo $file_url;
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $file_url);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($ch, CURLOPT_SSLVERSION,3);
+                            $data = curl_exec ($ch);
+                            $error = curl_error($ch); 
+                            curl_close ($ch);
+                            $zip_file = $content_sn.time().'.zip';
+                            $zip_path = "./upload/tmp/".$zip_file;
+                            $file = fopen($zip_path, "w+");
+                            fputs($file, $data);
+                            fclose($file);         
+                            
+                            
+                            //解壓縮
+                            $zip = zip_open($zip_path);
+                            if ($zip) {
+                              while ($zip_entry = zip_read($zip)) {
+                                $img_file = zip_entry_name($zip_entry);
+                                $fp = fopen("./upload/content_photo/{$edit_data['content_sn']}/".$img_file, "w");  
+                                //$fp = fopen("zip/".zip_entry_name($zip_entry), "w");
+                                if (zip_entry_open($zip, $zip_entry, "r")) {
+                                  $buf = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+                                  fwrite($fp,"$buf");
+                                  zip_entry_close($zip_entry);
+                                  fclose($fp);
+                                  
+                                  $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_file);
+                                }
+                              }
+                              zip_close($zip);
+                            }
+                            
+                            
+                            unlink($zip_path); 
+                            unlink($upload_info['full_path']); 
+                            
+                            $this->pingConentPhoto($content_sn);
+                        }
+                          
+              
+                         
+                     } else {
+                         //$result = $this->_makeCommunityImage($edit_data,$upload_info);
+                         
+                         $result = $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_filename);
+                         $this->showSuccessMessage($result['message']);
+                         if($result['success']) {
+                            $this->pingConentPhoto($content_sn);
+                         }
+                     }                        
+                     
 		}
 
 		redirect(bUrl("contentPhoto"));
 	}
 
+       function _makeCommunityImage($content_sn,$title,$img_filename)
+       {          
+           //浮水印
+           //------------------------------------------------------------
+           //$add_water = $this->input->post('add_watermark');
+           $add_water = 1;
+           if($add_water == 1)
+           {
+                $watermark_filename = base_url('template/backend/images/watermark.png');
+                $water_info = $this->c_model->GetList( "watermark");
+                if(count($water_info["data"])>0)
+                {
+                     img_show_list($water_info["data"],'img_filename',"watermark");
+                     $water_info = $water_info["data"][0];
+                     $watermark_filename = $water_info["img_filename"];
+                }
+
+                $org_filename = set_realpath("upload/content_photo/".$content_sn).$img_filename;
+                $save_filename = set_realpath("upload/content_photo/".$content_sn).'w_'.$img_filename;
+                doWatermark($org_filename, $watermark_filename, $save_filename);
+                $img_filename = 'w_'.$img_filename;
+           }
+           //------------------------------------------------------------
+
+
+           $arr_data = array(
+                'content_sn'	=>	$content_sn
+              , 'img_filename'			=>	$img_filename
+              , 'title'				=>	$title
+              , 'updated'				=>	date('Y-m-d H:i:s')
+              , 'updated_by'			=>	$this->session->userdata('user_name')
+              , 'created'				=>	date('Y-m-d H:i:s')
+              );
+
+           $result = array('success'=>FALSE);
+           $photo_sn = $this->it_model->addData('web_menu_photo', $arr_data);
+           if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '')
+           {
+               $result['success'] = TRUE;
+               $result['message'] = '上傳成功';
+               
+           } else {
+               $result['success'] = FALSE;
+               $result['message'] = '上傳失敗';               
+           }
+       }
+        
+        
+        
 	/**
 	 * 刪除web_menu_photo照片
 	 */
@@ -2118,7 +2205,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function pingConentPhoto($content_sn)
 	{
-		ini_set("memory_limit","256M");
+		ini_set("memory_limit","2048M");
 		$content_info = $this->it_model->listData("web_menu_content","sn = '".$content_sn."'");
 		if($content_info["count"]==0)
 		{
