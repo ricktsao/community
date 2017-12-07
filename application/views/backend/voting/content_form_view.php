@@ -1,4 +1,4 @@
-<form action="<?php echo bUrl('updateContent')?>" method="post" id="update_form" enctype="multipart/form-data" class="form-horizontal" role="form">
+<form action="<?php echo bUrl('updateContent')?>" method="post" id="update_form" onsubmit="return chkinput();" enctype="multipart/form-data" class="form-horizontal" role="form">
     <?php echo textOption("投票主題","subject",$edit_data); ?>
     <?php echo textAreaOption("解說","description",$edit_data);?>
     <?php echo pickDateOption($edit_data);?>
@@ -93,5 +93,21 @@
         event.preventDefault();
         $(this).parents('.form-group').remove();
     }
+    
+    
+    function chkinput()
+    {
+        var sDate = $('#start_date').val();
+        var eDate = $('#end_date').val();
+        alert(sDate);
+        if ( (Date.parse(sDate)).valueOf() <= (Date.parse(eDate)).valueOf())
+        {
+            alert("截止日期需大於啟始日期");
+            return false; 
+        } else {
+            return true; 
+        }
+    }
+    
     </script>
 </form>

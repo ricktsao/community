@@ -257,7 +257,7 @@ class Gas_report extends Backend_Controller {
 			}
 			else
 			{
-				$condition = "building_id = '".$this->session->userdata('f_building_id')."' AND year = '".$year."' AND month = '".$month."' ";
+				$condition = "building_id = '".$this->session->userdata('f_building_id')."' AND year = '".$server_info["year"]."' AND month = '".$server_info["month"]."' ";
 				$gas_info = $this->it_model->listData("gas",$condition);
 				if($gas_info["count"]>0)
 				{

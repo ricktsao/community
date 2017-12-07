@@ -1987,6 +1987,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	public function updateContentPhoto()
 	{
+              set_time_limit(120);//執行時間
 		$edit_data = array();
 		foreach( $_POST as $key => $value )
 		{
@@ -2105,9 +2106,9 @@ abstract class Backend_Controller extends IT_Controller
                          
                          $result = $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_filename);
                          $this->showSuccessMessage($result['message']);
-                         if($result['success']) {
+                         //if($result['success']) {
                             $this->pingConentPhoto($content_sn);
-                         }
+                         //}
                      }                        
                      
 		}
@@ -2205,7 +2206,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function pingConentPhoto($content_sn)
 	{
-		ini_set("memory_limit","2048M");
+		ini_set("memory_limit","3048M");
 		$content_info = $this->it_model->listData("web_menu_content","sn = '".$content_sn."'");
 		if($content_info["count"]==0)
 		{
@@ -2305,7 +2306,7 @@ abstract class Backend_Controller extends IT_Controller
 		$img_filename = resize_img($img_url,$img_config['resize_setting']);
 
 		//社區同步資料夾
-		$img_config['resize_setting'] =array($folder_name=>array(1024,1024));
+		$img_config['resize_setting'] =array($folder_name=>array(0,0));
 		resize_img($img_url,$img_config['resize_setting'],$this->getCommId(),$img_filename);
 
 		@unlink($img_url);
@@ -2324,8 +2325,6 @@ abstract class Backend_Controller extends IT_Controller
 		$content_info["img_filename"] = $img_filename;
 		$content_info["is_sync"] = 0;
 
-
-		$content_info["img_filename"] = $img_filename;
 		$this->sync_to_server($content_info);
 		//--------------------------------------------------------------------------------
 	}
