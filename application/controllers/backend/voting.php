@@ -185,11 +185,26 @@ class Voting extends Backend_Controller {
 		$this->form_validation->set_error_delimiters('<div class="error">', '</div>');		
 		
 		$this->form_validation->set_rules( 'subject', '投票主題', 'required' );	
-		$this->form_validation->set_rules( 'end_date', '截止日期', 'required' );	
+		$this->form_validation->set_rules( 'end_date', '截止日期', 'required|callback_date_check' );	
 		$this->form_validation->set_rules('voting_option', '投票項目', 'callback_option_check');
 		
 		
 		return ($this->form_validation->run() == FALSE) ? FALSE : TRUE;
+	}
+
+
+	public function date_check($str){
+		$sDate = date_create($this->input->post("start_date",TRUE));
+		$eDate = date_create($str);
+		$diff = date_diff($sDate,$eDate);		
+
+		if($diff->format('%d')<1){
+			$this->form_validation->set_message('date_check', '結束日期必須在起始日期後');
+			return FALSE;
+		}else{
+			return TRUE;
+		}
+
 	}
 
 	public function option_check($str)
