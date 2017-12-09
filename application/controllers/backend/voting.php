@@ -197,8 +197,8 @@ class Voting extends Backend_Controller {
 		$sDate = date_create($this->input->post("start_date",TRUE));
 		$eDate = date_create($str);
 		$diff = date_diff($sDate,$eDate);		
-
-		if($diff->format('%d')<1){
+		
+		if($diff->format('%r%d')<1){
 			$this->form_validation->set_message('date_check', '結束日期必須在起始日期後');
 			return FALSE;
 		}else{
