@@ -46,6 +46,8 @@ abstract class Backend_Controller extends IT_Controller
 		$this->getParameter();
 		$this->generateTopMenu();
 		$this->lang->load("common");
+              $this->check_user_sync();	//user 離線同步	 
+              $this->getAppUserData();
 		//$this->traceLog();
 		//$this->config->set_item('language', $this->language_value);
 	}
@@ -1177,6 +1179,54 @@ abstract class Backend_Controller extends IT_Controller
 		}
 	}
 
+       public function getAppUserData()
+	{
+
+		$post_data["comm_id"] = $this->getCommId();
+		$url = $this->config->item("api_server_url")."sync/getAppUser";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		//curl_setopt($ch, CURLOPT_POST,1);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		$json_data = curl_exec($ch);
+		curl_close ($ch);
+
+		$app_data_ary =  json_decode($json_data, true);
+
+		//dprint($app_data_ary );exit;
+
+		if( ! is_array($app_data_ary))
+		{
+			$app_data_ary = array();
+		}
+
+
+		foreach( $app_data_ary as $key => $s_user_info )
+		{
+			$act_code = $s_user_info["act_code"];
+
+			$update_data = array(
+			"app_id" => $s_user_info["app_id"],
+			"app_last_login_ip" => $s_user_info["app_last_login_ip"],
+			"app_last_login_time" => $s_user_info["app_last_login_time"],
+			"app_login_time" => $s_user_info["app_login_time"],
+			"app_use_cnt" => $s_user_info["app_use_cnt"],
+			"updated" => date( "Y-m-d H:i:s" )
+			);
+
+			$condition = "sn = '".$s_user_info["client_sn"]."' AND (`act_code` IS NULL OR `act_code` = '".$act_code."') ";
+			$result = $this->it_model->updateData( "sys_user" , $update_data,$condition );
+
+
+			//dprint($this->db->last_query());
+		}
+
+	}
+        
+        
 	/**
 	 * House to Rent 離線同步
 	 */

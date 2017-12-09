@@ -7,7 +7,7 @@ class User extends Backend_Controller
 	{
 		parent::__construct();
 		// Claire
-		$this->check_user_sync();	//user 離線同步	 
+		
 	}
 
 	public function editHouseUser()
@@ -239,7 +239,7 @@ class User extends Backend_Controller
 
 	public function index()
 	{
-		$this->getAppData();//同步app登入資料
+		//$this->getAppData();//同步app登入資料
 	//	die;
 		$condition = ' AND role="I" AND del=0 ';
 
