@@ -227,7 +227,7 @@ class Ad extends Backend_Controller {
 			}
 			
 			
-			$html .= "<table border=0><tr><td>".$img_str."</table>";
+			$html = "<table border=0><tr><td>".$img_str."</table>";
 	
 			$this->load->library('pdf');
 			$mpdf = new Pdf();

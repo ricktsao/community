@@ -2170,8 +2170,8 @@ abstract class Backend_Controller extends IT_Controller
        {          
            //浮水印
            //------------------------------------------------------------
-           //$add_water = $this->input->post('add_watermark');
-           $add_water = 1;
+           $add_water = $this->input->post('add_watermark');
+           //$add_water = 1;
            if($add_water == 1)
            {
                 $watermark_filename = base_url('template/backend/images/watermark.png');

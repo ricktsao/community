@@ -45,14 +45,20 @@
 		<form action="<?php echo bUrl("updateContentPhoto")?>" method="post"  id="add_form" name="add_form" role="form" enctype="multipart/form-data">
 		<input type='hidden' name='content_sn' value='<?php echo tryGetData('sn', $content_info); ?>'>		
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>
-				<label style="display:none" for="watermark">加入浮水印</label><input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:none" />
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">新增圖片：</label>				
 				<div class="col-xs-12 col-sm-3" >
 					<input type='file' id='filename' name='img_filename' size=20><span class="note">只允許上傳jpg,png,gif 格式圖檔及PDF</span>
 					<br>
 					
 				</div>				
 			</div>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">加入浮水印：</label>
+				<div class="col-xs-12 col-sm-3" >
+					<input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:" />					
+				</div>				
+			</div>
+			
 			<div class="form-group" style="display:none">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">說明：</label>
 				<div class="col-xs-12 col-sm-6"><input type='text' id='title' name='title' size=50></div>

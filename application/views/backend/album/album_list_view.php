@@ -53,7 +53,7 @@
                                         </td>
                                         <td>
                                             <a class="btn  btn-minier btn-info" href="<?php echo bUrl('editContent',TRUE,NULL,array('sn'=>$list[$i]['sn'])); ?>">
-                                                <i class="icon-edit bigger-120"></i>edit
+                                                <i class="icon-edit bigger-120"></i>編輯
                                             </a>
                                         </td>
                                         <td class="center">

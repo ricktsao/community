@@ -206,7 +206,7 @@ class Rent_House extends Backend_Controller {
 			$edit_data['furniture'] = implode(',', tryGetData('furniture', $edit_data, array()));
 			$edit_data['electric'] = implode(',', tryGetData('electric', $edit_data, array()));
 			$data["edit_data"] = $edit_data;
-
+			$data["mode"] = 'edit';
 			$data["sys_user_group"] = array();
 
 			$this->display("edit_view",$data);

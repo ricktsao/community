@@ -154,7 +154,7 @@ class Setting extends Backend_Controller{
 		}		
 	
 		$config['upload_path'] = './upload/website/setting/';
-		$config['allowed_types'] = 'jpg|png';
+		$config['allowed_types'] = 'jpg|png|gif';
 		
 		
 		$filename = date( "YmdHis" )."_".rand( 100000 , 999999 );	
