@@ -1,5 +1,5 @@
 * {
-    font-family: "Arial";
+    font-family: "Arial", "Microsoft JhengHei";
     box-sizing: border-box;
 }
 
@@ -253,7 +253,7 @@ body {
 
 #footer >.mPrimary {
     position: relative;
-    height: 130px;
+    height: 160px;
     color: #FFF;
 }
 
@@ -261,17 +261,25 @@ body {
     color: #FFF;
 }
 
-#footer >.mPrimary > img {
+ #android-qr,
+ #ios-qr {
     position: absolute;
-    right: 0;
     top: 10px;
 }
+ #android-qr {
+  right: 10px;
+}
 
-#footer >.mPrimary > div {
+ #ios-qr {
+  right: 130px;
+}
+
+
+ #foot-info {
     position: absolute;
     font-size: 15px;
-    top: 60px;
-    left: 230px;
+    top: 70px;
+    left: 30px;
 }
 
 .input_style[type='text'],
@@ -530,7 +538,7 @@ label {
 }
 
 #left_navi {
-    
+
     padding: 10px;
 }
 
@@ -560,7 +568,7 @@ label {
 }
 
 #left_navi > ul a > i {
-    position: absolute;   
+    position: absolute;
     top: 13px;
     color: #00C7E8;
 }
@@ -592,7 +600,7 @@ label {
 
 #left_navi_title > div {
     position: absolute;
-  
+
     width: 51px;
     height: 51px;
     top: 0;
@@ -600,15 +608,15 @@ label {
 }
 
 #left_navi.navi_type1 #left_navi_title > div {
-      background: url(../images/navi_1.png);  
+      background: url(../images/navi_1.png);
 }
 
 #left_navi.navi_type2 #left_navi_title > div {
-      background: url(../images/navi_2.png);  
+      background: url(../images/navi_2.png);
 }
 
 #left_navi.navi_type3 #left_navi_title > div {
-      background: url(../images/navi_5.png);  
+      background: url(../images/navi_5.png);
 }
 
 #mail_index {
@@ -630,4 +638,3 @@ label {
 #mail_index > div > a >img {
     width: 100%;
 }
-

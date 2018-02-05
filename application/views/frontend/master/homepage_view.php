@@ -8,7 +8,7 @@
 		                    <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> Learn more
 		                </a>
         		 </div>
-				
+
 				<div id="album_slide"></div>
 				<div id="album_slide_title"></div>
 				<div class="album_pager" id="album_pager"></div>
@@ -62,7 +62,7 @@
                 ?>
             </table>
         	</div>
-         
+
 
 
         </div>
@@ -70,8 +70,8 @@
     </div>
      <div class="nRow">
         <div class="nCol-4">
-        	<div id="course_area" class="bRadius bBorder">
-        		<div class="colorBar"></div>
+        	<div id="course_area" class="bRadius bShadow">
+
 				<div class="block_title">
 					 課程訊息
 		                <a href="<?php echo frontendUrl('course','index');?>">
@@ -82,9 +82,9 @@
                          <?php
                 //dprint($news_list);
 
-                foreach ($course_list as $key => $course_info) 
+                foreach ($course_list as $key => $course_info)
                 {
-                    echo                    
+                    echo
                     '<tr>
                         <td>
                             <a href="'.frontendUrl("course","detail",TRUE,array("all"=>"all"),array("sn"=>$course_info["sn"])).'" > '.showMoreStringSimple($course_info["title"],40) .'</a>
@@ -98,8 +98,8 @@
 
         </div>
         <div class="nCol-4">
-        	<div id="good_area" class="bRadius bBorder">
-        		<div class="colorBar"></div>
+        	<div id="good_area" class="bRadius bShadow">
+        		
 				<div class="block_title">
 					 日行一善
 		                <a href="<?php echo frontendUrl("daily_good","index");?>">
@@ -108,8 +108,8 @@
         		 </div>
                 <table class="tables">
                 <?php
-                                
-                foreach ($daily_good_list as $key => $daily_good_info) 
+
+                foreach ($daily_good_list as $key => $daily_good_info)
                 {
                     echo '<tr>
                             <td>
@@ -117,8 +117,8 @@
                             </td>
                         </tr>';
                 }
-                
-               
+
+
                 ?>
 
                 </table>
@@ -136,16 +136,16 @@
 		                    <i class="fa fa-chevron-circle-right" aria-hidden="true"></i> Learn more
 		                </a>
         		 </div>
-                 <div id="cycle_slide"></div>               
+                 <div id="cycle_slide"></div>
                 <div id="cycle_pager" class="album_pager"></div>
         	</div>
-        </div> 
-         <div style="clear:both"></div>       
+        </div>
+         <div style="clear:both"></div>
     </div>
 
 
 
-    
+
 </div>
 
 <script>
@@ -155,11 +155,11 @@ var albumContent = '';
 var adsContent = '';
 var albumUrl = '<?php echo frontendUrl("album","album_detail")?>';
 
-for(var i=0;i<album.length;i++){    
+for(var i=0;i<album.length;i++){
 	albumContent+="<a href='"+albumUrl+"/"+album[i].sn+"' data-cycle-title='"+album[i].title+"'><img src='"+album[i].img_filename+"' /></a>";
 }
 
-for(var i=0;i<ads.length;i++){   
+for(var i=0;i<ads.length;i++){
     adsContent+="<a href='javascript:void(0)'><img src='"+ads[i].img_filename+"'/></a>";
 
 }
@@ -185,7 +185,7 @@ $(function() {
     });
 
     $('#cycle_slide').cycle({
-        slides: ">a",      
+        slides: ">a",
         pager: "#cycle_pager",
         pagerTemplate : "<a href='#'></a>"
     });
