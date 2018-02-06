@@ -5,7 +5,7 @@
 
 <div class="page-header">
 	<h1>
-		獨立車位所有人
+		獨立車位設定
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 			

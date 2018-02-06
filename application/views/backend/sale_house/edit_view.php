@@ -92,7 +92,7 @@ if ( tryGetData('is_post', $edit_data,0) != 1 && $mode!='view') {
 		echo textNumberOption("<span class='red'>＊</span>位於幾樓", "locate_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>總樓層", "total_level", $edit_data, -3, 30, 1,'樓');
 		echo textNumberOption("<span class='red'>＊</span>屋 齡", "house_age", $edit_data, 0, 40, 0.1, '年');
-		echo textNumberOption("<span class='red'>＊</span>總 價", "total_price", $edit_data, 0, 99999, 0.01, '萬元');
+		echo textNumberOption("<span class='red'>＊</span>總 價", "total_price", $edit_data, 0, 9999999, 0.01, '萬元');
 		echo textNumberOption("<span class='red'>＊</span>每坪單價", "unit_price", $edit_data, 0, 999, 0.01, '萬元');
 		echo textNumberOption("管理費", "manage_fee", $edit_data, 0, 100000, 1, '元');
 		echo textOption("<span class='red'>＊</span>地址", "addr", $edit_data);

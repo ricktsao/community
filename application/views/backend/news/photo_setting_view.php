@@ -55,7 +55,7 @@
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">加入浮水印：</label>
 				<div class="col-xs-12 col-sm-3" >
-					<input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:" />					
+					<input id="watermark" type="checkbox" name="add_watermark" value="1" style="display:" /> (不支援gif檔)					
 				</div>				
 			</div>
 			

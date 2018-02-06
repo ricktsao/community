@@ -2037,6 +2037,7 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	public function updateContentPhoto()
 	{
+            try{
               set_time_limit(120);//執行時間
 		$edit_data = array();
 		foreach( $_POST as $key => $value )
@@ -2080,10 +2081,10 @@ abstract class Backend_Controller extends IT_Controller
 		}
 		else
 		{
-
-			$upload_info = $this->upload->data();
-                     $img_filename = tryGetData('file_name', $upload_info);   
+                    $upload_info = $this->upload->data();
+                    $img_filename = tryGetData('file_name', $upload_info);   
                         
+                                         
                         
                      if($upload_info['file_ext'] == '.pdf') {                         
                          $ch = curl_init();
@@ -2136,7 +2137,8 @@ abstract class Backend_Controller extends IT_Controller
                                   zip_entry_close($zip_entry);
                                   fclose($fp);
                                   
-                                  $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_file);
+                                  $img_file = $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_file);
+                                  $this->_saveImgToServer($content_sn,$img_file);
                                 }
                               }
                               zip_close($zip);
@@ -2146,25 +2148,49 @@ abstract class Backend_Controller extends IT_Controller
                             unlink($zip_path); 
                             unlink($upload_info['full_path']); 
                             
-                            $this->pingConentPhoto($content_sn);
+                            $this->syncConentPhoto($content_sn);
                         }
                           
               
                          
                      } else {
-                         //$result = $this->_makeCommunityImage($edit_data,$upload_info);
+                         $img_filename = $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_filename);
+                         $this->_saveImgToServer($content_sn,$img_filename);
                          
-                         $result = $this->_makeCommunityImage($content_sn,tryGetData('title', $edit_data),$img_filename);
-                         $this->showSuccessMessage($result['message']);
+                         
+                         
                          //if($result['success']) {
-                            $this->pingConentPhoto($content_sn);
+                            $this->syncConentPhoto($content_sn);
                          //}
                      }                        
                      
 		}
-
-		redirect(bUrl("contentPhoto"));
+            } catch (Exception $e) {
+                $this->showFailMessage($e->getMessage());         
+                redirect(bUrl("contentPhoto"));
+            }
+            $this->showSuccessMessage('上傳成功');
+            redirect(bUrl("contentPhoto"));
 	}
+        
+       function _saveImgToServer($content_sn,$img_filename)
+       {
+           //圖片同步至server
+            $img = set_realpath("upload/content_photo/".$content_sn).$img_filename;
+            $imgData = base64_encode(file_get_contents($img));
+            $api_url = $this->config->item('api_v2_url').'image/upload';
+            $api_param = array(
+                'code' => $imgData,
+                'content_sn' => $content_sn,
+                'comm_id' => $this->getCommId(),
+                'img_name' => $img_filename
+            );
+            $result = $this->apicomm->callApi($api_param, $api_url);
+            if(tryGetData('IsSuccess', $result) != 1) {
+                throw new Exception(tryGetData('Message', $result,'sync image fail'));
+            }
+       }
+       
 
        function _makeCommunityImage($content_sn,$title,$img_filename)
        {          
@@ -2172,7 +2198,7 @@ abstract class Backend_Controller extends IT_Controller
            //------------------------------------------------------------
            $add_water = $this->input->post('add_watermark');
            //$add_water = 1;
-           if($add_water == 1)
+           if($add_water == 1 && str_contains(strtolower($img_filename), '.gif') === FALSE )
            {
                 $watermark_filename = base_url('template/backend/images/watermark.png');
                 $water_info = $this->c_model->GetList( "watermark");
@@ -2199,7 +2225,7 @@ abstract class Backend_Controller extends IT_Controller
               , 'updated_by'			=>	$this->session->userdata('user_name')
               , 'created'				=>	date('Y-m-d H:i:s')
               );
-
+           
            $result = array('success'=>FALSE);
            $photo_sn = $this->it_model->addData('web_menu_photo', $arr_data);
            if ( $this->db->affected_rows() > 0 or $this->db->_error_message() == '')
@@ -2208,9 +2234,11 @@ abstract class Backend_Controller extends IT_Controller
                $result['message'] = '上傳成功';
                
            } else {
-               $result['success'] = FALSE;
-               $result['message'] = '上傳失敗';               
+               throw new Exception('上傳失敗');
            }
+           
+           return $img_filename;
+           
        }
         
         
@@ -2220,36 +2248,84 @@ abstract class Backend_Controller extends IT_Controller
 	 */
 	function deleteContentPhoto()
 	{
-		$del_array = $this->input->post("del",TRUE);
-		if(count($del_array)>0)
-		{
-			$content_sn = 0;
-			foreach( $del_array as $item )
-			{
+            $del_array = $this->input->post("del",TRUE);
+            if(count($del_array)>0)
+            {
+                $content_sn = 0;
+                foreach( $del_array as $item )
+                {
 
-				$tmp = explode('!@', $item);
-				$sn = $tmp[0];
-				$content_sn = $tmp[1];
-				$filename = $tmp[2];
+                    $tmp = explode('!@', $item);
+                    $sn = $tmp[0];
+                    $content_sn = $tmp[1];
+                    $filename = $tmp[2];
 
-				unlink('./upload/content_photo/'.$content_sn.'/'.$filename);
+                    unlink('./upload/content_photo/'.$content_sn.'/'.$filename);
 
-				$del = $this->it_model->deleteData('web_menu_photo',  array('sn' => $sn));
+                    $del = $this->it_model->deleteData('web_menu_photo',  array('sn' => $sn));
 
-				if ($del)
-				{
+                    if ($del)
+                    {
+                        //刪除server photo
+                        $api_url = $this->config->item('api_v2_url').'image/deleteFile';
+                        $api_param = array(
+                            'content_sn' => $content_sn,
+                            'comm_id' => $this->getCommId(),
+                            'img_name' => $filename
+                        );
+                        $result = $this->apicomm->callApi($api_param, $api_url);
+                      
+                    }
+                }
 
-				}
-			}
-
-			$this->pingConentPhoto($content_sn);
-		}
-		$this->showSuccessMessage('圖片刪除成功');
+                $this->syncConentPhoto($content_sn);
+            }
+            $this->showSuccessMessage('圖片刪除成功');
 
 
-		redirect(bUrl("contentPhoto"));
+            redirect(bUrl("contentPhoto"));
 	}
 
+        function syncConentPhoto($content_sn)
+        {
+            $content_info = $this->it_model->listData("web_menu_content","sn = '".$content_sn."'");
+            if($content_info["count"]==0) {
+                return;
+            }
+            $content_info = $content_info["data"][0];
+
+            $photo_list = $this->it_model->listData( "web_menu_photo" , "content_sn =".$content_sn);
+            if($photo_list["count"]==0) {
+                return;
+            }
+
+            $img_list = array();
+            foreach( $photo_list["data"] as $key => $photo )
+            {
+                /*
+                $img = set_realpath("upload/content_photo/".$content_sn).$photo["img_filename"];
+                $imgData = base64_encode(file_get_contents($img));
+                
+                $api_url = $this->config->item('api_v2_url').'image/upload';
+                $api_param = array(
+                    'code' => $imgData,
+                    'content_sn' => $content_sn,
+                    'comm_id' => $this->getCommId(),
+                    'img_name' => $photo["img_filename"]
+                );
+                $result = $this->apicomm->callApi($api_param, $api_url);
+                */
+                array_push($img_list, $photo["img_filename"]);
+            }          
+
+            $content_info["img_filename"] = json_encode($img_list);
+            $content_info["is_sync"] = 0;  
+            $this->sync_to_server($content_info);
+            //--------------------------------------------------------------------------------
+        }
+
+        
+        
 
 	/**
 	 * 拼接web_menu_photo照片

@@ -124,7 +124,7 @@ class Suggestion extends Backend_Controller {
 		//-------------------------------------------------------
 		
 		
-		$suggestion_list = $this->it_model->listData("suggestion",$condition.$role_sql, $this->per_page_rows , $this->page,array("created"=>"asc"));
+		$suggestion_list = $this->it_model->listData("suggestion",$condition.$role_sql, $this->per_page_rows , $this->page,array("created"=>"desc"));
 		
 		
 		$data["list"] = $suggestion_list["data"];
@@ -148,6 +148,124 @@ class Suggestion extends Backend_Controller {
 	}
 	
 
+        	/**
+	 * pdf下載頁面
+	 */
+	public function showPdf()
+	{
+            $status = $this->input->get('status');
+            $user_map = $this->it_model->listData("sys_user","");
+            $user_map = $this->it_model->toMapValue($user_map["data"],"sn","name");
+
+            $condition = "";
+            if(isNull($status))
+            {
+                    $status = "0";
+            }
+
+            if($status == "0")
+            {
+                    $condition = "reply is null ";	
+            }
+            else
+            {
+                    $condition = "reply is not null ";
+            }
+
+            //to 管委or總幹事 判斷
+            //-------------------------------------------------------
+            $group_id_ary = array();
+            $user_group_list = $this->it_model->listData("sys_user_group","sn in ( ".implode(',',$this->session->userdata("user_group"))." ) ");
+            foreach ($user_group_list["data"] as $key => $group_info) 
+            {
+                    array_push($group_id_ary,$group_info["id"]);
+            }
+            if(in_array("advuser", $group_id_ary)) 
+            {
+                    $role_sql = "and to_role='a'";
+            }
+            else if(in_array("secretary", $group_id_ary))
+            {
+                    $role_sql = "and to_role='s'";
+            }
+            else
+            {
+                    $role_sql = "and to_role=''";
+            }
+            //-------------------------------------------------------
+
+
+            $suggestion_list = $this->it_model->listData("suggestion",$condition.$role_sql, NULL , NULL,array("created"=>"desc"));		
+            if($suggestion_list["count"]>0)
+            {
+                $status_str = '未回覆';
+                if($status == 1) {
+                    $status_str = '已回覆';
+                }
+                
+                $suggestion_list = $suggestion_list["data"];	
+                $html = "<h1 style='text-align:center'>住戶意見箱 - {$status_str} </h1>";
+
+
+                    $tables = 
+                    '<tr>
+                        <th>日期</th>									
+                        <th>住戶姓名</th>									
+                        <th>意見主旨</th>
+                        <th>意見內容</th>
+                        <th>回覆內容</th>				
+                    </tr>';
+
+
+                    for($i=0;$i<sizeof($suggestion_list);$i++)
+                    {
+                        $tables .= 
+                        '<tr>
+                                <td>'.showDateFormat($suggestion_list[$i]["created"],"Y-m-d").'</td>
+                                <td>'.tryGetData($suggestion_list[$i]["user_sn"],$user_map).'</td>
+                                <td>'.$suggestion_list[$i]["title"].'</td>
+                                <td>'.nl2br($suggestion_list[$i]["content"]).'</td>
+                                <td>'.nl2br($suggestion_list[$i]["reply"]).'</td>									
+                        </tr>';	
+                    }
+
+                    $html .= '<table border="1" width="100%" >'.$tables.'</table>';
+
+                    $this->load->library('pdf');
+                    $mpdf = new Pdf();
+                    $mpdf = $this->pdf->load();
+                    $mpdf->useAdobeCJK = true;
+                    $mpdf->autoScriptToLang = true;
+
+
+                    $water_img = base_url('template/backend/images/watermark.png');
+                    $water_info = $this->c_model->GetList( "watermark");			
+                    if(count($water_info["data"])>0)
+                    {
+                            img_show_list($water_info["data"],'img_filename',"watermark");
+                            $water_info = $water_info["data"][0];			
+                            $water_img = $water_info["img_filename"];
+
+                    }
+                    $mpdf->SetWatermarkImage($water_img);
+                    $mpdf->watermarkImageAlpha = 0.081;
+                    $mpdf->showWatermarkImage = true;		
+
+                    $mpdf->WriteHTML($html);			
+
+                    $time = time();
+                    $pdfFilePath = "住戶意見箱_{$status_str}_".$time .".pdf";
+                    $mpdf->Output($pdfFilePath,'I');
+            }
+            else
+            {
+                    $this->closebrowser();
+            }
+		
+	}
+        
+        
+        
 	public function editContent()
 	{
 		

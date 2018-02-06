@@ -8,7 +8,12 @@
 			<i class="icon-edit bigger-120"></i>已回覆(<?php echo $status_1_cnt;?>)
 		</a>
 
-    </div>                  
+    </div>    
+	<div class="btn-group" style="text-align:right">
+        <a class="btn  btn-sm btn-danger btn_margin" target="_blank" href="<?php echo bUrl("showPdf",TRUE,NULL,array("status"=>$status)); ?>">
+			<i class="icon-edit bigger-120"></i>PDF報表
+		</a>
+    </div>      	
 </article>	
 </form>
 
