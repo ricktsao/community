@@ -139,7 +139,7 @@
 
  #album_slide_title {
      padding: 0 20px;
-     color: #727171;
+  /*   color: #727171;*/
      font-size: 15px;
      margin-bottom: 20px;
  }
