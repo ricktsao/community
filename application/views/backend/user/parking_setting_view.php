@@ -101,10 +101,7 @@
                      <div class="form-group">
 				<label class="col-xs-12 col-sm-2 control-label no-padding-right" for="url">承租人：</label>
 				<div class="col-xs-12 col-sm-8"><input type='text' id='lessee' name='lessee' size=50>
-                                <label class="middle">
-                                    <input class="ace" id="copy_lessee" name="copy_lessee" value="1" type="checkbox" >
-                                    <span class="lbl">同姓名</span>
-                                </label>  
+  
                             </div>
 			</div>
 			<div class="form-group">

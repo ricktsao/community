@@ -33,6 +33,7 @@ class Ad extends Backend_Controller {
 	 */
 	public function showPdfList()
 	{
+		$condition = "";
 		$ad_list = $this->c_model->GetList2( "ad" , $condition ,FALSE, NULL , NULL , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
 		img_show_list($ad_list["data"],'img_filename',$this->router->fetch_class());		
 		

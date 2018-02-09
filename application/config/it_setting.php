@@ -82,14 +82,14 @@ $config['mail']['template'] =
 <body>
 <div id='main'>
 	<div id='header'>
-	<img src='http://web.chupei.com.tw/template/frontend/images/img_logo.png' width='280'>
+	<img src='./template/frontend/images/img_logo.png' width='280'>
 	</div>
 	<div id='content'>
 	%s
 	</div>
 	<div id='footer'>
 	<hr class='style-one'>
-	<span style='color: #b0b0b0'>此信件是由系統發出，請勿直接回信；若有任何問題，可洽詢各單位秘書或資訊室人員，感謝您。</span>
+	<span style='color: #b0b0b0'>此信件是由系統發出，請勿直接回信；若有任何問題，可洽詢資訊人員，感謝您。</span>
 	</div>
 </div>
 </body>
@@ -183,6 +183,7 @@ $config['api_server_url'] = 'http://edoma.acsite.org/commapi/';
 //$config['api_server_url'] = 'http://27.147.4.239/commapi/';
 //$config['api_server_url'] = 'http://localhost/commapi/';
 $config['big_server_url'] = 'http://edoma.acsite.org/edoma/';
+$config['api_v2_url'] = 'http://edoma.acsite.org/comm.sync/';
 
 //維修範圍
 $config['repair_type'] = array(

@@ -1298,4 +1298,6 @@ function mb_str_split($str, $length = 1)
 	}  
 	
 
-
+    function str_contains($input, $test) {
+        return strpos($input, $test) !== false;
+    }
