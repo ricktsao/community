@@ -7,6 +7,7 @@ class Course extends Frontend_Controller {
 	{
 		parent::__construct();
 		$this->displayBanner(FALSE);  	
+                $this->getEdomaData();
 	}
 
 
@@ -36,12 +37,41 @@ class Course extends Frontend_Controller {
 		}
 		
 		$course_info = $this->c_model->GetList( "course" , "sn =".$content_sn,TRUE);			
-
+  
 			
 		if($course_info["count"]>0)
-		{				
-			img_show_list($course_info["data"],'img_filename',"course");
-			$data["course_info"] = $course_info["data"][0];			
+		{			
+                    $course_info = $course_info["data"][0];	
+                    //dprint($course_info);
+                    //exit;
+                    
+                    
+                    if($course_info['is_edoma']==1) {                        
+                        
+                        $edoma_sn = tryGetData('img_filename2',$course_info);
+                        $img_ary = explode(',', tryGetData('img_filename',$course_info));
+                        $img_list = array();
+                        foreach ($img_ary as $img) {
+                            $img_url = "http://edoma.acsite.org/edoma/upload/content_photo/{$edoma_sn}/{$img}";
+                            array_push($img_list, '<img  border="0" src="'.$img_url.'">');
+                            
+                        }
+                        $course_info['img_filename'] = implode('<br>', $img_list);
+                        //echo $course_info['img_filename'];exit;
+                        
+                        
+                    } else {
+                        if(isNotNull($course_info['img_filename'])) {
+                            $img_url = base_url()."upload/website/course/{$course_info['img_filename']}";
+                            $course_info['img_filename'] = '<img  border="0" src="'.$img_url.'">';    
+                        }                        
+                    }
+                    
+			
+                     
+			$data["course_info"] = $course_info;	
+                        
+                        
 
 			$this->displayHome("course_detail_view",$data);
 		}

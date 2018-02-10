@@ -216,6 +216,20 @@ class Msgcenter extends Backend_Controller {
 					$arr_data["comm_id"] = $this->getCommId();					
 					$this->sync_message_to_server($arr_data);
 					
+                                   if(tryGetData("realtime", $edit_data) == '1')
+                                    {
+                                        $app_id = $user_info["app_id"]; 
+                                        $api_data = array(
+                                             'comm_id' => $this->getCommId(),
+                                             'app_id' => $app_id,
+                                             'msg' => tryGetData("title", $edit_data) .' - '.tryGetData("msg_content", $edit_data)
+                                         );
+                                         $url = 'http://edoma.acsite.org/comm.sync/push/message';
+
+                                         $api_result = $this->apicomm->callApi($api_data, $url,'get');
+                                    }
+                                        
+                                        
 					$msg_count++;
 				}
 				else

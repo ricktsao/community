@@ -55,7 +55,15 @@
 <div class="form-group ">
 	<label for="title" class="col-xs-12 col-sm-2 control-label no-padding-right">圖　　片 : </label>
 	<div class="col-xs-12 col-sm-6">
-		<img  border="0" style="width:400px;" src="<?php echo tryGetData('img_filename',$edit_data); ?>">		
+       <?php 
+       $edoma_sn = tryGetData('img_filename2',$edit_data);
+       $img_ary = explode(',', tryGetData('img_filename',$edit_data));
+                        foreach ($img_ary as $img) {
+                            $img_url = "http://edoma.acsite.org/edoma/upload/content_photo/{$edoma_sn}/{$img}";
+                            echo '<img  border="0" style="width:400px;" src="'.$img_url.'">';
+                        }
+       ?>
+			
 	</div>
 </div>
 	

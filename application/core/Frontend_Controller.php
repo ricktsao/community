@@ -924,25 +924,14 @@ abstract class Frontend_Controller extends IT_Controller
 	{
 		$post_data["comm_id"] = $this->getCommId();
 		$url = $this->config->item("api_server_url")."sync_edoma/getEdomaContent";
-		//dprint($post_data);exit;
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		//curl_setopt($ch, CURLOPT_POST,1);
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST,  'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		$json_data = curl_exec($ch);
-		curl_close ($ch);
-		
-		//echo $json_data;exit;
-		
-		$edoma_data_ary =  json_decode($json_data, true);
+		$edoma_data_ary = $this->apicomm->callApi($post_data, $url);
+
 		//dprint($edoma_data_ary);exit;
 		if( ! is_array($edoma_data_ary))
 		{
 			$edoma_data_ary = array();
 		}
+
 		
 		
 		foreach( $edoma_data_ary as $key => $server_info ) 
@@ -958,7 +947,8 @@ abstract class Frontend_Controller extends IT_Controller
 				, "id" => tryGetData("id",$server_info,NULL)	
 				, "content_type" => tryGetData("content_type",$server_info)	
 				, "filename" => tryGetData("filename",$server_info)
-				, "img_filename" => tryGetData("img_filename",$server_info)
+				, "img_filename" => tryGetData("img_filename2",$server_info)
+                            , "img_filename2" => tryGetData("edoma_sn",$server_info)          
 				, "start_date" => tryGetData("start_date",$server_info,NULL)
 				, "end_date" => tryGetData("end_date",$server_info,NULL)
 				, "forever" => tryGetData("forever",$server_info,0)
@@ -973,7 +963,10 @@ abstract class Frontend_Controller extends IT_Controller
 				, "is_edoma" => 1
 			);        	
 			
-
+                     if(tryGetData("content_type",$server_info) == 'ad') {
+                         $arr_data['img_filename'] = tryGetData("img_filename",$server_info);
+                     }
+                        
 		
 			$content_server_info = $this->it_model->listData("web_menu_content","server_sn = '".$server_info["sn"]."'");
 			if($content_server_info["count"]==0)

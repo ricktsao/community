@@ -201,7 +201,7 @@ class Course extends Backend_Controller {
 			
 			if($course_info["count"]>0)
 			{				
-				img_show_list($course_info["data"],'img_filename',"course");
+				//img_show_list($course_info["data"],'img_filename',"course");
 				$course_info = $course_info["data"][0];
 				$data["edit_data"] = $course_info;			
 				

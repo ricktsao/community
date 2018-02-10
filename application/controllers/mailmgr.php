@@ -190,11 +190,13 @@ class Mailmgr extends Frontend_Controller {
 		
 		
 		$user_info = $this->it_model->listData("sys_user","sn='".tryGetData("user_sn",$edit_data)."'");
+              $app_id = '';
 		if($user_info["count"]>0)
 		{
 			$user_info = $user_info["data"][0];
+                     $app_id = $user_info["app_id"]; 
 			$update_data["user_sn"] = $user_info["sn"];
-			$update_data["user_app_id"] = $user_info["app_id"];
+			$update_data["user_app_id"] = $app_id;
 			$update_data["user_building_id"] = $user_info["building_id"];
 		}
 		
@@ -215,7 +217,20 @@ class Mailmgr extends Frontend_Controller {
 			
 			$this->sync_item_to_server($update_data,"updateMailbox","mailbox");
 			
-			
+                        $msg = '您有'. tryGetData(tryGetData("type",$edit_data), $mail_box_type_ary).'待領取 ';
+                        if(isNotNull(tryGetData("desc",$edit_data))) {
+                            $msg .= '-'.tryGetData("desc",$edit_data);
+                        }
+                        //$msg .= ' '.date('Y-m-d H:i:s');
+                        
+			$api_data = array(
+                        'comm_id' => $this->getCommId(),
+                        'app_id' => $app_id,
+                        'msg' => $msg
+                    );
+                    $url = 'http://edoma.acsite.org/comm.sync/push/message';
+
+                    $api_result = $this->apicomm->callApi($api_data, $url,'get');
 			//$this->showSuccessMessage();							
 		}
 		else 

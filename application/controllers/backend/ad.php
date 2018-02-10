@@ -12,14 +12,18 @@ class Ad extends Backend_Controller {
 
 	public function contentList()
 	{						
-		$condition = "";
-		
-		$list = $this->c_model->GetList2( "ad" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($list["data"],'img_filename',$this->router->fetch_class());
+            $condition = "";
+
+            $list = $this->c_model->GetList2( "ad" , $condition ,FALSE, $this->per_page_rows , $this->page , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
+            foreach ($list['data'] as &$info) {                
+                if($info['is_edoma']==1) {
+                    $info['img_filename'] = "http://edoma.acsite.org/edoma/upload/website/ad/{$info['img_filename']}";
+                } else {
+                    $info['img_filename'] = isNotNull($info['img_filename'])?base_url()."upload/website/ad/{$info['img_filename']}":'';
+                }
+            }
 		
 		$data["list"] = $list["data"];
-		
-		//dprint($data);
 		//取得分頁
 		$data["pager"] = $this->getPager($list["count"],$this->page,$this->per_page_rows,"contentList");	
 		
@@ -35,7 +39,7 @@ class Ad extends Backend_Controller {
 	{
 		$condition = "";
 		$ad_list = $this->c_model->GetList2( "ad" , $condition ,FALSE, NULL , NULL , array("web_menu_content.hot"=>'desc',"sort"=>"asc","start_date"=>"desc","sn"=>"desc") );
-		img_show_list($ad_list["data"],'img_filename',$this->router->fetch_class());		
+		//img_show_list($ad_list["data"],'img_filename',$this->router->fetch_class());		
 		
 		
 		if($ad_list["count"]>0)
@@ -56,6 +60,13 @@ class Ad extends Backend_Controller {
 			
 			for($i=0;$i<sizeof($ad_list);$i++)
 			{
+                        if($ad_list[$i]['is_edoma']==1) {
+                            $ad_list[$i]['img_filename'] = "http://edoma.acsite.org/edoma/upload/website/ad/{$ad_list[$i]['img_filename']}";
+                        } else {
+                            $ad_list[$i]['img_filename'] = isNotNull($ad_list[$i]['img_filename'])?base_url()."upload/website/ad/{$ad_list[$i]['img_filename']}":'';
+                        }
+                            
+                            
 				$tables .= 
 				'<tr>
 					<td>'.($i+1).'</td>
@@ -218,9 +229,17 @@ class Ad extends Backend_Controller {
 			
 		if(count($item_info["data"])>0)
 		{
-			img_show_list($item_info["data"],'img_filename',$this->router->fetch_class());
+			
 			$item_info = $item_info["data"][0];			
 			
+                    if($item_info['is_edoma']==1) {
+                        $item_info['img_filename'] = "http://edoma.acsite.org/edoma/upload/website/ad/{$item_info['img_filename']}";
+                    } else {
+                        $item_info['img_filename'] = isNotNull($item_info['img_filename'])?base_url()."upload/website/ad/{$item_info['img_filename']}":'';
+                    }
+                        
+                        
+                        
 			$img_str = "";
 			if(isNotNull($item_info["img_filename"]))
 			{
