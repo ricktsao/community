@@ -3,21 +3,21 @@
      margin-right: -15px;
      margin-bottom: 30px;
  }
- 
+
  .nCol-4,
  .nCol-8 {
      padding: 0 15px;
      float: left;
  }
- 
+
  .nCol-4 {
      width: 33.33%;
  }
- 
+
  .nCol-8 {
      width: 66.66%;
  }
- 
+
  .bRadius {
      -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
@@ -26,17 +26,17 @@
      position: relative;
      min-height: 310px;
  }
- 
+
  .bShadow {
      -webkit-box-shadow: 4px 2px 21px 0px rgba(194, 192, 194, 1);
      -moz-box-shadow: 4px 2px 21px 0px rgba(194, 192, 194, 1);
      box-shadow: 4px 2px 21px 0px rgba(194, 192, 194, 1);
  }
- 
+
  .bBorder {
      border: 1px solid #DCDDDD;
  }
- 
+
  .block_title {
      padding: 15px;
      margin-bottom: 10px;
@@ -44,7 +44,7 @@
      font-size: 18px;
      position: relative;
  }
- 
+
  .block_title > a {
      position: absolute;
      top: 20px;
@@ -53,47 +53,61 @@
      font-family: "Arial";
      font-size: 15px;
  }
- 
+
  .block_title > a > i {
      margin-right: 5px;
  }
- 
+
  #album_area > .block_title > a,
  #rent_area > .block_title > a,
- #service_area > .block_title > a {
+ #service_area > .block_title > a,
+ #course_area >  .block_title > a,
+ #good_area >  .block_title > a
+ {
      color: #FFF;
  }
- 
+
  #album_area > .block_title {
      background: #036EB8;
      color: #FFF;
  }
- 
+
  #rent_area > .block_title {
      background: #00B4DC;
      color: #FFF;
  }
- 
+
  #service_area > .block_title {
      background: #D9E021;
      color: #FFF;
  }
- 
+
+ #course_area > .block_title {
+    background: #FFB91E;
+    color: #FFF;
+ }
+
+ #good_area > .block_title {
+    background: #00B4DC;
+    color: #FFF;
+ }
+
+ /*
  #course_area > .block_title,
  #good_area > .block_title {
      color: #036EB8;
  }
- 
+
  #course_area > .block_title > a,
  #good_area > .block_title > a {
      color: #898989;
  }
- 
+
  #course_area > .block_title > a > i,
  #good_area > .block_title > a > i {
      color: #00B4DC;
  }
- 
+ */
  .colorBar {
      position: absolute;
      width: 90%;
@@ -101,40 +115,40 @@
      top: 0;
      left: 16px;
  }
- 
+
  #course_area > .colorBar {
      background: #FFB91E;
  }
- 
+
  #good_area > .colorBar {
      background: #00B4DC;
  }
- 
+
  #album_slide {
      width: 290px;
      height: 200px;
      overflow: hidden;
      margin: 0 auto;
  }
- 
+
  #album_slide  img,
  #album_slide  a {
      display: block;
      width: 100%;
  }
- 
+
  #album_slide_title {
      padding: 0 20px;
-     color: #727171;
+  /*   color: #727171;*/
      font-size: 15px;
      margin-bottom: 20px;
  }
- 
+
  .album_pager {
      text-align: center;
      margin-bottom: 20px;
  }
- 
+
  .album_pager > a {
      display: inline-block;
      background: url(../images/radio_btn.png);
@@ -142,12 +156,12 @@
      height: 17px;
      margin: 0 3px;
  }
- 
+
  .album_pager > a.cycle-pager-active,
  .album_pager > a:hover {
      background: url(../images/radio_btn_hover.png);
  }
- 
+
  #rent_table,
  .tables {
      width: 90%;
@@ -156,17 +170,17 @@
      border-spacing: 0;
      margin-bottom: 5px;
  }
- 
+
  #rent_table > tbody > tr:first-child td,
  .tables td {
      border-bottom: 1px solid #DCDDDD;
  }
- 
+
  #rent_table td,
  .tables td {
      padding: 6px;
  }
- 
+
  #rent_table tr > td:nth-child(2) {
      text-align: left;
      vertical-align: top;
@@ -174,18 +188,18 @@
      width: 65%;
      color: #595757;
  }
- 
+
  #rent_table tr > td:nth-child(2) > a {
      font-size: 16px;
      font-weight: bold;
      color: #3D6889;
  }
- 
+
  #rent_table img {
      width: 165px;
      height: 123px;
  }
- 
+
  .tables td a {
      color: #595757;
      padding: 10px 0;
@@ -193,20 +207,20 @@
      font-size: 15px;
      font-weight: bold;
  }
- 
+
  #cycle_slide {
      width: 290px;
      height: 230px;
      overflow: hidden;
      margin: 0 auto;
  }
- 
+
  #cycle_slide img,
  #cycle_slide a {
      width: 100%;
      display: block;
  }
- 
+
  #cycle_pager {
      position: absolute;
      z-index: 999;

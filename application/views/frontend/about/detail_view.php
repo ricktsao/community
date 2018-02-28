@@ -1,16 +1,16 @@
 <div class="primary rent">
 	<?php if ( count($photo_list)>0 ){ ?>
-	<div class="row">
+	<div class="row-6">
 		<div id="slide_area">
 			<div id="slide">
-			<?php			
+			<?php
 
-				foreach($photo_list as $photo) 
+				foreach($photo_list as $photo)
 				{
 					$cur_photo = base_url('/upload/website/setting/'.$photo['img_filename'])  ;
-					
-					
-					
+
+
+
 					echo '<img src="'.$cur_photo.'" width="599" height="447" alt="!!!'.$cur_photo.'" >
 				';
 				}
@@ -28,7 +28,7 @@
 	</div>
 	<?php } ?>
 
-	<div class="row">
+	<div class="row-6">
 		<div id="rent_info">
 			<table>
 				<tbody>
@@ -48,8 +48,8 @@
 						<td>社區地址</td>
 						<td><?php echo tryGetData("comm_addr",$webSetting);?></td>
 					</tr>
-					
-					
+
+
 				</tbody>
 			</table>
 		</div>
