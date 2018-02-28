@@ -1,6 +1,12 @@
 <div id="header">
     <div>
-        <a href="<?php echo frontendUrl();?>" id="c_title"><?php echo tryGetData("comm_name",$webSetting);?></a>
+        <a href="<?php echo frontendUrl();?>" id="c_title">
+        	<!--
+        		<?php echo tryGetData("comm_name",$webSetting);?>
+        	-->
+        	  <img src="<?php echo base_url().$templateUrl;?>images/edoma-logo.jpg" alt="">
+        		
+        </a>
         <ul id="navi" class="ul_unstyle">
             <li>
                 <a href="<?php echo frontendUrl("message")?>" title="住戶專屬服務" class="naviBgStyle1">
